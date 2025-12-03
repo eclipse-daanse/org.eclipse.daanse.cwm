@@ -1,0 +1,1654 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" copyrightText="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;&#xA;Contributors:&#xA;"
+    modelDirectory="/org.eclipse.daanse.cwm.model.emf/src" modelPluginID="org.eclipse.daanse.cwm.model.emf"
+    modelName="Cwm" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="17.0" copyrightFields="false"
+    operationReflection="true" importOrganizing="true" oSGiCompatible="true">
+  <foreignModel>cwm.ecore</foreignModel>
+  <genPackages prefix="cwm" basePackage="org.eclipse.daanse.cwm.model.emf.org.omg"
+      disposableProviderFactory="true" ecorePackage="cwm.ecore#/">
+    <nestedGenPackages prefix="Objectmodel" disposableProviderFactory="true" ecorePackage="cwm.ecore#//objectmodel">
+      <nestedGenPackages prefix="Core" disposableProviderFactory="true" ecorePackage="cwm.ecore#//objectmodel/core">
+        <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//objectmodel/core/ChangeableKind">
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/core/ChangeableKind/ck_changeable"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/core/ChangeableKind/ck_frozen"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/core/ChangeableKind/ck_addOnly"/>
+        </genEnums>
+        <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//objectmodel/core/OrderingKind">
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/core/OrderingKind/ok_unordered"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/core/OrderingKind/ok_ordered"/>
+        </genEnums>
+        <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//objectmodel/core/ScopeKind">
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/core/ScopeKind/sk_instance"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/core/ScopeKind/sk_classifier"/>
+        </genEnums>
+        <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//objectmodel/core/VisibilityKind">
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/core/VisibilityKind/vk_public"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/core/VisibilityKind/vk_protected"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/core/VisibilityKind/vk_private"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/core/VisibilityKind/vk_package"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/core/VisibilityKind/vk_notapplicable"/>
+        </genEnums>
+        <genDataTypes ecoreDataType="cwm.ecore#//objectmodel/core/Any"/>
+        <genDataTypes ecoreDataType="cwm.ecore#//objectmodel/core/Boolean"/>
+        <genDataTypes ecoreDataType="cwm.ecore#//objectmodel/core/Float"/>
+        <genDataTypes ecoreDataType="cwm.ecore#//objectmodel/core/Integer"/>
+        <genDataTypes ecoreDataType="cwm.ecore#//objectmodel/core/Name"/>
+        <genDataTypes ecoreDataType="cwm.ecore#//objectmodel/core/String"/>
+        <genDataTypes ecoreDataType="cwm.ecore#//objectmodel/core/Time"/>
+        <genDataTypes ecoreDataType="cwm.ecore#//objectmodel/core/UnlimitedInteger"/>
+        <genClasses image="false" ecoreClass="cwm.ecore#//objectmodel/core/Element"/>
+        <genClasses image="false" ecoreClass="cwm.ecore#//objectmodel/core/ModelElement">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/core/ModelElement/name"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/core/ModelElement/visibility"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/clientDependency"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/supplierDependency"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/constraint"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/namespace"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/importer"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/stereotype"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/taggedValue"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/document"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/description"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/responsibleParty"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/elementNode"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/set"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/renderedObject"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/vocabularyElement"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/measurement"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/ModelElement/changeRequest"/>
+        </genClasses>
+        <genClasses image="false" ecoreClass="cwm.ecore#//objectmodel/core/Namespace">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Namespace/ownedElement"/>
+        </genClasses>
+        <genClasses image="false" ecoreClass="cwm.ecore#//objectmodel/core/Classifier">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/core/Classifier/isAbstract"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Classifier/feature"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Classifier/structuralFeature"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Classifier/parameter"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Classifier/generalization"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Classifier/specialization"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Classifier/instance"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Classifier/alias"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Classifier/expressionNode"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Classifier/mappingFrom"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Classifier/mappingTo"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Classifier/classifierMap"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Classifier/cfMap"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/core/Class">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Class/index"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/core/DataType">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/DataType/dataSlot"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/core/Package">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Package/importedElement"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Package/dataManager"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Package/component"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/core/Subsystem"/>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/core/Model"/>
+        <genClasses image="false" ecoreClass="cwm.ecore#//objectmodel/core/Feature">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/core/Feature/ownerScope"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Feature/owner"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Feature/featureNode"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Feature/featureMap"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Feature/cfMap"/>
+        </genClasses>
+        <genClasses image="false" ecoreClass="cwm.ecore#//objectmodel/core/StructuralFeature">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/core/StructuralFeature/changeability"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/StructuralFeature/multiplicity"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/core/StructuralFeature/ordering"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/core/StructuralFeature/targetScope"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/StructuralFeature/type"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/StructuralFeature/slot"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/StructuralFeature/discriminatedUnion"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/StructuralFeature/indexedFeature"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/StructuralFeature/keyRelationship"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/StructuralFeature/uniqueKey"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/core/Attribute">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Attribute/initialValue"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/core/Constraint">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Constraint/body"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Constraint/constrainedElement"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Constraint/constrainedStereotype"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/core/Dependency">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/core/Dependency/kind"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Dependency/client"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Dependency/supplier"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/core/Expression">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/core/Expression/body"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/core/Expression/language"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/core/BooleanExpression"/>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/core/ProcedureExpression"/>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/core/Multiplicity">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Multiplicity/range"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/core/MultiplicityRange">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/core/MultiplicityRange/lower"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/core/MultiplicityRange/upper"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/MultiplicityRange/multiplicity"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/core/Stereotype">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/core/Stereotype/baseClass"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Stereotype/stereotypeConstraint"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Stereotype/extendedElement"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/Stereotype/requiredTag"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/core/TaggedValue">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/core/TaggedValue/tag"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/core/TaggedValue/value"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/TaggedValue/stereotype"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/core/TaggedValue/modelElement"/>
+        </genClasses>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Behavioral" disposableProviderFactory="true" ecorePackage="cwm.ecore#//objectmodel/behavioral">
+        <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//objectmodel/behavioral/ParameterDirectionKind">
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/behavioral/ParameterDirectionKind/pdk_in"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/behavioral/ParameterDirectionKind/pdk_inout"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/behavioral/ParameterDirectionKind/pdk_out"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/behavioral/ParameterDirectionKind/pdk_return"/>
+        </genEnums>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/behavioral/Argument">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/behavioral/Argument/value"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/behavioral/Argument/callAction"/>
+        </genClasses>
+        <genClasses image="false" ecoreClass="cwm.ecore#//objectmodel/behavioral/BehavioralFeature">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/behavioral/BehavioralFeature/isQuery"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/behavioral/BehavioralFeature/parameter"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/behavioral/CallAction">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/behavioral/CallAction/actualArgument"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/behavioral/CallAction/operation"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/behavioral/CallAction/stepExecution"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/behavioral/Event">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/behavioral/Event/parameter"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/behavioral/Interface"/>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/behavioral/Method">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/behavioral/Method/body"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/behavioral/Method/specification"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/behavioral/Operation">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/behavioral/Operation/isAbstract"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/behavioral/Operation/callAction"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/behavioral/Operation/method"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/behavioral/Parameter">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/behavioral/Parameter/defaultValue"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/behavioral/Parameter/kind"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/behavioral/Parameter/behavioralFeature"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/behavioral/Parameter/event"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/behavioral/Parameter/type"/>
+        </genClasses>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Relationships" disposableProviderFactory="true" ecorePackage="cwm.ecore#//objectmodel/relationships">
+        <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//objectmodel/relationships/AggregationKind">
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/relationships/AggregationKind/ak_none"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/relationships/AggregationKind/ak_aggregate"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//objectmodel/relationships/AggregationKind/ak_composite"/>
+        </genEnums>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/relationships/Association"/>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/relationships/AssociationEnd">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/relationships/AssociationEnd/aggregation"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/relationships/AssociationEnd/isNavigable"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/relationships/Generalization">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/relationships/Generalization/child"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/relationships/Generalization/parent"/>
+        </genClasses>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Instance" disposableProviderFactory="true" ecorePackage="cwm.ecore#//objectmodel/instance">
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/instance/DataSlot">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/instance/DataSlot/dataValue"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/instance/DataSlot/dataType"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/instance/DataValue">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//objectmodel/instance/DataValue/value"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/instance/Extent"/>
+        <genClasses image="false" ecoreClass="cwm.ecore#//objectmodel/instance/Instance">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/instance/Instance/valueSlot"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/instance/Instance/classifier"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/instance/Object">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/instance/Object/slot"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//objectmodel/instance/Slot">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/instance/Slot/value"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/instance/Slot/object"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//objectmodel/instance/Slot/feature"/>
+        </genClasses>
+      </nestedGenPackages>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="Foundation" disposableProviderFactory="true" ecorePackage="cwm.ecore#//foundation">
+      <nestedGenPackages prefix="Businessinformation" disposableProviderFactory="true"
+          ecorePackage="cwm.ecore#//foundation/businessinformation">
+        <genClasses ecoreClass="cwm.ecore#//foundation/businessinformation/ResponsibleParty">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/ResponsibleParty/responsibility"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/businessinformation/ResponsibleParty/modelElement"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/businessinformation/Telephone">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/Telephone/phoneNumber"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/Telephone/phoneType"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/businessinformation/Telephone/contact"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/businessinformation/Email">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/Email/emailAddress"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/Email/emailType"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/businessinformation/Email/contact"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/businessinformation/Location">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/Location/locationType"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/Location/address"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/Location/city"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/Location/postCode"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/Location/area"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/Location/country"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/businessinformation/Location/contact"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/businessinformation/Contact">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/businessinformation/Contact/email"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/businessinformation/Contact/location"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/businessinformation/Contact/url"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/businessinformation/Contact/telephone"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/businessinformation/Description">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/Description/body"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/Description/language"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/Description/type"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/businessinformation/Description/modelElement"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/businessinformation/Document">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/Document/reference"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/Document/type"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/businessinformation/Document/modelElement"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/businessinformation/ResourceLocator">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/businessinformation/ResourceLocator/url"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/businessinformation/ResourceLocator/contact"/>
+        </genClasses>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Datatypes" disposableProviderFactory="true" ecorePackage="cwm.ecore#//foundation/datatypes">
+        <genClasses ecoreClass="cwm.ecore#//foundation/datatypes/Enumeration">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/datatypes/Enumeration/isOrdered"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//foundation/datatypes/Enumeration/literal"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/datatypes/EnumerationLiteral">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//foundation/datatypes/EnumerationLiteral/value"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//foundation/datatypes/EnumerationLiteral/enumeration"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/datatypes/QueryExpression"/>
+        <genClasses ecoreClass="cwm.ecore#//foundation/datatypes/TypeAlias">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/datatypes/TypeAlias/type"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/datatypes/Union">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/datatypes/Union/discriminator"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/datatypes/UnionMember">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//foundation/datatypes/UnionMember/memberCase"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/datatypes/UnionMember/isDefault"/>
+        </genClasses>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Expressions" disposableProviderFactory="true" ecorePackage="cwm.ecore#//foundation/expressions">
+        <genClasses ecoreClass="cwm.ecore#//foundation/expressions/ExpressionNode">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//foundation/expressions/ExpressionNode/expression"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/expressions/ExpressionNode/type"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//foundation/expressions/ExpressionNode/featureNode"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/expressions/ConstantNode">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/expressions/ConstantNode/value"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/expressions/ElementNode">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/expressions/ElementNode/modelElement"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/expressions/FeatureNode">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/expressions/FeatureNode/feature"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//foundation/expressions/FeatureNode/argument"/>
+        </genClasses>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Keysindexes" disposableProviderFactory="true" ecorePackage="cwm.ecore#//foundation/keysindexes">
+        <genClasses ecoreClass="cwm.ecore#//foundation/keysindexes/UniqueKey">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/keysindexes/UniqueKey/feature"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/keysindexes/UniqueKey/keyRelationship"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/keysindexes/Index">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/keysindexes/Index/isPartitioning"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/keysindexes/Index/isSorted"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/keysindexes/Index/isUnique"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//foundation/keysindexes/Index/indexedFeature"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/keysindexes/Index/spannedClass"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/keysindexes/KeyRelationship">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/keysindexes/KeyRelationship/feature"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/keysindexes/KeyRelationship/uniqueKey"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/keysindexes/IndexedFeature">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/keysindexes/IndexedFeature/isAscending"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/keysindexes/IndexedFeature/feature"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//foundation/keysindexes/IndexedFeature/index"/>
+        </genClasses>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Softwaredeployment" disposableProviderFactory="true"
+          ecorePackage="cwm.ecore#//foundation/softwaredeployment">
+        <genClasses ecoreClass="cwm.ecore#//foundation/softwaredeployment/Site">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/Site/containingSite"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/Site/containedSite"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/Site/machine"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/softwaredeployment/Machine">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/softwaredeployment/Machine/ipAddress"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/softwaredeployment/Machine/hostName"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/softwaredeployment/Machine/machineID"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/Machine/deployedComponent"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/Machine/site"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/softwaredeployment/SoftwareSystem">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/softwaredeployment/SoftwareSystem/type"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/softwaredeployment/SoftwareSystem/subtype"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/softwaredeployment/SoftwareSystem/supplier"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/softwaredeployment/SoftwareSystem/version"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/SoftwareSystem/deployment"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/SoftwareSystem/typespace"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/softwaredeployment/DeployedComponent">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/softwaredeployment/DeployedComponent/pathname"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/DeployedComponent/machine"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/DeployedComponent/deployedSoftwareSystem"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/DeployedComponent/usedComponents"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/DeployedComponent/usingComponents"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/softwaredeployment/DeployedSoftwareSystem">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/softwaredeployment/DeployedSoftwareSystem/fixLevel"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/DeployedSoftwareSystem/softwareSystem"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/DeployedSoftwareSystem/deployedComponent"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/softwaredeployment/DataManager">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/softwaredeployment/DataManager/isCaseSensitive"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/DataManager/clientConnection"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/DataManager/dataPackage"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/softwaredeployment/DataProvider">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/DataProvider/resourceConnection"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/softwaredeployment/ProviderConnection">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/softwaredeployment/ProviderConnection/isReadOnly"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/ProviderConnection/dataProvider"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/ProviderConnection/dataManager"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/softwaredeployment/Component">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/softwaredeployment/Component/designPackage"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/softwaredeployment/PackageUsage">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/softwaredeployment/PackageUsage/packageAlias"/>
+        </genClasses>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Typemapping" disposableProviderFactory="true" ecorePackage="cwm.ecore#//foundation/typemapping">
+        <genClasses ecoreClass="cwm.ecore#//foundation/typemapping/TypeMapping">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/typemapping/TypeMapping/isBestMatch"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/typemapping/TypeMapping/isLossy"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/typemapping/TypeMapping/sourceType"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/typemapping/TypeMapping/targetType"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//foundation/typemapping/TypeSystem">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//foundation/typemapping/TypeSystem/supportingSystem"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//foundation/typemapping/TypeSystem/version"/>
+        </genClasses>
+      </nestedGenPackages>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="Resource" disposableProviderFactory="true" ecorePackage="cwm.ecore#//resource">
+      <nestedGenPackages prefix="Relational" disposableProviderFactory="true" ecorePackage="cwm.ecore#//resource/relational">
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/Catalog">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Catalog/defaultCharacterSetName"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Catalog/defaultCollationName"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/Schema"/>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/ColumnSet"/>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/NamedColumnSet">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/NamedColumnSet/usingTrigger"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/NamedColumnSet/type"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/NamedColumnSet/optionScopeColumn"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/Table">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Table/isTemporary"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Table/temporaryScope"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Table/isSystem"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/Table/trigger"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/View">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/View/isReadOnly"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/View/checkOption"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/View/queryExpression"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/QueryColumnSet">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/QueryColumnSet/query"/>
+        </genClasses>
+        <genClasses image="false" ecoreClass="cwm.ecore#//resource/relational/SQLDataType">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/SQLDataType/typeNumber"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/SQLDistinctType">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/SQLDistinctType/length"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/SQLDistinctType/precision"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/SQLDistinctType/scale"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/SQLDistinctType/sqlSimpleType"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/SQLSimpleType">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/SQLSimpleType/characterMaximumLength"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/SQLSimpleType/characterOctetLength"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/SQLSimpleType/numericPrecision"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/SQLSimpleType/numericPrecisionRadix"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/SQLSimpleType/numericScale"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/SQLSimpleType/dateTimePrecision"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/SQLSimpleType/sqlDistinctType"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/SQLStructuredType">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/SQLStructuredType/columnSet"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/SQLStructuredType/referencingColumn"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/Column">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Column/precision"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Column/scale"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Column/isNullable"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Column/length"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Column/collationName"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Column/characterSetName"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/Column/referencedTableType"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/Column/optionScopeColumnSet"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/Procedure">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Procedure/type"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/Trigger">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Trigger/eventManipulation"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/Trigger/actionCondition"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/Trigger/actionStatement"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Trigger/actionOrientation"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Trigger/conditionTiming"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Trigger/conditionReferenceNewTable"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/Trigger/conditionReferenceOldTable"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/Trigger/usedColumnSet"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/relational/Trigger/table"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/SQLIndex">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/SQLIndex/filterCondition"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/SQLIndex/isNullable"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/SQLIndex/autoUpdate"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/UniqueConstraint">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/UniqueConstraint/deferrability"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/ForeignKey">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/ForeignKey/deleteRule"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/ForeignKey/updateRule"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/ForeignKey/deferrability"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/SQLIndexColumn"/>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/PrimaryKey"/>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/Row"/>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/ColumnValue"/>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/CheckConstraint">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/relational/CheckConstraint/deferrability"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/RowSet"/>
+        <genClasses ecoreClass="cwm.ecore#//resource/relational/SQLParameter"/>
+        <nestedGenPackages prefix="Enumerations" disposableProviderFactory="true"
+            ecorePackage="cwm.ecore#//resource/relational/enumerations">
+          <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//resource/relational/enumerations/ActionOrientationType">
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/ActionOrientationType/row"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/ActionOrientationType/statement"/>
+          </genEnums>
+          <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//resource/relational/enumerations/ConditionTimingType">
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/ConditionTimingType/before"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/ConditionTimingType/after"/>
+          </genEnums>
+          <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//resource/relational/enumerations/DeferrabilityType">
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/DeferrabilityType/initiallyDeferred"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/DeferrabilityType/initiallyImmediate"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/DeferrabilityType/notDeferrable"/>
+          </genEnums>
+          <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//resource/relational/enumerations/EventManipulationType">
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/EventManipulationType/insert"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/EventManipulationType/delete"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/EventManipulationType/update"/>
+          </genEnums>
+          <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//resource/relational/enumerations/NullableType">
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/NullableType/columnNoNulls"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/NullableType/columnNullable"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/NullableType/columnNullableUnknown"/>
+          </genEnums>
+          <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//resource/relational/enumerations/ProcedureType">
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/ProcedureType/procedure"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/ProcedureType/function"/>
+          </genEnums>
+          <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//resource/relational/enumerations/ReferentialRuleType">
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/ReferentialRuleType/importedKeyNoAction"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/ReferentialRuleType/importedKeyCascade"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/ReferentialRuleType/importedKeySetNull"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/ReferentialRuleType/importedKeyRestrict"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/relational/enumerations/ReferentialRuleType/importedKeySetDefault"/>
+          </genEnums>
+        </nestedGenPackages>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Record" disposableProviderFactory="true" ecorePackage="cwm.ecore#//resource/record">
+        <genClasses ecoreClass="cwm.ecore#//resource/record/Field">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/record/Field/length"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/record/Field/precision"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/record/Field/scale"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/record/RecordDef">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/record/RecordDef/fieldDelimiter"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/record/RecordDef/isFixedWidth"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/record/RecordDef/textDelimiter"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/record/RecordDef/file"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/record/FixedOffsetField">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/record/FixedOffsetField/offset"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/record/FixedOffsetField/offsetUnitBits"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/record/RecordFile">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/record/RecordFile/isSelfDescribing"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/record/RecordFile/recordDelimiter"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/record/RecordFile/skipRecords"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/record/RecordFile/record"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/record/FieldValue"/>
+        <genClasses ecoreClass="cwm.ecore#//resource/record/Record"/>
+        <genClasses ecoreClass="cwm.ecore#//resource/record/RecordSet"/>
+        <genClasses ecoreClass="cwm.ecore#//resource/record/Group"/>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Multidimensional" disposableProviderFactory="true"
+          ecorePackage="cwm.ecore#//resource/multidimensional">
+        <genClasses ecoreClass="cwm.ecore#//resource/multidimensional/Dimension">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/multidimensional/Dimension/dimensionedObject"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/multidimensional/Dimension/composite"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/multidimensional/Dimension/component"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//resource/multidimensional/Dimension/schema"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//resource/multidimensional/Dimension/memberSet"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/multidimensional/DimensionedObject">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/multidimensional/DimensionedObject/dimension"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//resource/multidimensional/DimensionedObject/schema"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/multidimensional/Member"/>
+        <genClasses ecoreClass="cwm.ecore#//resource/multidimensional/MemberSet">
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//resource/multidimensional/MemberSet/dimension"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/multidimensional/MemberValue"/>
+        <genClasses ecoreClass="cwm.ecore#//resource/multidimensional/Schema">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//resource/multidimensional/Schema/dimensionedObject"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//resource/multidimensional/Schema/dimension"/>
+        </genClasses>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Xml" disposableProviderFactory="true" ecorePackage="cwm.ecore#//resource/xml">
+        <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//resource/xml/AttributeDefault">
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/xml/AttributeDefault/xml_required"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/xml/AttributeDefault/xml_implied"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/xml/AttributeDefault/xml_default"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/xml/AttributeDefault/xml_fixed"/>
+        </genEnums>
+        <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//resource/xml/ContentType">
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/xml/ContentType/xml_empty"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/xml/ContentType/xml_any"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/xml/ContentType/xml_mixed"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/xml/ContentType/xml_element"/>
+        </genEnums>
+        <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//resource/xml/OccurrenceType">
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/xml/OccurrenceType/xml_one"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/xml/OccurrenceType/xml_zeroOrOne"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/xml/OccurrenceType/xml_zeroOrMore"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/xml/OccurrenceType/xml_oneOrMore"/>
+        </genEnums>
+        <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//resource/xml/ElementOrderType">
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/xml/ElementOrderType/xml_choice"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//resource/xml/ElementOrderType/xml_sequence"/>
+        </genEnums>
+        <genClasses ecoreClass="cwm.ecore#//resource/xml/Schema">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/xml/Schema/version"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/xml/Schema/xmlNamespace"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/xml/ElementType">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/xml/ElementType/content"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/xml/Attribute">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/xml/Attribute/defaultKind"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/xml/Content">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/xml/Content/type"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/xml/Content/occurrence"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/xml/Content/elementType"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/xml/Content/ownedElementType"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/xml/ElementContent">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/xml/ElementContent/order"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/xml/ElementContent/ownerContent"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/xml/ElementContent/ownedContent"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/xml/MixedContent">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//resource/xml/MixedContent/text"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/xml/ElementTypeReference">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//resource/xml/ElementTypeReference/occurrence"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//resource/xml/ElementTypeReference/ownerContent"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/xml/Text">
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//resource/xml/Text/ownerContent"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//resource/xml/Element"/>
+        <genClasses ecoreClass="cwm.ecore#//resource/xml/Document"/>
+      </nestedGenPackages>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="Analysis" disposableProviderFactory="true" ecorePackage="cwm.ecore#//analysis">
+      <nestedGenPackages prefix="Transformation" disposableProviderFactory="true"
+          ecorePackage="cwm.ecore#//analysis/transformation">
+        <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//analysis/transformation/TreeType">
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/transformation/TreeType/tfm_unary"/>
+          <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/transformation/TreeType/tfm_binary"/>
+        </genEnums>
+        <genClasses ecoreClass="cwm.ecore#//analysis/transformation/Transformation">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/Transformation/function"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/transformation/Transformation/functionDescription"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/transformation/Transformation/isPrimary"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/Transformation/source"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/Transformation/target"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/Transformation/task"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/transformation/DataObjectSet">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/DataObjectSet/sourceTransformation"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/DataObjectSet/targetTransformation"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/DataObjectSet/element"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/transformation/TransformationTask">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/TransformationTask/step"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/TransformationTask/originalTask"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/TransformationTask/inverseTask"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/TransformationTask/transformation"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/transformation/TransformationStep">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/TransformationStep/task"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/TransformationStep/warehouseStep"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/TransformationStep/execution"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/transformation/TransformationActivity">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/transformation/TransformationActivity/creationDate"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/TransformationActivity/warehouseActivity"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/TransformationActivity/execution"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/transformation/PrecedenceConstraint"/>
+        <genClasses ecoreClass="cwm.ecore#//analysis/transformation/TransformationUse">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/transformation/TransformationUse/type"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/transformation/TransformationMap"/>
+        <genClasses ecoreClass="cwm.ecore#//analysis/transformation/TransformationTree">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/transformation/TransformationTree/type"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/TransformationTree/body"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/transformation/ClassifierMap">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/ClassifierMap/function"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/transformation/ClassifierMap/functionDescription"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/ClassifierMap/featureMap"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/ClassifierMap/cfMap"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/ClassifierMap/source"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/transformation/FeatureMap">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/FeatureMap/function"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/transformation/FeatureMap/functionDescription"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/FeatureMap/classifierMap"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/FeatureMap/target"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/transformation/StepPrecedence"/>
+        <genClasses ecoreClass="cwm.ecore#//analysis/transformation/ClassifierFeatureMap">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/ClassifierFeatureMap/function"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/transformation/ClassifierFeatureMap/functionDescription"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/transformation/ClassifierFeatureMap/classifierToFeature"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/ClassifierFeatureMap/classifierMap"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/ClassifierFeatureMap/classifier"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/transformation/ClassifierFeatureMap/feature"/>
+        </genClasses>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Olap" disposableProviderFactory="true" ecorePackage="cwm.ecore#//analysis/olap">
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/ContentMap">
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/ContentMap/cubeDeployment"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/Cube">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/olap/Cube/isVirtual"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Cube/cubeDimensionAssociation"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Cube/schema"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Cube/cubeRegion"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/CubeDeployment">
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/CubeDeployment/cubeRegion"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/CubeDeployment/deploymentGroup"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/CubeDeployment/contentMap"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/CubeDimensionAssociation">
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/CubeDimensionAssociation/cube"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/CubeDimensionAssociation/dimension"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/CubeDimensionAssociation/calcHierarchy"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/CubeRegion">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/olap/CubeRegion/isReadOnly"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/olap/CubeRegion/isFullyRealized"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/CubeRegion/cube"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/CubeRegion/memberSelectionGroup"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/CubeRegion/cubeDeployment"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/DeploymentGroup">
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/DeploymentGroup/schema"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/DeploymentGroup/cubeDeployment"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/DeploymentGroup/dimensionDeployment"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/Dimension">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/olap/Dimension/isTime"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/olap/Dimension/isMeasure"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Dimension/memberSelection"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Dimension/cubeDimensionAssociation"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Dimension/hierarchy"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Dimension/displayDefault"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Dimension/schema"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/DimensionDeployment">
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/DimensionDeployment/hierarchyLevelAssociation"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/DimensionDeployment/valueBasedHierarchy"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/DimensionDeployment/structureMap"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/DimensionDeployment/listOfValues"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/DimensionDeployment/immediateParent"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/DimensionDeployment/deploymentGroup"/>
+        </genClasses>
+        <genClasses image="false" ecoreClass="cwm.ecore#//analysis/olap/Hierarchy">
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Hierarchy/dimension"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Hierarchy/defaultedDimension"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Hierarchy/cubeDimensionAssociation"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Hierarchy/hierarchyMemberSelectionGroup"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/HierarchyLevelAssociation">
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/HierarchyLevelAssociation/levelBasedHierarchy"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/HierarchyLevelAssociation/currentLevel"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/HierarchyLevelAssociation/dimensionDeployment"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/LevelBasedHierarchy">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/LevelBasedHierarchy/hierarchyLevelAssociation"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/MemberSelectionGroup">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/MemberSelectionGroup/memberSelection"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/MemberSelectionGroup/cubeRegion"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/MemberSelection">
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/MemberSelection/dimension"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/MemberSelection/memberSelectionGroup"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/Schema">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Schema/cube"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Schema/dimension"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Schema/deploymentGroup"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/ValueBasedHierarchy">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/ValueBasedHierarchy/dimensionDeployment"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/Level">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/Level/hierarchyLevelAssociation"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/CodedLevel">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/CodedLevel/encoding"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/Measure"/>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/StructureMap">
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/StructureMap/dimensionDeployment"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/StructureMap/dimensionDeploymentLV"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/StructureMap/dimensionDeploymentIP"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/olap/HierarchyMemberSelectionGroup">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/olap/HierarchyMemberSelectionGroup/hierarchy"/>
+        </genClasses>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Datamining" disposableProviderFactory="true" ecorePackage="cwm.ecore#//analysis/datamining">
+        <nestedGenPackages prefix="Miningcore" disposableProviderFactory="true" ecorePackage="cwm.ecore#//analysis/datamining/miningcore">
+          <nestedGenPackages prefix="Miningdata" disposableProviderFactory="true"
+              ecorePackage="cwm.ecore#//analysis/datamining/miningcore/miningdata">
+            <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeSelectionFunction">
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeSelectionFunction/isNotNull"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeSelectionFunction/isNull"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeSelectionFunction/isOne"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeSelectionFunction/isZero"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeSelectionFunction/isTrue"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeSelectionFunction/isFalse"/>
+            </genEnums>
+            <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeType">
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeType/categorical"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeType/ordinal"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeType/numerical"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeType/notSpecified"/>
+            </genEnums>
+            <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//analysis/datamining/miningcore/miningdata/OrderType">
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/OrderType/asIs"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/OrderType/alphabetical"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/OrderType/numeric"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/OrderType/date"/>
+            </genEnums>
+            <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//analysis/datamining/miningcore/miningdata/UsageOption">
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/UsageOption/active"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/UsageOption/supplementary"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/UsageOption/target"/>
+            </genEnums>
+            <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//analysis/datamining/miningcore/miningdata/ValueSelectionFunction">
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/ValueSelectionFunction/vsf_value"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/ValueSelectionFunction/vsf_attribute"/>
+            </genEnums>
+            <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryProperty">
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryProperty/valid"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryProperty/invalid"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryProperty/missing"/>
+            </genEnums>
+            <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//analysis/datamining/miningcore/miningdata/MatrixProperty">
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/MatrixProperty/mp_symmetric"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/MatrixProperty/mp_diagonal"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningdata/MatrixProperty/mp_any"/>
+            </genEnums>
+            <genDataTypes ecoreDataType="cwm.ecore#//analysis/datamining/miningcore/miningdata/Double"/>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeAssignment">
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeAssignment/logicalAttribute"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeAssignment/orderIdAttribute"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeAssignmentSet">
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeAssignmentSet/auxiliaryObject"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeUsage">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeUsage/usage"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeUsage/weight"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeUsage/suppressDiscretization"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeUsage/suppressNormalization"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeUsage/attribute"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeUsageSet">
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/AttributeUsageSet/settings"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoricalAttributeProperties">
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoricalAttributeProperties/logicalAttribute"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoricalAttributeProperties/taxonomy"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoricalAttributeProperties/category"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/DirectAttributeAssignment">
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/DirectAttributeAssignment/attribute"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/LogicalAttribute">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/LogicalAttribute/isSetValued"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/LogicalAttribute/categoricalProperties"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/LogicalAttribute/numericalProperties"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/LogicalData">
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/LogicalData/schema"/>
+            </genClasses>
+            <genClasses image="false" ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/MiningAttribute">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/MiningAttribute/displayName"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/MiningAttribute/attributeType"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/NumericalAttributeProperties">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/NumericalAttributeProperties/lowerBound"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/NumericalAttributeProperties/upperBound"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/NumericalAttributeProperties/isDiscrete"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/NumericalAttributeProperties/isCyclic"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/NumericalAttributeProperties/anchor"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/NumericalAttributeProperties/cycleBegin"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/NumericalAttributeProperties/cycleEnd"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/NumericalAttributeProperties/discreteStepSize"/>
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/NumericalAttributeProperties/logicalAttribute"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/OrdinalAttributeProperties">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/OrdinalAttributeProperties/orderType"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/OrdinalAttributeProperties/isCyclic"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/PhysicalData">
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/PhysicalData/source"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/PivotAttributeAssignment">
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/PivotAttributeAssignment/setIdAttribute"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/PivotAttributeAssignment/nameAttribute"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/PivotAttributeAssignment/valueAttribute"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/ReversePivotAttributeAssignment">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/ReversePivotAttributeAssignment/attributeSelectionFunction"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/ReversePivotAttributeAssignment/valueSelectionFunction"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/ReversePivotAttributeAssignment/selectorAttribute"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/SetAttributeAssignment">
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/SetAttributeAssignment/setIdAttribute"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/SetAttributeAssignment/memberAttribute"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/Category">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/Category/value"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/Category/isNullCategory"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/Category/displayName"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/Category/property"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/Category/prior"/>
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/Category/categoricalProperties"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMap">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMap/isMultiLevel"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMap/isItemMap"/>
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMap/taxonomy"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMapObject">
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMapObject/entry"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMapObjectEntry">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMapObjectEntry/graphId"/>
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMapObjectEntry/mapObject"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMapObjectEntry/child"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMapObjectEntry/parent"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMapTable">
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMapTable/childAttribute"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMapTable/table"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMapTable/graphIdAttribute"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMapTable/parentAttribute"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrix">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrix/diagonalDefault"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrix/offDiagonalDefault"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrix/kind"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrix/category"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrix/schema"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrix/testResult"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrixEntry">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrixEntry/value"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrixEntry/columnIndex"/>
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrixEntry/categoryMatrix"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrixEntry/rowIndex"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrixObject">
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrixObject/entry"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrixTable">
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrixTable/source"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrixTable/columnAttribute"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrixTable/rowAttribute"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryMatrixTable/valueAttribute"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryTaxonomy">
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryTaxonomy/categoryMap"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryTaxonomy/rootCategory"/>
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningdata/CategoryTaxonomy/schema"/>
+            </genClasses>
+          </nestedGenPackages>
+          <nestedGenPackages prefix="Miningfunctionsettings" disposableProviderFactory="true"
+              ecorePackage="cwm.ecore#//analysis/datamining/miningcore/miningfunctionsettings">
+            <genClasses image="false" ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningfunctionsettings/MiningAlgorithmSettings"/>
+            <genClasses image="false" ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningfunctionsettings/MiningFunctionSettings">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningfunctionsettings/MiningFunctionSettings/desiredExecutionTimeInMinutes"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningfunctionsettings/MiningFunctionSettings/algorithmSettings"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningfunctionsettings/MiningFunctionSettings/attributeUsageSet"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningfunctionsettings/MiningFunctionSettings/logicalData"/>
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningfunctionsettings/MiningFunctionSettings/schema"/>
+            </genClasses>
+          </nestedGenPackages>
+          <nestedGenPackages prefix="Miningmodel" disposableProviderFactory="true"
+              ecorePackage="cwm.ecore#//analysis/datamining/miningcore/miningmodel">
+            <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningFunction">
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningFunction/classification"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningFunction/regression"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningFunction/clustering"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningFunction/associationRules"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningFunction/attributeImportance"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningFunction/sequenceAnalysis"/>
+            </genEnums>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningModel">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningModel/function"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningModel/algorithmName"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningModel/keyValue"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningModel/settings"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningModel/modelSignature"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningModel/modelLocation"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningModel/keyAttribute"/>
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningmodel/MiningModel/schema"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningmodel/ModelSignature">
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningmodel/ModelSignature/model"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningmodel/SignatureAttribute">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningmodel/SignatureAttribute/usageOption"/>
+            </genClasses>
+          </nestedGenPackages>
+          <nestedGenPackages prefix="Miningresult" disposableProviderFactory="true"
+              ecorePackage="cwm.ecore#//analysis/datamining/miningcore/miningresult">
+            <genClasses image="false" ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningresult/MiningResult">
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningresult/MiningResult/schema"/>
+            </genClasses>
+          </nestedGenPackages>
+          <nestedGenPackages prefix="Miningtask" disposableProviderFactory="true"
+              ecorePackage="cwm.ecore#//analysis/datamining/miningcore/miningtask">
+            <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//analysis/datamining/miningcore/miningtask/ApplyOutputOption">
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningtask/ApplyOutputOption/appendToExisting"/>
+              <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/miningcore/miningtask/ApplyOutputOption/createNew"/>
+            </genEnums>
+            <genClasses image="false" ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningtask/ApplyContentItem">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningtask/ApplyContentItem/topNthIndex"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningtask/ApplyOutputItem">
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningtask/ApplyOutputItem/applyOutput"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningtask/ApplyProbabilityItem"/>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningtask/ApplyRuleIdItem"/>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningtask/ApplyScoreItem"/>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningtask/ApplySourceItem"/>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningApplyOutput">
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningApplyOutput/item"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningApplyTask">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningApplyTask/outputOption"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningApplyTask/outputAssignment"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningApplyTask/applyOutput"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningBuildTask">
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningBuildTask/resultModel"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningBuildTask/miningSettings"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningBuildTask/validationAssignment"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningBuildTask/settingsAssignment"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningBuildTask/validationData"/>
+            </genClasses>
+            <genClasses image="false" ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningTask">
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningTask/inputModel"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningTask/inputData"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningTask/modelAssignment"/>
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningTask/schema"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningTransformation">
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/miningtask/MiningTransformation/procedure"/>
+            </genClasses>
+          </nestedGenPackages>
+          <nestedGenPackages prefix="Entrypoint" disposableProviderFactory="true"
+              ecorePackage="cwm.ecore#//analysis/datamining/miningcore/entrypoint">
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/entrypoint/AuxiliaryObject">
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/entrypoint/AuxiliaryObject/schema"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/entrypoint/AuxiliaryObject/attributeAssignmentSet"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/entrypoint/Catalog">
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/entrypoint/Catalog/schema"/>
+            </genClasses>
+            <genClasses ecoreClass="cwm.ecore#//analysis/datamining/miningcore/entrypoint/Schema">
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/entrypoint/Schema/catalog"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/entrypoint/Schema/logicalData"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/entrypoint/Schema/categoryMatrix"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/entrypoint/Schema/auxObjects"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/entrypoint/Schema/taxonomy"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/entrypoint/Schema/miningFunctionSettings"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/entrypoint/Schema/miningModel"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/entrypoint/Schema/miningTask"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/miningcore/entrypoint/Schema/result"/>
+            </genClasses>
+          </nestedGenPackages>
+        </nestedGenPackages>
+        <nestedGenPackages prefix="Clustering" disposableProviderFactory="true" ecorePackage="cwm.ecore#//analysis/datamining/clustering">
+          <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//analysis/datamining/clustering/AggregationFunction">
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/AggregationFunction/euclidean"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/AggregationFunction/squaredEuclidean"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/AggregationFunction/chebychev"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/AggregationFunction/cityBlock"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/AggregationFunction/minkovski"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/AggregationFunction/simpleMatching"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/AggregationFunction/jaccard"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/AggregationFunction/tanimoto"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/AggregationFunction/binarySimilarity"/>
+          </genEnums>
+          <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//analysis/datamining/clustering/AttributeComparisonFunction">
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/AttributeComparisonFunction/absDiff"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/AttributeComparisonFunction/gaussSim"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/AttributeComparisonFunction/delta"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/AttributeComparisonFunction/equal"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/AttributeComparisonFunction/table"/>
+          </genEnums>
+          <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//analysis/datamining/clustering/ClusteringModelCBasis">
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/ClusteringModelCBasis/centerBased"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/ClusteringModelCBasis/probabilityBased"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/ClusteringModelCBasis/partitionBased"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//analysis/datamining/clustering/ClusteringModelCBasis/aggregationBased"/>
+          </genEnums>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/clustering/ClusteringAttributeUsage">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/clustering/ClusteringAttributeUsage/attributeComparisonFunction"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/clustering/ClusteringAttributeUsage/similarityScale"/>
+            <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/clustering/ClusteringAttributeUsage/comparisonMatrix"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/clustering/ClusteringFunctionSettings">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/clustering/ClusteringFunctionSettings/maxNumberOfClusters"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/clustering/ClusteringFunctionSettings/minClusterSize"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/clustering/ClusteringFunctionSettings/aggregationFunction"/>
+          </genClasses>
+        </nestedGenPackages>
+        <nestedGenPackages prefix="Associationrules" disposableProviderFactory="true"
+            ecorePackage="cwm.ecore#//analysis/datamining/associationrules">
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/associationrules/AssociationRulesFunctionSettings">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/associationrules/AssociationRulesFunctionSettings/minimumConfidence"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/associationrules/AssociationRulesFunctionSettings/maximumRuleLength"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/associationrules/FrequentItemSetFunctionSettings">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/associationrules/FrequentItemSetFunctionSettings/minimumSupport"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/associationrules/FrequentItemSetFunctionSettings/maximumSetSize"/>
+            <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/associationrules/FrequentItemSetFunctionSettings/exclusion"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/associationrules/SequenceFunctionSettings">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/associationrules/SequenceFunctionSettings/windowSize"/>
+          </genClasses>
+        </nestedGenPackages>
+        <nestedGenPackages prefix="Supervised" disposableProviderFactory="true" ecorePackage="cwm.ecore#//analysis/datamining/supervised">
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/supervised/LiftAnalysisPoint">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/supervised/LiftAnalysisPoint/subsetOfRecords"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/supervised/LiftAnalysisPoint/aggregateTarget"/>
+            <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/supervised/LiftAnalysisPoint/liftAnalysis"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/supervised/LiftAnalysis">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/supervised/LiftAnalysis/targetAttributeName"/>
+            <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/supervised/LiftAnalysis/testResult"/>
+            <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/supervised/LiftAnalysis/point"/>
+            <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/supervised/LiftAnalysis/positiveTargetCategory"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/supervised/MiningTestTask">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/supervised/MiningTestTask/computeLift"/>
+            <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/supervised/MiningTestTask/positiveTargetCategory"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/supervised/SupervisedFunctionSettings"/>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/supervised/MiningTestResult">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/supervised/MiningTestResult/numberOfTestRecords"/>
+            <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/supervised/MiningTestResult/liftAnalysis"/>
+          </genClasses>
+        </nestedGenPackages>
+        <nestedGenPackages prefix="Classification" disposableProviderFactory="true"
+            ecorePackage="cwm.ecore#//analysis/datamining/classification">
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/classification/ApplyTargetValueItem">
+            <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/classification/ApplyTargetValueItem/targetValue"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/classification/ClassificationAttributeUsage">
+            <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/classification/ClassificationAttributeUsage/positiveCategory"/>
+            <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/classification/ClassificationAttributeUsage/priors"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/classification/ClassificationFunctionSettings">
+            <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/classification/ClassificationFunctionSettings/costMatrix"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/classification/ClassificationTestResult">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/classification/ClassificationTestResult/accuracy"/>
+            <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/classification/ClassificationTestResult/confusionMatrix"/>
+            <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/classification/ClassificationTestResult/testTask"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/classification/ClassificationTestTask">
+            <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/classification/ClassificationTestTask/testResult"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/classification/PriorProbabilities">
+            <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/classification/PriorProbabilities/usage"/>
+            <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/classification/PriorProbabilities/prior"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/classification/PriorProbabilitiesEntry">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/classification/PriorProbabilitiesEntry/priorProbability"/>
+            <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/classification/PriorProbabilitiesEntry/priors"/>
+            <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/classification/PriorProbabilitiesEntry/targetValue"/>
+          </genClasses>
+        </nestedGenPackages>
+        <nestedGenPackages prefix="Approximation" disposableProviderFactory="true"
+            ecorePackage="cwm.ecore#//analysis/datamining/approximation">
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/approximation/ApproximationFunctionSettings">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/approximation/ApproximationFunctionSettings/toleratedError"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/approximation/ApproximationTestResult">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/approximation/ApproximationTestResult/meanPredictedValue"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/approximation/ApproximationTestResult/meanActualValue"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/approximation/ApproximationTestResult/meanAbsoluteError"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/approximation/ApproximationTestResult/rmsError"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/approximation/ApproximationTestResult/rSquared"/>
+            <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/approximation/ApproximationTestResult/testTask"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/approximation/ApproximationTestTask">
+            <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                ecoreFeature="ecore:EReference cwm.ecore#//analysis/datamining/approximation/ApproximationTestTask/testResult"/>
+          </genClasses>
+        </nestedGenPackages>
+        <nestedGenPackages prefix="Attributeimportance" disposableProviderFactory="true"
+            ecorePackage="cwm.ecore#//analysis/datamining/attributeimportance">
+          <genClasses ecoreClass="cwm.ecore#//analysis/datamining/attributeimportance/AttributeImportanceSettings">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/attributeimportance/AttributeImportanceSettings/maximumResultSize"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/datamining/attributeimportance/AttributeImportanceSettings/returnTop"/>
+          </genClasses>
+        </nestedGenPackages>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Informationvisualization" disposableProviderFactory="true"
+          ecorePackage="cwm.ecore#//analysis/informationvisualization">
+        <genClasses ecoreClass="cwm.ecore#//analysis/informationvisualization/RenderedObject">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/informationvisualization/RenderedObject/formula"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/informationvisualization/RenderedObject/action"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/informationvisualization/RenderedObject/fileName"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/informationvisualization/RenderedObject/type"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/informationvisualization/RenderedObject/url"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/informationvisualization/RenderedObject/composite"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/informationvisualization/RenderedObject/component"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/informationvisualization/RenderedObject/defaultRendering"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/informationvisualization/RenderedObject/modelElement"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/informationvisualization/RenderedObject/neighbor"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/informationvisualization/RenderedObject/referencingNeighbor"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/informationvisualization/RenderedObjectSet">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/informationvisualization/RenderedObjectSet/rendering"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/informationvisualization/Rendering">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/informationvisualization/Rendering/formula"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/informationvisualization/Rendering/action"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/informationvisualization/Rendering/fileName"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/informationvisualization/Rendering/type"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/informationvisualization/Rendering/url"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/informationvisualization/Rendering/defaultedRenderedObject"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/informationvisualization/Rendering/renderedObjectSet"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/informationvisualization/XSLRendering"/>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Businessnomenclature" disposableProviderFactory="true"
+          ecorePackage="cwm.ecore#//analysis/businessnomenclature">
+        <genClasses ecoreClass="cwm.ecore#//analysis/businessnomenclature/VocabularyElement">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/businessnomenclature/VocabularyElement/definition"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/businessnomenclature/VocabularyElement/example"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/businessnomenclature/VocabularyElement/usage"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/VocabularyElement/relatedElement"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/VocabularyElement/element"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/VocabularyElement/modelElement"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/businessnomenclature/Nomenclature">
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/Nomenclature/parent"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/Nomenclature/child"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/businessnomenclature/Taxonomy">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/Taxonomy/glossary"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/businessnomenclature/Glossary">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//analysis/businessnomenclature/Glossary/language"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/Glossary/taxonomy"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/businessnomenclature/BusinessDomain"/>
+        <genClasses ecoreClass="cwm.ecore#//analysis/businessnomenclature/Concept">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/Concept/term"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/Concept/relatedConcept"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/Concept/concept"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//analysis/businessnomenclature/Term">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/Term/concept"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/Term/relatedTerm"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/Term/term"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/Term/preferredTerm"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/Term/synonym"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/Term/widerTerm"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//analysis/businessnomenclature/Term/narrowerTerm"/>
+        </genClasses>
+      </nestedGenPackages>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="Management" disposableProviderFactory="true" ecorePackage="cwm.ecore#//management">
+      <nestedGenPackages prefix="Warehouseprocess" disposableProviderFactory="true"
+          ecorePackage="cwm.ecore#//management/warehouseprocess">
+        <genClasses image="false" ecoreClass="cwm.ecore#//management/warehouseprocess/WarehouseProcess">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseprocess/WarehouseProcess/staticDefinition"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseprocess/WarehouseProcess/isSequential"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseprocess/WarehouseProcess/warehouseEvent"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseprocess/WarehouseProcess/internalEvent"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//management/warehouseprocess/WarehouseStep">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseprocess/WarehouseStep/transformationStep"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseprocess/WarehouseStep/warehouseActivity"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//management/warehouseprocess/ProcessPackage"/>
+        <genClasses ecoreClass="cwm.ecore#//management/warehouseprocess/WarehouseActivity">
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseprocess/WarehouseActivity/warehouseStep"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseprocess/WarehouseActivity/transformationActivity"/>
+        </genClasses>
+        <nestedGenPackages prefix="Datatype" disposableProviderFactory="true" ecorePackage="cwm.ecore#//management/warehouseprocess/datatype">
+          <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//management/warehouseprocess/datatype/RecurringType">
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/RecurringType/everyYear"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/RecurringType/everyMonth"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/RecurringType/everyWeek"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/RecurringType/everyDay"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/RecurringType/everyHour"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/RecurringType/everyMinute"/>
+          </genEnums>
+          <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//management/warehouseprocess/datatype/DayOfWeek">
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/DayOfWeek/monday"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/DayOfWeek/tuesday"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/DayOfWeek/wednesday"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/DayOfWeek/thursday"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/DayOfWeek/friday"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/DayOfWeek/saturday"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/DayOfWeek/sunday"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/DayOfWeek/workingDay"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/DayOfWeek/nonworkingDay"/>
+          </genEnums>
+          <genEnums typeSafeEnumCompatible="false" ecoreEnum="cwm.ecore#//management/warehouseprocess/datatype/WaitRuleType">
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/WaitRuleType/waitForAll"/>
+            <genEnumLiterals ecoreEnumLiteral="cwm.ecore#//management/warehouseprocess/datatype/WaitRuleType/waitForAny"/>
+          </genEnums>
+        </nestedGenPackages>
+        <nestedGenPackages prefix="Events" disposableProviderFactory="true" ecorePackage="cwm.ecore#//management/warehouseprocess/events">
+          <genClasses image="false" ecoreClass="cwm.ecore#//management/warehouseprocess/events/WarehouseEvent">
+            <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseprocess/events/WarehouseEvent/warehouseProcess"/>
+          </genClasses>
+          <genClasses image="false" ecoreClass="cwm.ecore#//management/warehouseprocess/events/ScheduleEvent"/>
+          <genClasses ecoreClass="cwm.ecore#//management/warehouseprocess/events/PointInTimeEvent"/>
+          <genClasses ecoreClass="cwm.ecore#//management/warehouseprocess/events/CustomCalendarEvent">
+            <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseprocess/events/CustomCalendarEvent/customCalendar"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//management/warehouseprocess/events/CustomCalendar">
+            <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseprocess/events/CustomCalendar/customCalendarEvent"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//management/warehouseprocess/events/CalendarDate">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseprocess/events/CalendarDate/specificDate"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//management/warehouseprocess/events/IntervalEvent">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseprocess/events/IntervalEvent/duration"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//management/warehouseprocess/events/ExternalEvent"/>
+          <genClasses ecoreClass="cwm.ecore#//management/warehouseprocess/events/InternalEvent">
+            <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseprocess/events/InternalEvent/triggeringWP"/>
+            <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseprocess/events/InternalEvent/condition"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//management/warehouseprocess/events/CascadeEvent">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseprocess/events/CascadeEvent/waitRule"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//management/warehouseprocess/events/RetryEvent">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseprocess/events/RetryEvent/waitDuration"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseprocess/events/RetryEvent/maxCount"/>
+          </genClasses>
+          <genClasses ecoreClass="cwm.ecore#//management/warehouseprocess/events/RecurringPointInTimeEvent">
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseprocess/events/RecurringPointInTimeEvent/recurringType"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseprocess/events/RecurringPointInTimeEvent/frequencyFactor"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseprocess/events/RecurringPointInTimeEvent/month"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseprocess/events/RecurringPointInTimeEvent/dayOfMonth"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseprocess/events/RecurringPointInTimeEvent/dayOfWeek"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseprocess/events/RecurringPointInTimeEvent/hour"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseprocess/events/RecurringPointInTimeEvent/minute"/>
+            <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseprocess/events/RecurringPointInTimeEvent/second"/>
+          </genClasses>
+        </nestedGenPackages>
+      </nestedGenPackages>
+      <nestedGenPackages prefix="Warehouseoperation" disposableProviderFactory="true"
+          ecorePackage="cwm.ecore#//management/warehouseoperation">
+        <genClasses ecoreClass="cwm.ecore#//management/warehouseoperation/Measurement">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseoperation/Measurement/value"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseoperation/Measurement/unit"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseoperation/Measurement/type"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseoperation/Measurement/creationDate"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseoperation/Measurement/effectiveDate"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseoperation/Measurement/modelElement"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//management/warehouseoperation/ChangeRequest">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseoperation/ChangeRequest/changeDescription"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseoperation/ChangeRequest/changeReason"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseoperation/ChangeRequest/status"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseoperation/ChangeRequest/completed"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseoperation/ChangeRequest/requestDate"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseoperation/ChangeRequest/completionDate"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseoperation/ChangeRequest/modelElement"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//management/warehouseoperation/TransformationExecution">
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseoperation/TransformationExecution/startDate"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseoperation/TransformationExecution/endDate"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseoperation/TransformationExecution/inProgress"/>
+          <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cwm.ecore#//management/warehouseoperation/TransformationExecution/successful"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseoperation/TransformationExecution/status"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//management/warehouseoperation/ActivityExecution">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseoperation/ActivityExecution/transformationActivity"/>
+          <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseoperation/ActivityExecution/stepExecution"/>
+        </genClasses>
+        <genClasses ecoreClass="cwm.ecore#//management/warehouseoperation/StepExecution">
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseoperation/StepExecution/transformationStep"/>
+          <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseoperation/StepExecution/activityExecution"/>
+          <genFeatures notify="false" createChild="false" propertySortChoices="true"
+              ecoreFeature="ecore:EReference cwm.ecore#//management/warehouseoperation/StepExecution/callAction"/>
+        </genClasses>
+      </nestedGenPackages>
+    </nestedGenPackages>
+  </genPackages>
+</genmodel:GenModel>

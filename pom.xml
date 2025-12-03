@@ -33,7 +33,7 @@
   </properties>
 
   <modules>
-<!--    <module>model.emf</module>-->
+    <module>model.emf</module>
   </modules>
 
   <dependencies>
