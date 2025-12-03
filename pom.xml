@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2024 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.eclipse.daanse</groupId>
+    <artifactId>org.eclipse.daanse.pom.parent</artifactId>
+    <version>0.0.4</version>
+  </parent>
+
+  <artifactId>org.eclipse.daanse.cwm</artifactId>
+  <version>${revision}</version>
+  <packaging>pom</packaging>
+  <name>Eclipse Daanse CWM</name>
+
+  <properties>
+    <revision>0.0.1-SNAPSHOT</revision>
+    <scm.repo.detail>org.eclipse.daanse.cwm</scm.repo.detail>
+  </properties>
+
+  <modules>
+<!--    <module>model.emf</module>-->
+  </modules>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.annotation.bundle</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.annotation.versioning</artifactId>
+      <version>1.1.2</version>
+    </dependency>
+  </dependencies>
+
+</project>

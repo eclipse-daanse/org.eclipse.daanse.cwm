@@ -1,0 +1,13 @@
+name: JavaDoc Check
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  build:
+    uses: eclipse-daanse/.github/.github/workflows/reuse_java_check_javadoc.yml@main

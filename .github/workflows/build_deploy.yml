@@ -1,0 +1,19 @@
+name: Build, Test and Deploy
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  build_test:
+    uses: eclipse-daanse/.github/.github/workflows/reuse_java_build_test.yml@main
+
+  maven_deploy:
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+    needs: build_test
+    uses: eclipse-daanse/.github/.github/workflows/reuse_java_deploy.yml@main
+    secrets: inherit
