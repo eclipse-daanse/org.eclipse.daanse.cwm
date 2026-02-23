@@ -11,11 +11,18 @@
     <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
     <details key="documentation" value="The amount of data in a given organization doubles every five years. Most organizations suffer from an overabundance of redundant and inconsistent data that is difficult to manage effectively, to access, and to use for decision making purposes. Data warehousing provides an excellent approach for transforming data into useful andreliable information to support the business decision making process and to achieve business intelligence. One of the most important aspects of data warehousing is metadata. Metadata is used for building, maintaining, managing, and using the data warehouse. Unfortunately, the proliferation of data management and analysis tools has resulted in almost as many different representations and treatments of metadata as there are tools.&#xA;&#xA;Since every data management and analysis tool requires different metadata and a different metadata model (known as a metamodel) to solve the data warehouse metadata problem, it is simply not possible to have a single metadata repository thatimplements a single metamodel for all the metadata in an organization. Instead, what is needed is a standard for interchange of warehouse metadata.&#xA;&#xA;The CWM is a response to these needs. It provides a framework for representing metadata about data sources, data targets, transformations and analysis, and the processes and operations that create and manage warehouse data and provide lineage information about its use.&#xA;&#xA;The CWM Metamodel consists of a number of sub-metamodels which represent common warehouse metadata in the following major areas of interest to data warehousing and business intelligence:&#xA;&#xA;Data Resources&#xA;&#xA;These include metamodels that represent object-oriented, relational, record, multidimensional, and XML data resources. In the case of  object-oriented data resource, CWM reuses the base object model.&#xA;&#xA;Data Analysis&#xA;&#xA;These include metamodels that represent data transformations, OLAP (On-line Analytical Processing), data mining, information visualization, and business nomenclature.&#xA;&#xA;Warehouse Management&#xA;&#xA;These include metamodels that represent warehouse processes and results of warehouse operations.&#xA;&#xA;The CWM Metamodel is designed to maximize the reuse of Object Model (a subset of UML) and the sharing of common modeling constructs where possible. The most prominent example is that CWM reuses/depends on Object Model for representing object-oriented data resources. In addition, where applicable, key elements of the metamodels for other types of data resources all subclass from the same model elements in Object Model.&#xA;&#xA;(Text appearing in the CWM package is taken from Volume 1 of the Common Warehouse Metamodel specification, document number ad/2001-02-01, published by the Object Management Group.  The complete document is available from the OMG web site at www.omg.org)"/>
   </eAnnotations>
-  <eSubpackages name="objectmodel" nsURI="http://www.omg.org/spec/CWM/1.1/objectmodel" nsPrefix="org.omg.cwm.objectmodel">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+  </eAnnotations>
+  <eSubpackages name="objectmodel" nsURI="http://www.omg.org/spec/CWM/1.1/objectmodel"
+      nsPrefix="org.omg.cwm.objectmodel">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="The CWM ObjectModel provides basic constructs for creating and describing metamodel classes in all other CWM packages. The ObjectModel is a subset of UML that includes only those features that are needed for creating and describing the CWM. Defining a subset of UML containing only those things needed by CWM allows the CWM to leverage UML�s concepts and modeling power without burdening implementations with the full breadth of UML�s capabilities.&#xA;&#xA;The specification defined in this chapter, where applicable, is based on and taken from the UML specification.&#xA;&#xA;The CWM uses packages to control complexity and create groupings of logically interrelated classes. The ObjectModel is a collection of packages that are described together because they all provide basic metamodel constructs to other CWM packages. A subsection of this chapter is devoted to each of the ObjectModel packages. Because it relies on no other package, the Core package is described first, followed by the Behavioral, Instance, and Relationships packages. Each of the subsequent packages depends only on the Core package; there are no other dependencies between the&#xA;ObjectModel packages.&#xA;&#xA;Organizing the ObjectModel in this fashion allows the individual metamodel packages to be understood and used independently of each other without sacrificing their common purpose. For example, the CWM Record metamodel depends only on the ObjectModel�s Core and Instance packages for its definition; other ObjectModel packages are not needed for defining records."/>
     </eAnnotations>
-    <eSubpackages name="core" nsURI="http://www.omg.org/spec/CWM/1.1/objectmodel/core" nsPrefix="org.omg.cwm.objectmodel.core">
+    <eSubpackages name="core" nsURI="http://www.omg.org/spec/CWM/1.1/objectmodel/core"
+        nsPrefix="org.omg.cwm.objectmodel.core">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The Core metamodel depends on no other packages.&#xA;&#xA;The ObjectModel Core metamodel contains basic metamodel classes and associations used by all other CWM metamodel packages, including other ObjectModel packages&#xA;&#xA;OCL Representation of Core Constraints&#xA;&#xA;Operations&#xA;&#xA;The operation allFeatures results in a Set containing all Features of the Classifier itself and all its inherited Features.&#xA;   allFeatures : Set(Feature);&#xA;   allFeatures = self.feature->union(self.parent.oclAsType(Classifier).allFeatures)&#xA;&#xA;The operation allAttributes results in a Set containing all Attributes of the Classifier itself and all its inherited Attributes.&#xA;   allAttributes : set(Attribute);&#xA;   allAttributes = self.allFeatures->select(f | f.oclIsKindOf(Attribute))&#xA;&#xA;The operation specification yields the set of Classifiers that the current Classifier realizes.&#xA;   specification: Set(Classifier)&#xA;   specification = self.clientDependency->&#xA;   select(d | d.stereotype.name = &quot;realization&quot;&#xA;      and d.supplier.oclIsKindOf(Classifier)).supplier.oclAsType(Classifier)&#xA;&#xA;The operation parent returns a Set containing all direct parents of a Classifier.&#xA;   parent : Set(Classifier);&#xA;   parent = self.generalization.parent&#xA;&#xA;The operation allParents returns a Set containing all the Classifiers inherited by this Classifier (the transitive closure), excluding the Classifier itself.&#xA;   allParents : Set(Classifier);&#xA;   allParents = self.parent->union(self.parent.allParents)&#xA;&#xA;The operation allContents returns a Set containing all ModelElements contained in the Classifier together with the contents inherited from its parents.&#xA;   allContents : Set(ModelElement);&#xA;   allContents = self.contents->union(self.parent.allContents->&#xA;   select(e | e.elementOwnership.visibility = #public or &#xA;      e.elementOwnership.visibility = #protected))&#xA;&#xA;The operation supplier results in a Set containing all direct suppliers of the ModelElement.&#xA;   supplier : Set(ModelElement);&#xA;   supplier = self.clientDependency.supplier&#xA;&#xA;The operation allSuppliers results in a Set containing all the ModelElements that are suppliers of this ModelElement, including the suppliers of these Model Elements. This is the transitive closure.&#xA;   allSuppliers : Set(ModelElement);&#xA;   allSuppliers = self.supplier->union(self.supplier.allSuppliers)&#xA;&#xA;The operation contents results in a Set containing all ModelElements contained by the Namespace.&#xA;   contents : Set(ModelElement)&#xA;   contents = self.ownedElement -> union(self.namespace.contents)&#xA;&#xA;The operation allContents results in a Set containing all ModelElements contained by the Namespace.&#xA;   allContents : Set(ModelElement);&#xA;   allContents = self.contents&#xA;&#xA;The operation allVisibleElements results in a Set containing all ModelElements visible outside of the Namespace.&#xA;   allVisibleElements : Set(ModelElement)&#xA;   allVisibleElements = self.allContents -> select(e |&#xA;      e.elementOwnership.visibility = #public)&#xA;&#xA;The operation allSurroundingNamespaces results in a Set containing all surrounding Namespaces.&#xA;   allSurroundingNamespaces : Set(Namespace)&#xA;   allSurroundingNamespaces =&#xA;      self.namespace->union(self.namespace.allSurroundingNamespaces)&#xA;&#xA;The operation contents results in a Set containing the ModelElements owned by or imported by the Package.&#xA;   contents : Set(ModelElement)&#xA;   contents = self.ownedElement->union(self.importedElement)&#xA;&#xA;The operation allImportedElements results in a Set containing the ModelElements imported by the Package.&#xA;   allImportedElements : Set(ModelElement)&#xA;   allImportedElements = self.importedElement&#xA;&#xA;The operation allContents results in a Set containing the ModelElements owned by or imported by the Package.&#xA;   allContents : Set(ModelElement)&#xA;   allContents = self.contents&#xA;&#xA;Constraints&#xA;&#xA;[C-3-1] A Constraint cannot be applied to itself.&#xA;context Constraint inv:&#xA;not self.constrainedElement->includes (self)&#xA;&#xA;[C-3-2] A DataType cannot contain any other ModelElements.&#xA;context DataType inv:&#xA;self.ownedElement->isEmpty&#xA;&#xA;[C-3-3] Tags associated with a model element (directly via a property list or indirectly via a stereotype) must not clash with any meta attributes associated with the model element.&#xA;context ModelElement inv:&#xA;-- cannot be specified with OCL"/>
       </eAnnotations>
@@ -25,6 +32,15 @@
         </eAnnotations>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="ModelElement" abstract="true" eSuperTypes="#//objectmodel/core/Element">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="TagConflict"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="TagConflict.shortName" value="C-3-3"/>
+          <details key="TagConflict.name" value="Tag Conflict"/>
+          <details key="TagConflict.description" value="Tags associated with a model element (directly via a property list or indirectly via a stereotype) must not clash with any meta attributes associated with the model element."/>
+          <details key="TagConflict.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A model element is an element that is an abstraction drawn from the system being modeled.&#xA;&#xA;In the metamodel, a ModelElement is a named entity in a Model. It is the base for all modeling metaclasses in the CWM. All other modeling metaclasses are either direct or indirect subclasses of ModelElement."/>
         </eAnnotations>
@@ -241,6 +257,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="DataType" eSuperTypes="#//objectmodel/core/Classifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="EmptyDataType"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="EmptyDataType" value="self.ownedElement->isEmpty"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="EmptyDataType.shortName" value="C-3-2"/>
+          <details key="EmptyDataType.name" value="Empty DataType"/>
+          <details key="EmptyDataType.description" value="A DataType cannot contain any other ModelElements."/>
+          <details key="EmptyDataType.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A data type is a type whose values have no identity (i.e., they are pure values). Data types include primitive built-in types (such as integer and string) as well as definable enumeration types.&#xA;&#xA;In the metamodel, a DataType defines a special kind of Classifier in which operations are all pure functions (i.e., they can return data values but they cannot change data values, because they have no identity). For example, an &quot;add&quot; operation on a number with another number as an argument yields a third number as a result; the target and argument are unchanged.&#xA;&#xA;A DataType is a special kind of Classifier whose instances are primitive values, not objects. For example, integers and strings are usually treated as primitive values. A primitive value does not have an identity, so two occurrences of the same value cannot be differentiated. Usually, DataTypes are used for specification of the type of an attribute or parameter."/>
         </eAnnotations>
@@ -393,6 +421,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Constraint" eSuperTypes="#//objectmodel/core/ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="SelfReferenceConstraint"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="SelfReferenceConstraint" value="not self.constrainedElement->includes(self)"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="SelfReferenceConstraint.shortName" value="C-3-1"/>
+          <details key="SelfReferenceConstraint.name" value="Self-Reference Constraint"/>
+          <details key="SelfReferenceConstraint.description" value="A Constraint cannot be applied to itself."/>
+          <details key="SelfReferenceConstraint.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A constraint is a semantic condition or restriction expressed in text.&#xA;&#xA;In the metamodel, a Constraint is a BooleanExpression on an associated ModelElement(s) which must be true for the model to be well formed. This restriction can be stated in natural language, or in different kinds of languages with well-defined semantics. Certain Constraints are predefined, others may be user defined. Note that a Constraint is an assertion, not an executable mechanism.&#xA;&#xA;The specification is written as an expression in a designated constraint language. The language can be specially designed for writing constraints (such as OCL), a programming language, mathematical notation, or natural language. If constraints are to be enforced by a model editor tool, then the tool must understand the syntax and semantics of the constraint language. Because the choice of language is arbitrary, constraints can be used as an extension mechanism.&#xA;&#xA;The constraint concept allows new semantics to be specified linguistically for a model element. In the metamodel a Constraint directly attached to a ModelElement describes semantic restrictions that this ModelElement must obey.&#xA;"/>
         </eAnnotations>
@@ -693,6 +733,23 @@
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="BehavioralFeature" abstract="true"
           eSuperTypes="#//objectmodel/core/Feature">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="UniqueParameterNames ParameterTypeInNamespace"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="UniqueParameterNames" value="self.parameter->forAll(p1, p2 | p1.name = p2.name implies p1 = p2)"/>
+          <details key="ParameterTypeInNamespace" value="self.parameter->forAll( p | self.owner.namespace.allContents->includes (p.type) )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="UniqueParameterNames.shortName" value="C-4-1"/>
+          <details key="UniqueParameterNames.name" value="Unique Parameter Names"/>
+          <details key="UniqueParameterNames.description" value="All Parameters should have a unique name."/>
+          <details key="UniqueParameterNames.level" value="warning"/>
+          <details key="ParameterTypeInNamespace.shortName" value="C-4-2"/>
+          <details key="ParameterTypeInNamespace.name" value="Parameter Type In Namespace"/>
+          <details key="ParameterTypeInNamespace.description" value="The type of the Parameters should be included in the Namespace of the Classifier."/>
+          <details key="ParameterTypeInNamespace.level" value="warning"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A behavioral feature refers to a dynamic feature of a model element, such as an operation or method. In the metamodel, BehavioralFeature specifies a behavioral aspect of a Classifier. All different kinds of behavioral aspects of a Classifier, such as Operation and Method, are subclasses of BehavioralFeature.&#xA;&#xA;BehavioralFeature is an abstract metaclass.&#xA;"/>
         </eAnnotations>
@@ -709,6 +766,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="CallAction" eSuperTypes="#//objectmodel/core/ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="ArgumentCountMatchesParameters"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="ArgumentCountMatchesParameters" value="self.actualArgument->size = self.operation.parameter->size"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="ArgumentCountMatchesParameters.shortName" value="C-4-3"/>
+          <details key="ArgumentCountMatchesParameters.name" value="Argument Count Matches Parameters"/>
+          <details key="ArgumentCountMatchesParameters.description" value="The number of arguments must be the same as the number of parameters of the Operation."/>
+          <details key="ArgumentCountMatchesParameters.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A call action is an action resulting in an invocation of an operation.&#xA;&#xA;The purpose of a CallAction is to identify the actual Arguments used in a specific invocation of an Operation."/>
         </eAnnotations>
@@ -743,11 +812,45 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Interface" eSuperTypes="#//objectmodel/core/Classifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="InterfaceContainsOnlyOperations EmptyInterfaceContents PublicInterfaceFeatures"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="InterfaceContainsOnlyOperations" value="self.allFeatures->forAll( f | f.oclIsKindOf( Operation ) )"/>
+          <details key="EmptyInterfaceContents" value="self.allContents->isEmpty"/>
+          <details key="PublicInterfaceFeatures" value="self.allFeatures->forAll( f | f.visibility = #public )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="InterfaceContainsOnlyOperations.shortName" value="C-4-4"/>
+          <details key="InterfaceContainsOnlyOperations.name" value="Interface Contains Only Operations"/>
+          <details key="InterfaceContainsOnlyOperations.description" value="An Interface can only contain Operations."/>
+          <details key="InterfaceContainsOnlyOperations.level" value="error"/>
+          <details key="EmptyInterfaceContents.shortName" value="C-4-5"/>
+          <details key="EmptyInterfaceContents.name" value="Empty Interface Contents"/>
+          <details key="EmptyInterfaceContents.description" value="An Interface cannot contain any ModelElements."/>
+          <details key="EmptyInterfaceContents.level" value="error"/>
+          <details key="PublicInterfaceFeatures.shortName" value="C-4-6"/>
+          <details key="PublicInterfaceFeatures.name" value="Public Interface Features"/>
+          <details key="PublicInterfaceFeatures.description" value="All Features defined in an Interface are public."/>
+          <details key="PublicInterfaceFeatures.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Interface is a named set of operations that specify the behavior of an element.&#xA;&#xA;In the metamodel, an Interface contains a set of Operations that together define a service offered by a Classifier realizing the Interface. A Classifier may offer several services, which means that it may realize several Interfaces, and several Classifiers may realize the same Interface."/>
         </eAnnotations>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Method" eSuperTypes="#//objectmodel/behavioral/BehavioralFeature">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="QueryOperationImpliesQueryMethod"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="QueryOperationImpliesQueryMethod" value="self.specification->isQuery implies self.isQuery"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="QueryOperationImpliesQueryMethod.shortName" value="C-4-7"/>
+          <details key="QueryOperationImpliesQueryMethod.name" value="Query Operation Implies Query Method"/>
+          <details key="QueryOperationImpliesQueryMethod.description" value="If the realized Operation is a query, then so is the Method."/>
+          <details key="QueryOperationImpliesQueryMethod.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Method is the implementation of an Operation. It specifies the algorithm or procedure that effects the results of an Operation."/>
         </eAnnotations>
@@ -852,11 +955,70 @@
         <details key="documentation" value="The Relationships metamodel depends on the following package:&#xA;&#xA;    org.omg::CWM::ObjectModel::Core&#xA;&#xA;The Relationships metamodel collects together classes and associations that describe  the relationships between object within a CWM information store. The Relationships metamodel describes to types of relationships: association and generalization.&#xA;&#xA;Association relationships record linkages between model elements. These linkages may represent simple linkages between model elements or aggregation (&quot;is part of&quot;) relationships between model elements; aggregation relationships come in two forms -- shared and composite. Associations have two or more named ends that link them to instances of the classes connected by the association.&#xA;&#xA;Generalization relationships record arrangements of model elements into type hierarchies in a parent/child (or &quot;is type of&quot;) fashion. Child types are said to &quot;specialize&quot;, &quot;subclass&quot; or &quot;subtype&quot; their parental  types, represent a subset of parental instances that fulfill the definition of the child type, and inherit the structural features&#xA;(Attributes, AssociationEnd) and behavioral features (Operations, Methods) of their parents. Parental types are said to &quot;generalize&quot; their child types or to be &quot;superclasses&quot; or &quot;supertypes&quot; of their children.&#xA;&#xA;CWM generalization hierarchies support multiple inheritance; that is, child types may have more than one parental type and inherit the union of the features of all their parental types. Although called &quot;hierarchies&quot;, multiple inheritance actually represents a directed acyclic graph of parental and child types.&#xA;&#xA;OCL Representation of Relationships Constraints&#xA;&#xA;Operations&#xA;&#xA;The operation allConnections results in the set of all AssociationEnds of the Association.&#xA;   allConnections : Set(AssociationEnd);&#xA;   allConnections = self.feature.oclIsKindOf(AssociationEnd)&#xA;&#xA;Constraints&#xA;&#xA;[C-5-1] An Association must have at least 2 AssociationEnds.&#xA;context Association inv:&#xA;self.allConnections->size > 1&#xA;&#xA;[C-5-2] The AssociationEnds must have a unique name within the association.&#xA;context Association inv:&#xA;self.allConnections->forAll( r1, r2 | r1.name = r2.name implies r1 = r2)&#xA;&#xA;[C-5-3] At most one AssociationEnd may be an aggregation or composition.&#xA;context Association inv:&#xA;self.allConnections->select(aggregation &lt;> #ak_none)->size &lt;= 1&#xA;&#xA;[C-5-4] If an Association has three or more AssociationEnds, then no AssociationEnd may be an aggregation or composition.&#xA;context Association inv:&#xA;self.allConnections->size >=3 implies&#xA;self.allConnections->forall(aggregation = #ak_none)&#xA;&#xA;[C-5-5] The connected Classifiers of the AssociationEnds should be included in the Namespace of the Association, or be Classifiers with public visibility in other Namespaces to which the Association has access.&#xA;context Association inv:&#xA;self.allConnections->forAll(r | self.namespace.allContents->includes (r.type) ) or&#xA;self.allConnections->forAll(r | self.namespace.allContents->excludes (r.type))&#xA;   implies&#xA;self.namespace.clientDependency->exists (d |&#xA;   d.supplier.oclAsType(Namespace).ownedElement->select (e |&#xA;      e.elementOwnership.visibility = #ak_public)->includes (r.type) or&#xA;   d.supplier.oclAsType(Classifier).allParents.&#xA;      oclAsType(Namespace).ownedElement->select (e |&#xA;         e.elementOwnership.visibility = #ak_public)->includes (r.type) or&#xA;         d.supplier.oclAsType(Package).allImportedElements->select (e |&#xA;            e.elementImport.visibility = #ak_public) ->includes (r.type) ) )&#xA;&#xA;[C-5-6] An AssociationEnd must have an owning Association.&#xA;context AssociationEnd inv:&#xA;self.owner.oclIsKindOf(Association)&#xA;&#xA;[C-5-7] The Classifier of an AssociationEnd cannot be an Interface or a DataType if the association is navigable away from that end.&#xA;context AssociationEnd inv:&#xA;(self.type.oclIsKindOf (Interface) or&#xA;self.type.oclIsKindOf (DataType)) implies&#xA;self.owner->select (ae | ae &lt;self)->forAll(ae | ae.isNavigable = #false)&#xA;&#xA;[C-5-8] An instance may not belong by composition to more than one composite Instance.&#xA;context AssociationEnd inv:&#xA;self.aggregation = #ak_composite implies self.multiplicity.max &lt;= 1&#xA;&#xA;[C-5-9] An AssociationEnd with composite or shared aggregation semantics must be owned by an Association.&#xA;context AssociationEnd inv:&#xA;self.aggregation = #ak_composite or self.aggregation = #ak_shared implies&#xA;self.owner.oclIsKindOf(Association)&#xA;"/>
       </eAnnotations>
       <eClassifiers xsi:type="ecore:EClass" name="Association" eSuperTypes="#//objectmodel/core/Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="MinimumAssociationEnds UniqueAssociationEndNames SingleAggregation NoAggregationForNAry ClassifierVisibility"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="MinimumAssociationEnds" value="self.allConnections->size > 1"/>
+          <details key="UniqueAssociationEndNames" value="self.allConnections->forAll( r1, r2 | r1.name = r2.name implies r1 = r2)"/>
+          <details key="SingleAggregation" value="self.allConnections->select(aggregation &lt;> #ak_none)->size &lt;= 1"/>
+          <details key="NoAggregationForNAry" value="self.allConnections->size >=3 implies self.allConnections->forall(aggregation = #ak_none)"/>
+          <details key="ClassifierVisibility" value="self.allConnections->forAll(r | self.namespace.allContents->includes (r.type) ) or&#xA;self.allConnections->forAll(r | self.namespace.allContents->excludes (r.type))&#xA; implies&#xA;self.namespace.clientDependency->exists (d |&#xA;d.supplier.oclAsType(Namespace).ownedElement->select (e |&#xA; e.elementOwnership.visibility = #ak_public)->includes (r.type) or&#xA; d.supplier.oclAsType(Classifier).allParents.&#xA; oclAsType(Namespace).ownedElement->select (e |&#xA; e.elementOwnership.visibility = #ak_public)->includes (r.type) or&#xA; d.supplier.oclAsType(Package).allImportedElements->select (e |&#xA; e.elementImport.visibility = #ak_public) ->includes (r.type) ) )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="MinimumAssociationEnds.shortName" value="C-5-1"/>
+          <details key="MinimumAssociationEnds.name" value="Minimum Association Ends"/>
+          <details key="MinimumAssociationEnds.description" value="An Association must have at least 2 AssociationEnds."/>
+          <details key="MinimumAssociationEnds.level" value="error"/>
+          <details key="UniqueAssociationEndNames.shortName" value="C-5-2"/>
+          <details key="UniqueAssociationEndNames.name" value="Unique AssociationEnd Names"/>
+          <details key="UniqueAssociationEndNames.description" value="The AssociationEnds must have a unique name within the association."/>
+          <details key="UniqueAssociationEndNames.level" value="error"/>
+          <details key="SingleAggregation.shortName" value="C-5-3"/>
+          <details key="SingleAggregation.name" value="Single Aggregation"/>
+          <details key="SingleAggregation.description" value="At most one AssociationEnd may be an aggregation or composition."/>
+          <details key="SingleAggregation.level" value="error"/>
+          <details key="NoAggregationForNAry.shortName" value="C-5-4"/>
+          <details key="NoAggregationForNAry.name" value="No Aggregation For N-ary"/>
+          <details key="NoAggregationForNAry.description" value="If an Association has three or more AssociationEnds, then no AssociationEnd may be an aggregation or composition."/>
+          <details key="NoAggregationForNAry.level" value="error"/>
+          <details key="ClassifierVisibility.shortName" value="C-5-5"/>
+          <details key="ClassifierVisibility.name" value="Classifier Visibility"/>
+          <details key="ClassifierVisibility.description" value="The connected Classifiers of the AssociationEnds should be included in the Namespace of the Association, or be Classifiers with public visibility in other Namespaces to which the Association has access."/>
+          <details key="ClassifierVisibility.level" value="warning"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="An association defines a semantic relationship between classifiers. Associations have two or more named ends. Associations with two or more ends are called &quot;n-ary&quot; whereas associations with exactly two ends are called &quot;binary&quot;. Each end, depending&#xA;upon its multiplicity, connects to zero or more instances of some classifier.&#xA;&#xA;In the metamodel, an Association is a declaration of a semantic relationship between Classifiers, such as Classes. Associations must have two, and may have more, association ends. Each end is connected to a Classifier; the same Classifier may be &#xA;connected to more than one association end in the same association. (Refer to the ObjectModel�s Instance package, below, for a description of how Associations are instantiated.)&#xA;&#xA;Because Associations are classifiers, they own and order their association ends (which are Attributes) via the ClassifierFeature association. In addition, because Associations are Classes, they can also own more traditional StructuralFeatures such as Attributes. Consequently, they may act in a manner similar to &quot;association classes&quot; described by&#xA;some other object models.&#xA;&#xA;An association may represent an aggregation (i.e., a whole/part relationship). In this case, the association end attached to the whole element is designated, and the other association end represents the parts of the aggregation.&#xA;&#xA;Associations can be of three different kinds: (1) ordinary association, (2) composite aggregate, and (3) shareable aggregate. Since the aggregate construct can have several different meanings depending on the application area, CWM gives a more precise meaning to two of these constructs (i.e., association and composite aggregate) and leaves the shareable aggregate more loosely defined in between. Only binary Associations can have composite or sharable aggregation semantics.&#xA;&#xA;Composite aggregation is a strong form of aggregation which requires that a part instance be included in at most one composite at a time and that the composite object has sole responsibility for the disposition of its parts. This means that the composite object is responsible for the creation and destruction of the parts. In implementation terms, it is responsible for their memory allocation. If a composite object is destroyed, it must destroy all of its parts. It may remove a part and give it to another composite object, which then assumes responsibility for it. If the multiplicity from a part to composite is zero-to-one, the composite may remove the part and the part may assume responsibility for itself, otherwise it may not live apart from a  composite.&#xA;&#xA;A consequence of these rules is that a composite aggregation implies propagation semantics (i.e., some of the dynamic semantics of the whole is propagated to its parts). For example, if the whole is copied or destroyed, then so are the parts as well (because a part may belong to at most one composite).&#xA;&#xA;A classifier on the composite end of an association may have parts that are classifiers and associations. At the instance level, an instance of a part element is considered &quot;part of&quot; the instance of a composite element. If an association is part of a composite and it connects two classes that are also part of the same composite, then an instance of the association will connect objects that are part of the same composite object of which the instance is part.&#xA;&#xA;A shareable aggregation denotes weak ownership (i.e., the part may be included in several aggregates) and its owner may also change over time. However, the semantics of a shareable aggregation does not imply deletion of the parts when an aggregate&#xA;referencing it is deleted. Both kinds of aggregations define a transitive, antisymmetric relationship (i.e., the instances form a directed, non-cyclic graph). Composition instances form a strict tree (or rather a forest)."/>
         </eAnnotations>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="AssociationEnd" eSuperTypes="#//objectmodel/core/StructuralFeature">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="AssociationEndRequiresAssociation NoNavigableInterfaceOrDataType SingleCompositeOwner AggregationRequiresAssociation"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="AssociationEndRequiresAssociation" value="self.owner.oclIsKindOf(Association)"/>
+          <details key="NoNavigableInterfaceOrDataType" value="(self.type.oclIsKindOf (Interface) or&#xA;self.type.oclIsKindOf (DataType)) implies&#xA;self.owner->select (ae | ae &lt;self)->forAll(ae | ae.isNavigable = #false)"/>
+          <details key="SingleCompositeOwner" value="self.aggregation = #ak_composite implies self.multiplicity.max &lt;= 1"/>
+          <details key="AggregationRequiresAssociation" value="self.aggregation = #ak_composite or self.aggregation = #ak_shared implies&#xA;self.owner.oclIsKindOf(Association)"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="AssociationEndRequiresAssociation.shortName" value="C-5-6"/>
+          <details key="AssociationEndRequiresAssociation.name" value="AssociationEnd Requires Association"/>
+          <details key="AssociationEndRequiresAssociation.description" value="An AssociationEnd must have an owning Association."/>
+          <details key="AssociationEndRequiresAssociation.level" value="error"/>
+          <details key="NoNavigableInterfaceOrDataType.shortName" value="C-5-7"/>
+          <details key="NoNavigableInterfaceOrDataType.name" value="No Navigable Interface Or DataType"/>
+          <details key="NoNavigableInterfaceOrDataType.description" value="The Classifier of an AssociationEnd cannot be an Interface or a DataType if the association is navigable away from that end."/>
+          <details key="NoNavigableInterfaceOrDataType.level" value="error"/>
+          <details key="SingleCompositeOwner.shortName" value="C-5-8"/>
+          <details key="SingleCompositeOwner.name" value="Single Composite Owner"/>
+          <details key="SingleCompositeOwner.description" value="An instance may not belong by composition to more than one composite Instance."/>
+          <details key="SingleCompositeOwner.level" value="error"/>
+          <details key="AggregationRequiresAssociation.shortName" value="C-5-9"/>
+          <details key="AggregationRequiresAssociation.name" value="Aggregation Requires Association"/>
+          <details key="AggregationRequiresAssociation.description" value="An AssociationEnd with composite or shared aggregation semantics must be owned by an Association."/>
+          <details key="AggregationRequiresAssociation.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="An association end is an endpoint of an association, which connects the association to a classifier. Each association end is part of one association. The association ends of each association are ordered.&#xA;&#xA;In the metamodel, an AssociationEnd is part of an Association and specifies the connection of an Association to some other Classifier. Because AssociationEnds are a kind of StructuralFeature, they are owned and ordered by Association instances via the ClassifierFeature association. The StructuralFeatureType association is used to identify the Classifier to which the AssociationEnd is attached. Each AssociationEnd has a name and defines a set of properties of the connection.&#xA;&#xA;The multiplicity property of an association end specifies how many instances of the classifier at a given end (the one bearing the multiplicity value) may be associated with a single instance of the classifier at the other end. The association end also states whether or not the connection may be traversed towards the instance playing that role in the connection (the isNavigable attribute), that is, if the instance is directly reachable via the association."/>
         </eAnnotations>
@@ -931,6 +1093,23 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="DataValue" eSuperTypes="#//objectmodel/instance/Instance">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="DataValueFromDataType DataValueHasNoSlots"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="DataValueFromDataType" value="self.classifier.oclIsKindOf(DataType)"/>
+          <details key="DataValueHasNoSlots" value="self.valueSlot->isEmpty"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="DataValueFromDataType.shortName" value="C-6-1"/>
+          <details key="DataValueFromDataType.name" value="DataValue From DataType"/>
+          <details key="DataValueFromDataType.description" value="A DataValue originates from a Classifier that is a DataType."/>
+          <details key="DataValueFromDataType.level" value="error"/>
+          <details key="DataValueHasNoSlots.shortName" value="C-6-2"/>
+          <details key="DataValueHasNoSlots.name" value="DataValue Has No Slots"/>
+          <details key="DataValueHasNoSlots.description" value="A DataValue has no Slots."/>
+          <details key="DataValueHasNoSlots.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A data value is an instance with no identity. In the metamodel, DataValue is a child of Instance that cannot change its state, i.e. all operations that are applicable to it are pure functions or queries that do not cause any side effects. DataValues are typically used&#xA;as attribute values.&#xA;&#xA;Since it is not possible to differentiate between two data values that appear to be the same, it becomes more of a philosophical issue whether there are several data values representing the same value or just one for each value. In addition, a data value cannot change its data type and it does not have contained instances."/>
         </eAnnotations>
@@ -963,6 +1142,23 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Object" eSuperTypes="#//objectmodel/instance/Instance">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="ObjectOwnsObjectsAndDataValues AssociationObjectEnds"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="ObjectOwnsObjectsAndDataValues" value="self.contents->forAll(c | c.oclIsKindOf(Object) or c.oclIsKindOf(DataValue))"/>
+          <details key="AssociationObjectEnds" value="self.classifier.oclIsKindOf(Association) implies&#xA;self.slot.feature->iterate( ae ; cnt : Integer = 0 |&#xA;if ae.oclIsKindOf(AssociationEnd) and ae.value.notEmpty then&#xA;cnt + 1&#xA;else&#xA; cnt&#xA;end if ) > 1"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="ObjectOwnsObjectsAndDataValues.shortName" value="C-6-3"/>
+          <details key="ObjectOwnsObjectsAndDataValues.name" value="Object Owns Objects And DataValues"/>
+          <details key="ObjectOwnsObjectsAndDataValues.description" value="An Object may only own Objects and DataValues."/>
+          <details key="ObjectOwnsObjectsAndDataValues.level" value="error"/>
+          <details key="AssociationObjectEnds.shortName" value="C-6-4"/>
+          <details key="AssociationObjectEnds.name" value="Association Object Ends"/>
+          <details key="AssociationObjectEnds.description" value="If an Object represents an association, at least two of its ends must be not be empty."/>
+          <details key="AssociationObjectEnds.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="An object is an instance that originates from a class.&#xA;&#xA;In the metamodel, Object is a subclass of Instance originating from a Class. The Class may be modified dynamically, which means that the set of features of the Object may change during its life-time.&#xA;&#xA;An object is an instance that originates from a class; it is structured and behaves according to its class. All objects originating from the same class are structured in the same way, although each of them has its own set of attribute slots. Each attribute slot references an instance, usually a data value or possibly, another object. The number of attribute slots with the same name fulfills the multiplicity of the corresponding attribute in the class. The set may be modified according to the specification in the corresponding attribute, e.g. each referenced instance must originate from (a specialization of) the type of the attribute, and attribute slots may be added or removed according to the changeable property of the attribute."/>
         </eAnnotations>
@@ -974,6 +1170,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Slot" eSuperTypes="#//objectmodel/core/ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="AssociationEndSlotClassifier"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="AssociationEndSlotClassifier" value="self.feature.oclIsKindOf(AssociationEnd) implies&#xA;self.value.classifier.oclIsKindOf(Association)"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="AssociationEndSlotClassifier.shortName" value="C-6-5"/>
+          <details key="AssociationEndSlotClassifier.name" value="AssociationEnd Slot Classifier"/>
+          <details key="AssociationEndSlotClassifier.description" value="If the StructuralFeature describing a Slot is an AssociationEnd, the Classifier associated with the Object owning the Slot must be an Association."/>
+          <details key="AssociationEndSlotClassifier.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A slot is a named location in an Object instance that holds the current value of the StructuralFeature associated with the Slot instance. Normally, the StructuralFeature associated with the slot will be either an Attribute instance or an AssociationEnd instance. Slots are owned by Objects; DataValues do not have slots."/>
         </eAnnotations>
@@ -998,7 +1206,8 @@
       </eClassifiers>
     </eSubpackages>
   </eSubpackages>
-  <eSubpackages name="foundation" nsURI="http://www.omg.org/spec/CWM/1.1/foundation" nsPrefix="org.omg.cwm.foundation">
+  <eSubpackages name="foundation" nsURI="http://www.omg.org/spec/CWM/1.1/foundation"
+      nsPrefix="org.omg.cwm.foundation">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="The Foundation is a collection of metamodel packages that contain model elements representing concepts and structures that are shared by other CWM packages. Consequently, Foundation model elements often have a more general-purpose nature than model elements found in packages at higher CWM organizational levels.&#xA;&#xA;Foundation model elements in a particular metamodel package are not necessarily intended to describe fully all aspects of concepts and structures they represent. Rather, they are meant to provide a common foundation which other packages can extend as necessary to meet their specific needs.&#xA;&#xA;Foundation model elements differ from ObjectModel elements because they are specific to the goals and purposes of CWM. ObjectModel elements, in contrast, are of a general purpose nature and applicable in diverse areas.&#xA;&#xA;The CWM uses packages to control complexity and create groupings of logically interrelated classes. The Foundation is a collection of packages that are described together because they all provide metamodel services to other CWM packages. A subsection of this chapter is devoted to each of the Foundation packages, presented in alphabetical order. The relationship between the Foundation and each of its constituent packages is shown diagrammatically in the figure.&#xA;&#xA;Organizing the Foundation in this fashion allows the individual metamodel packages to be understood and used independently of each other without sacrificing their common purpose. For example, a CWM extension package supporting a programming language might need the DataTypes, Expressions, TypeMapping and SoftwareDeployment packages but not need the KeysIndexes or BusinessInformation packages.&#xA;"/>
     </eAnnotations>
@@ -1008,6 +1217,18 @@
         <details key="documentation" value="The Business Information package depends on the following package:&#xA;&#xA;    org.omg::CWM::ObjectModel::Core&#xA;&#xA;The Business Information Metamodel provides general purpose services available to all CWM packages for defining business-oriented information about model elements. The business-oriented services described here are designed to support the needs of data warehousing and business intelligence systems; they are not intended as a complete representation of general purpose business intelligence metamodel.&#xA;&#xA;Business Information Metamodel services support the notions of responsible parties and information about how to contact them, identification of off-line documentation and support for general-purpose descriptive information. Three CWM classes &quot;anchor&quot; these services: ResponsibleParty, Document and Description, respectively.&#xA;&#xA;To aid in representing the diversity of organizational structures and documentation relationships that may be encountered in a business intelligence system, the metamodel provides robust relationships between the anchor classes and every model element in the CWM metamodel. The necessary robustness is achieved in several ways.&#xA;&#xA;First, every CWM model element may have zero or more instances of each anchor class associated with it. This means, for example, that a single Description instance can be used to describe many different model elements. Conversely, a single model element may be described by many different Description instances. Likewise, Document and ResponsibleParty instances can be associated in completely ad hoc ways with any model element. Extending this idea means, for example, that Description instances could be used to further describe ResponsibleParty and Document instance, if needed.&#xA;&#xA;Second, because they are Namespaces, the anchor classes can be organized into hierarchies using the ElementOwnership association. For instance, an organizational structure can be represented by a hierarchy of ResponsibleParty instances. Also, the internal structure of a document (i.e., its chapters, sections, subsections, etc.) might be represented by a hierarchy of Document instances.&#xA;&#xA;Finally, instances of the three anchor classes can be associated with any model element (via their individual associations to ModelElement) and referenced by multiple instances of any of the three anchor classes. Because of the strong containment of the ElementOwnership association in the ObjectModel, anchor class instances can only participate in one hierarchy, but there are no restrictions preventing anchor class instances embedded in a hierarchy from referencing, or being referenced by, other model elements (even other members of the same hierarchy).&#xA;&#xA;To illustrate some of the ways that the metamodel can be used, the following figure shows a simple document hierarchy with responsibility assignments and descriptive comments (boxes represent instances of metamodel classes and labelled lines represent metamodel associations connecting instances). In the example, the product plan document for the Widget product is composed of three subplans: a marketing plan, an engineering plan, and a resource plan. The relationships between the subplans documents is shown as a hierarchy with the product plan owning the three subordinate plans via the ElementOwnership association. Each part of the plan is assigned to a reponsible party using the ModelElementResponsibility association. Finally, Description instances are used to record roles for the responsible parties.&#xA;&#xA;OCL Representation of BusinessInformation Constraints&#xA;&#xA;[C-3-1] A Description may not describe itself.&#xA;context Description inv:&#xA;self.modelElement->forAll(p | p &lt;> self)&#xA;&#xA;[C-3-2] A Document may not describe itself.&#xA;context Document inv:&#xA;self.modelElement->forAll(p | p &lt;> self)&#xA;&#xA;[C-3-3] A ResponsibleParty may not describe itself.&#xA;context ResponsibleParty inv:&#xA;self.modelElement->forAll(p | p &lt;> self)"/>
       </eAnnotations>
       <eClassifiers xsi:type="ecore:EClass" name="ResponsibleParty" eSuperTypes="#//objectmodel/core/Namespace">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="ResponsiblePartySelfReference"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="ResponsiblePartySelfReference" value="self.modelElement->forAll(p | p &lt;> self)"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="ResponsiblePartySelfReference.shortName" value="C-3-3"/>
+          <details key="ResponsiblePartySelfReference.name" value="ResponsibleParty Self-Reference"/>
+          <details key="ResponsiblePartySelfReference.description" value="A ResponsibleParty may not describe itself."/>
+          <details key="ResponsiblePartySelfReference.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The ResponsibleParty class allows representation of entities within an information system that are in some way interested in receiving information about, or are otherwise responsible for, particular ModelElements. Each ResponsibleParty may own multiple sets of contact information, and a single ResponsibleParty may be associated with many ModelElements.&#xA;&#xA;ResponsibleParty instances may represent any entity appropriate to the system being modeled and need not be limited to people. For example, a ResponsibleParty instance might represent an individual such as &quot;George Washington&quot;, a role (the &quot;President&quot;), or an organization (&quot;Congress&quot;), depending upon the needs of the system being modeled. Similarly, the precise semantics of the responsibility attribute are open to intrepretation and may be adapted on a system-by-system basis.&#xA;&#xA;Because ResponsibleParty instances are Namespaces, they can be organized into hierarchies of ResponsibleParty instances, capturing organizational structures or similar relationships."/>
         </eAnnotations>
@@ -1136,6 +1357,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Description" eSuperTypes="#//objectmodel/core/Namespace">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="DescriptionSelfReference"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="DescriptionSelfReference" value="self.modelElement->forAll(p | p &lt;> self)"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="DescriptionSelfReference.shortName" value="C-3-1"/>
+          <details key="DescriptionSelfReference.name" value="Description Self-Reference"/>
+          <details key="DescriptionSelfReference.description" value="A Description may not describe itself."/>
+          <details key="DescriptionSelfReference.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Instances of the Description class contain arbitrary textual information relevant to a particular ModelElement. While Description instances may contain any desired textual information, they will typically contain documentation or references to external reference information about the owning ModelElement.&#xA;&#xA;Any ModelElement may have multiple Description instances associated with it. Indeed, a ModelElement instance that is a Description instance may itself have multiple Description instances linked to it. Also, a hierarchies of Description instances can be constructed.&#xA;&#xA;Description instances are meant to hold descriptive textual information that will be stored in the metamodel itself. In contrast, Document instances are meant to describe the location documentary information stored outside the metamodel.&#xA;"/>
         </eAnnotations>
@@ -1162,6 +1395,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Document" eSuperTypes="#//objectmodel/core/Namespace">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="DocumentSelfReference"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="DocumentSelfReference" value="self.modelElement->forAll(p | p &lt;> self)"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="DocumentSelfReference.shortName" value="C-3-2"/>
+          <details key="DocumentSelfReference.name" value="Document Self-Reference"/>
+          <details key="DocumentSelfReference.description" value="A Document may not describe itself."/>
+          <details key="DocumentSelfReference.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The Document class represents externally stored descriptive information about some aspect of the modeled system. An instance of Document might be associated with one or more ModelElements. The name of a Document instance is derived from its superclasses.&#xA;&#xA;Although the purposes of the Description and Document types may overlap somewhat, their chief distinction is that Description instances are stored with the CWM metadata whereas Documentation instances are stored externally to the CWM metadata. Although there is an implication here that Documentation instances might represent more voluminous information than Description instances, there is no particular requirement that this be so.&#xA;&#xA;Because Documentation instances are themselves Namespace instances, hierarchical relationships between various externally stored documents can be represented."/>
         </eAnnotations>
@@ -1244,6 +1489,18 @@
         </eAnnotations>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="TypeAlias" eSuperTypes="#//objectmodel/core/DataType">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="TypeAliasSelfReference"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="TypeAliasSelfReference" value="self.type &lt;> self"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="TypeAliasSelfReference.shortName" value="C-4-1"/>
+          <details key="TypeAliasSelfReference.name" value="TypeAlias Self-Reference"/>
+          <details key="TypeAliasSelfReference.description" value="A TypeAlias instance cannot alias itself."/>
+          <details key="TypeAliasSelfReference.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The TypeAlias class is intended to provide a renaming capability for Classifier instances. This class is required to support situations in which creation of an alias for a class effectively creates a new class. For example, CORBA IDL type aliases have different typeCodes than their base types and are therefore treated as distinct types."/>
         </eAnnotations>
@@ -1255,6 +1512,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Union" eSuperTypes="#//objectmodel/core/Classifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="SingleDefaultUnionMember"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="SingleDefaultUnionMember" value="self.allFeatures->select(isDefault)->size &lt;= 1"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="SingleDefaultUnionMember.shortName" value="C-4-2"/>
+          <details key="SingleDefaultUnionMember.name" value="Single Default UnionMember"/>
+          <details key="SingleDefaultUnionMember.description" value="A Union can have at most one default UnionMember instance."/>
+          <details key="SingleDefaultUnionMember.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The Union class represents programming language unions and similarly structured data types. Because of the diversity of union semantics found across software systems, the Union and UnionMember classes are likely candidates for specialization to better capture union semantics in specific language extension packages.&#xA;&#xA;A discriminated Union has a collection of UnionMembers that determine the sets of contents that the Union may contain. Such Unions have an attribute called the discriminator that identifies the memberCase value of the UnionMember that the Union currently contains. The discriminator is found via the UnionDiscriminator association to StructuralFeature. The discriminator may be embedded within UnionMembers or may be located outside the discriminator. If it is located within UnionMembers, the discriminator should occur in every UnionMember at the same location (often, the first).&#xA;&#xA;Undiscriminated unions (for example, a C language union) are also supported, but have an empty discriminator reference, and the memberCase attribute of the UnionMembers it contains is ignored.&#xA;&#xA;Undiscriminated Unions are often used to represent alternate views of a single physical&#xA;storage area. A fine degree of control over this aspect of Unions may be obtained by&#xA;creating a class that derives from both UnionMember and FixedOffsetField (in the&#xA;CWM Record package) and setting the offset attribute instances of that class&#xA;accordingly."/>
         </eAnnotations>
@@ -1332,6 +1601,28 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="FeatureNode" eSuperTypes="#//foundation/expressions/ExpressionNode">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="FeatureNodeParametersRequireOperation InstanceFeatureThisArgument BehavioralFeatureArgumentCount"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="FeatureNodeParametersRequireOperation" value="if self.feature.ownerScope = #instance&#xA;then self.argument->size > 1 implies&#xA; self.feature.oclIsKindOf(Operation)&#xA;else self.argument->size > 0 implies&#xA; self.feature.oclIsKindOf(Operation)&#xA;endif"/>
+          <details key="InstanceFeatureThisArgument" value="self.feature.ownerScope = #instance implies&#xA;self.argument->first.type.allFeatures->includes(self.feature)"/>
+          <details key="BehavioralFeatureArgumentCount" value="self.feature.oclIsKindOf(BehavioralFeature) implies&#xA;(if self.feature.ownerScope = #instance&#xA;then self.argument->size =&#xA; self.feature.oclAsType(BehavioralFeature).parameters->size + 1&#xA; else self.argument->size =&#xA; self.feature.oclAsType(BehavioralFeature).parameters->size&#xA;endif)"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="FeatureNodeParametersRequireOperation.shortName" value="C-5-1"/>
+          <details key="FeatureNodeParametersRequireOperation.name" value="FeatureNode Parameters Require Operation"/>
+          <details key="FeatureNodeParametersRequireOperation.description" value="A FeatureNode that has parameters other than the this parameter represents a Feature that is also an Operation."/>
+          <details key="FeatureNodeParametersRequireOperation.level" value="error"/>
+          <details key="InstanceFeatureThisArgument.shortName" value="C-5-2"/>
+          <details key="InstanceFeatureThisArgument.name" value="Instance Feature This Argument"/>
+          <details key="InstanceFeatureThisArgument.description" value="If the FeatureNode represents an instance-scope feature, the first argument is a this or self argument; that is, the object invoking the feature. The convention is enforced by checking that the type of the first argument is the same as the type of the feature."/>
+          <details key="InstanceFeatureThisArgument.level" value="error"/>
+          <details key="BehavioralFeatureArgumentCount.shortName" value="C-5-3"/>
+          <details key="BehavioralFeatureArgumentCount.name" value="BehavioralFeature Argument Count"/>
+          <details key="BehavioralFeatureArgumentCount.description" value="If the FeatureNode represents a BehavioralFeature, the number of arguments must be equal to the number of the BehavioralFeature's parameters, plus one for the this parameter if the BehavioralFeature is of instance scope."/>
+          <details key="BehavioralFeatureArgumentCount.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The FeatureNode class represents ExpressionNode instances that are features (i.e., attributes or operations) of some Classifier instance within the CWM.&#xA;&#xA;A FeatureNode with a null OperationArgument association represents either a parameter-less operation or an attribute value obtained from some StructuralFeature instance."/>
         </eAnnotations>
@@ -1355,6 +1646,18 @@
         <details key="documentation" value="The KeysIndexes package depends on the following package:&#xA;&#xA;    org.omg::CWM::ObjectModel::Core&#xA;&#xA;Keys and indexes as means for specifying instances and for identifying alternate sortings of instances are  epresented in the CWMFoundation so that they can be shared among the various data models that employ hem. The CWM Foundation defines the base concepts (uniqueness and relationships implemented as keys)  pon which more specific key structures can be built by other CWM and tool-specific packages.&#xA;&#xA;The concepts of key and index have been placed in the CWM Foundation because they are available in many  types of data resources. In the CWM Foundation class and association descriptions that follow, relational model  examples are frequently used when discussing the definition and usage of key and index types. This is done because of the wide-spread availability of relational systems and is thought to promote an understanding of the underlying concepts. These concepts, however, are no less applicable to other data models as well.&#xA;&#xA;The two central classes for representing the concept of keys are UniqueKey and KeyRelationship. UniqueKey instances correspond to the notion that keys represent the identity of instances -- similar to the relational model�s concept of a primary key or an object model�s concept of an object identity. In contrast, KeyRelationship instancescorrespond to the notion that keys embedded in an instance can be used to determine the identity of other related instances -- similar to the relational model concept of foreign key and the object model concept of a reference. Consequently, UniqueKey and KeyRelationship are best thought of as representing roles that collections of Features of Classifiers play rather than Classifiers describing the internal structure of keys. Representing keys as roles rather than structural entities provides greater flexibility and allows the reuse of  Features in multiple keys and in differing relationships to each other. Associations within the KeysIndexes package describe how UniqueKey and KeyRelationship instances describe the roles they play for various&#xA;Class instances and the StructuralFeature instances they contain.&#xA;&#xA;OCL Representation of KeysIndexes Constraints&#xA;&#xA;[C-6-1]The isAscending attribute is valid only if the isSorted attribute is True.&#xA;context IndexedFeature inv:&#xA;self.isAscending->notEmpty implies self.index.isSorted&#xA;&#xA;[C-6-2] A KeyRelationship instance must be owned by one and only one Class&#xA;instance.&#xA;context KeyRelationship inv:&#xA;(self.namespace->size = 1) and self.namespace.oclIsKindOf(Class)&#xA;&#xA;[C-6-3] An UniqueKey instance must be owned by one and only one Class instance.&#xA;context UniqueKey inv:&#xA;(self.namespace->size = 1) and self.namespace.oclIsKindOf(Class)"/>
       </eAnnotations>
       <eClassifiers xsi:type="ecore:EClass" name="UniqueKey" eSuperTypes="#//objectmodel/core/ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="UniqueKeyOwnedByClass"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="UniqueKeyOwnedByClass" value="(self.namespace->size = 1) and self.namespace.oclIsKindOf(Class)"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="UniqueKeyOwnedByClass.shortName" value="C-6-3"/>
+          <details key="UniqueKeyOwnedByClass.name" value="UniqueKey Owned By Class"/>
+          <details key="UniqueKeyOwnedByClass.description" value="An UniqueKey instance must be owned by one and only one Class instance."/>
+          <details key="UniqueKeyOwnedByClass.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A UniqueKey represents a collection of features of some Class that, taken together, uniquely identify instances of the Class. Instances of UniqueKey for which all features are required to have non-null values are candidates for use as primary keys such as those defined by relational DBMSs."/>
         </eAnnotations>
@@ -1404,6 +1707,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="KeyRelationship" eSuperTypes="#//objectmodel/core/ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="KeyRelationshipOwnedByClass"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="KeyRelationshipOwnedByClass" value="(self.namespace->size = 1) and self.namespace.oclIsKindOf(Class)"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="KeyRelationshipOwnedByClass.shortName" value="C-6-2"/>
+          <details key="KeyRelationshipOwnedByClass.name" value="KeyRelationship Owned By Class"/>
+          <details key="KeyRelationshipOwnedByClass.description" value="A KeyRelationship instance must be owned by one and only one Class instance."/>
+          <details key="KeyRelationshipOwnedByClass.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="KeyRelationship instances represent relationships between UniqueKey instances and the Class(es) that reference them. This class is intended as a starting point for the creation of &quot;foreign key&quot; and other associative relationships."/>
         </eAnnotations>
@@ -1421,6 +1736,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="IndexedFeature" eSuperTypes="#//objectmodel/core/ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="IsAscendingRequiresIsSorted"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="IsAscendingRequiresIsSorted" value="self.isAscending->notEmpty implies self.index.isSorted"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="IsAscendingRequiresIsSorted.shortName" value="C-6-1"/>
+          <details key="IsAscendingRequiresIsSorted.name" value="IsAscending Requires IsSorted"/>
+          <details key="IsAscendingRequiresIsSorted.description" value="The isAscending attribute is valid only if the isSorted attribute is True."/>
+          <details key="IsAscendingRequiresIsSorted.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Instances of the IndexedFeature class map StructuralFeature instances of the spanned Class instance to the Index instances that employ them as (part of) their key. Attributes of IndexedFeature instances indicate how specific StructuralFeature instance are used in Index keys."/>
         </eAnnotations>
@@ -1449,6 +1776,18 @@
         <details key="documentation" value="The Software Deployment package depends on the following packages:&#xA;&#xA;    org.omg::CWM::ObjectModel::Core&#xA;    org.omg::CWM::Foundation::BusinessInformation&#xA;    org.omg::CWM::Foundation::TypeMapping&#xA;&#xA;The Software Deployment package contains classes to record how the software in a data warehouse is used.&#xA;&#xA;A software package is represented as a SoftwareSystem object, which is a subtype of Subsystem. A SoftwareSystem may reference one or more TypeSystems that define the datatypes supported by the SoftwareSystem. The mappings between datatypes in different TypeSystems may be recorded as TypeMappings, as described in the TypeMapping metamodel.&#xA;&#xA;The separate components of a software package are each represented as Components that are either owned or imported by the SoftwareSystem. When a SoftwareSystem is installed, the deployment is recorded as a DeployedSoftwareSystem and a set of DeployedComponents.&#xA;&#xA;A DeployedComponent represents the deployment of a specific Component on a specific computer. Dependencies between DeployedComponents on the same computer may be documented as Usage dependencies between them.&#xA;&#xA;Individual computers are represented as Machine objects, located at a Site. A Site represents a geographical location, which may be recorded at any relevant level of granularity, e.g. a country, a building, or a room in a building. Hierarchical links between Sites at different levels of granularity may be documented.&#xA;&#xA;A DataManager is a DeployedComponent such as a DBMS or file management system that provides access to data. It may be associated with one or more data Packages identifying the Schema, Relational Catalog, Files or other data containers that it provides access to.&#xA;&#xA;A DataProvider is a DeployedComponent that acts as a client to provide access to data held by a DataManager. For example, an ODBC or JDBC client on a specific Machine would be represented as a DataProvider. A DataProvider may have several ProviderConnections, each identifying a DataManager that may be accessed using the DataProvider.&#xA;&#xA;If a DataProvider uses a name for a data Package that is different from the actual name used by the DataManager, a PackageUsage object can be added to record this. &#xA;&#xA;As a DataProvider is a subtype of DataManager, it is possible for a DataProvider to access data from a DataManager which is actually a DataProvider acting as a client to yet another DataManager.&#xA;&#xA;The model for the Software Deployment package is shown in three diagrams. The first diagram shows the objects related to software deployment, while the second diagram displays the DataManager and DataProvider area of the model. The third diagram shows the inheritance structure for all the classes in the Software Deployment package.&#xA;&#xA;OCL Representation of SoftwareDeployment Constraints&#xA;&#xA;[C-8-1] A PackageUsage must have a single Package (or subtype of Package) as its supplier&#xA;context PackageUsage inv:&#xA;self.supplier->size=1 and&#xA;self.supplier->at(1).oclIsKindOf(Package)&#xA;&#xA;[C-8-2] A ProviderConnection must not associate a DataProvider with itself&#xA;context ProviderConnection inv:&#xA;self.dataManager &lt;> self.dataProvider&#xA;&#xA;[C-8-3] A Site must not have a containingSite reference that refers to itself.&#xA;context Site inv:&#xA;self.containingSite -> forAll (c | c &lt;> self)"/>
       </eAnnotations>
       <eClassifiers xsi:type="ecore:EClass" name="Site" eSuperTypes="#//foundation/businessinformation/Location">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="SiteSelfReference"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="SiteSelfReference" value="self.containingSite -> forAll (c | c &lt;> self)"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="SiteSelfReference.shortName" value="C-8-3"/>
+          <details key="SiteSelfReference.name" value="Site Self-Reference"/>
+          <details key="SiteSelfReference.description" value="A Site must not have a containingSite reference that refers to itself."/>
+          <details key="SiteSelfReference.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A Site represents a geographical location. It provides a grouping mechanism for a group of machines at the same location.&#xA;&#xA;Sites may be documented at different levels of granularity; containment links may be used to record hierarchical relationships between Sites."/>
         </eAnnotations>
@@ -1634,6 +1973,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="ProviderConnection" eSuperTypes="#//objectmodel/core/ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="ProviderConnectionSelfReference"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="ProviderConnectionSelfReference" value="self.dataManager &lt;> self.dataProvider"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="ProviderConnectionSelfReference.shortName" value="C-8-2"/>
+          <details key="ProviderConnectionSelfReference.name" value="Provider Connection Self-Reference"/>
+          <details key="ProviderConnectionSelfReference.description" value="A ProviderConnection must not associate a DataProvider with itself."/>
+          <details key="ProviderConnectionSelfReference.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A ProviderConnection represents a connection that allows a DataProvider acting as a client to access data from a specific DataManager. For example a ProviderConnection could represent a connection from an ODBC or JDBC client to a DBMS."/>
         </eAnnotations>
@@ -1668,6 +2019,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="PackageUsage" eSuperTypes="#//objectmodel/core/Dependency">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="SinglePackageSupplier"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="SinglePackageSupplier" value="self.supplier->size=1 and&#xA;self.supplier->at(1).oclIsKindOf(Package)"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="SinglePackageSupplier.shortName" value="C-8-1"/>
+          <details key="SinglePackageSupplier.name" value="Single Package Supplier"/>
+          <details key="SinglePackageSupplier.description" value="A PackageUsage must have a single Package (or subtype of Package) as its supplier."/>
+          <details key="SinglePackageSupplier.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A PackageUsage represents a usage of a Package. It is particularly relevant in situations where a specific usage uses an alternative name for the Package, as this alternative name can be recorded using the packageAlias attribute.&#xA;&#xA;For example, if a DataProvider representing an ODBC or JDBC client uses a name for a relational database that is different from the dataPackage name used by the RDBMS server, a PackageUsage that has the relevant ProviderConnection as client and the server�s data Package as supplier can be added. Its packageAlias attribute can be used to record the name by which the data Package is known to the DataProvider."/>
         </eAnnotations>
@@ -1684,6 +2047,18 @@
         <details key="documentation" value="The TypeMapping package depends on the following packages:&#xA;&#xA;    org.omg::CWM::ObjectModel::Core&#xA;&#xA;The TypeMapping package supports the mapping of data types between different systems. The purpose of these mappings is to indicate data types in different systems that are sufficiently compatible that data values can be interchanged between them. Multiple mappings are allowed between any pair of types and a means of identifying the preferred mapping is provided.&#xA;&#xA;OCL Representation of TypeMapping Constraints&#xA;&#xA;[C-8-1] The sourceType and targetType references may not refer to the same&#xA;Classifier instance.&#xA;context TypeMapping inv:&#xA;self.sourceType &lt;> self.targetType&#xA;&#xA;[C-8-2] A TypeSystem may own only Classifiers and TypeMappings.&#xA;context TypeSystem inv:&#xA;self.ownedElement->forAll( e | e.oclIsKindOf(Classifier) or e.oclIsKindOf(TypeMapping))"/>
       </eAnnotations>
       <eClassifiers xsi:type="ecore:EClass" name="TypeMapping" eSuperTypes="#//objectmodel/core/ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="DifferentSourceAndTargetTypes"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="DifferentSourceAndTargetTypes" value="self.sourceType &lt;> self.targetType"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="DifferentSourceAndTargetTypes.shortName" value="C-8-1"/>
+          <details key="DifferentSourceAndTargetTypes.name" value="Different Source And Target Types"/>
+          <details key="DifferentSourceAndTargetTypes.description" value="The sourceType and targetType references may not refer to the same Classifier instance."/>
+          <details key="DifferentSourceAndTargetTypes.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="TypeMapping instances permit the creation of mappings between data types defined within different environments and are used to indicate data type compatibilities that permit direct assignment of values from one environment (the &quot;source&quot; type) into equivalent values in another environment (the &quot;target&quot; type). For example, an integer field data type in a record-oriented DBMS (the source type) might be mapped to a compatible integer data type in a relational DBMS (the target type).&#xA;&#xA;Whereas the actual transfer of data values between environments is accomplished using the CWM�s Transformation package, TypeMapping instances can be used the identify both the permissible and preferred mappings between data types. Value interchange between a pair of data types is considered permissible if a TypeMapping instance is defined for the pair. A TypeMapping instance is considered the preferred mapping if the instance�s isBestMatch attribute has the value true.&#xA;&#xA;Typically, there will be one TypeMapping Instance between a pair of data types that is considered the preferred mapping. To promote flexible use of this feature, there is no requirement that a preferred TypeMapping instance must be identified between a pair of data types nor are multiple preferred instances prohibited. In these latter cases, however, the precise semantics are usage-defined.&#xA;&#xA;Interchange between data types defined by non-preferred mappings may often function as intended. However, the isLossy boolean may be set to indicate that such interchanges may be subject to validity restrictions in certain circumstances. For example, it may be valid to move data values from a 32-bit integer data type to a 16-bit integer data type as long as the actual values in the 32-bit underlying data type do not exceed the range permitted for 16-bit integers. The CWM Foundation leaves the understanding and handling of such differences to individual tools. If such differences must be modeled, consider using the CWM Transformation package to filter data values during interchange.&#xA;&#xA;TypeMapping instances are unidirectional, so two instances are required to show that a data type pair can be mutually interchanged between environments."/>
         </eAnnotations>
@@ -1711,6 +2086,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="TypeSystem" eSuperTypes="#//objectmodel/core/Package">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="TypeSystemOwnedElements"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="TypeSystemOwnedElements" value="self.ownedElement->forAll( e | e.oclIsKindOf(Classifier) or e.oclIsKindOf(TypeMapping))"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="TypeSystemOwnedElements.shortName" value="C-8-2"/>
+          <details key="TypeSystemOwnedElements.name" value="TypeSystem Owned Elements"/>
+          <details key="TypeSystemOwnedElements.description" value="A TypeSystem may own only Classifiers and TypeMappings."/>
+          <details key="TypeSystemOwnedElements.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Instances of the TypeSystem class collect together the data types (subclasses of Classifier) defined by a software system and the TypeMapping instances defining how they are mapped to data types in other TypeSystems. TypeMapping instances collected by a TypeSystem instance include both those in which the software system�s data types act as sources and as targets of mappings. Classifiers and TapeMappings are&#xA;maintained in a single collection via the ElementOwnership association but can be distinguished by their respective types.&#xA;&#xA;Because it is a Package, a TypeSystem can also serve to collect together the Classifier instances for a particular software system."/>
         </eAnnotations>
@@ -1785,6 +2172,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Table" eSuperTypes="#//resource/relational/NamedColumnSet">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="TemporaryScopeRequiresIsTemporary"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="TemporaryScopeRequiresIsTemporary" value="self.temporaryScope.notEmpty implies self.isTemporary=True"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="TemporaryScopeRequiresIsTemporary.shortName" value="C-1"/>
+          <details key="TemporaryScopeRequiresIsTemporary.name" value="TemporaryScope Requires IsTemporary"/>
+          <details key="TemporaryScopeRequiresIsTemporary.description" value="temporaryScope is valid only if the isTemporary is True."/>
+          <details key="TemporaryScopeRequiresIsTemporary.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A materialized NamedColumnSet."/>
         </eAnnotations>
@@ -1811,6 +2210,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="View" eSuperTypes="#//resource/relational/NamedColumnSet">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="CheckOptionRequiresNotReadOnly"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="CheckOptionRequiresNotReadOnly" value="self.checkOption implies self.isReadOnly=False"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="CheckOptionRequiresNotReadOnly.shortName" value="C-2"/>
+          <details key="CheckOptionRequiresNotReadOnly.name" value="CheckOption Requires Not ReadOnly"/>
+          <details key="CheckOptionRequiresNotReadOnly.description" value="checkOption is valid only if isReadOnly is False."/>
+          <details key="CheckOptionRequiresNotReadOnly.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A view is a non-materialized set of rows, defined by the associated query.&#xA;"/>
         </eAnnotations>
@@ -1941,6 +2352,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Column" eSuperTypes="#//objectmodel/core/Attribute">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="ScaleRequiresPrecision"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="ScaleRequiresPrecision" value="self.scale.nonEmpty implies self.precision.notEmpty"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="ScaleRequiresPrecision.shortName" value="C-3"/>
+          <details key="ScaleRequiresPrecision.name" value="Scale Requires Precision"/>
+          <details key="ScaleRequiresPrecision.description" value="scale is valid only if precision is specified."/>
+          <details key="ScaleRequiresPrecision.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A column in a result set, a view, a table, or an SQLStructuredType."/>
         </eAnnotations>
@@ -2287,11 +2710,34 @@
         </eClassifiers>
       </eSubpackages>
     </eSubpackages>
-    <eSubpackages name="record" nsURI="http://www.omg.org/spec/CWM/1.1/resource/record" nsPrefix="org.omg.cwm.resource.record">
+    <eSubpackages name="record" nsURI="http://www.omg.org/spec/CWM/1.1/resource/record"
+        nsPrefix="org.omg.cwm.resource.record">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The Record package covers the basic concept of a record and its structure. The package takes a broad view of the notion of record, including both traditional data records such as those stored in files and databases, as well as programming language structured data types. In fact, the concepts described here can be used as a foundation for extension packages describing any information structure that is fundamentally hierarchical, or &quot;nested,&quot; in nature such as documents, questionnaires, and organizational structures.&#xA;&#xA;The Record package depends on the following packages:&#xA;&#xA;    org.omg::CWM::ObjectModel::Core&#xA;    org.omg::CWM::ObjectModel::Instance&#xA;&#xA;Because of the antiquity of many record-based models, individual system implementations employing record models may have unusual features (such as occurs-depending arrays, various COBOL rename/remapping semantics, etc.) that are not shared with other implementations. When such features are limited to single&#xA;implementations or languages, they have been purposefully left out of the Record metamodel. Rather, unusual features of this sort should be placed into extension packages designed to meet the needs of those implementations or languages. For example, record structuring features endemic to the COBOL language have been placed in the COBOLData metamodel in the CWMX package described in Volume 2 and do not appear here. In this way, COBOL-only features do not burden other record oriented implementations unnecessarily.&#xA;&#xA;OCL Representation of Record Constraints&#xA;&#xA;[C-1] The owner of a Field and the type of a Field may not refer to the same Classifier instance.&#xA;context Field inv:&#xA;self.owner &lt;> self.type&#xA;&#xA;[C-2] The scale attribute is valid only if the precision attribute is specified.&#xA;context Field inv:&#xA;self.scale->notEmpty implies self.precision->notEmpty&#xA;&#xA;[C-3] The precision attribute is valid only if the length attribute is not specified.&#xA;context Field inv:&#xA;self.precision->notEmpty implies self.length->isEmpty::filely one"/>
       </eAnnotations>
       <eClassifiers xsi:type="ecore:EClass" name="Field" eSuperTypes="#//objectmodel/core/Attribute">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="FieldTypeNotOwner ScaleRequiresPrecision PrecisionExcludesLength"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="FieldTypeNotOwner" value="self.owner &lt;> self.type"/>
+          <details key="ScaleRequiresPrecision" value="self.scale->notEmpty implies self.precision->notEmpty"/>
+          <details key="PrecisionExcludesLength" value="self.precision->notEmpty implies self.length->isEmpty"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="FieldTypeNotOwner.shortName" value="C-1"/>
+          <details key="FieldTypeNotOwner.name" value="Field Type Not Owner"/>
+          <details key="FieldTypeNotOwner.description" value="The owner of a Field and the type of a Field may not refer to the same Classifier instance."/>
+          <details key="FieldTypeNotOwner.level" value="error"/>
+          <details key="ScaleRequiresPrecision.shortName" value="C-2"/>
+          <details key="ScaleRequiresPrecision.name" value="Scale Requires Precision"/>
+          <details key="ScaleRequiresPrecision.description" value="The scale attribute is valid only if the precision attribute is specified."/>
+          <details key="ScaleRequiresPrecision.level" value="error"/>
+          <details key="PrecisionExcludesLength.shortName" value="C-3"/>
+          <details key="PrecisionExcludesLength.name" value="Precision Excludes Length"/>
+          <details key="PrecisionExcludesLength.description" value="The precision attribute is valid only if the length attribute is not specified."/>
+          <details key="PrecisionExcludesLength.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A Field is the fundamental information container within a RecordDef. It holds one piece of information, which may itself have structure. The inherited associations StructuralFeatureType and ElementOwnership provide access to a Field instance�s type and owning classifier, respectively."/>
         </eAnnotations>
@@ -2405,6 +2851,18 @@
         <details key="documentation" value="The CWM Multidimensional metamodel is a generic representation of a multidimensional database.&#xA;&#xA;Multidimensional databases are OLAP databases that are directly implemented by multidimensional database systems. In a multidimensional database, key OLAP constructs (dimensions, hierarchies, etc.) are represented by the internal data structures of a ultidimensional database server, and common OLAP operations (consolidation, drill-down, etc.) are performed by the server acting on those data structures. &#xA;&#xA;Multidimensional databases are often classified as &quot;physical OLAP&quot; or &quot;MOLAP&quot; (memory-based OLAP) databases.&#xA;&#xA;Multidimensional databases offer enhanced performance and flexibility over OLAP systems that simulate multidimensional functionality using other technologies (e.g., relational database or spreadsheet):&#xA;&#xA;Performance: Multidimensional databases provide rapid consolidation times and formula calculations, and consistent query response times regardless of query complexity. This is accomplished, in part, through the use of efficient cell storage techniques and highly-optimized index paths.&#xA;&#xA;Flexibility: The specification and use of multidimensional schemas and queries (including the design of cubes, dimensions, hierarchies, member formulas, the manipulation of query result sets, etc.) can be accomplished in a relatively straight-forward manner, since the server directly supports (and exposes) the multidimensional paradigm.&#xA;&#xA;The CWM Multidimensional metamodel does not attempt to provide a complete representation of all aspects of commercially available, multidimensional databases. Unlike relational database management systems, multidimensional databases tend to be proprietary in structure, and there are no published, widely agreed upon, standard representations of the logical schema of a multidimensional database. Therefore, the CWM Multidimensional Database metamodel is oriented toward complete generality of specification. Tool-specific extensions to the metamodel are relatively easy to formulate, and several examples are provided in Volume 2, Extensions, of the CWM Specification.&#xA;&#xA;The Multidimensional package depends on the following packages:&#xA;&#xA;    org.omg::CWM::ObjectModel::Core&#xA;    org.omg::CWM::ObjectModel::Instance&#xA;&#xA;The major classes and associations of the Multidimensional metamodel are shown in Figure 11-1.&#xA;&#xA;Schema is the container of all elements comprising a Multidimensional model. It also represents the logical unit of deployment of a Multidimensional database instance.&#xA;Dimension represents a physical dimension in a Multidimensional database. Whereas&#xA;the OLAP metamodel defines �dimension� as a purely conceptual entity, this&#xA;Dimension represents the dimension object exposed by the programming model of a&#xA;Multidimensional database.&#xA;A Dimension may reference other instances of Dimension to form arbitrarily complex&#xA;dimensional structures (e.g., hierarchies with varying levels of detail).&#xA;&#xA;DimensionedObject represents an attribute of Dimension. Examples of DimensionedObjects include measures (variables), formulas, consolidation functions, member alias names, etc. DimensionedObjects are contained by the Schema and referenced by the Dimensions that use them. &#xA;&#xA;MemberSet represents the collection of Members associated with an instance of Dimension, and MemberValue represents an instance value of a Member. MemberSet, Member and MemberValue enable the specification and interchange of both M1-level Multidimensional models and associated M0-level data values.&#xA;&#xA;Figure 11-2 illustrates the inheritance of the Multidimensional classes from metaclasses of the Object Model.&#xA;&#xA;OCL Representation of Multidimensional Constraints&#xA;&#xA;[C-1] A Dimension may not reference itself as a component, nor as a composite.&#xA;context Dimension&#xA;inv: self.component->excludes( self )&#xA;inv: self.composite->excludes( self )&#xA;&#xA;The transitive closure of components of an instance of Dimension must not include the&#xA;Dimension instance.&#xA;&#xA;The transitive closure of composites of an instance of Dimension must not include the&#xA;Dimension instance."/>
       </eAnnotations>
       <eClassifiers xsi:type="ecore:EClass" name="Dimension" eSuperTypes="#//objectmodel/core/Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="DimensionSelfReference"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="DimensionSelfReference" value="self.component->excludes( self )&#xA;inv: self.composite->excludes( self )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="DimensionSelfReference.shortName" value="C-1"/>
+          <details key="DimensionSelfReference.name" value="Dimension Self-Reference"/>
+          <details key="DimensionSelfReference.description" value="A Dimension may not reference itself as a component, nor as a composite."/>
+          <details key="DimensionSelfReference.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Dimension represents physical dimension in a multidimensional database (e.g., a dimension object defined by the programming model/API of an OLAP database server). Tool-specific extensions to the Multidimensional package will generally contain classes that derive from Dimension."/>
         </eAnnotations>
@@ -2497,7 +2955,8 @@
         </eStructuralFeatures>
       </eClassifiers>
     </eSubpackages>
-    <eSubpackages name="xml" nsURI="http://www.omg.org/spec/CWM/1.1/resource/xml" nsPrefix="org.omg.cwm.resource.xml">
+    <eSubpackages name="xml" nsURI="http://www.omg.org/spec/CWM/1.1/resource/xml"
+        nsPrefix="org.omg.cwm.resource.xml">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="XML is rapidly becoming a very important type of data resource, especially in the Internet environment. On the one hand, HTML is evolving to be XML-compliant; in the near future, all HTML documents can be expected to become valid XML documents. On the other hand, XML is quickly becoming the standard format for interchange of data and/or metadata (e.g., XMI). Therefore, XML documents (or streams) representing data and/or metadata can be expected to appear everywhere. &#xA;&#xA;The XML package contains classes and associations that represent common metadata describing XML data resources. It is based on XML 1.0 [XML]. XML Schema is an ongoing activity in the W3C. As future standards are adopted by the W3C on XML Schema, this package will be revised and extended accordingly.&#xA;&#xA;This section provides a description of the main features of the XML package.&#xA;&#xA;An XML schema contains a set of definitions and declarations, in the form of XML element type definitions. An XML element type may contain a set of XML attributes and/or a content model. An attribute can have one of the following defaults: required, implied, default, or fixed. The content model can be one of the following types: empty, any, mixed, or element. Except for the empty content model, a content model consists of constituent parts, particularly element type references. The allowed occurrence of the constituents can be one of the following types: one, zero or one, zero or more, or&#xA;one or more.&#xA;&#xA;An any content model consists of any element types. A mixed content model consists of character data and specified element type references. An element content model consists of specified element type references and/or element content models. An element content model can be one of the following types: choice or sequence.&#xA;&#xA;The XML package depends on the following packages:&#xA;&#xA;    omg.org::CWM::ObjectModel::Core&#xA;    omg.org::CWM::ObjectModel::Instance&#xA;    omg.org::CWM::Foundation::DataTypes&#xA;&#xA;The metamodel diagram for the XML package is split into two parts. The first diagram shows the XML classes and associations, while the second shows the inheritance hierarchy.&#xA;&#xA;OCL Representation of XML Constraints&#xA;&#xA;   None"/>
       </eAnnotations>
@@ -2740,6 +3199,23 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="TransformationTask" eSuperTypes="#//foundation/softwaredeployment/Component">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="TaskNotOwnInverse TaskNotOwnOriginal"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="TaskNotOwnInverse" value="self.inverseTask->forAll( p | p &lt;> self )"/>
+          <details key="TaskNotOwnOriginal" value="self.originalTask->forAll( p | p &lt;> self )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="TaskNotOwnInverse.shortName" value="C-2"/>
+          <details key="TaskNotOwnInverse.name" value="Task Not Own Inverse"/>
+          <details key="TaskNotOwnInverse.description" value="A TransformationTask may not be its own inverse task."/>
+          <details key="TaskNotOwnInverse.level" value="error"/>
+          <details key="TaskNotOwnOriginal.shortName" value="C-3"/>
+          <details key="TaskNotOwnOriginal.name" value="Task Not Own Original"/>
+          <details key="TaskNotOwnOriginal.description" value="A TransformationTask may not be its own original task."/>
+          <details key="TaskNotOwnOriginal.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="This represents a set of Transformations that must be executed together as a single task (logical unit).&#xA;&#xA;A TransformationTask may have an inverse task. A transformation task that maps a source set &quot;A&quot; into a target set &quot;B&quot; can be reversed by the inverse transformation task that maps &quot;B&quot; into &quot;A&quot;."/>
         </eAnnotations>
@@ -2923,6 +3399,18 @@
         <eLiterals name="tfm_binary" value="1"/>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="StepPrecedence" eSuperTypes="#//objectmodel/core/Dependency">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="DifferentPrecedingAndSucceedingSteps"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="DifferentPrecedingAndSucceedingSteps" value="self.precedingStep->forAll( p | self.succeedingStep->forAll( q | p &lt;> q ) )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="DifferentPrecedingAndSucceedingSteps.shortName" value="C-1"/>
+          <details key="DifferentPrecedingAndSucceedingSteps.name" value="Different Preceding And Succeeding Steps"/>
+          <details key="DifferentPrecedingAndSucceedingSteps.description" value="The preceding step and succeeding step of StepPrecedence must not be the same."/>
+          <details key="DifferentPrecedingAndSucceedingSteps.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="This is used to define explicit order-of-execution relationships among TransformationSteps. It may be used independent of or in conjunction with PrecedenceConstraint"/>
         </eAnnotations>
@@ -2969,7 +3457,8 @@
         </eStructuralFeatures>
       </eClassifiers>
     </eSubpackages>
-    <eSubpackages name="olap" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/olap" nsPrefix="org.omg.cwm.analysis.olap">
+    <eSubpackages name="olap" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/olap"
+        nsPrefix="org.omg.cwm.analysis.olap">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Online Analytical Processing (OLAP) is a class of analytic application software that exposes business data in a multidimensional format. This multidimensional format usually includes the consolidation of data drawn from multiple and diverse information sources. Unlike more traditionally structured representations (e.g., the tabular format of a relational database), the multidimensional orientation is a more natural expression of the way business enterprises view their strategic data. For example, an analyst might use an OLAP application to examine total sales revenue by product and geographic region over time, or, perhaps, compare sales margins for the same fiscal periods of two consecutive years. The ultimate objective of OLAP is the efficient construction of analytical models that transform raw business data into strategic business insight.&#xA;&#xA;There are many ways to implement OLAP. Most OLAP systems are constructed using OLAP server tools that enable logical OLAP structures to be built on top of a variety of physical database systems, such as relational or native multidimensional databases.&#xA;&#xA;The following features are generally found in most OLAP systems:&#xA;&#xA;    Multidimensional representation of business data.&#xA;    Upward consolidation of multidimensional data in a hierarchical manner, possibly with the application of specialized processing rules.&#xA;    The ability to navigate a hierarchy from a consolidated value to the lower level values forming it.&#xA;    Support for time-series analysis; i.e., OLAP users are generally concerned with data and consolidations at specific points in time -- By date, week, quarter, etc.&#xA;    Support for modeling and scenario analysis -- A user should be able to apply arbitrary &quot;what-if&quot; analyses to a result set without affecting the stored information.&#xA;    Consistent response times, regardless of how queries are formulated -- This is critical for effective analysis and modeling.&#xA;&#xA;OLAP applications integrate well into the data warehousing environment, because a data warehouse provides relatively clean and stable data stores to drive the OLAP application. These data stores are usually maintained in relational tables that can be read directly by OLAP tools or loaded into OLAP servers. These relational tables are often structured in a manner that reveals the inherent dimensionality of the data (such as the ubiquitous Star and Snowflake schemas). Also, the data transformation and mapping services provided by a data warehouse can be used to supply OLAP systems with both metadata and data. Transformation-related metadata can be used to track the&#xA;lineage of consolidated OLAP data back to its various sources.&#xA;&#xA;The primary objectives of the CWM OLAP package are:&#xA;&#xA;    Define a metamodel of essential OLAP concepts common to most OLAP systems.&#xA;    Provide a facility whereby instances of the OLAP metamodel are mapped to deployment-capable structures (i.e., models of physical data resources, such as the CWM Relational and Multidimensional packages).&#xA;    Ensure that navigation through the logical OLAP model hierarchy and its various resource models is always performed in a uniform manner (i.e., by defining a standard usage of the CWM Transformation package as a means of implementing these mappings).&#xA;    Leverage services provided by other CWM packages, where appropriate (e.g., use the CWM Foundation package to supply a standard representation of expressions).&#xA;&#xA;The OLAP package depends on the following packages:&#xA;&#xA;   org.omg::CWM::ObjectModel::Core&#xA;   org.omg::CWM::Foundation::Expressions&#xA;   org.omg::CWM::Analysis::Transformation&#xA;&#xA;The major classes and associations of the OLAP metamodel are shown in Figure 14-1.  Schema is the logical container of all elements comprising an OLAP model. It is the root element of the model hierarchy and marks the entry point for navigating OLAP models.&#xA;&#xA;A Schema contains Dimensions and Cubes. A Dimension is an ordinate within a multidimensional structure and consists of a list of unique values (i.e., members) that share a common semantic meaning within the domain being modeled. Each member designates a unique position along its ordinate.&#xA;&#xA;A Cube is a collection of analytic values (i.e., measures) that share the same dimensionality. This dimensionality is specified by a set of unique Dimensions from the Schema. Each unique combination of members in the Cartesian product of the Cube�s Dimensions identifies precisely one data cell within a multidimensional structure.&#xA;&#xA;CubeDimensionAssociation relates a Cube to its defining Dimensions. Features relevant to Cube-Dimension relationships (e.g., calcHierarchy) are exposed by this class.&#xA;&#xA;A Dimension has zero or more Hierarchies. A Hierarchy is an organizational structure that describes a traversal pattern through a Dimension, based on parent/child relationships between members of a Dimension. Hierarchies are used to define both navigational and consolidation/computational paths through the Dimension (i.e., a value associated with a child member is aggregated by one or more parents). For example, a Time Dimension with a base periodicity of days might have a Hierarchy&#xA;specifying the consolidation of days into weeks, weeks into months, months into quarters, and quarters into years.&#xA;&#xA;A specific Hierarchy may be designated as the default Hierarchy for display purposes (e.g., a user interface that displays the Dimension as a hierarchical tree of members).  CubeDimensionAssociation can also identify a particular Hierarchy as the default Hierarchy for consolidation calculations performed on the Cube.&#xA;&#xA;MemberSelection models mechanisms capable of partitioning a Dimension�s collection of members. For example, consider a Geography Dimension with members representing cities, states, and regions. An OLAP client interested specifically in cities might define an instance of MemberSelection that extracts the city members.&#xA;&#xA;CubeRegion models a sub-unit of a Cube that is of the same dimensionality as the Cube itself. Each &quot;dimension&quot; of a CubeRegion is represented by a MemberSelection of the corresponding Dimension  of the Cube. Each MemberSelection may define some subset of its Dimension�s members.&#xA;&#xA;CubeRegions are used to implement Cubes. A Cube may be realized by a set of CubeRegions that map portions of the logical Cube to physical data sources. The MemberSelections defining CubeRegions can also be grouped together via MemberSelectionGroups, enabling the definition of CubeRegions with specific semantics. For example, one can specify a CubeRegion containing only the &quot;input level&quot; data cells of a Cube.&#xA;&#xA;A CubeRegion may own any number of CubeDeployments. CubeDeployment is a metaclass that represents an implementation strategy for a multidimensional structure. The ordering of the CubeDeployment classes may optionally be given some implementation-specific meaning (e.g., desired order of selection of several possible deployment strategies, based on optimization considerations).&#xA;&#xA;The OLAP metamodel defines two special types of Dimension: Time and Measure. A Time Dimension provides a means of representing time-series data within a multidimensional structure. The members of a Time Dimension usually define some base periodicity (e.g., days of the week). The implementation of a Time Dimension might provide support for advanced &quot;time-intelligent&quot; functionality, such as the ability to automatically convert between different periodicities and calendars.&#xA;&#xA;The members of a Measure Dimension describe the meaning of the analytic values stored in each data cell of a multidimensional structure. For example, an OLAP application may define Sales, Quantity and Weight as its measures. In this case, each data cell within the Cube stores three values, with each value corresponding to one of the three measures. A measure may have an associated data type. For example, Sales might be of a monetary type, Quantity an integer, and Weight a real number.&#xA;&#xA;The OLAP metamodel specifies two subclasses of Hierarchy: LevelBasedHierarchy and ValueBasedHierarchy.&#xA;&#xA;LevelBasedHierarchy describes hierarchical relationships between specific levels of a Dimension. LevelBasedHierarchy is used to model both &quot;pure level&quot; hierarchies (e.g., dimension-level tables) and &quot;mixed&quot; hierarchies (i.e., levels plus linked nodes). Dimensional levels are modeled by the Level class, a subclass of MemberSelection that partitions a Dimension�s members into disjoint subsets, each representing a distinct level.&#xA;&#xA;For example, the Geography Dimension cited earlier contains members representing cities, states, and regions, such as &quot;Stamford&quot;, &quot;Connecticut&quot;, and &quot;NorthEast&quot;. It might also contain a single member called &quot;USA&quot; representing all regions of the United States. Therefore, the Geography Dimension could have four Levels named &quot;City&quot;, &quot;State&quot;, 'Region&quot;, and &quot;ALL&quot;, respectively. Each Level specifies the subset of members belonging to it: All cities belong to the &quot;City&quot; Level, all states belong to the &quot;State&quot; Level, all regions belong to the &quot;Region&quot; Level, and the single &quot;USA&quot; member belongs to the &quot;ALL&quot; Level.&#xA;&#xA;When used in the definition of a consolidation path, the meaning of &quot;level&quot; is quite clear: Members occupying a given Level consolidate into the next higher Level (e.g., City rolls up into State, State into Region, and Region into ALL).&#xA;&#xA;LevelBasedHierarchy contains an ordered collection of HierarchyLevelAssocations that defines the natural hierarchy of the Dimension. The ordering defines the hierarchical structure in top-down fashion (i.e., the &quot;first&quot; HierarchyLevelAssociation in the ordered collection represents the upper-most level of the dimensional hierarchy).&#xA;&#xA;A HierarchyLevelAssociation may own any number of DimensionDeployments. DimensionDeployment is a metaclass that represents an implementation strategy for hierarchical Dimensions. The ordering of the DimensionDeployment classes may optionally be given an implementation-specific meaning (e.g., desired order of selection of several possible deployment strategies, based on optimization&#xA;considerations).&#xA;&#xA;A ValueBasedHierarchy defines a hierarchical ordering of members in which the concept of level has little or no significance. Instead, the topological structure of the hierarchy conveys meaning. ValueBasedHierarchies are often used to model situations where members are classified or ranked according to their distance from a common root member (e.g., an organizational chart of a corporation). In this case, each member of the hierarchy has some specific &quot;metric&quot; or &quot;value&quot; associated it with it. ValueBasedHierarchy can be used to model pure &quot;linked node&quot; hierarchies (e.g.,&#xA;asymmetric hierarchical graphs or parent-child tables). &#xA;&#xA;As with LevelBasedHierarchy, ValueBasedHierarchy also has an ordered collection of dimensionDeployments, where the ordering semantics are left to implementations to define.&#xA;&#xA;Figure 14-3 illustrates how classes of the OLAP metamodel inherit from the CWM&#xA;Object Model. Two classes requiring further explanation are:&#xA;&#xA;    Measure: A subclass of Attribute that describes the meaning of values stored in the data cells of a multidimensional structure. Different OLAP models often give different interpretations to the term &quot;measure&quot;. In a relational Star Schema, individual measures might be represented by non-key columns of a Fact table (e.g., &quot;Sales&quot; and &quot;Quantity&quot; columns). In this case, measure may be an attribute of a Cube or CubeRegion that models the Fact table. On the other hand, measures can&#xA;also be represented by members of a Measure Dimension. A Fact table supporting this representation has a single Measure column with column values consisting of the members &quot;Sales&quot; and &quot;Quantity&quot;, and a single &quot;value&quot; column (i.e., an implicit data dimension) storing the corresponding measure values. A similar notion of Measure Dimension is used in modeling pure hypercube representations of&#xA;multidimensional servers. Thus, the concept of measure can be represented either as a Dimenson or as an Attribute, depending on the type of OLAP system being modeled.&#xA;&#xA;    Coded Level: A subclass of Level that assigns a unique encoding, or label, to each of its members. CodedLevel is not essential to the OLAP metamodel, but is provided as a helper class for certain applications that might benefit from the ability of OLAP systems to structure data hierarchically. For example, CodedLevel could be used to model systems of nomenclature or classification.&#xA;&#xA;The CWM OLAP metamodel describes logical models of OLAP systems, but does not directly specify how an OLAP system is physically deployed. Modeling the deployment of an OLAP system requires mapping instances of OLAP metaclasses to instances of other CWM metaclasses representing physical resources (e.g., mapping an OLAP Dimension to a Relational Table). This approach offers several advantages:&#xA;&#xA;    The status of the OLAP metamodel as a conceptual model is preserved by this level of indirection. When using OLAP, a client may perceive to be working directly with OLAP objects, but the actual implementation of those objects is hidden from the client. For example, a client may view a member as a value of a Dimension, but whether that member value comes from a row of a relational table, or from a cell in a multidimensional database, is usually not obvious to the client. On the other hand, if a client needs to determine how a logical OLAP structure is physically realized, the metadata describing this mapping is fully available (assuming that the implementation allows the client to drill-down through the metadata).&#xA;&#xA;    The possibility of defining mappings based on expressions means that the amount of metadata required to describe large models (e.g., Dimensions containing large collections of members) can be kept within reasonable bounds. It is generally more efficient to provide expressions that specify where large metadata sets reside, how to connect to them, and how to map their contents, rather than representing them directly as part of the metadata content.&#xA;&#xA;All of the OLAP metaclasses are potential candidates for such deployment mappings. In addition, some OLAP models may also define mappings between several OLAP metaclass instances, forming a natural hierarchy of logical objects (e.g., Dimension Attributes are mapped to Level Attributes which, in turn, are mapped to Table Columns).&#xA;&#xA;The CWM Transformation package is used as the primary means of describing these mappings. A modeler constructing an OLAP model based on CWM will generally define instances of the TransformationMap metaclass to link logical OLAP objects together, and to link those logical objects to other objects representing their physical data sources.&#xA;&#xA;StructureMap is a subclass of TransformationMap that models structure-oriented transformation mappings (i.e., member identity and hierarchical structure). This type of transformation mapping needs to be connected to the OLAP metamodel in a very specific way (according to Level and Hierarchy), so the StructureMap subclass is defined to make these associations explicit. Two specific usages of StructureMap are defined: ListOfValues, which maps attributes identifying members residing at a specific Level, or at a specific Level within a particular Hierarchy, and ImmediateParent, which maps attributes identifying the hierarchical parent(s) of the members.&#xA;&#xA;On the other hand, relatively simple TransformationMaps can be defined within any OLAP model to represent attribute-oriented transformations (e.g., mapping Dimension Attributes to Table Columns that store attribute values).&#xA;&#xA;ContentMap is a subclass of TransformationMap that models content-oriented transformaton mappings (i.e., cell data or measure values). For example, an instance of ContentMap might be used to map each of a CubeRegion�s Measures to Columns of an underlying Fact Table.&#xA;&#xA;Note that, in either case (structural mapping or content mapping), the traversal patterns used by any CWM OLAP implementation are always the same, since both deployment mappings are based on the same usage of CWM TransformationMaps. In addition to representing structural mappings, instances of TransformationMap and its subclasses are also capable of storing implementation-dependent functions or procedures that yield the instance values associated with mapped model elements. For example, a &quot;list of values&quot; StructureMap might store an SQL statement such as &quot;select memberName from Product where productFamily = �consumerElectronics� &quot;, as the value of its formula attribute.&#xA;&#xA;Figure 14-4 illustrates the CWM metaclasses and associations that describe deployment mappings between logical OLAP models and physical resource models. Note that it is possible to combine both Cube (content) and Dimension (structure) deployments together within the context of a single OLAP Schema (via the DeploymentGroup metaclass). Thus, an OLAP Schema can have several possible deployments that users may select based on implementation-specific considerations (e.g., physical optimizations).&#xA;&#xA;OCL Representation of OLAP Constraints&#xA;&#xA;[C-1] Ensure that the Dimensions defining a Cube are unique.&#xA;context Cube inv:&#xA;self.cubeDimensionAssociation->forAll( c1, c2 | c1 &lt;> c2 implies&#xA;c1.dimension &lt;> c2.dimension )&#xA;&#xA;[C-2] A Cube without CubeRegions cannot be mapped to a deployment structure (i.e., physical source of data).&#xA;context Cube inv:&#xA;self.cubeRegion->isEmpty implies self.isVirtual = true&#xA;&#xA;[C-3] If a calcHierarchy is defined, it must be a Hierarchy owned by the Dimension referenced by the CubeDimensionAssociation.&#xA;context CubeDimensionAssociation inv:&#xA;self.calcHierarchy->notEmpty implies self.calcHierarchy.dimension = self.dimension&#xA;&#xA;[C-4] A &quot;fully realized&quot; CubeRegion has no MemberSelectionGroups (and hence, no MemberSelections).&#xA;context CubeRegion inv:&#xA;self.isFullyRealized implies self.memberSelectionGroup->isEmpty&#xA;&#xA;[C-5] A CubeRegion defined by MemberSelections must have, for each Dimension of its owning Cube, a corresponding MemberSelection within each of its&#xA;MemberSelectionGroups.&#xA;context CubeRegion inv:&#xA;self.memberSelectionGroup->notEmpty implies&#xA;self.cube.cubeDimensionAssociation->forAll( d |&#xA;self.memberSelectionGroup->forAll( g |&#xA;g.memberSelection->exists( m | m.dimension = d.dimension ) ) )&#xA;&#xA;[C-6] A CubeRegion defined by MemberSelections must have, within each MemberSelectionGroup, a MemberSelection corresponding to each Dimension of its&#xA;owning Cube.&#xA;context CubeRegion inv:&#xA;self.memberSelectionGroup->notEmpty implies&#xA;self.memberSelectionGroup->forAll( g |&#xA;g.memberSelection->forAll( m |&#xA;self.cube.cubeDimensionAssociation->exists( d | d.dimension = m.dimension ) ) )&#xA;&#xA;[C-7] A Dimension may be a Time Dimension, a Measure Dimension, or neither, but never both types at the same time.&#xA;context Dimension inv:&#xA;not ( self.isTime and self.isMeasure )&#xA;&#xA;[C-8] The default display Hierarchy (if defined) must be one of the Hierarchies owned by the Dimension.&#xA;context Dimension inv:&#xA;self.displayDefault->notEmpty implies self.hierarchy->includes( self.displayDefault )&#xA;&#xA;[C-9] An instance of DimensionDeployment must be referenced exclusively by either a HierarchyLevelAssociation or a ValueBasedHierarchy.&#xA;context DimensionDeployment inv:&#xA;self.hierarchyLevelAssociation->isEmpty xor self.valueBasedHierarchy->isEmpty&#xA;&#xA;[C-10] Within a DimensionDeployment, an &quot;immediate parent&quot; StructureMap must always have an associated and distinct &quot;list of values&quot; StructureMap.&#xA;context DimensionDeployment inv:&#xA;self.immediateParent->notEmpty implies&#xA;( self.listOfValues->notEmpty and self.listOfValues &lt;> self.immediateParent )&#xA;&#xA;[C-11] A StructureMap referenced as a &quot;list of values&quot; StructureMap must not reside outside of the DimensionDeployment�s collection of StructureMaps.&#xA;context DimensionDeployment inv:&#xA;self.listOfValues->notEmpty implies self.structureMap->includes( self.listOfValues )&#xA;&#xA;[C-12] A StructureMap referenced as an &quot;immediate parent&quot; StructureMap must not reside outside of the DimensionDeployment�s collection of StructureMaps.&#xA;context DimensionDeployment inv:&#xA;self.immediateParent->notEmpty implies&#xA;self.structureMap->includes( self.immediateParent )&#xA;&#xA;[C-13] The currentLevel of each HierarchyLevelAssociation must refer to a Level owned by the Dimension of the LevelBasedHierarchy containing the HierarchyLevelAssociation.&#xA;context LevelBasedHierarchy inv:&#xA;self.hierarchyLevelAssociation->notEmpty implies&#xA;self.hierarchyLevelAssociation->forAll( h |&#xA;self.dimension.memberSelection&#xA;->select( oclType = Olap::Level )->includes( h.currentLevel ) )&#xA;&#xA;[C-14] No two HierarchyLevelAssociations may designate the same Level instance as their &quot;current level&quot;.&#xA;context LevelBasedHierarchy inv:&#xA;self.hierarchyLevelAssociation->forAll( h1, h2 | h1 &lt;> h2 implies&#xA;h1.currentLevel &lt;> h2.currentLevel )"/>
       </eAnnotations>
@@ -2985,6 +3474,23 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Cube" eSuperTypes="#//objectmodel/core/Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="UniqueCubeDimensions VirtualCubeWithoutRegions"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="UniqueCubeDimensions" value="self.cubeDimensionAssociation->forAll( c1, c2 | c1 &lt;> c2 implies&#xA;c1.dimension &lt;> c2.dimension )"/>
+          <details key="VirtualCubeWithoutRegions" value="self.cubeRegion->isEmpty implies self.isVirtual = true"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="UniqueCubeDimensions.shortName" value="C-1"/>
+          <details key="UniqueCubeDimensions.name" value="Unique Cube Dimensions"/>
+          <details key="UniqueCubeDimensions.description" value="Ensure that the Dimensions defining a Cube are unique."/>
+          <details key="UniqueCubeDimensions.level" value="error"/>
+          <details key="VirtualCubeWithoutRegions.shortName" value="C-2"/>
+          <details key="VirtualCubeWithoutRegions.name" value="Virtual Cube Without Regions"/>
+          <details key="VirtualCubeWithoutRegions.description" value="A Cube without CubeRegions cannot be mapped to a deployment structure (i.e., physical source of data)."/>
+          <details key="VirtualCubeWithoutRegions.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A Cube is a collection of analytic values (i.e., measures) that share the same dimensionality.  This dimensionality is specified by a set of unique Dimensions from the Schema.  Each unique combination of members in the Cartesian product of the Cube�s Dimensions identifies precisely one data cell within a multidimensional structure.&#xA;&#xA;Synonyms: Multidimensional Array, Hypercube, Hypervolume.&#xA;"/>
         </eAnnotations>
@@ -3037,6 +3543,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="CubeDimensionAssociation" eSuperTypes="#//objectmodel/core/Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="CalcHierarchyOwnedByDimension"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="CalcHierarchyOwnedByDimension" value="self.calcHierarchy->notEmpty implies self.calcHierarchy.dimension = self.dimension"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="CalcHierarchyOwnedByDimension.shortName" value="C-3"/>
+          <details key="CalcHierarchyOwnedByDimension.name" value="CalcHierarchy Owned By Dimension"/>
+          <details key="CalcHierarchyOwnedByDimension.description" value="If a calcHierarchy is defined, it must be a Hierarchy owned by the Dimension referenced by the CubeDimensionAssociation."/>
+          <details key="CalcHierarchyOwnedByDimension.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="CubeDimensionAssociation relates a Cube to the Dimensions that define it.  Features relevant to Cube-Dimension relationships (e.g., calcHierarchy) are exposed by this class.&#xA;"/>
         </eAnnotations>
@@ -3060,6 +3578,28 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="CubeRegion" eSuperTypes="#//objectmodel/core/Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="FullyRealizedNoMemberSelections MemberSelectionForEachDimension MemberSelectionMatchesDimensions"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="FullyRealizedNoMemberSelections" value="self.isFullyRealized implies self.memberSelectionGroup->isEmpty"/>
+          <details key="MemberSelectionForEachDimension" value="self.memberSelectionGroup->notEmpty implies&#xA;self.cube.cubeDimensionAssociation->forAll( d |&#xA;self.memberSelectionGroup->forAll( g |&#xA;g.memberSelection->exists( m | m.dimension = d.dimension ) ) )"/>
+          <details key="MemberSelectionMatchesDimensions" value="self.memberSelectionGroup->notEmpty implies&#xA;self.memberSelectionGroup->forAll( g |&#xA;g.memberSelection->forAll( m |&#xA;self.cube.cubeDimensionAssociation->exists( d | d.dimension = m.dimension ) ) )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="FullyRealizedNoMemberSelections.shortName" value="C-4"/>
+          <details key="FullyRealizedNoMemberSelections.name" value="Fully Realized No MemberSelections"/>
+          <details key="FullyRealizedNoMemberSelections.description" value="A fully realized CubeRegion has no MemberSelectionGroups (and hence, no MemberSelections)."/>
+          <details key="FullyRealizedNoMemberSelections.level" value="error"/>
+          <details key="MemberSelectionForEachDimension.shortName" value="C-5"/>
+          <details key="MemberSelectionForEachDimension.name" value="MemberSelection For Each Dimension"/>
+          <details key="MemberSelectionForEachDimension.description" value="A CubeRegion defined by MemberSelections must have, for each Dimension of its owning Cube, a corresponding MemberSelection within each of its MemberSelectionGroups."/>
+          <details key="MemberSelectionForEachDimension.level" value="error"/>
+          <details key="MemberSelectionMatchesDimensions.shortName" value="C-6"/>
+          <details key="MemberSelectionMatchesDimensions.name" value="MemberSelection Matches Dimensions"/>
+          <details key="MemberSelectionMatchesDimensions.description" value="A CubeRegion defined by MemberSelections must have, within each MemberSelectionGroup, a MemberSelection corresponding to each Dimension of its owning Cube."/>
+          <details key="MemberSelectionMatchesDimensions.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="CubeRegion models a sub-unit of a Cube of the same dimensionality as the Cube itself, with each Dimension optionally subsetted in its list of members.&#xA;&#xA;When mapped to its physical source, a CubeRegion contains data cells identified by the member combinations of the Cartesian product of the CubeRegion's associated Dimensions and Measures.&#xA;&#xA;The relative ordering of CubeDeployment classes optionally implies a desired order of selection of the CubeDeployments, based on implementation-specific considerations (e.g., optimized access of aggregate data).&#xA;&#xA;Synonyms: Sub-Cube, Partition, Slice, Region, Area.&#xA;&#xA;Misc. notes:&#xA;1.  A CubeRegion is not a Cube, and a Cube is not a CubeRegion.&#xA;2.  A Cube has a Measure and CubeRegion may have a corresponding measure (Measures are Attributes).&#xA;3.  A Cube may or may not have CubeRegions.&#xA;4.  If a Cube does not have a CubeRegion, then it's not physically mapped (it's virtual).  All physical mapping is based on the CubeRegion , not the Cube."/>
         </eAnnotations>
@@ -3117,6 +3657,23 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Dimension" eSuperTypes="#//objectmodel/core/Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="NotTimeAndMeasure DisplayDefaultIsOwned"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="NotTimeAndMeasure" value="not ( self.isTime and self.isMeasure )"/>
+          <details key="DisplayDefaultIsOwned" value="self.displayDefault->notEmpty implies self.hierarchy->includes( self.displayDefault )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="NotTimeAndMeasure.shortName" value="C-7"/>
+          <details key="NotTimeAndMeasure.name" value="Not Time And Measure"/>
+          <details key="NotTimeAndMeasure.description" value="A Dimension may be a Time Dimension, a Measure Dimension, or neither, but never both types at the same time."/>
+          <details key="NotTimeAndMeasure.level" value="error"/>
+          <details key="DisplayDefaultIsOwned.shortName" value="C-8"/>
+          <details key="DisplayDefaultIsOwned.name" value="Display Default Is Owned"/>
+          <details key="DisplayDefaultIsOwned.description" value="The default display Hierarchy (if defined) must be one of the Hierarchies owned by the Dimension."/>
+          <details key="DisplayDefaultIsOwned.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A Dimension is an ordinate within a multidimensional structure, and consists of an ordered list of values (i.e.,  members) that share a common semantic meaning within the domain being modeled.  Each member designates a unique position along its ordinate.&#xA;&#xA;Typical Dimensions are: Time, Product, Geography, Scenario (e.g., actual, budget, forecast), Measure (e.g., sales, quantity).&#xA;"/>
         </eAnnotations>
@@ -3162,6 +3719,33 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="DimensionDeployment" eSuperTypes="#//objectmodel/core/Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="ExclusiveHierarchyReference ImmediateParentRequiresListOfValues ListOfValuesInStructureMaps ImmediateParentInStructureMaps"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="ExclusiveHierarchyReference" value="self.hierarchyLevelAssociation->isEmpty xor self.valueBasedHierarchy->isEmpty"/>
+          <details key="ImmediateParentRequiresListOfValues" value="self.immediateParent->notEmpty implies&#xA;( self.listOfValues->notEmpty and self.listOfValues &lt;> self.immediateParent )"/>
+          <details key="ListOfValuesInStructureMaps" value="self.listOfValues->notEmpty implies self.structureMap->includes( self.listOfValues )"/>
+          <details key="ImmediateParentInStructureMaps" value="self.immediateParent->notEmpty implies&#xA;self.structureMap->includes( self.immediateParent )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="ExclusiveHierarchyReference.shortName" value="C-9"/>
+          <details key="ExclusiveHierarchyReference.name" value="Exclusive Hierarchy Reference"/>
+          <details key="ExclusiveHierarchyReference.description" value="An instance of DimensionDeployment must be referenced exclusively by either a HierarchyLevelAssociation or a ValueBasedHierarchy."/>
+          <details key="ExclusiveHierarchyReference.level" value="error"/>
+          <details key="ImmediateParentRequiresListOfValues.shortName" value="C-10"/>
+          <details key="ImmediateParentRequiresListOfValues.name" value="Immediate Parent Requires List Of Values"/>
+          <details key="ImmediateParentRequiresListOfValues.description" value="Within a DimensionDeployment, an immediate parent StructureMap must always have an associated and distinct list of values StructureMap."/>
+          <details key="ImmediateParentRequiresListOfValues.level" value="error"/>
+          <details key="ListOfValuesInStructureMaps.shortName" value="C-11"/>
+          <details key="ListOfValuesInStructureMaps.name" value="List Of Values In StructureMaps"/>
+          <details key="ListOfValuesInStructureMaps.description" value="A StructureMap referenced as a list of values StructureMap must not reside outside of the DimensionDeployment's collection of StructureMaps."/>
+          <details key="ListOfValuesInStructureMaps.level" value="error"/>
+          <details key="ImmediateParentInStructureMaps.shortName" value="C-12"/>
+          <details key="ImmediateParentInStructureMaps.name" value="Immediate Parent In StructureMaps"/>
+          <details key="ImmediateParentInStructureMaps.description" value="A StructureMap referenced as an immediate parent StructureMap must not reside outside of the DimensionDeployment's collection of StructureMaps."/>
+          <details key="ImmediateParentInStructureMaps.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="DimensionDeployment represents a particular implementation strategy for the dimensional/hierarchical portions of an OLAP model.  It does so by organizing a collection of StructureMaps, which in turn define a mapping to an implementation model.&#xA;"/>
         </eAnnotations>
@@ -3258,6 +3842,23 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="LevelBasedHierarchy" eSuperTypes="#//analysis/olap/Hierarchy">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="CurrentLevelOwnedByDimension UniqueCurrentLevels"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="CurrentLevelOwnedByDimension" value="self.hierarchyLevelAssociation->notEmpty implies&#xA;self.hierarchyLevelAssociation->forAll( h |&#xA;self.dimension.memberSelection&#xA;->select( oclType = Olap::Level )->includes( h.currentLevel ) )"/>
+          <details key="UniqueCurrentLevels" value="self.hierarchyLevelAssociation->forAll( h1, h2 | h1 &lt;> h2 implies&#xA;h1.currentLevel &lt;> h2.currentLevel )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="CurrentLevelOwnedByDimension.shortName" value="C-13"/>
+          <details key="CurrentLevelOwnedByDimension.name" value="Current Level Owned By Dimension"/>
+          <details key="CurrentLevelOwnedByDimension.description" value="The currentLevel of each HierarchyLevelAssociation must refer to a Level owned by the Dimension of the LevelBasedHierarchy containing the HierarchyLevelAssociation."/>
+          <details key="CurrentLevelOwnedByDimension.level" value="error"/>
+          <details key="UniqueCurrentLevels.shortName" value="C-14"/>
+          <details key="UniqueCurrentLevels.name" value="Unique Current Levels"/>
+          <details key="UniqueCurrentLevels.description" value="No two HierarchyLevelAssociations may designate the same Level instance as their current level."/>
+          <details key="UniqueCurrentLevels.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A LevelBasedHierarchy is a hierarchy that describes relationships between specific levels of a Dimension. LevelBasedHierarchy can be used to model to &quot;pure level&quot; hierarchies (e.g., dimension-level tables) and &quot;mixed&quot; hierarchies (i.e., levels + linked nodes).&#xA;"/>
         </eAnnotations>
@@ -4733,6 +5334,28 @@
         <details key="documentation" value="The CWM Information Visualization metamodel defines metadata supporting the problem domain of &quot;information publishing&quot; or, more generally, &quot;information visualization&quot;.&#xA;&#xA;Within the data warehousing environment, data is collected from numerous, diverse sources and transformed into a unified representation that facilitates the analysis of data for purposes of gaining business insight. Robust and flexible information visualization tools are key to the effective analysis of this information. Information visualization tools must be capable of understanding and preserving the &quot;logical structure&quot; of data warehouse information, while enabling the user to perform any number of &quot;rendering transformations&quot; on information content (e.g., displaying the same query result set in several different formats, such as a printed report, Web page, pie chart, bar graph, etc.).&#xA;&#xA;Since information visualization is a very broad problem domain, with a diverse set of possible solutions and many evolving standards, the CWM Information Visualization metamodel defines very generic, container-like metadata constructs that either contain or reference more complex visualization mechanisms at the M1-level. These metadata structures are intended to support the minimal metadata required to interchange more complex M1 models of visualization mechanisms.&#xA;&#xA;The Information Visualization package depends on the following packages:&#xA;&#xA;    org.omg.cwm.objectmodel.core&#xA;    org.omg.cwm.foundation.expressions&#xA;&#xA;RenderedObject is the logical proxy for an arbitrary ModelElement that is to be rendered via some rendering transformation or process. A RenderedObject may be composed of an arbitrary number of other RenderedObjects (i.e., components), and may have topological relationships to still other RenderedObjects. The formula attribute allows for the specification of any implementation-dependent expression that completes the definition of a RenderedObject. For example, the formula might specify the position of the RenderedObject within a two-dimensional grid, or in relation to one of its neighbors; e.g., formula = &quot;neighbor(x, y) + (delta-x, delta-y)&quot;.&#xA;&#xA;A RenderedObject generally references one or more Renderings that specify how the enderedObject is actually presented. One of these associated Renderings may optionally be designated as a default Rendering. &#xA;&#xA;A Rendering is semantically equivalent to a transformation, in that it transforms a source RenderedObject to some target &quot;displayed&quot; (or otherwise &quot;presented&quot; object -- e.g., a displayed image or an audio clip) . An instance of Rendering is fully specified via its formula attribute, which, like RenderedObject, contains an implementation-dependent expression.&#xA;&#xA;Thus, a RenderedObject may be viewed as the &quot;logical description&quot; of an object to be rendered, independently of how it is actually presented by any of its associated Renderings, and Renderings may be viewed as transformations that control the presentation of the RenderedObject while preserving its logical structure. &#xA;&#xA;Note that a RenderedObject may be the target of a complex transformation (i.e., utilizing the CWM Transformation package). For example, an N-dimensional OLAP cube might be transformed into an equivalent, two-dimensional, composite RenderedObject, with several dimensions mapped to row and column edges, respectively, and all other dimensions constrained to single member values. Several Renderings may then be defined and associated with the resultant RenderedObject, mapping the two-dimensional logical structure to the surface of a display screen in various different formats (e.g., spreadsheet, pie chart, bar graph, etc.).&#xA;&#xA;Possible types of Renderings include: Screen, paper, voice, Web, HTML documents, XML/XSL, languages based on extensions to XML, SVG, visual objects, responses to keying (e.g., keying interception plus rules), etc. &#xA;&#xA;XSLRendering represents a useful subtype of Rendering that�s based on XSL (e.g., this subtype�s formula might contain a procedure that uses XSL to create an HTML document).&#xA;&#xA;Finally, RenderedObjectSet represents a simple container of both logical RenderedObjects and available Renderings.&#xA;&#xA;The inheritance of the Information Visualization metamodel from the Object Model is shown in Fig. 16-2.&#xA;&#xA;OCL Representation of Information Visualization Constraints&#xA;&#xA;[C-1] The set of Renderings includes the default Rendering.&#xA;context RenderedObject inv:&#xA;self.defaultRendering->notEmpty implies&#xA;self.rendering->includes( self.defaultRendering )&#xA;&#xA;[C-2] A RenderedObject may not reference itself as a Neighbor nor as a Component.&#xA;context RenderedObject&#xA;inv: self.neighbor->excludes( self )&#xA;inv: self.component->excludes( self )&#xA;&#xA;[C-3] A RenderedObject may not reference one of its Neighbors as a Component (and vice versa).&#xA;context RenderedObject inv:&#xA;(self.neighbor->notEmpty and self.component->notEmpty) implies&#xA;self.neighbor->intersection( self.component )->isEmpty&#xA;&#xA;The transitive closure of Neighbors of an instance of RenderedObject must not include the RenderedObject instance.&#xA;&#xA;The transitive closure of Components of an instance of RenderedObject must not include the RenderedObject instance."/>
       </eAnnotations>
       <eClassifiers xsi:type="ecore:EClass" name="RenderedObject" eSuperTypes="#//objectmodel/core/Classifier">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="DefaultRenderingIncluded RenderedObjectSelfReference NeighborsNotComponents"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="DefaultRenderingIncluded" value="self.defaultRendering->notEmpty implies&#xA;self.rendering->includes( self.defaultRendering )"/>
+          <details key="RenderedObjectSelfReference" value="self.neighbor->excludes( self )&#xA;inv: self.component->excludes( self )"/>
+          <details key="NeighborsNotComponents" value="(self.neighbor->notEmpty and self.component->notEmpty) implies&#xA;self.neighbor->intersection( self.component )->isEmpty"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="DefaultRenderingIncluded.shortName" value="C-1"/>
+          <details key="DefaultRenderingIncluded.name" value="Default Rendering Included"/>
+          <details key="DefaultRenderingIncluded.description" value="The set of Renderings includes the default Rendering."/>
+          <details key="DefaultRenderingIncluded.level" value="error"/>
+          <details key="RenderedObjectSelfReference.shortName" value="C-2"/>
+          <details key="RenderedObjectSelfReference.name" value="RenderedObject Self-Reference"/>
+          <details key="RenderedObjectSelfReference.description" value="A RenderedObject may not reference itself as a Neighbor nor as a Component."/>
+          <details key="RenderedObjectSelfReference.level" value="error"/>
+          <details key="NeighborsNotComponents.shortName" value="C-3"/>
+          <details key="NeighborsNotComponents.name" value="Neighbors Not Components"/>
+          <details key="NeighborsNotComponents.description" value="A RenderedObject may not reference one of its Neighbors as a Component (and vice versa)."/>
+          <details key="NeighborsNotComponents.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="RenderedObject serves as a logical &quot;proxy&quot; for an arbitrary ModelElement that is to be&#xA;rendered."/>
         </eAnnotations>
@@ -4869,6 +5492,18 @@
         <details key="documentation" value="Business users of data warehouses need to have a good understanding of what information and tools exist in a data warehouse. They need to understand what the information means from a business perspective, how it is derived, from what data resources it is derived, and what analysis and reporting tools exist for manipulating and reporting the information. They may also need to subscribe to analysis and reporting tools, and have them run with results delivered to them on a regular basis.&#xA; &#xA;The BusinessNomenclature package contains classes and associations that can be used to represent business metadata. Easy access to this business metadata enables business users to exploit the value of the information in a data warehouse. It can also aid technical users in certain tasks. An example is the use of common business terms and concepts for discussing information requirements with business users. Another example is accessing business intelligence tools for analyzing the impact of warehouse design changes.&#xA;&#xA;The scope of the BusinessNomenclature package is restricted to the domain of data warehousing and business intelligence.&#xA;&#xA;This section provides a description of the main features of the BusinessNomenclature package.&#xA;&#xA;The BusinessNomenclature package provides two main constructs to represent business terms and concepts and related semantics:&#xA;&#xA;    Taxonomy is a collection of concepts that provide the context for the meaning of a particular term.&#xA;    Glossary is a collection of terms and various related forms of the term.&#xA;&#xA;A taxonomy is a collection of concepts. Concepts represent semantic information and relationships. Concepts are identified by terms, which in turn are manifested by a word or phrase. More than one term may describe the same concept and a given term may describe more than one concept.&#xA;A glossary is a collection of terms that are related through explicit or implicit relationships. Terms may be preferred (the term best representing its concept) and thus represent the vocabulary of a business domain or user. Terms may be synonyms and point at the preferred term. A preferred term and its synonyms represent the fact that several terms describe the same concept although with different shades of meaning.&#xA;&#xA;Terms may be arranged into a hierarchy of more generic and more specific elements. This relationship allows substituting a narrower term, such as &quot;USA&quot;, for a wider term, such as &quot;country&quot;.&#xA;&#xA;The BusinessNomenclature package depends on the following packages:&#xA;&#xA;    omg.org::CWM::ObjectModel::Core&#xA;&#xA;The metamodel diagram for the BusinessNomenclature package is split into two parts. The first diagram shows the BusinessNomenclature classes and associations, while the second shows the inheritance hierarchy.&#xA;&#xA;OCL Representation of Business Nomenclature Constraints&#xA;[C-1] A Concept may not relate to itself.&#xA;context Concept&#xA;inv: self.relatedConcept->forAll ( p | p &lt;> self )&#xA;&#xA;[C-2] The parent of a Glossary must be a Glossary.&#xA;context Glossary&#xA;inv: self.parent.oclIsKindOf( Glossary )&#xA;&#xA;[C-3] The child of a Glossary must be a Glossary.&#xA;context Glossary&#xA;inv: self.child->forAll( p | p.oclIsKindOf( Glossary ) )&#xA;&#xA;[C-4] The parent of a Taxonomy must be a Taxonomy.&#xA;context Taxonomy&#xA;inv: self.parent.oclIsKindOf( Taxonomy )&#xA;&#xA;[C-5] The child of a Taxonomy must be a Taxonomy.&#xA;context Taxonomy&#xA;inv: self.child->forAll( p | p.oclIsKindOf( Taxonomy ) )&#xA;&#xA;[C-6] A Term may not relate to itself.&#xA;context Term&#xA;inv: self.relatedTerm->forAll ( p | p &lt;> self )&#xA;&#xA;[C-7] A VocabularyElement may not relate to itself.&#xA;context Vocabulary&#xA;inv: self.relatedElement->forAll ( p | p &lt;> self )&#xA;&#xA;[C-8] The RelatedConcepts association is derived from the RelatedVocabularyElements association. All ends of the RelatedConcepts association must be Concepts.&#xA;context RelatedConcepts&#xA;inv: RelatedVocabularyElements.allInstances.select( element.oclIsKindOf( Concept )&#xA;and relatedElement.oclIsKindOf( Concept ) )&#xA;&#xA;[C-9] The RelatedTerms association is derived from the RelatedVocabularyElements association. All ends of the RelatedTerms association must beTerms.&#xA;context RelatedTerms&#xA;inv: RelatedVocabularyElements.allInstances.select( element.oclIsKindOf( Term ) and&#xA;relatedElement.oclIsKindOf( Term ) )"/>
       </eAnnotations>
       <eClassifiers xsi:type="ecore:EClass" name="VocabularyElement" eSuperTypes="#//objectmodel/core/ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="VocabularySelfReference"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="VocabularySelfReference" value="self.relatedElement->forAll ( p | p &lt;> self )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="VocabularySelfReference.shortName" value="C-7"/>
+          <details key="VocabularySelfReference.name" value="Vocabulary Self-Reference"/>
+          <details key="VocabularySelfReference.description" value="A VocabularyElement may not relate to itself."/>
+          <details key="VocabularySelfReference.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="This represents a common superclass for Concepts and Terms."/>
         </eAnnotations>
@@ -4925,6 +5560,23 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Taxonomy" eSuperTypes="#//analysis/businessnomenclature/Nomenclature">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="TaxonomyParentIsTaxonomy TaxonomyChildIsTaxonomy"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="TaxonomyParentIsTaxonomy" value="self.parent.oclIsKindOf( Taxonomy )"/>
+          <details key="TaxonomyChildIsTaxonomy" value="self.child->forAll( p | p.oclIsKindOf( Taxonomy ) )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="TaxonomyParentIsTaxonomy.shortName" value="C-4"/>
+          <details key="TaxonomyParentIsTaxonomy.name" value="Taxonomy Parent Is Taxonomy"/>
+          <details key="TaxonomyParentIsTaxonomy.description" value="The parent of a Taxonomy must be a Taxonomy."/>
+          <details key="TaxonomyParentIsTaxonomy.level" value="error"/>
+          <details key="TaxonomyChildIsTaxonomy.shortName" value="C-5"/>
+          <details key="TaxonomyChildIsTaxonomy.name" value="Taxonomy Child Is Taxonomy"/>
+          <details key="TaxonomyChildIsTaxonomy.description" value="The child of a Taxonomy must be a Taxonomy."/>
+          <details key="TaxonomyChildIsTaxonomy.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="This represents a collection of Concepts that form an ontology."/>
         </eAnnotations>
@@ -4936,6 +5588,23 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Glossary" eSuperTypes="#//analysis/businessnomenclature/Nomenclature">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="GlossaryParentIsGlossary GlossaryChildIsGlossary"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="GlossaryParentIsGlossary" value="self.parent.oclIsKindOf( Glossary )"/>
+          <details key="GlossaryChildIsGlossary" value="self.child->forAll( p | p.oclIsKindOf( Glossary ) )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="GlossaryParentIsGlossary.shortName" value="C-2"/>
+          <details key="GlossaryParentIsGlossary.name" value="Glossary Parent Is Glossary"/>
+          <details key="GlossaryParentIsGlossary.description" value="The parent of a Glossary must be a Glossary."/>
+          <details key="GlossaryParentIsGlossary.level" value="error"/>
+          <details key="GlossaryChildIsGlossary.shortName" value="C-3"/>
+          <details key="GlossaryChildIsGlossary.name" value="Glossary Child Is Glossary"/>
+          <details key="GlossaryChildIsGlossary.description" value="The child of a Glossary must be a Glossary."/>
+          <details key="GlossaryChildIsGlossary.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="This represents a collection of Terms."/>
         </eAnnotations>
@@ -4957,6 +5626,18 @@
         </eAnnotations>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Concept" eSuperTypes="#//analysis/businessnomenclature/VocabularyElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="ConceptSelfReference"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="ConceptSelfReference" value="self.relatedConcept->forAll ( p | p &lt;> self )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="ConceptSelfReference.shortName" value="C-1"/>
+          <details key="ConceptSelfReference.name" value="Concept Self-Reference"/>
+          <details key="ConceptSelfReference.description" value="A Concept may not relate to itself."/>
+          <details key="ConceptSelfReference.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="This represents a business idea or notion. &#xA;&#xA;Concepts are represented by Terms. Users use Terms that are familiar to them in their business environment to refer to Concepts."/>
         </eAnnotations>
@@ -4980,6 +5661,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Term" eSuperTypes="#//analysis/businessnomenclature/VocabularyElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="TermSelfReference"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="TermSelfReference" value="self.relatedTerm->forAll ( p | p &lt;> self )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="TermSelfReference.shortName" value="C-6"/>
+          <details key="TermSelfReference.name" value="Term Self-Reference"/>
+          <details key="TermSelfReference.description" value="A Term may not relate to itself."/>
+          <details key="TermSelfReference.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="This represents words or phrases used by business users to refer to Concepts.&#xA;&#xA;A Term has a definition in a specific context. The context is provided by the referenced Concept that describes the underlying semantics."/>
         </eAnnotations>
@@ -5028,7 +5721,8 @@
       </eClassifiers>
     </eSubpackages>
   </eSubpackages>
-  <eSubpackages name="management" nsURI="http://www.omg.org/spec/CWM/1.1/management" nsPrefix="org.omg.cwm.management">
+  <eSubpackages name="management" nsURI="http://www.omg.org/spec/CWM/1.1/management"
+      nsPrefix="org.omg.cwm.management">
     <eSubpackages name="warehouseprocess" nsURI="http://www.omg.org/spec/CWM/1.1/management/warehouseprocess"
         nsPrefix="org.omg.cwm.management.warehouseprocess">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -5258,6 +5952,63 @@
           </eStructuralFeatures>
         </eClassifiers>
         <eClassifiers xsi:type="ecore:EClass" name="RecurringPointInTimeEvent" eSuperTypes="#//management/warehouseprocess/events/PointInTimeEvent">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+            <details key="constraints" value="MonthRequiredForEveryYear MonthValidRange DayOfMonthRequired DayOfMonthValidRange DayOfWeekRequiredForEveryWeek HourRequired HourValidRange MinuteRequired MinuteValidRange SecondValidRange"/>
+          </eAnnotations>
+          <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+            <details key="MonthRequiredForEveryYear" value="self.recurringType=everyYear implies self.month->notEmpty"/>
+            <details key="MonthValidRange" value="self.month->notEmpty implies 1 &lt;= self.month &lt;= 12"/>
+            <details key="DayOfMonthRequired" value="self.recurringType=everyYear or self.recurringType=everyMonth&#xA;implies self.dayOfMonth->notEmpty"/>
+            <details key="DayOfMonthValidRange" value="self.dayOfMonth->notEmpty implies 1 &lt;= self.dayOfMonth &lt;= 31"/>
+            <details key="DayOfWeekRequiredForEveryWeek" value="self.recurringType=everyWeek implies self.dayOfWeek->notEmpty"/>
+            <details key="HourRequired" value="self.recurringType=everyYear or self.recurringType=everyMonth or&#xA;self.recurringType=everyWeek or self.recurringType=everyDay&#xA;implies self.hour->notEmpty"/>
+            <details key="HourValidRange" value="self.hour->notEmpty implies 0 &lt;= hour &lt;= 23"/>
+            <details key="MinuteRequired" value="self.recurringType&lt;>everyMinute implies self.minute->notEmpty"/>
+            <details key="MinuteValidRange" value="self.minute->notEmpty implies 0 &lt;= self.minute &lt;= 59"/>
+            <details key="SecondValidRange" value="0 &lt;= self.second &lt;= 59"/>
+          </eAnnotations>
+          <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+            <details key="MonthRequiredForEveryYear.shortName" value="C-1"/>
+            <details key="MonthRequiredForEveryYear.name" value="Month Required For EveryYear"/>
+            <details key="MonthRequiredForEveryYear.description" value="month must be specified when recurringType is everyYear."/>
+            <details key="MonthRequiredForEveryYear.level" value="error"/>
+            <details key="MonthValidRange.shortName" value="C-2"/>
+            <details key="MonthValidRange.name" value="Month Valid Range"/>
+            <details key="MonthValidRange.description" value="month must be between 1 and 12 (inclusive) when specified."/>
+            <details key="MonthValidRange.level" value="error"/>
+            <details key="DayOfMonthRequired.shortName" value="C-3"/>
+            <details key="DayOfMonthRequired.name" value="DayOfMonth Required"/>
+            <details key="DayOfMonthRequired.description" value="dayOfMonth must be specified when recurringType is everyYear or everyMonth."/>
+            <details key="DayOfMonthRequired.level" value="error"/>
+            <details key="DayOfMonthValidRange.shortName" value="C-4"/>
+            <details key="DayOfMonthValidRange.name" value="DayOfMonth Valid Range"/>
+            <details key="DayOfMonthValidRange.description" value="dayOfMonth must be between 1 and 31 (inclusive) when specified."/>
+            <details key="DayOfMonthValidRange.level" value="error"/>
+            <details key="DayOfWeekRequiredForEveryWeek.shortName" value="C-5"/>
+            <details key="DayOfWeekRequiredForEveryWeek.name" value="DayOfWeek Required For EveryWeek"/>
+            <details key="DayOfWeekRequiredForEveryWeek.description" value="dayOfWeek must be specified when recurringType is everyWeek."/>
+            <details key="DayOfWeekRequiredForEveryWeek.level" value="error"/>
+            <details key="HourRequired.shortName" value="C-6"/>
+            <details key="HourRequired.name" value="Hour Required"/>
+            <details key="HourRequired.description" value="hour must be specified when recurringType is everyYear or everyMonth or everyWeek or everyDay."/>
+            <details key="HourRequired.level" value="error"/>
+            <details key="HourValidRange.shortName" value="C-7"/>
+            <details key="HourValidRange.name" value="Hour Valid Range"/>
+            <details key="HourValidRange.description" value="hour must be between 0 and 23 (inclusive) when specified."/>
+            <details key="HourValidRange.level" value="error"/>
+            <details key="MinuteRequired.shortName" value="C-8"/>
+            <details key="MinuteRequired.name" value="Minute Required"/>
+            <details key="MinuteRequired.description" value="minute must be specified when recurringType is not everyMinute."/>
+            <details key="MinuteRequired.level" value="error"/>
+            <details key="MinuteValidRange.shortName" value="C-9"/>
+            <details key="MinuteValidRange.name" value="Minute Valid Range"/>
+            <details key="MinuteValidRange.description" value="minute must be between 0 and 59 (inclusive) when specified."/>
+            <details key="MinuteValidRange.level" value="error"/>
+            <details key="SecondValidRange.shortName" value="C-10"/>
+            <details key="SecondValidRange.name" value="Second Valid Range"/>
+            <details key="SecondValidRange.description" value="second must be between 0 and 59 (inclusive)."/>
+            <details key="SecondValidRange.level" value="error"/>
+          </eAnnotations>
           <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
             <details key="documentation" value="This event triggers a WarehouseProcess on a regular basis such as a specific date or time (for example, the Wednesday of every other week, at 2:30 pm)."/>
           </eAnnotations>
@@ -5311,6 +6062,18 @@
         <details key="documentation" value="The Warehouse Operation package contains classes recording the day-to-day operation of the warehouse processes.&#xA;&#xA;The package covers three separate areas:&#xA;&#xA;    Transformation Executions&#xA;    Measurements&#xA;    Change Requests&#xA;&#xA;Details of the most recent executions of transformations can be recorded, identifying when they ran and whether they completed successfully. This can be used to determine how complete and up-to-date specific information in the data warehouse is.&#xA;&#xA;An ActivityExecution represents an execution of a whole TransformationActivity, and a StepExecution object represents an execution of an individual TransformationStep. If a TransformationStep involves the use of an Operation , an associated StepExecution may reference a CallAction that records the actual arguments passed to the Operation. These classes allow the lineage of data in a data warehouse to be preserved, by recording when and how it was derived, and where it came from.&#xA;&#xA;Measurement objects allow metrics to be held for any ModelElement. For example, they may be used to hold actual, estimated or planned values for the size of a table.&#xA;&#xA;ChangeRequests allow details of proposed changes affecting any ModelElement to be recorded. They may also be used to keep a historical record of changes implemented or rejected. &#xA;&#xA;The Warehouse Operation package depends on the following packages:&#xA;&#xA;    org.omg::CWM::ObjectModel::Core&#xA;    org.omg::CWM::ObjectModel::Behavioral&#xA;    org.omg::CWM::Analysis::Transformation&#xA;&#xA;Separate model diagrams are shown below for each of the three main areas supported by the package.&#xA;&#xA;OCL Representation of Warehouse Operation Constraints&#xA;&#xA;[C-1] A ChangeRequest instance must not apply to itself.&#xA;context ChangeRequest&#xA;inv: self.modelElement -> forAll (element | element &lt;> self)&#xA;&#xA;[C-2] A completionDate may only be provided for a completed ChangeRequest.&#xA;context ChangeRequest&#xA;inv: self.completionDate->notEmpty implies self.completed&#xA;&#xA;[C-3] A Measurement instance must not apply to itself.&#xA;context Measurement&#xA;inv: self.modelElement &lt;> self&#xA;&#xA;[C-4] If the TransformationExecution is not inProgress, the successful, status and endDate attributes must be present, and endDate must not be earlier than startDate.&#xA;context TransformationExecution&#xA;inv: self.inProgress=false implies (self.successful->notEmpty and&#xA;self.status->notEmpty and self.endDate->notEmpty and&#xA;self.endDate >= self.startDate)&#xA;"/>
       </eAnnotations>
       <eClassifiers xsi:type="ecore:EClass" name="Measurement" eSuperTypes="#//objectmodel/core/ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="MeasurementSelfReference"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="MeasurementSelfReference" value="self.modelElement &lt;> self"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="MeasurementSelfReference.shortName" value="C-3"/>
+          <details key="MeasurementSelfReference.name" value="Measurement Self-Reference"/>
+          <details key="MeasurementSelfReference.description" value="A Measurement instance must not apply to itself."/>
+          <details key="MeasurementSelfReference.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A Measurement object indicates the value of some attribute of an object. It can be the number of rows in a table, the number of pages in an index, the number of different values in a column, etc. &#xA;&#xA;The flexibility of this class allows for product specific extensions, without changing the model. "/>
         </eAnnotations>
@@ -5347,6 +6110,23 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="ChangeRequest" eSuperTypes="#//objectmodel/core/ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="ChangeRequestSelfReference CompletionDateRequiresCompleted"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="ChangeRequestSelfReference" value="self.modelElement -> forAll (element | element &lt;> self)"/>
+          <details key="CompletionDateRequiresCompleted" value="self.completionDate->notEmpty implies self.completed"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="ChangeRequestSelfReference.shortName" value="C-1"/>
+          <details key="ChangeRequestSelfReference.name" value="ChangeRequest Self-Reference"/>
+          <details key="ChangeRequestSelfReference.description" value="A ChangeRequest instance must not apply to itself."/>
+          <details key="ChangeRequestSelfReference.level" value="error"/>
+          <details key="CompletionDateRequiresCompleted.shortName" value="C-2"/>
+          <details key="CompletionDateRequiresCompleted.name" value="CompletionDate Requires Completed"/>
+          <details key="CompletionDateRequiresCompleted.description" value="A completionDate may only be provided for a completed ChangeRequest."/>
+          <details key="CompletionDateRequiresCompleted.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="This represents a request for change affecting one or more ModelElements. The change request may represent a proposed change or one that has been implemented or rejected."/>
         </eAnnotations>
@@ -5389,6 +6169,18 @@
         </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="TransformationExecution" eSuperTypes="#//objectmodel/core/ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="CompletedExecutionAttributes"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="CompletedExecutionAttributes" value="self.inProgress=false implies (self.successful->notEmpty and&#xA;self.status->notEmpty and self.endDate->notEmpty and&#xA;self.endDate >= self.startDate)"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="CompletedExecutionAttributes.shortName" value="C-4"/>
+          <details key="CompletedExecutionAttributes.name" value="Completed Execution Attributes"/>
+          <details key="CompletedExecutionAttributes.description" value="If the TransformationExecution is not inProgress, the successful, status and endDate attributes must be present, and endDate must not be earlier than startDate."/>
+          <details key="CompletedExecutionAttributes.level" value="error"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A TransformationExecution is used to record details of a specific execution."/>
         </eAnnotations>
