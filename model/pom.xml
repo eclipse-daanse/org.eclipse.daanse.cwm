@@ -19,7 +19,7 @@
     <artifactId>org.eclipse.daanse.cwm</artifactId>
     <version>${revision}</version>
   </parent>
-  <artifactId>org.eclipse.daanse.cwm.model.emf</artifactId>
+  <artifactId>org.eclipse.daanse.cwm.model</artifactId>
   <name>Daanse CWM Model EMF</name>
 
 
