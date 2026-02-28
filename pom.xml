@@ -47,7 +47,8 @@
   </repositories>
 
   <modules>
-    <module>model.emf</module>
+    <module>model</module>
+<!-- <module>util</module>-->
 <!--    <module>instance</module>-->
 <!--    <module>documentation</module>-->
   </modules>
