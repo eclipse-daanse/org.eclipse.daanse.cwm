@@ -48,9 +48,9 @@
 
   <modules>
     <module>model</module>
-<!-- <module>util</module>-->
-<!--    <module>instance</module>-->
-<!--    <module>documentation</module>-->
+    <module>util</module>
+    <!--    <module>instance</module>-->
+    <!--    <module>documentation</module>-->
   </modules>
 
   <dependencies>
