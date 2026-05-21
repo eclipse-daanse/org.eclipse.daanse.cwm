@@ -13,6 +13,7 @@
  */
 package org.eclipse.daanse.cwm.util.objectmodel.core;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -48,6 +49,11 @@ public final class Namespaces {
             return Stream.empty();
         }
         return ns.getOwnedElement().stream().filter(type::isInstance).map(type::cast);
+    }
+
+    /** List-returning twin of {@link #ownedElementStream}. */
+    public static <T extends ModelElement> List<T> ownedElements(Namespace ns, Class<T> type) {
+        return ownedElementStream(ns, type).toList();
     }
 
     /**
