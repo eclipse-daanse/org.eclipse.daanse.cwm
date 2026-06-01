@@ -30,7 +30,7 @@
   <dependencies>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.model</artifactId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
