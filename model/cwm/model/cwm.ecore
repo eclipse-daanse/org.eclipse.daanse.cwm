@@ -51,6 +51,7 @@
           <details key="TagConflict.name" value="Tag Conflict"/>
           <details key="TagConflict.description" value="Tags associated with a model element (directly via a property list or indirectly via a stereotype) must not clash with any meta attributes associated with the model element."/>
           <details key="TagConflict.level" value="error"/>
+          <details key="TagConflict.postDescription" value="-- cannot be specified with OCL"/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="A model element is an element that is an abstraction drawn from the system being modeled.&#xA;&#xA;In the metamodel, a ModelElement is a named entity in a Model. It is the base for all modeling metaclasses in the CWM. All other modeling metaclasses are either direct or indirect subclasses of ModelElement."/>
@@ -1623,15 +1624,15 @@
         <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
           <details key="FeatureNodeParametersRequireOperation.shortName" value="C-5-1"/>
           <details key="FeatureNodeParametersRequireOperation.name" value="FeatureNode Parameters Require Operation"/>
-          <details key="FeatureNodeParametersRequireOperation.description" value="A FeatureNode that has parameters other than the this parameter represents a Feature that is also an Operation."/>
+          <details key="FeatureNodeParametersRequireOperation.description" value="A FeatureNode that has parameters other than the &quot;this&quot; parameter represents a Feature that is also an Operation."/>
           <details key="FeatureNodeParametersRequireOperation.level" value="error"/>
           <details key="InstanceFeatureThisArgument.shortName" value="C-5-2"/>
           <details key="InstanceFeatureThisArgument.name" value="Instance Feature This Argument"/>
-          <details key="InstanceFeatureThisArgument.description" value="If the FeatureNode represents an instance-scope feature, the first argument is a this or self argument; that is, the object invoking the feature. The convention is enforced by checking that the type of the first argument is the same as the type of the feature."/>
+          <details key="InstanceFeatureThisArgument.description" value="If the FeatureNode represents an instance-scope feature, the first argument is a &quot;this&quot; or &quot;self&quot; argument; that is, the object invoking the feature. The convention is enforced by checking that the type of the first argument is the same as the type of the feature."/>
           <details key="InstanceFeatureThisArgument.level" value="error"/>
           <details key="BehavioralFeatureArgumentCount.shortName" value="C-5-3"/>
           <details key="BehavioralFeatureArgumentCount.name" value="BehavioralFeature Argument Count"/>
-          <details key="BehavioralFeatureArgumentCount.description" value="If the FeatureNode represents a BehavioralFeature, the number of arguments must be equal to the number of the BehavioralFeature's parameters, plus one for the this parameter if the BehavioralFeature is of instance scope."/>
+          <details key="BehavioralFeatureArgumentCount.description" value="If the FeatureNode represents a BehavioralFeature, the number of arguments must be equal to the number of the BehavioralFeature's parameters, plus one for the &quot;this&quot; parameter if the BehavioralFeature is of instance scope."/>
           <details key="BehavioralFeatureArgumentCount.level" value="error"/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -2873,6 +2874,7 @@
           <details key="DimensionSelfReference.name" value="Dimension Self-Reference"/>
           <details key="DimensionSelfReference.description" value="A Dimension may not reference itself as a component, nor as a composite."/>
           <details key="DimensionSelfReference.level" value="error"/>
+          <details key="DimensionSelfReference.postDescription" value="The transitive closure of components and composites must not include the Dimension instance."/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Dimension represents physical dimension in a multidimensional database (e.g., a dimension object defined by the programming model/API of an OLAP database server). Tool-specific extensions to the Multidimensional package will generally contain classes that derive from Dimension."/>
@@ -3341,6 +3343,23 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="This represents a mapping of source Classifiers to target Classifiers. A ClassifierMap may consists of a group of ClassifierFeatureMaps and/or FeatureMaps."/>
         </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+          <details key="constraints" value="ClassifierFeatureMapDerivation FeatureMapDerivation"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+          <details key="ClassifierFeatureMapDerivation" value="Namespace-ModelElement.allInstances.select( ownedElement.oclIsKindOf( ClassifierFeatureMap ) )"/>
+          <details key="FeatureMapDerivation" value="Namespace-ModelElement.allInstances.select( ownedElement.oclIsKindOf( FeatureMap ) )"/>
+        </eAnnotations>
+        <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+          <details key="ClassifierFeatureMapDerivation.shortName" value="C-4"/>
+          <details key="ClassifierFeatureMapDerivation.name" value="ClassifierFeatureMap Derivation"/>
+          <details key="ClassifierFeatureMapDerivation.description" value="The ClassifierMapToCFMap association is derived from the Namespace-ModelElement association. All ownedElement ends of the association must be ClassifierFeatureMaps."/>
+          <details key="ClassifierFeatureMapDerivation.level" value="error"/>
+          <details key="FeatureMapDerivation.shortName" value="C-5"/>
+          <details key="FeatureMapDerivation.name" value="FeatureMap Derivation"/>
+          <details key="FeatureMapDerivation.description" value="The ClassifierMapToFeatureMap association is derived from the Namespace-ModelElement association. All ownedElement ends of the association must be FeatureMaps."/>
+          <details key="FeatureMapDerivation.level" value="error"/>
+        </eAnnotations>
         <eStructuralFeatures xsi:type="ecore:EReference" name="function" eType="#//objectmodel/core/ProcedureExpression"
             containment="true" resolveProxies="false">
           <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -3600,7 +3619,7 @@
         <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
           <details key="FullyRealizedNoMemberSelections.shortName" value="C-4"/>
           <details key="FullyRealizedNoMemberSelections.name" value="Fully Realized No MemberSelections"/>
-          <details key="FullyRealizedNoMemberSelections.description" value="A fully realized CubeRegion has no MemberSelectionGroups (and hence, no MemberSelections)."/>
+          <details key="FullyRealizedNoMemberSelections.description" value="A &quot;fully realized&quot; CubeRegion has no MemberSelectionGroups (and hence, no MemberSelections)."/>
           <details key="FullyRealizedNoMemberSelections.level" value="error"/>
           <details key="MemberSelectionForEachDimension.shortName" value="C-5"/>
           <details key="MemberSelectionForEachDimension.name" value="MemberSelection For Each Dimension"/>
@@ -3746,15 +3765,15 @@
           <details key="ExclusiveHierarchyReference.level" value="error"/>
           <details key="ImmediateParentRequiresListOfValues.shortName" value="C-10"/>
           <details key="ImmediateParentRequiresListOfValues.name" value="Immediate Parent Requires List Of Values"/>
-          <details key="ImmediateParentRequiresListOfValues.description" value="Within a DimensionDeployment, an immediate parent StructureMap must always have an associated and distinct list of values StructureMap."/>
+          <details key="ImmediateParentRequiresListOfValues.description" value="Within a DimensionDeployment, an &quot;immediate parent&quot; StructureMap must always have an associated and distinct &quot;list of values&quot; StructureMap."/>
           <details key="ImmediateParentRequiresListOfValues.level" value="error"/>
           <details key="ListOfValuesInStructureMaps.shortName" value="C-11"/>
           <details key="ListOfValuesInStructureMaps.name" value="List Of Values In StructureMaps"/>
-          <details key="ListOfValuesInStructureMaps.description" value="A StructureMap referenced as a list of values StructureMap must not reside outside of the DimensionDeployment's collection of StructureMaps."/>
+          <details key="ListOfValuesInStructureMaps.description" value="A StructureMap referenced as a &quot;list of values&quot; StructureMap must not reside outside of the DimensionDeployment's collection of StructureMaps."/>
           <details key="ListOfValuesInStructureMaps.level" value="error"/>
           <details key="ImmediateParentInStructureMaps.shortName" value="C-12"/>
           <details key="ImmediateParentInStructureMaps.name" value="Immediate Parent In StructureMaps"/>
-          <details key="ImmediateParentInStructureMaps.description" value="A StructureMap referenced as an immediate parent StructureMap must not reside outside of the DimensionDeployment's collection of StructureMaps."/>
+          <details key="ImmediateParentInStructureMaps.description" value="A StructureMap referenced as an &quot;immediate parent&quot; StructureMap must not reside outside of the DimensionDeployment's collection of StructureMaps."/>
           <details key="ImmediateParentInStructureMaps.level" value="error"/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -3867,7 +3886,7 @@
           <details key="CurrentLevelOwnedByDimension.level" value="error"/>
           <details key="UniqueCurrentLevels.shortName" value="C-14"/>
           <details key="UniqueCurrentLevels.name" value="Unique Current Levels"/>
-          <details key="UniqueCurrentLevels.description" value="No two HierarchyLevelAssociations may designate the same Level instance as their current level."/>
+          <details key="UniqueCurrentLevels.description" value="No two HierarchyLevelAssociations may designate the same Level instance as their &quot;current level&quot;."/>
           <details key="UniqueCurrentLevels.level" value="error"/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -5366,6 +5385,7 @@
           <details key="NeighborsNotComponents.name" value="Neighbors Not Components"/>
           <details key="NeighborsNotComponents.description" value="A RenderedObject may not reference one of its Neighbors as a Component (and vice versa)."/>
           <details key="NeighborsNotComponents.level" value="error"/>
+          <details key="NeighborsNotComponents.postDescription" value="Transitive closure constraints on Neighbors and Components."/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="RenderedObject serves as a logical &quot;proxy&quot; for an arbitrary ModelElement that is to be&#xA;rendered."/>
@@ -5638,16 +5658,21 @@
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Concept" eSuperTypes="#//analysis/businessnomenclature/VocabularyElement">
         <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-          <details key="constraints" value="ConceptSelfReference"/>
+          <details key="constraints" value="ConceptSelfReference RelatedConceptsDerivation"/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
           <details key="ConceptSelfReference" value="self.relatedConcept->forAll ( p | p &lt;> self )"/>
+          <details key="RelatedConceptsDerivation" value="RelatedVocabularyElements.allInstances.select( element.oclIsKindOf( Concept )&#xA;and relatedElement.oclIsKindOf( Concept ) )"/>
         </eAnnotations>
         <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
           <details key="ConceptSelfReference.shortName" value="C-1"/>
           <details key="ConceptSelfReference.name" value="Concept Self-Reference"/>
           <details key="ConceptSelfReference.description" value="A Concept may not relate to itself."/>
           <details key="ConceptSelfReference.level" value="error"/>
+          <details key="RelatedConceptsDerivation.shortName" value="C-8"/>
+          <details key="RelatedConceptsDerivation.name" value="RelatedConcepts Derivation"/>
+          <details key="RelatedConceptsDerivation.description" value="The RelatedConcepts association is derived from the RelatedVocabularyElements association. All ends of the RelatedConcepts association must be Concepts."/>
+          <details key="RelatedConceptsDerivation.level" value="error"/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="This represents a business idea or notion. &#xA;&#xA;Concepts are represented by Terms. Users use Terms that are familiar to them in their business environment to refer to Concepts."/>
@@ -5673,16 +5698,21 @@
       </eClassifiers>
       <eClassifiers xsi:type="ecore:EClass" name="Term" eSuperTypes="#//analysis/businessnomenclature/VocabularyElement">
         <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-          <details key="constraints" value="TermSelfReference"/>
+          <details key="constraints" value="TermSelfReference RelatedTermsDerivation"/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
           <details key="TermSelfReference" value="self.relatedTerm->forAll ( p | p &lt;> self )"/>
+          <details key="RelatedTermsDerivation" value="RelatedVocabularyElements.allInstances.select( element.oclIsKindOf( Term ) and&#xA;relatedElement.oclIsKindOf( Term ) )"/>
         </eAnnotations>
         <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
           <details key="TermSelfReference.shortName" value="C-6"/>
           <details key="TermSelfReference.name" value="Term Self-Reference"/>
           <details key="TermSelfReference.description" value="A Term may not relate to itself."/>
           <details key="TermSelfReference.level" value="error"/>
+          <details key="RelatedTermsDerivation.shortName" value="C-9"/>
+          <details key="RelatedTermsDerivation.name" value="RelatedTerms Derivation"/>
+          <details key="RelatedTermsDerivation.description" value="The RelatedTerms association is derived from the RelatedVocabularyElements association. All ends of the RelatedTerms association must be Terms."/>
+          <details key="RelatedTermsDerivation.level" value="error"/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="This represents words or phrases used by business users to refer to Concepts.&#xA;&#xA;A Term has a definition in a specific context. The context is provided by the referenced Concept that describes the underlying semantics."/>

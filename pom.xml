@@ -50,13 +50,12 @@
   <modules>
     <module>model</module>
     <module>util</module>
+    <module>data</module>
+    <module>testkit</module>
     <!--
-    <module>sql.gen</module>
-    <module>jdbc.load</module>
-    <module>query.resolve</module>
-    <module>maven</module>
+    <module>resource</module>
+    <module>codegen</module>
     -->
-
   </modules>
 
   <dependencies>
