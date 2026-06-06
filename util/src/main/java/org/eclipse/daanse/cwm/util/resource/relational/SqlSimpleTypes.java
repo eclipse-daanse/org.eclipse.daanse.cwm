@@ -13,13 +13,16 @@
  */
 package org.eclipse.daanse.cwm.util.resource.relational;
 
+import java.sql.JDBCType;
 import java.sql.Types;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.function.Supplier;
 
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLDataType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -150,21 +153,107 @@ public final class SqlSimpleTypes {
         return type == null ? Types.OTHER : (int) type.getTypeNumber();
     }
 
-    public static boolean isNumeric(SQLSimpleType type) {
-        switch (jdbcType(type)) {
-        case Types.TINYINT:
-        case Types.SMALLINT:
-        case Types.INTEGER:
-        case Types.BIGINT:
-        case Types.REAL:
-        case Types.FLOAT:
-        case Types.DOUBLE:
-        case Types.DECIMAL:
-        case Types.NUMERIC:
-            return true;
-        default:
-            return false;
+    /**
+     * Best-effort {@link JDBCType} for a CWM {@link SQLDataType}: prefers the
+     * explicit type-number, then falls back to a name match. This is the pure
+     * CWM &rarr; JDBC type-code direction (no JDBC runtime types involved).
+     */
+    public static JDBCType toJdbcType(SQLDataType sqlType) {
+        if (sqlType == null) {
+            return JDBCType.OTHER;
         }
+        long typeNumber = sqlType.getTypeNumber();
+        if (typeNumber != 0) {
+            try {
+                return JDBCType.valueOf((int) typeNumber);
+            } catch (IllegalArgumentException ignore) {
+                // fall through to name-based match
+            }
+        }
+        String name = sqlType.getName();
+        if (name == null) {
+            return JDBCType.OTHER;
+        }
+        return switch (name.trim().toUpperCase()) {
+        case "BOOLEAN", "BOOL", "BIT" -> JDBCType.BOOLEAN;
+        case "TINYINT" -> JDBCType.TINYINT;
+        case "SMALLINT" -> JDBCType.SMALLINT;
+        case "INT", "INTEGER" -> JDBCType.INTEGER;
+        case "BIGINT" -> JDBCType.BIGINT;
+        case "REAL", "FLOAT" -> JDBCType.REAL;
+        case "DOUBLE", "DOUBLE PRECISION" -> JDBCType.DOUBLE;
+        case "DECIMAL", "NUMERIC" -> JDBCType.DECIMAL;
+        case "DATE" -> JDBCType.DATE;
+        case "TIME" -> JDBCType.TIME;
+        case "TIMESTAMP", "DATETIME" -> JDBCType.TIMESTAMP;
+        case "CHAR", "CHARACTER" -> JDBCType.CHAR;
+        case "VARCHAR", "CHARACTER VARYING" -> JDBCType.VARCHAR;
+        case "CLOB", "TEXT" -> JDBCType.CLOB;
+        case "BLOB" -> JDBCType.BLOB;
+        case "BINARY" -> JDBCType.BINARY;
+        case "VARBINARY" -> JDBCType.VARBINARY;
+        default -> JDBCType.OTHER;
+        };
+    }
+
+    /**
+     * Build a CWM {@link SQLSimpleType} from the parts of a JDBC column-metadata
+     * row, reusing the SQL-99 registry where {@code typeName} is known and
+     * overriding the type-number with the actual JDBC {@code dataType} code.
+     * Takes plain values (no JDBC metadata wrapper) so this stays the pure
+     * JDBC &rarr; CWM type direction without a jdbc.db dependency.
+     *
+     * @param typeName      DBMS type name (e.g. {@code "varchar"}), may be null
+     * @param dataType      JDBC type code, may be null
+     * @param columnSize    column size / precision, if reported
+     * @param decimalDigits scale, if reported
+     */
+    public static SQLSimpleType toCwmType(String typeName, JDBCType dataType,
+            OptionalInt columnSize, OptionalInt decimalDigits) {
+        SQLSimpleType t = byName(typeName).orElse(null);
+        if (t == null) {
+            t = RelationalFactory.eINSTANCE.createSQLSimpleType();
+            t.setName(typeName == null ? jdbcName(dataType) : typeName);
+            t.setTypeNumber(dataType == null ? Types.OTHER : dataType.getVendorTypeNumber());
+        } else if (dataType != null) {
+            // Override the type-number with the actual JDBC code so it survives
+            // dialects that report a different keyword (e.g. PG returns 'int4').
+            t.setTypeNumber(dataType.getVendorTypeNumber());
+        }
+        if (columnSize != null && columnSize.isPresent()) {
+            int s = columnSize.getAsInt();
+            if (isNumericJdbc(dataType)) {
+                t.setNumericPrecision(s);
+            } else {
+                t.setCharacterMaximumLength(s);
+            }
+        }
+        if (decimalDigits != null && decimalDigits.isPresent()) {
+            t.setNumericScale(decimalDigits.getAsInt());
+        }
+        return t;
+    }
+
+    private static boolean isNumericJdbc(JDBCType t) {
+        return t != null && isNumericCode(t.getVendorTypeNumber());
+    }
+
+    private static String jdbcName(JDBCType t) {
+        return t == null ? "OTHER" : t.getName();
+    }
+
+    public static boolean isNumeric(SQLSimpleType type) {
+        return isNumericCode(jdbcType(type));
+    }
+
+    /** Whether {@code jdbcCode} (a {@link Types} constant) is a numeric type. */
+    private static boolean isNumericCode(int jdbcCode) {
+        return switch (jdbcCode) {
+        case Types.TINYINT, Types.SMALLINT, Types.INTEGER, Types.BIGINT,
+                Types.REAL, Types.FLOAT, Types.DOUBLE, Types.DECIMAL, Types.NUMERIC ->
+            true;
+        default -> false;
+        };
     }
 
     public static boolean isText(SQLSimpleType type) {

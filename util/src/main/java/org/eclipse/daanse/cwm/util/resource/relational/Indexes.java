@@ -56,6 +56,9 @@ public final class Indexes {
     }
 
     public static Stream<Column> columnStream(SQLIndex idx) {
+        if (idx == null) {
+            return Stream.empty();
+        }
         return idx.getIndexedFeature().stream()
                 .map(IndexedFeature::getFeature)
                 .filter(Column.class::isInstance)

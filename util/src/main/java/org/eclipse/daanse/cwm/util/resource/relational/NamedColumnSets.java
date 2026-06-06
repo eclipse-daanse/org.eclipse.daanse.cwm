@@ -53,12 +53,9 @@ public final class NamedColumnSets {
         if (columnSet == null) {
             return null;
         }
-        Optional<Schema> schema = findSchema(columnSet);
-        Optional<Catalog> catalog = schema.flatMap(Schemas::findCatalog);
-        StringBuilder sb = new StringBuilder();
-        catalog.ifPresent(c -> sb.append(c.getName()).append('.'));
-        schema.ifPresent(s -> sb.append(s.getName()).append('.'));
-        sb.append(columnSet.getName());
-        return sb.toString();
+        return findSchema(columnSet)
+                .map(Schemas::qualifiedName)
+                .map(prefix -> prefix + "." + columnSet.getName())
+                .orElseGet(columnSet::getName);
     }
 }
