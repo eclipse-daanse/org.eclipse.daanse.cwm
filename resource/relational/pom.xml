@@ -30,7 +30,7 @@
 
   <modules>
     <module>ddl</module>
-    <!-- 
+    <!--
     <module>load.jdbc</module>
     <module>diff</module>
     <module>sql.resolve</module>
