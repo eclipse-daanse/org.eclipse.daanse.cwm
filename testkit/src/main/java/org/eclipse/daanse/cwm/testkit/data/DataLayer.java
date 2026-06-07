@@ -103,8 +103,10 @@ public final class DataLayer {
     }
 
     private static Table lookupTable(Schema schema, String name) {
+        // Strict case match — table name in the CSV resource key must match
+        // the CWM Table's name exactly.
         for (Table t : Schemas.tables(schema)) {
-            if (name.equalsIgnoreCase(t.getName())) {
+            if (name.equals(t.getName())) {
                 return t;
             }
         }
@@ -123,7 +125,7 @@ public final class DataLayer {
         recordDef.setIsFixedWidth(false);
         for (Column c : ColumnSets.columns(table)) {
             Field f = REC.createField();
-            f.setName(c.getName().toLowerCase());
+            f.setName(c.getName());
             recordDef.getFeature().add(f);
         }
 
@@ -136,7 +138,7 @@ public final class DataLayer {
         List<FieldMapping> mappings = new ArrayList<>();
         List<JDBCType> types = new ArrayList<>();
         for (Column c : ColumnSets.columns(table)) {
-            mappings.add(new FieldMappingR(c.getName().toLowerCase(), c.getName(), Optional.empty()));
+            mappings.add(new FieldMappingR(c.getName(), c.getName(), Optional.empty()));
             types.add(jdbcTypeOf(c));
         }
 

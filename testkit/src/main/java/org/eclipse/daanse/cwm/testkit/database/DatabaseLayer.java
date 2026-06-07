@@ -16,13 +16,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlGeneratorFactory;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.Feature;
-import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.jdbc.db.dialect.api.Dialect;
 
@@ -57,7 +58,10 @@ public final class DatabaseLayer {
      */
     public static void apply(DataSource dataSource, Dialect dialect, Schema schema, Set<Feature> features,
             DdlSettings settings) throws SQLException {
-        List<String> ddl = new DdlGeneratorFactoryImpl().create(dialect, settings).createSchema(schema, features);
+        DdlGeneratorFactory factory = ServiceLoader.load(DdlGeneratorFactory.class).findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        "No DdlGeneratorFactory on the classpath — add org.eclipse.daanse.cwm.resource.relational.ddl"));
+        List<String> ddl = factory.create(dialect, settings).createSchema(schema, features);
         if (ddl.isEmpty()) {
             return;
         }

@@ -141,26 +141,26 @@ public class CsvRecordPublisher implements RecordSource<RawRecord> {
             }
 
             if (isSelfDescribing) {
-                CloseableIterator<NamedCsvRecord> namedIterator = builder.ofNamedCsvRecord(csvFilePath).iterator();
-                if (!namedIterator.hasNext()) {
-                    namedIterator.close();
-                    throw new IllegalStateException("CSV file is empty, no header found: " + csvFilePath);
+                // Read header explicitly via a CsvRecord iterator (first row).
+                // A header-only file (no data rows) is valid input — emit nothing
+                // and signal completion. NamedCsvRecord iterator hides the header
+                // and would falsely report "empty" when only the header exists.
+                List<String> csvHeaders;
+                try (CloseableIterator<CsvRecord> headerIter = builder.ofCsvRecord(csvFilePath).iterator()) {
+                    if (!headerIter.hasNext()) {
+                        throw new IllegalStateException("CSV file is empty: " + csvFilePath);
+                    }
+                    csvHeaders = headerIter.next().getFields();
                 }
-
-                NamedCsvRecord firstRecord = namedIterator.next();
-                List<String> csvHeaders = firstRecord.getHeader();
 
                 ValidationResult validation = HeaderValidator.validate(csvHeaders, recordDef);
                 if (!validation.isValid()) {
-                    namedIterator.close();
                     throw new IllegalStateException("CSV header validation failed. Missing fields: "
                             + validation.missingFields() + ", Extra fields: " + validation.extraFields());
                 }
 
                 LOGGER.debug("CSV header validated successfully for {}", csvFilePath);
                 fieldNames = csvHeaders;
-
-                namedIterator.close();
 
                 iterator = builder.ofCsvRecord(csvFilePath).iterator();
                 lineCounter = 0;
