@@ -70,7 +70,7 @@ import org.osgi.service.component.annotations.Component;
  * constraints, indexes and triggers.
  *
  * <p>
- * Inverse of {@link org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlGenerator}
+ * Inverse of {@code org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlGenerator}
  * — together they enable a JDBC → CWM → SQL → JDBC round trip.
  */
 @Component(service = CwmLoader.class)

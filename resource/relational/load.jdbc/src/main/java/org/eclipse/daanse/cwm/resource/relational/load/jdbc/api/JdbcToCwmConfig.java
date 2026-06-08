@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 
 /**
- * Filters and toggles for {@link JdbcToCwmLoader}. Use {@link #all()} to import
+ * Filters and toggles for {@link CwmLoader}. Use {@link #all()} to import
  * every schema and table, or build via {@link Builder} to scope the load.
  */
 public final class JdbcToCwmConfig {
