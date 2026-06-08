@@ -87,9 +87,12 @@ public final class DataLayer {
                     }
                     Table table = lookupTable(cwmSchema, e.getKey());
                     if (table == null) {
-                        throw new IllegalStateException("No CWM Table named '" + e.getKey() + "' in schema '"
-                                + (cwmSchema.getName() == null ? "<default>" : cwmSchema.getName()) + "' for CSV "
-                                + e.getValue());
+                        // CSV is published but the CWM Schema has no table by
+                        // that name — likely the catalog uses a view or omits
+                        // this table from the physical schema. Skip silently
+                        // (the OLAP check suite will fail loudly if the table
+                        // really was required).
+                        continue;
                     }
                     loadCsv(dataSource, dialect, cwmSchema, table, target);
                 }

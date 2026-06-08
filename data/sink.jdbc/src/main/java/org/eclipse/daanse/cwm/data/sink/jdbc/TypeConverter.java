@@ -40,7 +40,7 @@ public class TypeConverter {
      */
     public static void setTypedValue(PreparedStatement ps, int index, JDBCType jdbcType, String value)
             throws SQLException {
-        if (value == null) {
+        if (value == null || "NULL".equalsIgnoreCase(value)) {
             ps.setObject(index, null);
             return;
         }
