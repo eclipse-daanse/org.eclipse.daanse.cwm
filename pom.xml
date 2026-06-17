@@ -57,6 +57,7 @@
     <module>util</module>
     <module>data</module>
     <module>resource</module>
+    <module>orm</module>
     <module>testkit</module>
     <!--
     <module>codegen</module>

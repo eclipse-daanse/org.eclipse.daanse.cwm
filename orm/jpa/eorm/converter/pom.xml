@@ -16,11 +16,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.eclipse.daanse</groupId>
-    <artifactId>org.eclipse.daanse.cwm.model.cwmx</artifactId>
+    <artifactId>org.eclipse.daanse.cwm.orm.jpa.eorm</artifactId>
     <version>${revision}</version>
-    <relativePath>../../pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>org.eclipse.daanse.cwm.model.cwmx.eorm.converter</artifactId>
+  <artifactId>org.eclipse.daanse.cwm.orm.jpa.eorm.converter</artifactId>
   <name>Daanse CWM EORM to Fennec EORM Converter</name>
   <description>Converts a Common Warehouse EORM model (CWM-EORM,
     org.eclipse.daanse.cwm.model.cwmx.eorm) into the structurally equivalent

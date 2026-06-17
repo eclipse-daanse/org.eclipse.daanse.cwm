@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /*********************************************************************
-* Copyright (c) 2024 Contributors to the Eclipse Foundation.
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
 *
 * This program and the accompanying materials are made
 * available under the terms of the Eclipse Public License 2.0
@@ -10,17 +10,22 @@
 * SPDX-License-Identifier: EPL-2.0
 **********************************************************************/
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.eclipse.daanse</groupId>
-    <artifactId>org.eclipse.daanse.cwm.model</artifactId>
+    <artifactId>org.eclipse.daanse.cwm.orm</artifactId>
     <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>org.eclipse.daanse.cwm.model.cwmx</artifactId>
+  <artifactId>org.eclipse.daanse.cwm.orm.jpa</artifactId>
   <packaging>pom</packaging>
+  <name>Daanse CWM ORM JPA (aggregator)</name>
+  <description>Aggregator for JPA-flavoured ORM mapping tooling (eorm, ...).</description>
+
   <modules>
     <module>eorm</module>
-    <module>governance</module>
   </modules>
 </project>

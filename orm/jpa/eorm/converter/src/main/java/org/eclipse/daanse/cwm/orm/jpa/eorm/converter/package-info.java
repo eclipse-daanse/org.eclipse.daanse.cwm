@@ -12,11 +12,11 @@
  */
 /**
  * CWM-EORM &rarr; Fennec EORM conversion. {@link
- * org.eclipse.daanse.cwm.model.cwmx.eorm.converter.CwmToEormConverter} turns a
+ * org.eclipse.daanse.cwm.orm.jpa.eorm.converter.CwmToEormConverter} turns a
  * Common Warehouse EORM model into the structurally equivalent Fennec
  * Persistence EORM model, dropping warehouse-only information that Fennec has no
  * place for.
  */
 @org.osgi.annotation.bundle.Export
 @org.osgi.annotation.versioning.Version("0.0.1")
-package org.eclipse.daanse.cwm.model.cwmx.eorm.converter;
+package org.eclipse.daanse.cwm.orm.jpa.eorm.converter;

@@ -10,7 +10,7 @@
  * Contributors:
  *   Data In Motion Consulting - initial implementation
  ********************************************************************/
-package org.eclipse.daanse.cwm.model.cwmx.eorm.converter;
+package org.eclipse.daanse.cwm.orm.jpa.eorm.converter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
