@@ -21,6 +21,7 @@
   <packaging>pom</packaging>
   <modules>
     <module>eorm</module>
+    <module>eorm/converter</module>
     <module>governance</module>
   </modules>
 </project>
