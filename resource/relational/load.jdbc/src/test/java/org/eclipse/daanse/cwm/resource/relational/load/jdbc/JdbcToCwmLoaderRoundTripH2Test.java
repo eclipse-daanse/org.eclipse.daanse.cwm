@@ -46,10 +46,10 @@ import org.eclipse.daanse.cwm.util.resource.relational.ColumnSets;
 import org.eclipse.daanse.cwm.util.resource.relational.Schemas;
 import org.eclipse.daanse.jdbc.datasource.testkit.api.ActiveDatabase;
 import org.eclipse.daanse.jdbc.datasource.testkit.h2.H2DatabaseProvider;
-import org.eclipse.daanse.jdbc.db.api.DatabaseService;
-import org.eclipse.daanse.jdbc.db.api.meta.MetaInfo;
-import org.eclipse.daanse.jdbc.db.dialect.api.Dialect;
-import org.eclipse.daanse.jdbc.db.impl.DatabaseServiceImpl;
+import org.eclipse.daanse.sql.jdbc.api.DatabaseService;
+import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
+import org.eclipse.daanse.sql.dialect.api.Dialect;
+import org.eclipse.daanse.sql.jdbc.impl.DatabaseServiceImpl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -107,7 +107,7 @@ class JdbcToCwmLoaderRoundTripH2Test {
             // round-trip than the PG/Oracle tests (which add PK/UC/FK/CHECK/index
             // via dialect-specific catalogs). We don't scope the connection; the
             // loader filters by schema name.
-            MetaInfo info = DB_SERVICE.createMetaInfo(connection, dialect);
+            MetaInfo info = DB_SERVICE.createMetaInfo(connection, new org.eclipse.daanse.sql.jdbc.metadata.H2MetadataProvider());
 
             // 3. Load into a fresh CWM Catalog, scoped to the test schema.
             Catalog catalog = new CwmLoaderImpl().load(info,
@@ -157,11 +157,11 @@ class JdbcToCwmLoaderRoundTripH2Test {
             List<String> reDdl = new DdlGeneratorFactoryImpl().create(dialect).createSchema(loaded,
                     EnumSet.complementOf(EnumSet.of(Feature.TRIGGER, Feature.VIEW)));
             executeAll(reDdl);
-            MetaInfo reInfo = DB_SERVICE.createMetaInfo(connection, dialect);
+            MetaInfo reInfo = DB_SERVICE.createMetaInfo(connection, new org.eclipse.daanse.sql.jdbc.metadata.H2MetadataProvider());
             assertThat(reInfo.structureInfo().tables().stream().map(td -> td.table())
                     .filter(t -> reSchemaName.equals(
-                            t.schema().map(org.eclipse.daanse.jdbc.db.api.schema.SchemaReference::name).orElse(null)))
-                    .map(org.eclipse.daanse.jdbc.db.api.schema.TableReference::name)).contains("CUSTOMERS", "ORDERS");
+                            t.schema().map(org.eclipse.daanse.sql.model.schema.SchemaReference::name).orElse(null)))
+                    .map(org.eclipse.daanse.sql.model.schema.TableReference::name)).contains("CUSTOMERS", "ORDERS");
         } finally {
             try (Statement s = connection.createStatement()) {
                 s.execute("DROP SCHEMA IF EXISTS \"" + schemaName + "\" CASCADE");

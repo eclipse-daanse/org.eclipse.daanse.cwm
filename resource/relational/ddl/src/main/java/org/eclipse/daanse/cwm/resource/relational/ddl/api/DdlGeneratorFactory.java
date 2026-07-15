@@ -13,7 +13,7 @@
  */
 package org.eclipse.daanse.cwm.resource.relational.ddl.api;
 
-import org.eclipse.daanse.jdbc.db.dialect.api.Dialect;
+import org.eclipse.daanse.sql.dialect.api.Dialect;
 
 /** Creates {@link DdlGenerator}s for a given dialect. Registered as an OSGi service. */
 public interface DdlGeneratorFactory {

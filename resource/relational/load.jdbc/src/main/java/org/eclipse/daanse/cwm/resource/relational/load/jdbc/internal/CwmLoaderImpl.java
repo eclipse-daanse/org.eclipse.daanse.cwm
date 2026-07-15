@@ -46,21 +46,21 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.Conditi
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.EventManipulationType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ReferentialRuleType;
 import org.eclipse.daanse.cwm.util.resource.relational.Tables;
-import org.eclipse.daanse.jdbc.db.api.meta.IndexInfo;
-import org.eclipse.daanse.jdbc.db.api.meta.IndexInfoItem;
-import org.eclipse.daanse.jdbc.db.api.meta.MetaInfo;
-import org.eclipse.daanse.jdbc.db.api.meta.StructureInfo;
-import org.eclipse.daanse.jdbc.db.api.schema.CheckConstraint;
-import org.eclipse.daanse.jdbc.db.api.schema.ColumnDefinition;
-import org.eclipse.daanse.jdbc.db.api.schema.ColumnMetaData;
-import org.eclipse.daanse.jdbc.db.api.schema.ColumnReference;
-import org.eclipse.daanse.jdbc.db.api.schema.ImportedKey;
-import org.eclipse.daanse.jdbc.db.api.schema.PrimaryKey;
-import org.eclipse.daanse.jdbc.db.api.schema.SchemaReference;
-import org.eclipse.daanse.jdbc.db.api.schema.TableDefinition;
-import org.eclipse.daanse.jdbc.db.api.schema.TableReference;
-import org.eclipse.daanse.jdbc.db.api.schema.UniqueConstraint;
-import org.eclipse.daanse.jdbc.db.api.schema.ViewDefinition;
+import org.eclipse.daanse.sql.jdbc.api.meta.IndexInfo;
+import org.eclipse.daanse.sql.jdbc.api.meta.IndexInfoItem;
+import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
+import org.eclipse.daanse.sql.jdbc.api.meta.StructureInfo;
+import org.eclipse.daanse.sql.jdbc.api.schema.CheckConstraint;
+import org.eclipse.daanse.sql.model.schema.ColumnDefinition;
+import org.eclipse.daanse.sql.model.schema.ColumnMetaData;
+import org.eclipse.daanse.sql.model.schema.ColumnReference;
+import org.eclipse.daanse.sql.jdbc.api.schema.ImportedKey;
+import org.eclipse.daanse.sql.model.schema.PrimaryKey;
+import org.eclipse.daanse.sql.model.schema.SchemaReference;
+import org.eclipse.daanse.sql.jdbc.api.schema.TableDefinition;
+import org.eclipse.daanse.sql.model.schema.TableReference;
+import org.eclipse.daanse.sql.jdbc.api.schema.UniqueConstraint;
+import org.eclipse.daanse.sql.jdbc.api.schema.ViewDefinition;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -504,7 +504,7 @@ public final class CwmLoaderImpl implements CwmLoader {
     }
 
     private static void attachTriggers(StructureInfo si, Map<String, NamedColumnSet> tableByFqn) {
-        for (org.eclipse.daanse.jdbc.db.api.schema.Trigger trg : si.triggers()) {
+        for (org.eclipse.daanse.sql.model.schema.Trigger trg : si.triggers()) {
             String sname = trg.table().schema().map(SchemaReference::name).orElse(null);
             String tname = trg.table().name();
             NamedColumnSet ncs = tableByFqn.get(fqn(sname, tname));
@@ -532,7 +532,7 @@ public final class CwmLoaderImpl implements CwmLoader {
         }
     }
 
-    private static ConditionTimingType mapTiming(org.eclipse.daanse.jdbc.db.api.schema.Trigger.TriggerTiming t) {
+    private static ConditionTimingType mapTiming(org.eclipse.daanse.sql.model.schema.Trigger.TriggerTiming t) {
         if (t == null)
             return null;
         return switch (t) {
@@ -544,7 +544,7 @@ public final class CwmLoaderImpl implements CwmLoader {
         };
     }
 
-    private static EventManipulationType mapEvent(org.eclipse.daanse.jdbc.db.api.schema.Trigger.TriggerEvent e) {
+    private static EventManipulationType mapEvent(org.eclipse.daanse.sql.model.schema.Trigger.TriggerEvent e) {
         if (e == null)
             return null;
         return switch (e) {

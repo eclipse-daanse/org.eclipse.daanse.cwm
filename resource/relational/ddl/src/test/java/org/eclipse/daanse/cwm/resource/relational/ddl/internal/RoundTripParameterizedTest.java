@@ -22,11 +22,11 @@ import org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.SqlGenAss
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.SqlGenFixture;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.DialectProfile;
 import org.eclipse.daanse.jdbc.datasource.testkit.api.ActiveDatabase;
-import org.eclipse.daanse.jdbc.db.api.DatabaseService;
-import org.eclipse.daanse.jdbc.db.api.meta.MetaInfo;
-import org.eclipse.daanse.jdbc.db.api.schema.TableReference;
-import org.eclipse.daanse.jdbc.db.dialect.api.Dialect;
-import org.eclipse.daanse.jdbc.db.impl.DatabaseServiceImpl;
+import org.eclipse.daanse.sql.jdbc.api.DatabaseService;
+import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
+import org.eclipse.daanse.sql.model.schema.TableReference;
+import org.eclipse.daanse.sql.dialect.api.Dialect;
+import org.eclipse.daanse.sql.jdbc.impl.DatabaseServiceImpl;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;

@@ -29,14 +29,14 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLDataType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
-import org.eclipse.daanse.jdbc.db.api.schema.ColumnDefinition;
-import org.eclipse.daanse.jdbc.db.api.schema.ColumnMetaData;
-import org.eclipse.daanse.jdbc.db.api.schema.ColumnReference;
-import org.eclipse.daanse.jdbc.db.api.schema.TableReference;
-import org.eclipse.daanse.jdbc.db.dialect.api.Dialect;
-import org.eclipse.daanse.jdbc.db.record.schema.ColumnDefinitionRecord;
-import org.eclipse.daanse.jdbc.db.record.schema.ColumnMetaDataRecord;
-import org.eclipse.daanse.jdbc.db.record.schema.PrimaryKeyRecord;
+import org.eclipse.daanse.sql.model.schema.ColumnDefinition;
+import org.eclipse.daanse.sql.model.schema.ColumnMetaData;
+import org.eclipse.daanse.sql.model.schema.ColumnReference;
+import org.eclipse.daanse.sql.model.schema.TableReference;
+import org.eclipse.daanse.sql.dialect.api.Dialect;
+import org.eclipse.daanse.sql.jdbc.record.schema.ColumnDefinitionRecord;
+import org.eclipse.daanse.sql.jdbc.record.schema.ColumnMetaDataRecord;
+import org.eclipse.daanse.sql.jdbc.record.schema.PrimaryKeyRecord;
 
 /**
  * Pure, stateless bridge from individual CWM elements ({@link Column},
@@ -64,7 +64,7 @@ public final class CwmSchemaMapper {
         return out;
     }
 
-    public static org.eclipse.daanse.jdbc.db.api.schema.PrimaryKey primaryKey(TableReference table, PrimaryKey cwmPk) {
+    public static org.eclipse.daanse.sql.model.schema.PrimaryKey primaryKey(TableReference table, PrimaryKey cwmPk) {
         List<ColumnReference> cols = new ArrayList<>();
         for (StructuralFeature sf : cwmPk.getFeature()) {
             cols.add(new ColumnReference(Optional.of(table), sf.getName()));

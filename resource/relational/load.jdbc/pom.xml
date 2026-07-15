@@ -28,6 +28,12 @@
   <dependencies>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.sql.jdbc.metadata</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.cwm.model.cwm</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
@@ -40,9 +46,14 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.db.api</artifactId>
+      <artifactId>org.eclipse.daanse.sql.jdbc.api</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.sql.model</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.emf</groupId>
@@ -60,7 +71,7 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.db.impl</artifactId>
+      <artifactId>org.eclipse.daanse.sql.jdbc.impl</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>test</scope>
     </dependency>
@@ -68,7 +79,7 @@
     <!-- H2 (in-process; no Docker) -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.db.dialect.db.h2</artifactId>
+      <artifactId>org.eclipse.daanse.sql.dialect.db.h2</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>test</scope>
     </dependency>
@@ -88,7 +99,7 @@
     <!-- PostgreSQL -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.db.dialect.db.postgresql</artifactId>
+      <artifactId>org.eclipse.daanse.sql.dialect.db.postgresql</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>test</scope>
     </dependency>
@@ -114,7 +125,7 @@
     <!-- Oracle (image is heavy) -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.db.dialect.db.oracle</artifactId>
+      <artifactId>org.eclipse.daanse.sql.dialect.db.oracle</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>test</scope>
     </dependency>

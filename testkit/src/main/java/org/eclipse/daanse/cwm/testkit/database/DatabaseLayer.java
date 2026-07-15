@@ -25,7 +25,7 @@ import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlGeneratorFactory;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.Feature;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
-import org.eclipse.daanse.jdbc.db.dialect.api.Dialect;
+import org.eclipse.daanse.sql.dialect.api.Dialect;
 
 /**
  * Creates the tables (and keys, indexes, views) of a CWM {@link Schema} in a

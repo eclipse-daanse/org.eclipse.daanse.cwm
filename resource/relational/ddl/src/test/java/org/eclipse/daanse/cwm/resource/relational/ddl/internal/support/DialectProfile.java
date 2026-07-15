@@ -24,9 +24,9 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.Conditi
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.EventManipulationType;
 import org.eclipse.daanse.jdbc.datasource.testkit.api.ActiveDatabase;
 import org.eclipse.daanse.jdbc.datasource.testkit.api.DatabaseProvider;
-import org.eclipse.daanse.jdbc.db.api.DatabaseService;
-import org.eclipse.daanse.jdbc.db.api.meta.MetaInfo;
-import org.eclipse.daanse.jdbc.db.dialect.api.Dialect;
+import org.eclipse.daanse.sql.jdbc.api.DatabaseService;
+import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
+import org.eclipse.daanse.sql.dialect.api.Dialect;
 
 /**
  * One row of cross-dialect test parameterization: the {@code DatabaseProvider}
@@ -154,9 +154,13 @@ public enum DialectProfile {
         }
     }
 
-    /** Snapshot the live structure; SQL Server's MetadataProvider is selected without an explicit dialect. */
+    /** Snapshot the live structure; SQL Server intentionally uses the plain DatabaseMetaData path. */
     public MetaInfo snapshot(DatabaseService service, Connection c, Dialect dialect) throws SQLException {
-        return this == MSSQL ? service.createMetaInfo(c) : service.createMetaInfo(c, dialect);
+        if (this == MSSQL) {
+            return service.createMetaInfo(c);
+        }
+        var provider = org.eclipse.daanse.sql.jdbc.metadata.MetadataProviders.forConnection(c);
+        return provider.isPresent() ? service.createMetaInfo(c, provider.get()) : service.createMetaInfo(c);
     }
 
     /**

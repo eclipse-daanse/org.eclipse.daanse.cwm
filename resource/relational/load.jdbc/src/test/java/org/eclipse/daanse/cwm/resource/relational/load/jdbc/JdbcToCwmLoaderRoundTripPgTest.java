@@ -51,10 +51,10 @@ import org.eclipse.daanse.cwm.util.resource.relational.Tables;
 import org.eclipse.daanse.cwm.util.resource.relational.UniqueConstraints;
 import org.eclipse.daanse.jdbc.datasource.testkit.api.ActiveDatabase;
 import org.eclipse.daanse.jdbc.datasource.testkit.postgresql.PostgresDatabaseProvider;
-import org.eclipse.daanse.jdbc.db.api.DatabaseService;
-import org.eclipse.daanse.jdbc.db.api.meta.MetaInfo;
-import org.eclipse.daanse.jdbc.db.dialect.api.Dialect;
-import org.eclipse.daanse.jdbc.db.impl.DatabaseServiceImpl;
+import org.eclipse.daanse.sql.jdbc.api.DatabaseService;
+import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
+import org.eclipse.daanse.sql.dialect.api.Dialect;
+import org.eclipse.daanse.sql.jdbc.impl.DatabaseServiceImpl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -116,7 +116,7 @@ class JdbcToCwmLoaderRoundTripPgTest {
             // PG's bulk-metadata queries scope to connection.getSchema() (defaults
             // to "public") so point it at the test schema first.
             connection.setSchema(schemaName);
-            MetaInfo info = DB_SERVICE.createMetaInfo(connection, dialect);
+            MetaInfo info = DB_SERVICE.createMetaInfo(connection, new org.eclipse.daanse.sql.jdbc.metadata.PostgreSqlMetadataProvider());
 
             // 3. Load into a fresh CWM Catalog, scoped to the test schema.
             Catalog catalog = new CwmLoaderImpl().load(info,
@@ -230,15 +230,15 @@ class JdbcToCwmLoaderRoundTripPgTest {
             // Re-snapshot via the daanse API and assert the re-emitted schema
             // exposes the same shape — no raw JDBC metadata reads.
             connection.setSchema(reSchemaName);
-            MetaInfo reInfo = DB_SERVICE.createMetaInfo(connection, dialect);
+            MetaInfo reInfo = DB_SERVICE.createMetaInfo(connection, new org.eclipse.daanse.sql.jdbc.metadata.PostgreSqlMetadataProvider());
             assertThat(reInfo.structureInfo().tables().stream().map(td -> td.table())
                     .filter(t -> reSchemaName.equals(
-                            t.schema().map(org.eclipse.daanse.jdbc.db.api.schema.SchemaReference::name).orElse(null)))
-                    .map(org.eclipse.daanse.jdbc.db.api.schema.TableReference::name)).contains("CUSTOMERS", "ORDERS");
+                            t.schema().map(org.eclipse.daanse.sql.model.schema.SchemaReference::name).orElse(null)))
+                    .map(org.eclipse.daanse.sql.model.schema.TableReference::name)).contains("CUSTOMERS", "ORDERS");
             assertThat(reInfo.structureInfo().checkConstraints().stream()
                     .filter(c -> "CUSTOMERS".equals(c.table().name()) && reSchemaName.equals(c.table().schema()
-                            .map(org.eclipse.daanse.jdbc.db.api.schema.SchemaReference::name).orElse(null)))
-                    .map(org.eclipse.daanse.jdbc.db.api.schema.CheckConstraint::name))
+                            .map(org.eclipse.daanse.sql.model.schema.SchemaReference::name).orElse(null)))
+                    .map(org.eclipse.daanse.sql.jdbc.api.schema.CheckConstraint::name))
                     .contains("CK_CUSTOMERS_EMAIL_LEN");
         } finally {
             try (Statement s = connection.createStatement()) {

@@ -16,7 +16,7 @@ package org.eclipse.daanse.cwm.resource.relational.ddl.internal;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlGenerator;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlGeneratorFactory;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
-import org.eclipse.daanse.jdbc.db.dialect.api.Dialect;
+import org.eclipse.daanse.sql.dialect.api.Dialect;
 import org.osgi.service.component.annotations.Component;
 
 /** Default {@link DdlGeneratorFactory}, producing {@link DdlGeneratorImpl}s. */

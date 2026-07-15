@@ -28,6 +28,12 @@
   <dependencies>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.sql.jdbc.metadata</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.cwm.model.cwm</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
@@ -40,19 +46,24 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.db.api</artifactId>
+      <artifactId>org.eclipse.daanse.sql.jdbc.api</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.db.dialect.api</artifactId>
+      <artifactId>org.eclipse.daanse.sql.model</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.sql.dialect.api</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.db.record</artifactId>
+      <artifactId>org.eclipse.daanse.sql.jdbc.record</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>compile</scope>
     </dependency>
@@ -66,7 +77,7 @@
          PostgreSQL, MariaDB, SQL Server and Oracle via Testcontainers. -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.db.impl</artifactId>
+      <artifactId>org.eclipse.daanse.sql.jdbc.impl</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>test</scope>
     </dependency>
@@ -74,7 +85,7 @@
     <!-- PostgreSQL -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.db.dialect.db.postgresql</artifactId>
+      <artifactId>org.eclipse.daanse.sql.dialect.db.postgresql</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>test</scope>
     </dependency>
@@ -100,7 +111,7 @@
     <!-- H2 (in-process) -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.db.dialect.db.h2</artifactId>
+      <artifactId>org.eclipse.daanse.sql.dialect.db.h2</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>test</scope>
     </dependency>
@@ -120,7 +131,7 @@
     <!-- MariaDB -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.db.dialect.db.mariadb</artifactId>
+      <artifactId>org.eclipse.daanse.sql.dialect.db.mariadb</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>test</scope>
     </dependency>
@@ -146,7 +157,7 @@
     <!-- SQL Server -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.db.dialect.db.mssqlserver</artifactId>
+      <artifactId>org.eclipse.daanse.sql.dialect.db.mssqlserver</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>test</scope>
     </dependency>
@@ -172,7 +183,7 @@
     <!-- Oracle (image is heavy) -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.db.dialect.db.oracle</artifactId>
+      <artifactId>org.eclipse.daanse.sql.dialect.db.oracle</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>test</scope>
     </dependency>
