@@ -29,11 +29,11 @@ import org.eclipse.daanse.cwm.testkit.api.dbcheck.DatabaseColumnCheck;
 import org.eclipse.daanse.cwm.testkit.api.dbcheck.DatabaseQueryCheck;
 import org.eclipse.daanse.cwm.testkit.api.dbcheck.DatabaseSchemaCheck;
 import org.eclipse.daanse.cwm.testkit.api.dbcheck.DatabaseTableCheck;
-import org.eclipse.daanse.jdbc.db.api.DatabaseService;
-import org.eclipse.daanse.jdbc.db.api.meta.MetaInfo;
-import org.eclipse.daanse.jdbc.db.api.schema.ColumnDefinition;
-import org.eclipse.daanse.jdbc.db.api.schema.TableDefinition;
-import org.eclipse.daanse.jdbc.db.impl.DatabaseServiceImpl;
+import org.eclipse.daanse.sql.jdbc.api.DatabaseService;
+import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
+import org.eclipse.daanse.sql.model.schema.ColumnDefinition;
+import org.eclipse.daanse.sql.jdbc.api.schema.TableDefinition;
+import org.eclipse.daanse.sql.jdbc.impl.DatabaseServiceImpl;
 import org.junit.jupiter.api.DynamicTest;
 
 /**
@@ -218,7 +218,7 @@ public final class DatabaseCheckExecutor {
         c.expectedNullable().ifPresent(
                 expectedNullable -> tests.add(DynamicTest.dynamicTest(head + " nullable=" + expectedNullable, () -> {
                     boolean nullable = col.get().columnMetaData()
-                            .nullability() == org.eclipse.daanse.jdbc.db.api.schema.ColumnMetaData.Nullability.NULLABLE;
+                            .nullability() == org.eclipse.daanse.sql.model.schema.ColumnMetaData.Nullability.NULLABLE;
                     if (nullable != expectedNullable) {
                         throw new AssertionError("column " + c.columnName() + " expected nullable=" + expectedNullable
                                 + " but found nullable=" + nullable);

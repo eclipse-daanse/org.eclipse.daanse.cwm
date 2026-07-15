@@ -14,7 +14,7 @@
 package org.eclipse.daanse.cwm.resource.relational.load.jdbc.api;
 
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Catalog;
-import org.eclipse.daanse.jdbc.db.api.meta.MetaInfo;
+import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
 
 /**
  * Builds a CWM relational {@link Catalog} from a JDBC {@link MetaInfo} snapshot —

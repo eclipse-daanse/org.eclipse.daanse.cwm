@@ -16,7 +16,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.util.Map;
 
-import org.eclipse.daanse.jdbc.db.dialect.api.Dialect;
+import org.eclipse.daanse.sql.dialect.api.Dialect;
 
 /**
  * Supplies the rows to load into the tables created from the

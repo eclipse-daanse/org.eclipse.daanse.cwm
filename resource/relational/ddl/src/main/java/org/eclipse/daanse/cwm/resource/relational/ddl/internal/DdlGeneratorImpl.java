@@ -47,13 +47,13 @@ import org.eclipse.daanse.cwm.util.resource.relational.Schemas;
 import org.eclipse.daanse.cwm.util.resource.relational.Tables;
 import org.eclipse.daanse.cwm.util.resource.relational.UniqueConstraints;
 import org.eclipse.daanse.cwm.util.resource.relational.Views;
-import org.eclipse.daanse.jdbc.db.api.schema.ColumnDefinition;
-import org.eclipse.daanse.jdbc.db.api.schema.SchemaReference;
-import org.eclipse.daanse.jdbc.db.api.schema.TableReference;
-import org.eclipse.daanse.jdbc.db.api.schema.Trigger.TriggerEvent;
-import org.eclipse.daanse.jdbc.db.api.schema.Trigger.TriggerScope;
-import org.eclipse.daanse.jdbc.db.api.schema.Trigger.TriggerTiming;
-import org.eclipse.daanse.jdbc.db.dialect.api.Dialect;
+import org.eclipse.daanse.sql.model.schema.ColumnDefinition;
+import org.eclipse.daanse.sql.model.schema.SchemaReference;
+import org.eclipse.daanse.sql.model.schema.TableReference;
+import org.eclipse.daanse.sql.model.schema.Trigger.TriggerEvent;
+import org.eclipse.daanse.sql.model.schema.Trigger.TriggerScope;
+import org.eclipse.daanse.sql.model.schema.Trigger.TriggerTiming;
+import org.eclipse.daanse.sql.dialect.api.Dialect;
 
 /**
  * Serialises a CWM relational {@link Schema} to an ordered list of dialect-
@@ -119,7 +119,7 @@ public final class DdlGeneratorImpl implements DdlGenerator {
             for (Table table : tables) {
                 TableReference tref = tableRef(schema, table, TableReference.TYPE_TABLE);
                 List<ColumnDefinition> cols = CwmSchemaMapper.columnDefinitions(tref, table);
-                org.eclipse.daanse.jdbc.db.api.schema.PrimaryKey pkRef = null;
+                org.eclipse.daanse.sql.model.schema.PrimaryKey pkRef = null;
                 if (features.contains(Feature.PRIMARY_KEY)) {
                     pkRef = primaryKeyRef(tref, table);
                 }
@@ -406,7 +406,7 @@ public final class DdlGeneratorImpl implements DdlGenerator {
     public String createTable(Schema schema, Table table) {
         TableReference tref = tableRef(schema, table, TableReference.TYPE_TABLE);
         List<ColumnDefinition> cols = CwmSchemaMapper.columnDefinitions(tref, table);
-        org.eclipse.daanse.jdbc.db.api.schema.PrimaryKey pk = primaryKeyRef(tref, table);
+        org.eclipse.daanse.sql.model.schema.PrimaryKey pk = primaryKeyRef(tref, table);
         return dialect.ddlGenerator().createTable(tref, cols, pk, settings.ifNotExists());
     }
 
@@ -419,7 +419,7 @@ public final class DdlGeneratorImpl implements DdlGenerator {
         return new TableReference(sref, ncs.getName(), type);
     }
 
-    private org.eclipse.daanse.jdbc.db.api.schema.PrimaryKey primaryKeyRef(TableReference tref, Table table) {
+    private org.eclipse.daanse.sql.model.schema.PrimaryKey primaryKeyRef(TableReference tref, Table table) {
         Optional<PrimaryKey> pkOpt = Tables.findPrimaryKey(table);
         if (pkOpt.isEmpty() || PrimaryKeys.columns(pkOpt.get()).isEmpty()) {
             return null;

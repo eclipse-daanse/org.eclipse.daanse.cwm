@@ -53,10 +53,10 @@ import org.eclipse.daanse.cwm.util.resource.relational.Tables;
 import org.eclipse.daanse.cwm.util.resource.relational.UniqueConstraints;
 import org.eclipse.daanse.jdbc.datasource.testkit.api.ActiveDatabase;
 import org.eclipse.daanse.jdbc.datasource.testkit.oracle.OracleDatabaseProvider;
-import org.eclipse.daanse.jdbc.db.api.DatabaseService;
-import org.eclipse.daanse.jdbc.db.api.meta.MetaInfo;
-import org.eclipse.daanse.jdbc.db.dialect.api.Dialect;
-import org.eclipse.daanse.jdbc.db.impl.DatabaseServiceImpl;
+import org.eclipse.daanse.sql.jdbc.api.DatabaseService;
+import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
+import org.eclipse.daanse.sql.dialect.api.Dialect;
+import org.eclipse.daanse.sql.jdbc.impl.DatabaseServiceImpl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -121,7 +121,7 @@ class JdbcToCwmLoaderRoundTripOracleTest {
         }
 
         try {
-            MetaInfo info = DB_SERVICE.createMetaInfo(connection, dialect);
+            MetaInfo info = DB_SERVICE.createMetaInfo(connection, new org.eclipse.daanse.sql.jdbc.metadata.OracleMetadataProvider());
             Catalog catalog = new CwmLoaderImpl().load(info,
                     JdbcToCwmConfig.builder().schemas(schemaName).catalogName("RT").build());
 
