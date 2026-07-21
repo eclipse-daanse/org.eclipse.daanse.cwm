@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="warehouseoperation" nsURI="http://www.omg.org/spec/CWM/1.1/management/warehouseoperation" nsPrefix="warehouseoperation">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The Warehouse Operation package contains classes recording the day-to-day operation of the warehouse processes.&#10;&#10;The package covers three separate areas:&#10;&#10;    Transformation Executions&#10;    Measurements&#10;    Change Requests&#10;&#10;Details of the most recent executions of transformations can be recorded, identifying when they ran and whether they completed successfully. This can be used to determine how complete and up-to-date specific information in the data warehouse is.&#10;&#10;An ActivityExecution represents an execution of a whole TransformationActivity, and a StepExecution object represents an execution of an individual TransformationStep. If a TransformationStep involves the use of an Operation , an associated StepExecution may reference a CallAction that records the actual arguments passed to the Operation. These classes allow the lineage of data in a data warehouse to be preserved, by recording when and how it was derived, and where it came from.&#10;&#10;Measurement objects allow metrics to be held for any ModelElement. For example, they may be used to hold actual, estimated or planned values for the size of a table.&#10;&#10;ChangeRequests allow details of proposed changes affecting any ModelElement to be recorded. They may also be used to keep a historical record of changes implemented or rejected. &#10;&#10;The Warehouse Operation package depends on the following packages:&#10;&#10;    org.omg::CWM::ObjectModel::Core&#10;    org.omg::CWM::ObjectModel::Behavioral&#10;    org.omg::CWM::Analysis::Transformation&#10;&#10;Separate model diagrams are shown below for each of the three main areas supported by the package.&#10;&#10;OCL Representation of Warehouse Operation Constraints&#10;&#10;[C-1] A ChangeRequest instance must not apply to itself.&#10;context ChangeRequest&#10;inv: self.modelElement -&gt; forAll (element | element &lt;&gt; self)&#10;&#10;[C-2] A completionDate may only be provided for a completed ChangeRequest.&#10;context ChangeRequest&#10;inv: self.completionDate-&gt;notEmpty implies self.completed&#10;&#10;[C-3] A Measurement instance must not apply to itself.&#10;context Measurement&#10;inv: self.modelElement &lt;&gt; self&#10;&#10;[C-4] If the TransformationExecution is not inProgress, the successful, status and endDate attributes must be present, and endDate must not be earlier than startDate.&#10;context TransformationExecution&#10;inv: self.inProgress=false implies (self.successful-&gt;notEmpty and&#10;self.status-&gt;notEmpty and self.endDate-&gt;notEmpty and&#10;self.endDate &gt;= self.startDate)&#10;" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.management" />
+    <details key="prefix" value="Warehouseoperation" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Measurement" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="MeasurementSelfReference" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="MeasurementSelfReference" value="self.modelElement &lt;&gt; self" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="MeasurementSelfReference.shortName" value="C-3" />
+      <details key="MeasurementSelfReference.name" value="Measurement Self-Reference" />
+      <details key="MeasurementSelfReference.description" value="A Measurement instance must not apply to itself." />
+      <details key="MeasurementSelfReference.level" value="error" />
+      <details key="MeasurementSelfReference.specSource" value="self.modelElement &lt;&gt; self" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A Measurement object indicates the value of some attribute of an object. It can be the number of rows in a table, the number of pages in an index, the number of different values in a column, etc. &#10;&#10;The flexibility of this class allows for product specific extensions, without changing the model. " />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Float">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value of this Measurement." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unit" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The unit of measurement." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies how the value was computed.&#10;&#10;The following values have specific meanings:&#10;&#10;   measure (measured value)&#10;   estimate (estimated value)&#10;   plan (planned value)&#10;   minimum (minimum value)&#10;   maximum (maximum value)&#10;   average (average value)" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="creationDate" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="When the value has been computed (see also effectiveDate)." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="effectiveDate" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="When the value is effective. For measured values, effective and creation dates should be the same. For estimated actual values, the creation date may be later than the effective date. For plan values, the effective date is normally later than the creation date." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="modelElement" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="measurement" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="measurement" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the ModelElement to which a Measurement relates." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ChangeRequest" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="ChangeRequestSelfReference CompletionDateRequiresCompleted" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="ChangeRequestSelfReference" value="self.modelElement -&gt; forAll (element | element &lt;&gt; self)" />
+      <details key="CompletionDateRequiresCompleted" value="self.completionDate-&gt;notEmpty() implies self.completed" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="ChangeRequestSelfReference.shortName" value="C-1" />
+      <details key="ChangeRequestSelfReference.name" value="ChangeRequest Self-Reference" />
+      <details key="ChangeRequestSelfReference.description" value="A ChangeRequest instance must not apply to itself." />
+      <details key="ChangeRequestSelfReference.level" value="error" />
+      <details key="ChangeRequestSelfReference.specSource" value="self.modelElement -&gt; forAll (element | element &lt;&gt; self)" />
+      <details key="CompletionDateRequiresCompleted.shortName" value="C-2" />
+      <details key="CompletionDateRequiresCompleted.name" value="CompletionDate Requires Completed" />
+      <details key="CompletionDateRequiresCompleted.description" value="A completionDate may only be provided for a completed ChangeRequest." />
+      <details key="CompletionDateRequiresCompleted.level" value="error" />
+      <details key="CompletionDateRequiresCompleted.specSource" value="self.completionDate-&gt;notEmpty implies self.completed" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a request for change affecting one or more ModelElements. The change request may represent a proposed change or one that has been implemented or rejected." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="changeDescription" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A description of the change." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="changeReason" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The reason or justification for the ChangeRequest." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="status" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The status of the ChangeRequest. This would normally contain a string such as proposed, agreed, implemented or rejected." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="completed" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates that no further action is required for this change request, i.e. it has either&#10;been implemented or been rejected." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="requestDate" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="When the change request was raised." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="completionDate" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The date when all action on the change request was completed (i.e. when implementation was completed or it was rejected)." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="modelElement" ordered="false" lowerBound="1" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="changeRequest" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="changeRequest" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies a ModelElement affected by a ChangeRequest." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TransformationExecution" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="CompletedExecutionAttributes" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="CompletedExecutionAttributes" value="self.inProgress=false implies (self.successful-&gt;notEmpty() and&#10;self.status-&gt;notEmpty() and self.endDate-&gt;notEmpty() and&#10;self.endDate &gt;= self.startDate)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="CompletedExecutionAttributes.shortName" value="C-4" />
+      <details key="CompletedExecutionAttributes.name" value="Completed Execution Attributes" />
+      <details key="CompletedExecutionAttributes.description" value="If the TransformationExecution is not inProgress, the successful, status and endDate attributes must be present, and endDate must not be earlier than startDate." />
+      <details key="CompletedExecutionAttributes.level" value="error" />
+      <details key="CompletedExecutionAttributes.specSource" value="self.inProgress=false implies (self.successful-&gt;notEmpty and&#10;self.status-&gt;notEmpty and self.endDate-&gt;notEmpty and&#10;self.endDate &gt;= self.startDate)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A TransformationExecution is used to record details of a specific execution." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="startDate" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The date and time when the execution started." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="endDate" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The date and time when the execution ended." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="inProgress" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A boolean indicating whether or not the execution is in progress." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="successful" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A boolean indicating whether or not the execution completed successfully." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="status" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Expression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An expression that may be used to provide status details of the execution. For example it could provide comments for a successful execution, or details of errors for an unsuccessful execution." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ActivityExecution" eSuperTypes="#//TransformationExecution">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An ActivityExecution is used to record details of a specific execution of a TransformationActivity." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="transformationActivity" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/analysis/transformation#//TransformationActivity">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="execution" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="execution" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the TransformationActivity." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stepExecution" ordered="false" upperBound="-1" eType="#//StepExecution" containment="true" eOpposite="#//StepExecution/activityExecution">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the StepExecutions recording the results of executing the individual&#10;TransformationSteps." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StepExecution" eSuperTypes="#//TransformationExecution">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A StepExecution is used to record details of a specific execution of a TransformationStep." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="transformationStep" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/analysis/transformation#//TransformationStep">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="execution" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="execution" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the TransformationStep." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="activityExecution" eType="#//ActivityExecution" transient="true" eOpposite="#//ActivityExecution/stepExecution">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the ActivityExecution of which the StepExecution is a part." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="callAction" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/behavioral#//CallAction">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="stepExecution" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="stepExecution" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the CallAction for a StepExecution." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
+  

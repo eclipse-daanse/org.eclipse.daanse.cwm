@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
-import org.eclipse.daanse.cwm.util.resource.relational.ColumnSets;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
 
 /**
  * Asserts a table exists (or is absent, per {@link #expectAbsent()}) with the

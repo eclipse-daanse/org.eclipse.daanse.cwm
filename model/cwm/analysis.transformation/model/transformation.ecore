@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="transformation" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/transformation" nsPrefix="transformation">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="A key aspect of data warehousing is to extract, transform, and load data from&#10;operational resources to a data warehouse or data mart for analysis. Extraction,&#10;transformation, and loading can all be characterized as transformations. In fact,&#10;whenever data needs to be converted from one form to another in data warehousing,&#10;whether for storage, retrieval, or presentation purposes, transformations are involved.&#10;Transformation, therefore, is central to data warehousing.&#10;The Transformation package contains classes and associations that represent common&#10;transformation metadata used in data warehousing. It covers basic transformations&#10;among all types of data sources and targets: object-oriented, relational, record,&#10;multidimensional, XML, OLAP, and data mining.&#10;The Transformation package is designed to enable interchange of common metadata about transformation tools and activities. Specifically it is designed to: &#10;&#10;1. Relate a transformation with its data sources and targets. These data sources and targets can be of any type (e.g., object-oriented, relational) or granularity (e.g., class, attribute, table, column). They can be persistent (e.g., stored in a relational database) or transient.&#10;&#10;2. Accommodate both &quot;black box&quot; and &quot;white box&quot; transformations. In the case of &quot;black box&quot; transformations, data sources and targets are related to a transformation and to each other at a coarse-grain level. We know the data sources and targets are related through the transformation, but we don�t know how a specific piece of a data source is related to a specific piece of a data target. In the case of &quot;white box&quot; transformations, however, data sources and targets are related to a transformation and to each other at a fine-grain level. We know exactly how a specific piece of a data source is related to a specific piece of a data target through a specific part of the transformation.&#10;&#10;3. Allow grouping of transformations into logical units. At the functional level, a logical unit defines a single unit of work, within which all transformations must be executed and completed together. At the execution level, logical units can be used to define the execution grouping and sequencing (either explicitly through precedence constraints or implicitly through data dependencies). A key consideration here is that both parallel and sequential executions (or a combination of both) can be accommodated.&#10;&#10;The Transformation package assumes the existence of the following packages that represent types of potential data sources or targets: ObjectModel (object-oriented), Relational, Record, Multidimensional, XML, OLAP, and Data Mining. The Transformation package is an integral part of the following packages: OLAP, Data Mining, Warehouse Process, and Warehouse Operation. In particular, the Transformation and Warehouse Process packages together provide metamodel constructs that facilitate scheduling and execution in data warehousing, and the Transformation and Warehouse Operation packages together provide metamodel constructs that enable data lineage in data  warehousing.&#10;&#10;This section provides a description of the main features of the Transformation package,&#10;as illustrated in Figure 13-1 (see specification document for figure).&#10;&#10;A transformation transforms a set of source objects into a set of target objects. The elements of a data object set can be any ObjectModel model elements, but typically are tables, columns, or model elements that represent transient, in memory, objects. Data object sets can be both sources and targets for different transformations. In particular, a given data object set can be the target of one transformation and the source of one or more transformations within the same logical unit. This is often the case with transformation that produce and consume temporary objects. &#10;&#10;Transformations allow a wide range of types (and granularity) to be defined for their data sources and targets. For example, the source type of a transformation can be an XML schema while the target type is a column, if the transformation deals with storing an XML document in a column of a relational database. More typically, the source types of a transformation are classes and attributes while the target types are tables and columns, or vice versa, if the transformation deals with converting object data into relational data, or vice versa.&#10;&#10;Existing programs, queries, or rules (in fact, any ObjectModel operations) can be used to perform a transformation by associating them with the transformation using the transformation use dependency.&#10;&#10;Transformations can be grouped into logical units. At the functional level, they are grouped into transformation tasks, each of which defines a set of transformations that must be executed and completed together - a logical unit of work. At the execution level, transformation steps are used to coordinate the flow of control between transformation tasks, with each transformation step executing a single transformation task. The transformation steps are further grouped into transformation activities.&#10;Within each transformation activity, the execution sequence of its transformation steps are defined either explicitly by using the step precedence dependency or precedence constraint, or implicitly through data dependency.&#10;&#10;There are certain &quot;white-box&quot; transformations which are commonly used and which can relate data sources and targets to a transformation and to each other at a detailed level. These transformations are convenient to use and they provide data lineage at a fine-grain level. One such transformation is the transformation map which consists of a set of classifier maps that in turn consists of a set of feature maps or classifier-feature maps. The other is the transformation tree, which represents a transformation as an unary or binary expression tree. For an example usage of the transformation map, please see Figure 13-4.&#10;&#10;The Transformation package depends on the following packages: &#10;&#10;    omg.org::CWM::ObjectModel::Behavioral&#10;    omg.org::CWM::ObjectModel::Core&#10;    omg.org::CWM::Foundation::Expressions&#10;    omg.org::CWM::Foundation::SoftwareDeployment&#10;&#10;The CWM uses packages to control complexity and create groupings of logically interrelated classes and associations. The Transformation package is one such package. Within the Transformation package itself, however, the definition of subpackages is purposefully left out to reduce the length and complexity of the fully qualified names of Transformation classes and associations. There are, however, several groupings of classes and associations that form related sets of functionality within the Transformation package. Although separate subpackages have not been created for these functional areas, their identification improves the understandability of the Transformation package.&#10;&#10;The Transformation package contains metamodel elements that support the following functions:&#10;&#10;1. Transformation and data lineage. These classes and associations deal with transformations and their sources, targets, constraints, and operations.&#10;&#10;2. Transformation grouping and execution. These classes and associations deal with grouping of transformations to form logical units and to define execution sequences.&#10;&#10;3. Specialized transformations. These classes and associations define specialized, &quot;white box&quot;, transformations that are commonly used in data warehousing. The specific Transformation classes and associations supporting each functional area are delineated in Table 13-1 (see specification document for table).&#10;&#10;The metamodel diagram for the Transformation package is split into four parts. The first two diagrams show the Transformation classes and associations, while the last two show the inheritance hierarchy.&#10;&#10;13.5 OCL Representation of Transformation Constraints&#10;&#10;[C-1] The preceding step and succeeding step of StepPrecedence must not be the same.&#10;context StepPrecedence&#10;inv: self.precedingStep-&gt;forAll( p | self.succeedingStep-&gt;forAll( q | p &lt;&gt; q ) )&#10;&#10;[C-2] A TransformationTask may not be its own inverse task.&#10;Identifies the Transformation&#10;context TransformationTask&#10;inv: self.inverseTask-&gt;forAll( p | p &lt;&gt; self )&#10;&#10;[C-3] A TransformationTask may not be its own original task.&#10;context TransformationTask&#10;inv: self.originalTask-&gt;forAll( p | p &lt;&gt; self )&#10;&#10;[C-4] The ClassifierMapToCFMap association is derived from the Namespace-ModelElement association. All ownedElement ends of the association must be ClassifierFeatureMaps.&#10;context ClassifierMapToCFMap&#10;inv Namespace-ModelElement.allInstances.select( ownedElement.oclIsKindOf(&#10;ClassifierFeatureMap ) )&#10;&#10;[C-5] The ClassifierMapToFeatureMap association is derived from the Namespace-ModelElement association. All ownedElement ends of the association must be FeatureMaps.&#10;context ClassifierMapToFeatureMap&#10;inv Namespace-ModelElement.allInstances.select( ownedElement.oclIsKindOf(&#10;FeatureMap ) )" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.analysis" />
+    <details key="prefix" value="Transformation" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Transformation" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Namespace">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a transformation from a set of sources to a set of targets. &#10;&#10;If a model already exists for the object that performs the Transformation, then the model can be related to the Transformation via a TransformationUse dependency.&#10;" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="function" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ProcedureExpression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Any code or script for the Transformation." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="functionDescription" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A short description for any code or script performed by the Transformation." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isPrimary" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This Transformation is the primary transformation for the associated TransformationTask." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" ordered="false" upperBound="-1" eType="#//DataObjectSet" eOpposite="#//DataObjectSet/sourceTransformation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the sources of the Transformation" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" ordered="false" upperBound="-1" eType="#//DataObjectSet" eOpposite="#//DataObjectSet/targetTransformation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the targets of the Transformation" />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataObjectSet" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a set of data objects that can be the source or target of a Transformation." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceTransformation" ordered="false" upperBound="-1" eType="#//Transformation" eOpposite="#//Transformation/source">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Transformation" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetTransformation" ordered="false" upperBound="-1" eType="#//Transformation" eOpposite="#//Transformation/target">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Transformation" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="element" ordered="false" lowerBound="1" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="set" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="set" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the elements in the DataObjectSet" />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TransformationTask" eSuperTypes="http://www.omg.org/spec/CWM/1.1/foundation/softwaredeployment#//Component">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="TaskNotOwnInverse TaskNotOwnOriginal" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="TaskNotOwnInverse" value="self.inverseTask-&gt;forAll( p | p &lt;&gt; self )" />
+      <details key="TaskNotOwnOriginal" value="self.originalTask-&gt;forAll( p | p &lt;&gt; self )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="TaskNotOwnInverse.shortName" value="C-2" />
+      <details key="TaskNotOwnInverse.name" value="Task Not Own Inverse" />
+      <details key="TaskNotOwnInverse.description" value="A TransformationTask may not be its own inverse task." />
+      <details key="TaskNotOwnInverse.level" value="error" />
+      <details key="TaskNotOwnInverse.specSource" value="self.inverseTask-&gt;forAll( p | p &lt;&gt; self )" />
+      <details key="TaskNotOwnOriginal.shortName" value="C-3" />
+      <details key="TaskNotOwnOriginal.name" value="Task Not Own Original" />
+      <details key="TaskNotOwnOriginal.description" value="A TransformationTask may not be its own original task." />
+      <details key="TaskNotOwnOriginal.level" value="error" />
+      <details key="TaskNotOwnOriginal.specSource" value="self.originalTask-&gt;forAll( p | p &lt;&gt; self )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a set of Transformations that must be executed together as a single task (logical unit).&#10;&#10;A TransformationTask may have an inverse task. A transformation task that maps a source set &quot;A&quot; into a target set &quot;B&quot; can be reversed by the inverse transformation task that maps &quot;B&quot; into &quot;A&quot;." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="originalTask" ordered="false" upperBound="-1" eType="#//TransformationTask" eOpposite="#//TransformationTask/inverseTask">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the original TransformationTask" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inverseTask" ordered="false" upperBound="-1" eType="#//TransformationTask" eOpposite="#//TransformationTask/originalTask">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the inverse TransformationTaskclass: TransformationTask" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="transformation" ordered="false" lowerBound="1" upperBound="-1" eType="#//Transformation">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="task" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="task" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Transformations" />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TransformationStep" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents the usage of a TransformationTask in a TransformationActivity. A TransformationStep relates to one TransformationTask. &#10;&#10;TransformationSteps are used to coordinate the flow of control between their TransformationTasks. Ordering of the TransformationSteps are defined using the PrecedenceConstrainedBy dependency." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="task" lowerBound="1" eType="#//TransformationTask">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="step" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="step" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the TransformationTask" />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TransformationActivity" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Subsystem">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a transformation activity. Each TransformationActivity consists of a set&#10;of TransformationSteps." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="creationDate" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="When the TransformationActivity was created." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PrecedenceConstraint" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Constraint">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This is used to define order-of-execution constraint among TransformationSteps. It may be used independent of or in conjunction with StepPrecedence." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TransformationUse" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Dependency">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This is a specialized dependency used to associate a Transformation to the model of an existing object (e.g., program, query, or rule) that performs the transformation." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the type of object that can perform the transformation." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TransformationMap" eSuperTypes="#//Transformation">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a specialized Transformation which consists of a group of ClassifierMaps." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TransformationTree" eSuperTypes="#//Transformation">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a specialized Transformation which can be modeled as an expression tree. " />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="#//TreeType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the type of TransformationTree, which can be unary or binary." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="body" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/expressions#//ExpressionNode" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the expression tree that embodies the TransformationTree." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ClassifierMap" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Namespace">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a mapping of source Classifiers to target Classifiers. A ClassifierMap may consists of a group of ClassifierFeatureMaps and/or FeatureMaps." />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="ClassifierFeatureMapDerivation.shortName" value="C-4" />
+      <details key="ClassifierFeatureMapDerivation.name" value="ClassifierFeatureMap Derivation" />
+      <details key="ClassifierFeatureMapDerivation.description" value="The ClassifierMapToCFMap association is derived from the Namespace-ModelElement association. All ownedElement ends of the association must be ClassifierFeatureMaps." />
+      <details key="ClassifierFeatureMapDerivation.level" value="error" />
+      <details key="ClassifierFeatureMapDerivation.specSource" value="Namespace-ModelElement.allInstances.select( ownedElement.oclIsKindOf( ClassifierFeatureMap ) )" />
+      <details key="ClassifierFeatureMapDerivation.postDescription" value="-- in Ecore strukturell garantiert: cfMap ist eine eigene, typisierte Containment-Referenz. Die Spec formuliert dies als Ableitung der Assoziation ClassifierMapToCFMap von Namespace-ModelElement (ElementOwnership); diese Ableitung existiert in Ecore nicht, da ein Element nur in einer Containment-Referenz liegen kann." />
+      <details key="FeatureMapDerivation.shortName" value="C-5" />
+      <details key="FeatureMapDerivation.name" value="FeatureMap Derivation" />
+      <details key="FeatureMapDerivation.description" value="The ClassifierMapToFeatureMap association is derived from the Namespace-ModelElement association. All ownedElement ends of the association must be FeatureMaps." />
+      <details key="FeatureMapDerivation.level" value="error" />
+      <details key="FeatureMapDerivation.specSource" value="Namespace-ModelElement.allInstances.select( ownedElement.oclIsKindOf( FeatureMap ) )" />
+      <details key="FeatureMapDerivation.postDescription" value="-- in Ecore strukturell garantiert: featureMap ist eine eigene, typisierte Containment-Referenz. Die Spec formuliert dies als Ableitung der Assoziation ClassifierMapToFeatureMap von Namespace-ModelElement (ElementOwnership); diese Ableitung existiert in Ecore nicht, da ein Element nur in einer Containment-Referenz liegen kann." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="function" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ProcedureExpression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Any code or script for the ClassifierMap." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="functionDescription" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A short description for any code or script performed by the ClassifierMap." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="featureMap" ordered="false" upperBound="-1" eType="#//FeatureMap" containment="true" eOpposite="#//FeatureMap/classifierMap">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the owned FeatureMaps" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cfMap" ordered="false" upperBound="-1" eType="#//ClassifierFeatureMap" containment="true" eOpposite="#//ClassifierFeatureMap/classifierMap">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the owned ClassifierFeatureMaps" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" ordered="false" lowerBound="1" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="classifierMap" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="classifierMap" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the source Classifiers of the ClassifierMap" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" ordered="false" lowerBound="1" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="classifierMap" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="classifierMap" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the target Classifiers of the ClassifierMap. CWM 1.1 association ClassifierMapTarget; unidirectional because MOF declares no reverse Reference on Classifier and its reverse end shares the name 'classifierMap' with ClassifierMapSource, which Ecore cannot represent." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FeatureMap" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a mapping of source Features to target Features." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="function" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ProcedureExpression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Any code or script for the FeatureMap." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="functionDescription" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A short description for any code or script performed by the FeatureMap." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="classifierMap" eType="#//ClassifierMap" transient="true" eOpposite="#//ClassifierMap/featureMap">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the owning ClassifierMap" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" ordered="false" lowerBound="1" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Feature">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="featureMap" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="featureMap" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the target Features of the FeatureMap" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" ordered="false" lowerBound="1" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Feature">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="featureMap" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="featureMap" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the source Features of the FeatureMap. CWM 1.1 association FeatureMapSource; unidirectional because MOF declares no reverse Reference on Feature and its reverse end shares the name 'featureMap' with FeatureMapTarget, which Ecore cannot represent." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="TreeType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="unary, binary" />
+    </eAnnotations>
+    <eLiterals name="tfm_unary" />
+    <eLiterals name="tfm_binary" value="1" />
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StepPrecedence" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Dependency">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="DifferentPrecedingAndSucceedingSteps" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="DifferentPrecedingAndSucceedingSteps" value="self.supplier-&gt;forAll( p | self.client-&gt;forAll( q | p &lt;&gt; q ) )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="DifferentPrecedingAndSucceedingSteps.shortName" value="C-1" />
+      <details key="DifferentPrecedingAndSucceedingSteps.name" value="Different Preceding And Succeeding Steps" />
+      <details key="DifferentPrecedingAndSucceedingSteps.description" value="The preceding step and succeeding step of StepPrecedence must not be the same." />
+      <details key="DifferentPrecedingAndSucceedingSteps.level" value="error" />
+      <details key="DifferentPrecedingAndSucceedingSteps.postDescription" value="The spec body reads self.precedingStep / self.succeedingStep. MOF declares both as References on StepPrecedence that alias ends of the inherited Core associations: precedingStep -&gt; DependencySupplier::supplier, succeedingStep -&gt; DependencyClient::client. Ecore cannot carry the aliases as separate features (they would collide with the inherited ones), so the body uses the inherited names. Same navigation, resolved instead of renamed." />
+      <details key="DifferentPrecedingAndSucceedingSteps.specSource" value="self.precedingStep-&gt;forAll( p | self.succeedingStep-&gt;forAll( q | p &lt;&gt; q ) )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This is used to define explicit order-of-execution relationships among TransformationSteps. It may be used independent of or in conjunction with PrecedenceConstraint" />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ClassifierFeatureMap" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a mapping of Classifiers to Features." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="function" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ProcedureExpression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Any code or script for the FeatureMap." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="functionDescription" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A short description for any code or script performed by the FeatureMap." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="classifierToFeature" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies if the mapping is from Classifiers (source) to Features (target). The default is true." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="classifierMap" eType="#//ClassifierMap" transient="true" eOpposite="#//ClassifierMap/cfMap">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the owning ClassifierMap" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="classifier" ordered="false" lowerBound="1" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="cfMap" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="cfMap" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the source/target Classifiers of the ClassifierFeatureMap" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="feature" ordered="false" lowerBound="1" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Feature">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="cfMap" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="cfMap" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the source/target Features of the ClassifierFeatureMap" />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
+    

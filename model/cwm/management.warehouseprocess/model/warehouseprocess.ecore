@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="warehouseprocess" nsURI="http://www.omg.org/spec/CWM/1.1/management/warehouseprocess" nsPrefix="warehouseprocess">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The Warehouse Process package documents the process flows used to execute transformations. These process flows may be documented at the level of a complete TransformationActivity or its individual TransformationSteps. A WarehouseProcess object associates a transformation with a set of events which will be used to trigger the execution of the transformation.&#10;&#10;The Warehouse Process package depends on the following packages:&#10;&#10;    org.omg::CWM::ObjectModel::Core&#10;    org.omg::CWM::ObjectModel::Behavioral&#10;    org.omg::CWM::Analysis::Transformation&#10;&#10;A WarehouseProcess object represents the processing of a transformation. It is instantiated as one of its subtypes WarehouseActivity or WarehouseStep, depending on whether it represents the processing of a TransformationActivity or a Transformation Step.&#10;&#10;A WarehouseProcess may be associated with one or more WarehouseEvents, each identifying events that cause the processing to be initiated. It may also be associated with one or more internal events that will be triggered when processing terminates. A ProcessPackage may be used to group together related WarehouseActivities.&#10;&#10;WarehouseEvents are divided into three categories: scheduled, external and internal. Scheduled events can either be defined as a point in time (each Wednesday at 2 pm) or be defined by intervals (every five minutes). A point in time event can be defined as a custom calendar which contains a set of calendar dates. This allows a series of dates to be reused across several WarehouseProcesses.&#10;&#10;External events are triggered by something happening outside the data warehouse, for example by a batch process which is not described as a WarehouseProcess. Internal events are triggered by the termination of a WarehouseProcess. They can be either retry events or cascade events. Retry events normally trigger a rerun of the same WarehouseProcess, whereas cascade events normally trigger a different WarehouseProcess. An internal event may define a condition that determines whether or not the event is triggered. This condition can use details of the execution of the triggering WarehouseProcess recorded in the relevant ActivityExecution and StepExecution objects.&#10;&#10;OCL Representation of Warehouse Process Constraints&#10;&#10;[C-1] month must be specified when recurringType is everyYear.&#10;context RecurringPointInTimeEvent inv:&#10;self.recurringType=everyYear implies self.month-&gt;notEmpty&#10;&#10;[C-2] month must be between 1 and 12 (inclusive) when specified.&#10;context RecurringPointInTimeEvent inv:&#10;self.month-&gt;notEmpty implies 1 &lt;= self.month &lt;= 12&#10;&#10;[C-3] dayOfMonth must be specified when recurringType is everyYear or&#10;everyMonth.&#10;context RecurringPointInTimeEvent inv:&#10;self.recurringType=everyYear or self.recurringType=everyMonth&#10;implies self.dayOfMonth-&gt;notEmpty&#10;&#10;[C-4] dayOfMonth must be between 1 and 31 (inclusive) when specified.&#10;context RecurringPointInTimeEvent inv:&#10;self.dayOfMonth-&gt;notEmpty implies 1 &lt;= self.dayOfMonth &lt;= 31&#10;&#10;[C-5] dayOfWeek must be specified when recurringType is everyWeek.&#10;context RecurringPointInTimeEvent inv:&#10;self.recurringType=everyWeek implies self.dayOfWeek-&gt;notEmpty&#10;&#10;[C-6] hour must be specified when recurringType is everyYear or everyMonth or&#10;everyWeek or everyDay.&#10;context RecurringPointInTimeEvent inv:&#10;self.recurringType=everyYear or self.recurringType=everyMonth or&#10;self.recurringType=everyWeek or self.recurringType=everyDay&#10;implies self.hour-&gt;notEmpty&#10;&#10;[C-7] hour must be between 0 and 23 (inclusive) when specified.&#10;context RecurringPointInTimeEvent inv:&#10;self.hour-&gt;notEmpty implies 0 &lt;= hour &lt;= 23&#10;&#10;[C-8] minute must be specified when recurringType is not everyMinute.&#10;context RecurringPointInTimeEvent inv:&#10;self.recurringType&lt;&gt;everyMinute implies self.minute-&gt;notEmpty&#10;&#10;[C-9] minute must be between 0 and 59 (inclusive) when specified.&#10;context RecurringPointInTimeEvent inv:&#10;self.minute-&gt;notEmpty implies 0 &lt;= self.minute &lt;= 59&#10;&#10;[C-10] second must be between 0 and 59 (inclusive).&#10;context RecurringPointInTimeEvent inv:&#10;0 &lt;= self.second &lt;= 59" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.management" />
+    <details key="prefix" value="Warehouseprocess" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="WarehouseProcess" abstract="true" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A WarehouseProcess represents the processing of a transformation. It is instantiated as one of its subtypes WarehouseActivity or WarehouseStep, depending on whether it represents the processing of a TransformationActivity or a Transformation Step.&#10;A WarehouseProcess may be associated with one or more WarehouseEvents, each identifying events that cause the processing to be initiated. It may also be associated with one or more internal events that will be triggered when processing terminates." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="staticDefinition" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="When a WarehouseProcess is a constant mapping (such as a Relational View of legacy data or a continuous data propagation process), this flag indicates that the mapping does not require to be run for the target to be up-to-date and in sync with&#10;the source.&#10;&#10;" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isSequential" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This flag indicates if more than one instance of this WarehouseProcess may run at a time. If this flag is true, the scheduler should fail any attempt to trigger this WarehouseProcess while an instance is already in progress." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="warehouseEvent" ordered="false" upperBound="-1" eType="#//events/WarehouseEvent" containment="true" eOpposite="#//events/WarehouseEvent/warehouseProcess">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies a set of events of various types, which will be used to trigger the execution of the warehouse process and its associated transformations.&#09;&#10;" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="internalEvent" ordered="false" upperBound="-1" eType="#//events/InternalEvent" eOpposite="#//events/InternalEvent/triggeringWP">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies an internal event triggered by the termination of the WarehouseProcess. " />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WarehouseStep" eSuperTypes="#//WarehouseProcess">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A WarehouseStep is a component of a WarehouseActivity. It represents the processing of an individual TransformationStep. It may be used to identify WarehouseEvents that trigger the processing of the TransformationStep and/or InternalEvents that are&#10;triggered by the conclusion of the processing of the TransformationStep.&#10;&#10;For example, a WarehouseStep may be used to document how a specific TransformationStep should be retried upon failure." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="transformationStep" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/analysis/transformation#//TransformationStep">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="warehouseStep" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="warehouseStep" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Associates a WarehouseStep with the TransformationStep it performs." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="warehouseActivity" lowerBound="1" eType="#//WarehouseActivity" transient="true" eOpposite="#//WarehouseActivity/warehouseStep">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the WarehouseActivity of which a WarehouseStep is a component." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ProcessPackage" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A group of related WarehouseActivities." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WarehouseActivity" eSuperTypes="#//WarehouseProcess">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A WarehouseActivity is a subtype of WarehouseProcess that represents the processing of a TransformationActivity. It may identify WarehouseEvents that trigger the processing of the TransformationActivity and InternalEvents that are triggered by the&#10;conclusion of this processing. It may contain a set of WarehouseSteps that define in more detail the processing of the individual TransformationSteps of the TransformationActivity." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="warehouseStep" upperBound="-1" eType="#//WarehouseStep" containment="true" eOpposite="#//WarehouseStep/warehouseActivity">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies a WarehouseStep that is a component of the WarehouseActivity." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="transformationActivity" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/analysis/transformation#//TransformationActivity">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="warehouseActivity" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="warehouseActivity" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the TransformationActivity run by the WarehouseActivity." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eSubpackages name="datatype" nsURI="http://www.omg.org/spec/CWM/1.1/management/warehouseprocess/datatype" nsPrefix="datatype">
+    <eClassifiers xsi:type="ecore:EEnum" name="RecurringType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="everyYear, everyMonth, everyWeek, everyDay, everyHour, everyMinute" />
+      </eAnnotations>
+      <eLiterals name="everyYear" />
+      <eLiterals name="everyMonth" value="1" />
+      <eLiterals name="everyWeek" value="2" />
+      <eLiterals name="everyDay" value="3" />
+      <eLiterals name="everyHour" value="4" />
+      <eLiterals name="everyMinute" value="5" />
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="DayOfWeek">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday, workingDay, nonworkingDay" />
+      </eAnnotations>
+      <eLiterals name="monday" />
+      <eLiterals name="tuesday" value="1" />
+      <eLiterals name="wednesday" value="2" />
+      <eLiterals name="thursday" value="3" />
+      <eLiterals name="friday" value="4" />
+      <eLiterals name="saturday" value="5" />
+      <eLiterals name="sunday" value="6" />
+      <eLiterals name="workingDay" value="7" />
+      <eLiterals name="nonworkingDay" value="8" />
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="WaitRuleType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="waitForAll, waitForAny" />
+      </eAnnotations>
+      <eLiterals name="waitForAll" />
+      <eLiterals name="waitForAny" value="1" />
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="events" nsURI="http://www.omg.org/spec/CWM/1.1/management/warehouseprocess/events" nsPrefix="events">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+      <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+      <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="hiddenOpposites" value="true" />
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EClass" name="WarehouseEvent" abstract="true" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/behavioral#//Event">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A virtual class to refer to any Event.&#10;&#10;A WarehouseEvent (or its derivations) represents what triggers the running of a WarehouseProcess. An event can be initiated by a clock, by an external trigger, or by an internal trigger (the conclusion of some WarehouseProcess)." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="warehouseProcess" lowerBound="1" eType="#//WarehouseProcess" transient="true" eOpposite="#//WarehouseProcess/warehouseEvent">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Identifies the warehouse process which will triggered by the event." />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ScheduleEvent" abstract="true" eSuperTypes="#//events/WarehouseEvent">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A ScheduleEvent is an abstract class which covers all the clock based events." />
+      </eAnnotations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PointInTimeEvent" eSuperTypes="#//events/ScheduleEvent">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A PointInTime event is triggered at a fixed time, independently of any external context.&#10;&#10;The triggering time can be either defined functionally (as in the RecurringPointInTimeEvent extension of this class), or by an explicit list of times (CustomCalendarEvent)." />
+      </eAnnotations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CustomCalendarEvent" eSuperTypes="#//events/PointInTimeEvent">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This event is controlled by a list of dates and times. To make the list easily shareable between multiple WarehouseProcesses the calendar itself is in a separate class." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="customCalendar" lowerBound="1" eType="#//events/CustomCalendar" eOpposite="#//events/CustomCalendar/customCalendarEvent">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates which custom calendar is used for this event.&#10;" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CustomCalendar" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A named list of dates and times. " />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="customCalendarEvent" ordered="false" upperBound="-1" eType="#//events/CustomCalendarEvent" eOpposite="#//events/CustomCalendarEvent/customCalendar">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates which event uses this custom calendar." />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CalendarDate" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An entry in a CustomCalendar representing a specific date and time." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="specificDate" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The value of the date. " />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="IntervalEvent" eSuperTypes="#//events/ScheduleEvent">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An IntervalEvent controls a continuous run of a WarehouseProcess. The Warehouse Process will run, then wait for the duration specified in the event, then run again.&#10;&#10;An IntervalEvent is not affected by the result of the WarehouseProcess.&#10;&#10;" />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="duration" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Float">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates the length of time (in seconds) to wait after a run of the WarehouseProcess before triggering the next one.&#10;" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ExternalEvent" eSuperTypes="#//events/WarehouseEvent">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An ExternalEvent allows the description of the triggering of a WarehouseProcess by a task which is not described in the model. This is merely a place holder. The actual behavior and the connection with the external trigger is left to the implementation of&#10;the scheduler." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A free text description of where the external triggering signal comes from." />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="InternalEvent" eSuperTypes="#//events/WarehouseEvent">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An event which may be triggered, depending on whether or not a condition is satisfied, by the conclusion of one or more WarehouseProcess runs.&#10;&#10;There are two types of InternalEvents, depending whether the event triggers a series of different WarehouseProcesses, or whether the event triggers the same WarehouseProcess in an attempt to retry a failed run." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="triggeringWP" ordered="false" lowerBound="1" upperBound="-1" eType="#//WarehouseProcess" eOpposite="#//WarehouseProcess/internalEvent">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Identifies the triggering warehouse process. " />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//BooleanExpression" containment="true" resolveProxies="false">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates what condition the triggering WarehouseProcess run must meet to be considered (success, failure, warnings, etc.).&#10;&#10;How the condition is expressed, and how the result of a Transform is generated is left to the implementation of the scheduler and the transformation, respectively." />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CascadeEvent" eSuperTypes="#//events/InternalEvent">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A CascadeEvent indicates that completion of one or more triggering WarehouseProcesses triggers another WarehouseProcess." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="waitRule" lowerBound="1" eType="#//datatype/WaitRuleType">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates if the event should be triggered as soon as any of the triggering WarehouseProcesses has completed that satisfies the condition (inherited from InternalEvent) or only when all the triggering WarehouseProcesses have completed (provided the condition is satisfied)." />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="RetryEvent" eSuperTypes="#//events/InternalEvent">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates that a WarehouseProcess should be retried upon failure. This type of event is used for example when a WarehouseProcess relies on sources with uncertain availability (connection or uptime).&#10;&#10;In general, the triggering WarehouseProcess and the triggered WarehouseProcess are the same, and only one WarehouseProcess is involved. But this is not an imposed limitation. It is left to the schedulers to decide on the implementation behavior for complex cases." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="waitDuration" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Float">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates the length of time (in seconds) to wait before retrying the triggered WarehouseProcess." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxCount" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates how many times the triggered WarehouseProcess should be retried before being declared failed." />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="RecurringPointInTimeEvent" eSuperTypes="#//events/PointInTimeEvent">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+        <details key="constraints" value="MonthRequiredForEveryYear MonthValidRange DayOfMonthRequired DayOfMonthValidRange DayOfWeekRequiredForEveryWeek HourRequired HourValidRange MinuteRequired MinuteValidRange SecondValidRange" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+        <details key="MonthRequiredForEveryYear" value="self.recurringType=datatype::RecurringType::everyYear implies self.month-&gt;notEmpty()" />
+        <details key="MonthValidRange" value="self.month-&gt;notEmpty() implies 1 &lt;= self.month and self.month &lt;= 12" />
+        <details key="DayOfMonthRequired" value="self.recurringType=datatype::RecurringType::everyYear or self.recurringType=datatype::RecurringType::everyMonth&#10;implies self.dayOfMonth-&gt;notEmpty()" />
+        <details key="DayOfMonthValidRange" value="self.dayOfMonth-&gt;notEmpty() implies 1 &lt;= self.dayOfMonth and self.dayOfMonth &lt;= 31" />
+        <details key="DayOfWeekRequiredForEveryWeek" value="self.recurringType=datatype::RecurringType::everyWeek implies self.dayOfWeek-&gt;notEmpty()" />
+        <details key="HourRequired" value="self.recurringType=datatype::RecurringType::everyYear or self.recurringType=datatype::RecurringType::everyMonth or&#10;self.recurringType=datatype::RecurringType::everyWeek or self.recurringType=datatype::RecurringType::everyDay&#10;implies self.hour-&gt;notEmpty()" />
+        <details key="HourValidRange" value="self.hour-&gt;notEmpty() implies 0 &lt;= self.hour and self.hour &lt;= 23" />
+        <details key="MinuteRequired" value="self.recurringType&lt;&gt;datatype::RecurringType::everyMinute implies self.minute-&gt;notEmpty()" />
+        <details key="MinuteValidRange" value="self.minute-&gt;notEmpty() implies 0 &lt;= self.minute and self.minute &lt;= 59" />
+        <details key="SecondValidRange" value="0 &lt;= self.second and self.second &lt;= 59" />
+      </eAnnotations>
+      <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+        <details key="MonthRequiredForEveryYear.shortName" value="C-1" />
+        <details key="MonthRequiredForEveryYear.name" value="Month Required For EveryYear" />
+        <details key="MonthRequiredForEveryYear.description" value="month must be specified when recurringType is everyYear." />
+        <details key="MonthRequiredForEveryYear.level" value="error" />
+        <details key="MonthRequiredForEveryYear.specSource" value="self.recurringType=everyYear implies self.month-&gt;notEmpty" />
+        <details key="MonthValidRange.shortName" value="C-2" />
+        <details key="MonthValidRange.name" value="Month Valid Range" />
+        <details key="MonthValidRange.description" value="month must be between 1 and 12 (inclusive) when specified." />
+        <details key="MonthValidRange.level" value="error" />
+        <details key="MonthValidRange.specSource" value="self.month-&gt;notEmpty implies 1 &lt;= self.month &lt;= 12" />
+        <details key="DayOfMonthRequired.shortName" value="C-3" />
+        <details key="DayOfMonthRequired.name" value="DayOfMonth Required" />
+        <details key="DayOfMonthRequired.description" value="dayOfMonth must be specified when recurringType is everyYear or everyMonth." />
+        <details key="DayOfMonthRequired.level" value="error" />
+        <details key="DayOfMonthRequired.specSource" value="self.recurringType=everyYear or self.recurringType=everyMonth&#10;implies self.dayOfMonth-&gt;notEmpty" />
+        <details key="DayOfMonthValidRange.shortName" value="C-4" />
+        <details key="DayOfMonthValidRange.name" value="DayOfMonth Valid Range" />
+        <details key="DayOfMonthValidRange.description" value="dayOfMonth must be between 1 and 31 (inclusive) when specified." />
+        <details key="DayOfMonthValidRange.level" value="error" />
+        <details key="DayOfMonthValidRange.specSource" value="self.dayOfMonth-&gt;notEmpty implies 1 &lt;= self.dayOfMonth &lt;= 31" />
+        <details key="DayOfWeekRequiredForEveryWeek.shortName" value="C-5" />
+        <details key="DayOfWeekRequiredForEveryWeek.name" value="DayOfWeek Required For EveryWeek" />
+        <details key="DayOfWeekRequiredForEveryWeek.description" value="dayOfWeek must be specified when recurringType is everyWeek." />
+        <details key="DayOfWeekRequiredForEveryWeek.level" value="error" />
+        <details key="DayOfWeekRequiredForEveryWeek.specSource" value="self.recurringType=everyWeek implies self.dayOfWeek-&gt;notEmpty" />
+        <details key="HourRequired.shortName" value="C-6" />
+        <details key="HourRequired.name" value="Hour Required" />
+        <details key="HourRequired.description" value="hour must be specified when recurringType is everyYear or everyMonth or everyWeek or everyDay." />
+        <details key="HourRequired.level" value="error" />
+        <details key="HourRequired.specSource" value="self.recurringType=everyYear or self.recurringType=everyMonth or&#10;self.recurringType=everyWeek or self.recurringType=everyDay&#10;implies self.hour-&gt;notEmpty" />
+        <details key="HourValidRange.shortName" value="C-7" />
+        <details key="HourValidRange.name" value="Hour Valid Range" />
+        <details key="HourValidRange.description" value="hour must be between 0 and 23 (inclusive) when specified." />
+        <details key="HourValidRange.level" value="error" />
+        <details key="HourValidRange.specSource" value="self.hour-&gt;notEmpty implies 0 &lt;= hour &lt;= 23" />
+        <details key="MinuteRequired.shortName" value="C-8" />
+        <details key="MinuteRequired.name" value="Minute Required" />
+        <details key="MinuteRequired.description" value="minute must be specified when recurringType is not everyMinute." />
+        <details key="MinuteRequired.level" value="error" />
+        <details key="MinuteRequired.specSource" value="self.recurringType&lt;&gt;everyMinute implies self.minute-&gt;notEmpty" />
+        <details key="MinuteValidRange.shortName" value="C-9" />
+        <details key="MinuteValidRange.name" value="Minute Valid Range" />
+        <details key="MinuteValidRange.description" value="minute must be between 0 and 59 (inclusive) when specified." />
+        <details key="MinuteValidRange.level" value="error" />
+        <details key="MinuteValidRange.specSource" value="self.minute-&gt;notEmpty implies 0 &lt;= self.minute &lt;= 59" />
+        <details key="SecondValidRange.shortName" value="C-10" />
+        <details key="SecondValidRange.name" value="Second Valid Range" />
+        <details key="SecondValidRange.description" value="second must be between 0 and 59 (inclusive)." />
+        <details key="SecondValidRange.level" value="error" />
+        <details key="SecondValidRange.specSource" value="0 &lt;= self.second &lt;= 59" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This event triggers a WarehouseProcess on a regular basis such as a specific date or time (for example, the Wednesday of every other week, at 2:30 pm)." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="recurringType" lowerBound="1" eType="#//datatype/RecurringType">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates how often the event should be triggered (weekly, daily, etc.)." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="frequencyFactor" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates the repetition of the event. For example, for a weekly recurringType, a value of 1 will mean that it is to be triggered every week, a value of 2 will mean that it is to be triggered every other week, etc." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="month" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates which month of the year (from 1 to 12) an annual event is to be triggered.&#10;" />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dayOfMonth" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates which day of the month (from 1 to 31) a monthly or annual event is to be triggered. For a monthly event, if the day of the month is greater than the number of days in the month, it is assumed that the scheduler will run the WarehouseProcess on the last day of the month.&#10;" />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dayOfWeek" eType="#//datatype/DayOfWeek">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates which day of the week a weekly schedule is running.&#10;" />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="hour" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates at what hour (from 0 to 23) an annual, monthly, weekly, or daily event is being triggered.&#10;" />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="minute" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates at what minute (from 0 to 59) an event is triggered. Applies to all events except the &quot;everyMinute&quot; ones." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="second" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates at what second (from 0 to 59) an event must be run. Applies to all events.&#10;" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>
+    

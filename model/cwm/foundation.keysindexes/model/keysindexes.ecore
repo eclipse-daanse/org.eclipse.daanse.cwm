@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="keysindexes" nsURI="http://www.omg.org/spec/CWM/1.1/foundation/keysindexes" nsPrefix="keysindexes">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The KeysIndexes package depends on the following package:&#10;&#10;    org.omg::CWM::ObjectModel::Core&#10;&#10;Keys and indexes as means for specifying instances and for identifying alternate sortings of instances are  epresented in the CWMFoundation so that they can be shared among the various data models that employ hem. The CWM Foundation defines the base concepts (uniqueness and relationships implemented as keys)  pon which more specific key structures can be built by other CWM and tool-specific packages.&#10;&#10;The concepts of key and index have been placed in the CWM Foundation because they are available in many  types of data resources. In the CWM Foundation class and association descriptions that follow, relational model  examples are frequently used when discussing the definition and usage of key and index types. This is done because of the wide-spread availability of relational systems and is thought to promote an understanding of the underlying concepts. These concepts, however, are no less applicable to other data models as well.&#10;&#10;The two central classes for representing the concept of keys are UniqueKey and KeyRelationship. UniqueKey instances correspond to the notion that keys represent the identity of instances -- similar to the relational model�s concept of a primary key or an object model�s concept of an object identity. In contrast, KeyRelationship instancescorrespond to the notion that keys embedded in an instance can be used to determine the identity of other related instances -- similar to the relational model concept of foreign key and the object model concept of a reference. Consequently, UniqueKey and KeyRelationship are best thought of as representing roles that collections of Features of Classifiers play rather than Classifiers describing the internal structure of keys. Representing keys as roles rather than structural entities provides greater flexibility and allows the reuse of  Features in multiple keys and in differing relationships to each other. Associations within the KeysIndexes package describe how UniqueKey and KeyRelationship instances describe the roles they play for various&#10;Class instances and the StructuralFeature instances they contain.&#10;&#10;OCL Representation of KeysIndexes Constraints&#10;&#10;[C-6-1]The isAscending attribute is valid only if the isSorted attribute is True.&#10;context IndexedFeature inv:&#10;self.isAscending-&gt;notEmpty implies self.index.isSorted&#10;&#10;[C-6-2] A KeyRelationship instance must be owned by one and only one Class&#10;instance.&#10;context KeyRelationship inv:&#10;(self.namespace-&gt;size = 1) and self.namespace.oclIsKindOf(Class)&#10;&#10;[C-6-3] An UniqueKey instance must be owned by one and only one Class instance.&#10;context UniqueKey inv:&#10;(self.namespace-&gt;size = 1) and self.namespace.oclIsKindOf(Class)" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.foundation" />
+    <details key="prefix" value="Keysindexes" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="UniqueKey" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="UniqueKeyOwnedByClass" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="UniqueKeyOwnedByClass" value="(self.namespace-&gt;size() = 1) and self.namespace.oclIsKindOf(core::Class)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="UniqueKeyOwnedByClass.shortName" value="C-6-3" />
+      <details key="UniqueKeyOwnedByClass.name" value="UniqueKey Owned By Class" />
+      <details key="UniqueKeyOwnedByClass.description" value="An UniqueKey instance must be owned by one and only one Class instance." />
+      <details key="UniqueKeyOwnedByClass.level" value="error" />
+      <details key="UniqueKeyOwnedByClass.specSource" value="(self.namespace-&gt;size = 1) and self.namespace.oclIsKindOf(Class)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A UniqueKey represents a collection of features of some Class that, taken together, uniquely identify instances of the Class. Instances of UniqueKey for which all features are required to have non-null values are candidates for use as primary keys such as those defined by relational DBMSs." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="feature" lowerBound="1" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="uniqueKey" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="uniqueKey" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the StructuralFeature instances that make up the unique key. The ordered constraint is used to represent the sequence of StructuralFeature instances that make up the UniqueKey instance�s key.&#10;" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="keyRelationship" ordered="false" upperBound="-1" eType="#//KeyRelationship" eOpposite="#//KeyRelationship/uniqueKey">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the KeyRelationship instances that reference this UniqueKey instance. In the relational case, this reference identifies the foreign keys that reference this primary key." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Index" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Instances of the Index class represent the ordering of the instances of some other Class, and the Index is said to &quot;span&quot; the Class. Indexes normally have an ordered set of attributes of the Class instance they span that make up the &quot;key&quot; of the index; this set of relationships is represented by the IndexedFeature class that indicates how the attributes are used by the Index instance.&#10;&#10;The Index class is intended primarily as a starting point for tools that require the notion&#10;of an index." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isPartitioning" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, this Index instance is used as a partitioning index." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isSorted" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the Index instance is maintained in a sorted order." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isUnique" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The isUnique attribute is True if the Index instance guarantees all of its instances have a unique key value." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="indexedFeature" upperBound="-1" eType="#//IndexedFeature" containment="true" eOpposite="#//IndexedFeature/index">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the IndexedFeature instance that associates this Index with one of the StructuralFeature elements of the Index�s key. The ordered constraint on this reference can be used to represent the sequential order of elements of the Index�s key." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="spannedClass" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="index" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="index" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Class instance the Index instance spans." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="KeyRelationship" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="KeyRelationshipOwnedByClass" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="KeyRelationshipOwnedByClass" value="(self.namespace-&gt;size() = 1) and self.namespace.oclIsKindOf(core::Class)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="KeyRelationshipOwnedByClass.shortName" value="C-6-2" />
+      <details key="KeyRelationshipOwnedByClass.name" value="KeyRelationship Owned By Class" />
+      <details key="KeyRelationshipOwnedByClass.description" value="A KeyRelationship instance must be owned by one and only one Class instance." />
+      <details key="KeyRelationshipOwnedByClass.level" value="error" />
+      <details key="KeyRelationshipOwnedByClass.specSource" value="(self.namespace-&gt;size = 1) and self.namespace.oclIsKindOf(Class)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="KeyRelationship instances represent relationships between UniqueKey instances and the Class(es) that reference them. This class is intended as a starting point for the creation of &quot;foreign key&quot; and other associative relationships." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="feature" lowerBound="1" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="keyRelationship" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="keyRelationship" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the StructuralFeature instances that make up the unique key. The ordered constraint is used to represent the sequence of StructuralFeature instances that make up the UniqueKey instance�s key. In the relational model case, these StructuralFeature instances identify the columns that make up a table�s primary key." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="uniqueKey" lowerBound="1" eType="#//UniqueKey" eOpposite="#//UniqueKey/keyRelationship">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the UniqueKey instance that serves as the &quot;primary key&quot; for this KeyRelationship instance." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IndexedFeature" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="IsAscendingRequiresIsSorted" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="IsAscendingRequiresIsSorted" value="self.isAscending-&gt;notEmpty() implies self.index.isSorted" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="IsAscendingRequiresIsSorted.shortName" value="C-6-1" />
+      <details key="IsAscendingRequiresIsSorted.name" value="IsAscending Requires IsSorted" />
+      <details key="IsAscendingRequiresIsSorted.description" value="The isAscending attribute is valid only if the isSorted attribute is True." />
+      <details key="IsAscendingRequiresIsSorted.level" value="error" />
+      <details key="IsAscendingRequiresIsSorted.specSource" value="self.isAscending-&gt;notEmpty implies self.index.isSorted" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Instances of the IndexedFeature class map StructuralFeature instances of the spanned Class instance to the Index instances that employ them as (part of) their key. Attributes of IndexedFeature instances indicate how specific StructuralFeature instance are used in Index keys." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isAscending" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The isAscending attribute is true if the feature is sorted in ascending order and false, if descending order." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="feature" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="indexedFeature" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="indexedFeature" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the StructuralFeature instance for which this IndexedFeature instance is relevant." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="index" lowerBound="1" eType="#//Index" transient="true" eOpposite="#//Index/indexedFeature">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Index instance for which this IndexedFeature instance is relevant." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
+    

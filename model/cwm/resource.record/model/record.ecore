@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="record" nsURI="http://www.omg.org/spec/CWM/1.1/resource/record" nsPrefix="record">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The Record package covers the basic concept of a record and its structure. The package takes a broad view of the notion of record, including both traditional data records such as those stored in files and databases, as well as programming language structured data types. In fact, the concepts described here can be used as a foundation for extension packages describing any information structure that is fundamentally hierarchical, or &quot;nested,&quot; in nature such as documents, questionnaires, and organizational structures.&#10;&#10;The Record package depends on the following packages:&#10;&#10;    org.omg::CWM::ObjectModel::Core&#10;    org.omg::CWM::ObjectModel::Instance&#10;&#10;Because of the antiquity of many record-based models, individual system implementations employing record models may have unusual features (such as occurs-depending arrays, various COBOL rename/remapping semantics, etc.) that are not shared with other implementations. When such features are limited to single&#10;implementations or languages, they have been purposefully left out of the Record metamodel. Rather, unusual features of this sort should be placed into extension packages designed to meet the needs of those implementations or languages. For example, record structuring features endemic to the COBOL language have been placed in the COBOLData metamodel in the CWMX package described in Volume 2 and do not appear here. In this way, COBOL-only features do not burden other record oriented implementations unnecessarily.&#10;&#10;OCL Representation of Record Constraints&#10;&#10;[C-1] The owner of a Field and the type of a Field may not refer to the same Classifier instance.&#10;context Field inv:&#10;self.owner &lt;&gt; self.type&#10;&#10;[C-2] The scale attribute is valid only if the precision attribute is specified.&#10;context Field inv:&#10;self.scale-&gt;notEmpty implies self.precision-&gt;notEmpty&#10;&#10;[C-3] The precision attribute is valid only if the length attribute is not specified.&#10;context Field inv:&#10;self.precision-&gt;notEmpty implies self.length-&gt;isEmpty::filely one" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.resource" />
+    <details key="prefix" value="Record" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Field" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="FieldTypeNotOwner ScaleRequiresPrecision PrecisionExcludesLength" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="FieldTypeNotOwner" value="self.owner &lt;&gt; self.type" />
+      <details key="ScaleRequiresPrecision" value="self.scale-&gt;notEmpty() implies self.precision-&gt;notEmpty()" />
+      <details key="PrecisionExcludesLength" value="self.precision-&gt;notEmpty() implies self.length-&gt;isEmpty()" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="FieldTypeNotOwner.shortName" value="C-1" />
+      <details key="FieldTypeNotOwner.name" value="Field Type Not Owner" />
+      <details key="FieldTypeNotOwner.description" value="The owner of a Field and the type of a Field may not refer to the same Classifier instance." />
+      <details key="FieldTypeNotOwner.level" value="error" />
+      <details key="FieldTypeNotOwner.specSource" value="self.owner &lt;&gt; self.type" />
+      <details key="ScaleRequiresPrecision.shortName" value="C-2" />
+      <details key="ScaleRequiresPrecision.name" value="Scale Requires Precision" />
+      <details key="ScaleRequiresPrecision.description" value="The scale attribute is valid only if the precision attribute is specified." />
+      <details key="ScaleRequiresPrecision.level" value="error" />
+      <details key="PrecisionExcludesLength.shortName" value="C-3" />
+      <details key="PrecisionExcludesLength.name" value="Precision Excludes Length" />
+      <details key="PrecisionExcludesLength.description" value="The precision attribute is valid only if the length attribute is not specified." />
+      <details key="PrecisionExcludesLength.level" value="error" />
+      <details key="PrecisionExcludesLength.specSource" value="self.precision-&gt;notEmpty implies self.length-&gt;isEmpty" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A Field is the fundamental information container within a RecordDef. It holds one piece of information, which may itself have structure. The inherited associations StructuralFeatureType and ElementOwnership provide access to a Field instance�s type and owning classifier, respectively." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="length" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The length of a fixed length character or byte string field." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="precision" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The total number of digits in a numeric field." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="scale" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of digits on the right of the decimal separator in a numeric field." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RecordDef" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A RecordDef is an ordered collection of Fields representing the structure of a Record.&#10;&#10;Examples of RecordDefs include definitions of&#10;&#10;    language-specific data structures&#10;    database records&#10;    IMS segments&#10;&#10;The internal structure of a RecordDef instance is constructed by adding Field instances as features (using the ElementOwnership association) and pointing each Field instance�s inherited type reference to the Classifier instance representing the Field�s data type. The referenced instance can be either a primitive data type (an instance of DataType, such as &quot;integer&quot;) or a structured data type (such as a Group instance).&#10;&#10;Refer to the example for more details of the relationships between RecordDefs, Fields, Records, and their values." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fieldDelimiter" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value of a fieldDelimiter used to separate field values in an input stream." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isFixedWidth" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True if the record is fixed length. Otherwise, the record can be of variable length." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="textDelimiter" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The delimiter of a text string in the record, such as a quote." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="file" ordered="false" upperBound="-1" eType="#//RecordFile" eOpposite="#//RecordFile/record">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the set of files in which a record is stored." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FixedOffsetField" eSuperTypes="#//Field">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Instances of FixeOffsetField represent fields that have a fixed location in a record.&#10;&#10;FixedOffsetFields can be used as a foundation for recording details of physical record layouts and as a means of representing the internal structure of undiscriminated (ie, C-type) unions." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="offset" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies the offset of the field within its container in units of the number of bits indicated in the offsetUnitBits attribute." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="offsetUnitBits" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of bits making up one record offset unit. For example, for a byte-relative offset, the value of this attribute would typically be 8." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RecordFile" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A RecordFile is the definition of a file. It may have one or more RecordDefs, defining the structure of the records in the file. Each of these RecordDefs defines a valid structure for records in the file. Subclasses of RecordFile in extensions to support specific languages and systems may be used to represent specific types of files such as COBOL CopyLib files and C-language header files.&#10;&#10;Physical deployments of a RecordFile can be found via the DataManagerDataPackage association in the SoftwareDeployment package ." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isSelfDescribing" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True if the contents of fields in the first record of the file contain field names applicable to subsequent records." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="recordDelimiter" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the value that serves as a logical end-of-record indication in a stream-oriented file. A common examples include the usage of carriage-return characters and carriage-return/line-feed character pairs as new-line characters in ASCII text files." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="skipRecords" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of records to ignore at the beginning of a file. The specific semantics of records that are skipped may be beyond the scope of CWM." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="record" upperBound="-1" eType="#//RecordDef" eOpposite="#//RecordDef/file">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the set of records stored in the file. The ordering may indicate the physical ordering of records with different layouts." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FieldValue" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//DataValue">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The value currently held in a Field instance." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Record" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//Object">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A Record, a subclass of Object, represents a single data record. Each Record is described by a RecordDef instance found via the Object�s InstanceClassifier association." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RecordSet" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//Extent">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A RecordSet represents a collection of Record instances." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Group" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A Group is a structured data type and is used to collect together Field instances within a Record. Groups can be used in RecordDef instances as shown in the foregoing example." />
+    </eAnnotations>
+  </eClassifiers>
+</ecore:EPackage>
+    

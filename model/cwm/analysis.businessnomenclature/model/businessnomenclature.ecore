@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="businessnomenclature" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/businessnomenclature" nsPrefix="businessnomenclature">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Business users of data warehouses need to have a good understanding of what information and tools exist in a data warehouse. They need to understand what the information means from a business perspective, how it is derived, from what data resources it is derived, and what analysis and reporting tools exist for manipulating and reporting the information. They may also need to subscribe to analysis and reporting tools, and have them run with results delivered to them on a regular basis.&#10; &#10;The BusinessNomenclature package contains classes and associations that can be used to represent business metadata. Easy access to this business metadata enables business users to exploit the value of the information in a data warehouse. It can also aid technical users in certain tasks. An example is the use of common business terms and concepts for discussing information requirements with business users. Another example is accessing business intelligence tools for analyzing the impact of warehouse design changes.&#10;&#10;The scope of the BusinessNomenclature package is restricted to the domain of data warehousing and business intelligence.&#10;&#10;This section provides a description of the main features of the BusinessNomenclature package.&#10;&#10;The BusinessNomenclature package provides two main constructs to represent business terms and concepts and related semantics:&#10;&#10;    Taxonomy is a collection of concepts that provide the context for the meaning of a particular term.&#10;    Glossary is a collection of terms and various related forms of the term.&#10;&#10;A taxonomy is a collection of concepts. Concepts represent semantic information and relationships. Concepts are identified by terms, which in turn are manifested by a word or phrase. More than one term may describe the same concept and a given term may describe more than one concept.&#10;A glossary is a collection of terms that are related through explicit or implicit relationships. Terms may be preferred (the term best representing its concept) and thus represent the vocabulary of a business domain or user. Terms may be synonyms and point at the preferred term. A preferred term and its synonyms represent the fact that several terms describe the same concept although with different shades of meaning.&#10;&#10;Terms may be arranged into a hierarchy of more generic and more specific elements. This relationship allows substituting a narrower term, such as &quot;USA&quot;, for a wider term, such as &quot;country&quot;.&#10;&#10;The BusinessNomenclature package depends on the following packages:&#10;&#10;    omg.org::CWM::ObjectModel::Core&#10;&#10;The metamodel diagram for the BusinessNomenclature package is split into two parts. The first diagram shows the BusinessNomenclature classes and associations, while the second shows the inheritance hierarchy.&#10;&#10;OCL Representation of Business Nomenclature Constraints&#10;[C-1] A Concept may not relate to itself.&#10;context Concept&#10;inv: self.relatedConcept-&gt;forAll ( p | p &lt;&gt; self )&#10;&#10;[C-2] The parent of a Glossary must be a Glossary.&#10;context Glossary&#10;inv: self.parent.oclIsKindOf( Glossary )&#10;&#10;[C-3] The child of a Glossary must be a Glossary.&#10;context Glossary&#10;inv: self.child-&gt;forAll( p | p.oclIsKindOf( Glossary ) )&#10;&#10;[C-4] The parent of a Taxonomy must be a Taxonomy.&#10;context Taxonomy&#10;inv: self.parent.oclIsKindOf( Taxonomy )&#10;&#10;[C-5] The child of a Taxonomy must be a Taxonomy.&#10;context Taxonomy&#10;inv: self.child-&gt;forAll( p | p.oclIsKindOf( Taxonomy ) )&#10;&#10;[C-6] A Term may not relate to itself.&#10;context Term&#10;inv: self.relatedTerm-&gt;forAll ( p | p &lt;&gt; self )&#10;&#10;[C-7] A VocabularyElement may not relate to itself.&#10;context Vocabulary&#10;inv: self.relatedElement-&gt;forAll ( p | p &lt;&gt; self )&#10;&#10;[C-8] The RelatedConcepts association is derived from the RelatedVocabularyElements association. All ends of the RelatedConcepts association must be Concepts.&#10;context RelatedConcepts&#10;inv: RelatedVocabularyElements.allInstances.select( element.oclIsKindOf( Concept )&#10;and relatedElement.oclIsKindOf( Concept ) )&#10;&#10;[C-9] The RelatedTerms association is derived from the RelatedVocabularyElements association. All ends of the RelatedTerms association must beTerms.&#10;context RelatedTerms&#10;inv: RelatedVocabularyElements.allInstances.select( element.oclIsKindOf( Term ) and&#10;relatedElement.oclIsKindOf( Term ) )" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.analysis" />
+    <details key="prefix" value="Businessnomenclature" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="VocabularyElement" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="VocabularySelfReference.shortName" value="C-7" />
+      <details key="VocabularySelfReference.name" value="Vocabulary Self-Reference" />
+      <details key="VocabularySelfReference.description" value="A VocabularyElement may not relate to itself." />
+      <details key="VocabularySelfReference.level" value="error" />
+      <details key="VocabularySelfReference.specSource" value="self.relatedElement-&gt;forAll ( p | p &lt;&gt; self )" />
+      <details key="VocabularySelfReference.postDescription" value="Not executable. The specification body navigates the association end RelatedVocabularyElements::relatedElement. MOF distinguishes a navigable AssociationEnd from a Model:Reference - only a Reference becomes a feature of the class. For RelatedVocabularyElements CWM 1.1 declares no Reference at all, on neither end: the spec's References section for VocabularyElement lists only &quot;modelElement&quot; (chapter 14.3.7), and the MOF XMI agrees. The association is therefore absent from the MOF API as well, and unlike the other cases there is no surviving reference that could carry the end name as Property.oppositeRoleName. Ecore mirrors that state faithfully. The specialised associations RelatedConcepts and RelatedTerms do have References (Concept::relatedConcept, Term::relatedTerm) and remain navigable." />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a common superclass for Concepts and Terms." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="definition" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Provides the definition of the VocabularyElement." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="example" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Provides examples of the VocabularyElement." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="usage" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies typical usage of the VocabularyElement." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="modelElement" ordered="false" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="vocabularyElement" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="vocabularyElement" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the ModelElements for which the VocabularyElement provides business meaning." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Nomenclature" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a common superclass for Taxonomy and Glossary." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Taxonomy" eSuperTypes="#//Nomenclature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="TaxonomyChildIsTaxonomy" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="TaxonomyChildIsTaxonomy" value="self.subtaxonomy-&gt;forAll( p | p.oclIsKindOf( Taxonomy ) )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="TaxonomyChildIsTaxonomy.shortName" value="C-5" />
+      <details key="TaxonomyChildIsTaxonomy.name" value="Taxonomy Child Is Taxonomy" />
+      <details key="TaxonomyChildIsTaxonomy.description" value="The child of a Taxonomy must be a Taxonomy." />
+      <details key="TaxonomyChildIsTaxonomy.level" value="error" />
+      <details key="TaxonomyChildIsTaxonomy.specSource" value="self.child-&gt;forAll( p | p.oclIsKindOf( Taxonomy ) )" />
+      <details key="TaxonomyChildIsTaxonomy.postDescription" value="Executable. The spec navigates the association end NomenclatureHierarchy::child; MOF declares a Reference for exactly that end, named Taxonomy::subtaxonomy. Using the reference name is the resolution of the end, not a reinterpretation." />
+      <details key="TaxonomyParentIsTaxonomy.shortName" value="C-4" />
+      <details key="TaxonomyParentIsTaxonomy.name" value="Taxonomy Parent Is Taxonomy" />
+      <details key="TaxonomyParentIsTaxonomy.description" value="The parent of a Taxonomy must be a Taxonomy." />
+      <details key="TaxonomyParentIsTaxonomy.level" value="error" />
+      <details key="TaxonomyParentIsTaxonomy.specSource" value="self.parent.oclIsKindOf( Taxonomy )" />
+      <details key="TaxonomyParentIsTaxonomy.postDescription" value="Not executable. The specification body navigates the association end NomenclatureHierarchy::parent. That end has no Model:Reference of its own, so it would have to be reached as a hidden opposite - but MOF declares the counterpart end &quot;child&quot; twice, as Taxonomy::subtaxonomy and Glossary::subglossary. Eclipse OCL therefore rejects the navigation: &quot;Multiple association ends named 'parent' in classifier 'Taxonomy'&quot;. Picking one arbitrarily is not acceptable for a constraint. C-4 is in any case implied by C-5: if every Taxonomy has only Taxonomy children, the parent of a Taxonomy is a Taxonomy wherever the link exists." />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a collection of Concepts that form an ontology." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subtaxonomy" upperBound="-1" eType="#//Nomenclature" containment="true" ordered="false">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="parent" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="parent" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the child Nomenclatures of this Taxonomy. Declared by MOF as Reference &quot;subtaxonomy&quot; on BusinessNomenclature::Taxonomy, referencing the &quot;child&quot; end of the NomenclatureHierarchy association. The opposite end &quot;parent&quot; carries aggregation=composite, hence containment." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Glossary" eSuperTypes="#//Nomenclature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="GlossaryChildIsGlossary" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="GlossaryChildIsGlossary" value="self.subglossary-&gt;forAll( p | p.oclIsKindOf( Glossary ) )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="GlossaryChildIsGlossary.shortName" value="C-3" />
+      <details key="GlossaryChildIsGlossary.name" value="Glossary Child Is Glossary" />
+      <details key="GlossaryChildIsGlossary.description" value="The child of a Glossary must be a Glossary." />
+      <details key="GlossaryChildIsGlossary.level" value="error" />
+      <details key="GlossaryChildIsGlossary.specSource" value="self.child-&gt;forAll( p | p.oclIsKindOf( Glossary ) )" />
+      <details key="GlossaryChildIsGlossary.postDescription" value="Executable. The spec navigates the association end NomenclatureHierarchy::child; MOF declares a Reference for exactly that end, named Glossary::subglossary. Using the reference name is the resolution of the end, not a reinterpretation." />
+      <details key="GlossaryParentIsGlossary.shortName" value="C-2" />
+      <details key="GlossaryParentIsGlossary.name" value="Glossary Parent Is Glossary" />
+      <details key="GlossaryParentIsGlossary.description" value="The parent of a Glossary must be a Glossary." />
+      <details key="GlossaryParentIsGlossary.level" value="error" />
+      <details key="GlossaryParentIsGlossary.specSource" value="self.parent.oclIsKindOf( Glossary )" />
+      <details key="GlossaryParentIsGlossary.postDescription" value="Not executable. The specification body navigates the association end NomenclatureHierarchy::parent. That end has no Model:Reference of its own, so it would have to be reached as a hidden opposite - but MOF declares the counterpart end &quot;child&quot; twice, as Taxonomy::subtaxonomy and Glossary::subglossary. Eclipse OCL therefore rejects the navigation: &quot;Multiple association ends named 'parent' in classifier 'Glossary'&quot;. Picking one arbitrarily is not acceptable for a constraint. C-2 is in any case implied by C-3: if every Glossary has only Glossary children, the parent of a Glossary is a Glossary wherever the link exists." />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a collection of Terms." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subglossary" upperBound="-1" eType="#//Nomenclature" containment="true" ordered="false">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="parent" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="parent" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the child Nomenclatures of this Glossary. Declared by MOF as Reference &quot;subglossary&quot; on BusinessNomenclature::Glossary, referencing the &quot;child&quot; end of the NomenclatureHierarchy association. The opposite end &quot;parent&quot; carries aggregation=composite, hence containment." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="language" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the language that the Glossary is represented in." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="taxonomy" ordered="false" upperBound="-1" eType="#//Taxonomy">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="glossary" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="glossary" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Taxonomies from which the Glossary is derived." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BusinessDomain" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a business domain." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Concept" eSuperTypes="#//VocabularyElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="ConceptSelfReference" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="ConceptSelfReference" value="self.relatedConcept-&gt;forAll ( p | p &lt;&gt; self )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="ConceptSelfReference.shortName" value="C-1" />
+      <details key="ConceptSelfReference.name" value="Concept Self-Reference" />
+      <details key="ConceptSelfReference.description" value="A Concept may not relate to itself." />
+      <details key="ConceptSelfReference.level" value="error" />
+      <details key="ConceptSelfReference.specSource" value="self.relatedConcept-&gt;forAll ( p | p &lt;&gt; self )" />
+      <details key="RelatedConceptsDerivation.shortName" value="C-8" />
+      <details key="RelatedConceptsDerivation.name" value="RelatedConcepts Derivation" />
+      <details key="RelatedConceptsDerivation.description" value="The RelatedConcepts association is derived from the RelatedVocabularyElements association. All ends of the RelatedConcepts association must be Concepts." />
+      <details key="RelatedConceptsDerivation.level" value="error" />
+      <details key="RelatedConceptsDerivation.specSource" value="RelatedVocabularyElements.allInstances.select( element.oclIsKindOf(&#10;Concept ) and relatedElement.oclIsKindOf( Concept ) )" />
+      <details key="RelatedConceptsDerivation.postDescription" value="Not executable. The specification states this derivation in terms of the base association RelatedVocabularyElements, whose end &quot;relatedElement&quot; carries no Model:Reference on either side and is therefore absent from the MOF API and from Ecore alike - see the note on C-7. The restriction the constraint expresses (all ends must be Concepts) is already guaranteed structurally: Concept::relatedConcept is typed Concept, so a non-Concept cannot be linked through it." />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a business idea or notion. &#10;&#10;Concepts are represented by Terms. Users use Terms that are familiar to them in their business environment to refer to Concepts." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relatedConcept" ordered="false" upperBound="-1" eType="#//Concept">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="concept" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="concept" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the related Concepts." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Term" eSuperTypes="#//VocabularyElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="TermSelfReference" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="TermSelfReference" value="self.relatedTerm-&gt;forAll ( p | p &lt;&gt; self )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="TermSelfReference.shortName" value="C-6" />
+      <details key="TermSelfReference.name" value="Term Self-Reference" />
+      <details key="TermSelfReference.description" value="A Term may not relate to itself." />
+      <details key="TermSelfReference.level" value="error" />
+      <details key="TermSelfReference.specSource" value="self.relatedTerm-&gt;forAll ( p | p &lt;&gt; self )" />
+      <details key="RelatedTermsDerivation.shortName" value="C-9" />
+      <details key="RelatedTermsDerivation.name" value="RelatedTerms Derivation" />
+      <details key="RelatedTermsDerivation.description" value="The RelatedTerms association is derived from the RelatedVocabularyElements association. All ends of the RelatedTerms association must be Terms." />
+      <details key="RelatedTermsDerivation.level" value="error" />
+      <details key="RelatedTermsDerivation.specSource" value="RelatedVocabularyElements.allInstances.select( element.oclIsKindOf( Term&#10;) and relatedElement.oclIsKindOf( Term ) )" />
+      <details key="RelatedTermsDerivation.postDescription" value="Not executable. The specification states this derivation in terms of the base association RelatedVocabularyElements, whose end &quot;relatedElement&quot; carries no Model:Reference on either side and is therefore absent from the MOF API and from Ecore alike - see the note on C-7. The restriction the constraint expresses (all ends must be Terms) is already guaranteed structurally: Term::relatedTerm is typed Term, so a non-Term cannot be linked through it." />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents words or phrases used by business users to refer to Concepts.&#10;&#10;A Term has a definition in a specific context. The context is provided by the referenced Concept that describes the underlying semantics." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="concept" ordered="false" upperBound="-1" eType="#//Concept">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="term" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="term" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Concepts from which the Term is derived." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relatedTerm" ordered="false" upperBound="-1" eType="#//Term">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="term" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="term" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the related Terms." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="preferredTerm" eType="#//Term">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="synonym" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="synonym" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the preferred term for the synonym." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="narrowerTerm" ordered="false" upperBound="-1" eType="#//Term">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="widerTerm" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="widerTerm" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the narrower terms for the wider term." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
+  

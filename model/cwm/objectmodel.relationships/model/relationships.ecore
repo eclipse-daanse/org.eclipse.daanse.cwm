@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="relationships" nsURI="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships" nsPrefix="relationships">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The Relationships metamodel depends on the following package:&#10;&#10;    org.omg::CWM::ObjectModel::Core&#10;&#10;The Relationships metamodel collects together classes and associations that describe  the relationships between object within a CWM information store. The Relationships metamodel describes to types of relationships: association and generalization.&#10;&#10;Association relationships record linkages between model elements. These linkages may represent simple linkages between model elements or aggregation (&quot;is part of&quot;) relationships between model elements; aggregation relationships come in two forms -- shared and composite. Associations have two or more named ends that link them to instances of the classes connected by the association.&#10;&#10;Generalization relationships record arrangements of model elements into type hierarchies in a parent/child (or &quot;is type of&quot;) fashion. Child types are said to &quot;specialize&quot;, &quot;subclass&quot; or &quot;subtype&quot; their parental  types, represent a subset of parental instances that fulfill the definition of the child type, and inherit the structural features&#10;(Attributes, AssociationEnd) and behavioral features (Operations, Methods) of their parents. Parental types are said to &quot;generalize&quot; their child types or to be &quot;superclasses&quot; or &quot;supertypes&quot; of their children.&#10;&#10;CWM generalization hierarchies support multiple inheritance; that is, child types may have more than one parental type and inherit the union of the features of all their parental types. Although called &quot;hierarchies&quot;, multiple inheritance actually represents a directed acyclic graph of parental and child types.&#10;&#10;OCL Representation of Relationships Constraints&#10;&#10;Operations&#10;&#10;The operation allConnections results in the set of all AssociationEnds of the Association.&#10;   allConnections : Set(AssociationEnd);&#10;   allConnections = self.feature.oclIsKindOf(AssociationEnd)&#10;&#10;Constraints&#10;&#10;[C-5-1] An Association must have at least 2 AssociationEnds.&#10;context Association inv:&#10;self.allConnections-&gt;size &gt; 1&#10;&#10;[C-5-2] The AssociationEnds must have a unique name within the association.&#10;context Association inv:&#10;self.allConnections-&gt;forAll( r1, r2 | r1.name = r2.name implies r1 = r2)&#10;&#10;[C-5-3] At most one AssociationEnd may be an aggregation or composition.&#10;context Association inv:&#10;self.allConnections-&gt;select(aggregation &lt;&gt; #ak_none)-&gt;size &lt;= 1&#10;&#10;[C-5-4] If an Association has three or more AssociationEnds, then no AssociationEnd may be an aggregation or composition.&#10;context Association inv:&#10;self.allConnections-&gt;size &gt;=3 implies&#10;self.allConnections-&gt;forall(aggregation = #ak_none)&#10;&#10;[C-5-5] The connected Classifiers of the AssociationEnds should be included in the Namespace of the Association, or be Classifiers with public visibility in other Namespaces to which the Association has access.&#10;context Association inv:&#10;self.allConnections-&gt;forAll(r | self.namespace.allContents-&gt;includes (r.type) ) or&#10;self.allConnections-&gt;forAll(r | self.namespace.allContents-&gt;excludes (r.type))&#10;   implies&#10;self.namespace.clientDependency-&gt;exists (d |&#10;   d.supplier.oclAsType(Namespace).ownedElement-&gt;select (e |&#10;      e.elementOwnership.visibility = #ak_public)-&gt;includes (r.type) or&#10;   d.supplier.oclAsType(Classifier).allParents.&#10;      oclAsType(Namespace).ownedElement-&gt;select (e |&#10;         e.elementOwnership.visibility = #ak_public)-&gt;includes (r.type) or&#10;         d.supplier.oclAsType(Package).allImportedElements-&gt;select (e |&#10;            e.elementImport.visibility = #ak_public) -&gt;includes (r.type) ) )&#10;&#10;[C-5-6] An AssociationEnd must have an owning Association.&#10;context AssociationEnd inv:&#10;self.owner.oclIsKindOf(Association)&#10;&#10;[C-5-7] The Classifier of an AssociationEnd cannot be an Interface or a DataType if the association is navigable away from that end.&#10;context AssociationEnd inv:&#10;(self.type.oclIsKindOf (Interface) or&#10;self.type.oclIsKindOf (DataType)) implies&#10;self.owner-&gt;select (ae | ae &lt;self)-&gt;forAll(ae | ae.isNavigable = #false)&#10;&#10;[C-5-8] An instance may not belong by composition to more than one composite Instance.&#10;context AssociationEnd inv:&#10;self.aggregation = #ak_composite implies self.multiplicity.max &lt;= 1&#10;&#10;[C-5-9] An AssociationEnd with composite or shared aggregation semantics must be owned by an Association.&#10;context AssociationEnd inv:&#10;self.aggregation = #ak_composite or self.aggregation = #ak_shared implies&#10;self.owner.oclIsKindOf(Association)&#10;" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.objectmodel" />
+    <details key="prefix" value="Relationships" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Association" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="MinimumAssociationEnds UniqueAssociationEndNames SingleAggregation NoAggregationForNAry" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="MinimumAssociationEnds" value="self.allConnections()-&gt;size() &gt; 1" />
+      <details key="UniqueAssociationEndNames" value="self.allConnections()-&gt;forAll( r1, r2 | r1.name = r2.name implies r1 = r2)" />
+      <details key="SingleAggregation" value="self.allConnections()-&gt;select(aggregation &lt;&gt; AggregationKind::ak_none)-&gt;size() &lt;= 1" />
+      <details key="NoAggregationForNAry" value="self.allConnections()-&gt;size() &gt;=3 implies self.allConnections()-&gt;forAll(aggregation = AggregationKind::ak_none)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="MinimumAssociationEnds.shortName" value="C-5-1" />
+      <details key="MinimumAssociationEnds.name" value="Minimum Association Ends" />
+      <details key="MinimumAssociationEnds.description" value="An Association must have at least 2 AssociationEnds." />
+      <details key="MinimumAssociationEnds.level" value="error" />
+      <details key="MinimumAssociationEnds.specSource" value="self.allConnections-&gt;size &gt; 1" />
+      <details key="UniqueAssociationEndNames.shortName" value="C-5-2" />
+      <details key="UniqueAssociationEndNames.name" value="Unique AssociationEnd Names" />
+      <details key="UniqueAssociationEndNames.description" value="The AssociationEnds must have a unique name within the association." />
+      <details key="UniqueAssociationEndNames.level" value="error" />
+      <details key="UniqueAssociationEndNames.specSource" value="self.allConnections-&gt;forAll( r1, r2 | r1.name = r2.name implies r1 = r2)" />
+      <details key="SingleAggregation.shortName" value="C-5-3" />
+      <details key="SingleAggregation.name" value="Single Aggregation" />
+      <details key="SingleAggregation.description" value="At most one AssociationEnd may be an aggregation or composition." />
+      <details key="SingleAggregation.level" value="error" />
+      <details key="SingleAggregation.specSource" value="self.allConnections-&gt;select(aggregation &lt;&gt; #ak_none)-&gt;size &lt;= 1" />
+      <details key="NoAggregationForNAry.shortName" value="C-5-4" />
+      <details key="NoAggregationForNAry.name" value="No Aggregation For N-ary" />
+      <details key="NoAggregationForNAry.description" value="If an Association has three or more AssociationEnds, then no AssociationEnd may be an aggregation or composition." />
+      <details key="NoAggregationForNAry.level" value="error" />
+      <details key="NoAggregationForNAry.specSource" value="self.allConnections-&gt;size &gt;=3 implies self.allConnections-&gt;forall(aggregation = #ak_none)" />
+      <details key="ClassifierVisibility.shortName" value="C-5-5" />
+      <details key="ClassifierVisibility.name" value="Classifier Visibility" />
+      <details key="ClassifierVisibility.description" value="The connected Classifiers of the AssociationEnds should be included in the Namespace of the Association, or be Classifiers with public visibility in other Namespaces to which the Association has access." />
+      <details key="ClassifierVisibility.level" value="warning" />
+      <details key="ClassifierVisibility.postDescription" value="Not executable: the expression is defective in the OMG source. The iterator variable r is bound only inside the two forAll bodies but is used again after implies; the parentheses do not balance; and #ak_public is not a VisibilityKind literal (that would be vk_public). It also relies on allParents, which depends on Classifier.parent(). Recorded verbatim under specSource rather than guessed at." />
+      <details key="ClassifierVisibility.specSource" value="self.allConnections-&gt;forAll(r | self.namespace.allContents-&gt;includes (r.type) ) or&#10;self.allConnections-&gt;forAll(r | self.namespace.allContents-&gt;excludes (r.type))&#10; implies&#10;self.namespace.clientDependency-&gt;exists (d |&#10;d.supplier.oclAsType(Namespace).ownedElement-&gt;select (e |&#10; e.elementOwnership.visibility = #ak_public)-&gt;includes (r.type) or&#10; d.supplier.oclAsType(Classifier).allParents.&#10; oclAsType(Namespace).ownedElement-&gt;select (e |&#10; e.elementOwnership.visibility = #ak_public)-&gt;includes (r.type) or&#10; d.supplier.oclAsType(Package).allImportedElements-&gt;select (e |&#10; e.elementImport.visibility = #ak_public) -&gt;includes (r.type) ) )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An association defines a semantic relationship between classifiers. Associations have two or more named ends. Associations with two or more ends are called &quot;n-ary&quot; whereas associations with exactly two ends are called &quot;binary&quot;. Each end, depending&#10;upon its multiplicity, connects to zero or more instances of some classifier.&#10;&#10;In the metamodel, an Association is a declaration of a semantic relationship between Classifiers, such as Classes. Associations must have two, and may have more, association ends. Each end is connected to a Classifier; the same Classifier may be &#10;connected to more than one association end in the same association. (Refer to the ObjectModel�s Instance package, below, for a description of how Associations are instantiated.)&#10;&#10;Because Associations are classifiers, they own and order their association ends (which are Attributes) via the ClassifierFeature association. In addition, because Associations are Classes, they can also own more traditional StructuralFeatures such as Attributes. Consequently, they may act in a manner similar to &quot;association classes&quot; described by&#10;some other object models.&#10;&#10;An association may represent an aggregation (i.e., a whole/part relationship). In this case, the association end attached to the whole element is designated, and the other association end represents the parts of the aggregation.&#10;&#10;Associations can be of three different kinds: (1) ordinary association, (2) composite aggregate, and (3) shareable aggregate. Since the aggregate construct can have several different meanings depending on the application area, CWM gives a more precise meaning to two of these constructs (i.e., association and composite aggregate) and leaves the shareable aggregate more loosely defined in between. Only binary Associations can have composite or sharable aggregation semantics.&#10;&#10;Composite aggregation is a strong form of aggregation which requires that a part instance be included in at most one composite at a time and that the composite object has sole responsibility for the disposition of its parts. This means that the composite object is responsible for the creation and destruction of the parts. In implementation terms, it is responsible for their memory allocation. If a composite object is destroyed, it must destroy all of its parts. It may remove a part and give it to another composite object, which then assumes responsibility for it. If the multiplicity from a part to composite is zero-to-one, the composite may remove the part and the part may assume responsibility for itself, otherwise it may not live apart from a  composite.&#10;&#10;A consequence of these rules is that a composite aggregation implies propagation semantics (i.e., some of the dynamic semantics of the whole is propagated to its parts). For example, if the whole is copied or destroyed, then so are the parts as well (because a part may belong to at most one composite).&#10;&#10;A classifier on the composite end of an association may have parts that are classifiers and associations. At the instance level, an instance of a part element is considered &quot;part of&quot; the instance of a composite element. If an association is part of a composite and it connects two classes that are also part of the same composite, then an instance of the association will connect objects that are part of the same composite object of which the instance is part.&#10;&#10;A shareable aggregation denotes weak ownership (i.e., the part may be included in several aggregates) and its owner may also change over time. However, the semantics of a shareable aggregation does not imply deletion of the parts when an aggregate&#10;referencing it is deleted. Both kinds of aggregations define a transitive, antisymmetric relationship (i.e., the instances form a directed, non-cyclic graph). Composition instances form a strict tree (or rather a forest)." />
+    </eAnnotations>
+    <eOperations ordered="false" name="allConnections" upperBound="-1" eType="ecore:EClass #//AssociationEnd">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="CWM 1.1 §4.3.4 additional operation: all AssociationEnds of this Association. Spec text reads &quot;self.feature.oclIsKindOf(AssociationEnd)&quot;, which yields a collection of Booleans rather than of AssociationEnds — an erratum that would render C-5-2, C-5-3, C-5-4 and C-5-9 meaningless. Implemented with the intended -&gt;select(...)." />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+        <details key="body" value="self.feature-&gt;select(f | f.oclIsKindOf(AssociationEnd))-&gt;asSet()" />
+      </eAnnotations>
+    </eOperations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AssociationEnd" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="AssociationEndRequiresAssociation NoNavigableInterfaceOrDataType SingleCompositeOwner AggregationRequiresAssociation" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="AssociationEndRequiresAssociation" value="self.owner.oclIsKindOf(Association)" />
+      <details key="NoNavigableInterfaceOrDataType" value="(self.type.oclIsKindOf (behavioral::Interface) or&#10;self.type.oclIsKindOf (core::DataType)) implies&#10;self.owner.feature-&gt;select (ae | ae &lt;&gt; self)-&gt;forAll(ae | ae.oclIsKindOf(AssociationEnd) implies ae.oclAsType(AssociationEnd).isNavigable = false)" />
+      <details key="SingleCompositeOwner" value="self.aggregation = AggregationKind::ak_composite implies&#10;self.multiplicity.range-&gt;forAll( r | r.upper &lt;= 1 )" />
+      <details key="AggregationRequiresAssociation" value="self.aggregation = AggregationKind::ak_composite or self.aggregation = AggregationKind::ak_aggregate implies&#10;self.owner.oclIsKindOf(Association)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="AssociationEndRequiresAssociation.shortName" value="C-5-6" />
+      <details key="AssociationEndRequiresAssociation.name" value="AssociationEnd Requires Association" />
+      <details key="AssociationEndRequiresAssociation.description" value="An AssociationEnd must have an owning Association." />
+      <details key="AssociationEndRequiresAssociation.level" value="error" />
+      <details key="AssociationEndRequiresAssociation.specSource" value="self.owner.oclIsKindOf(Association)" />
+      <details key="NoNavigableInterfaceOrDataType.shortName" value="C-5-7" />
+      <details key="NoNavigableInterfaceOrDataType.name" value="No Navigable Interface Or DataType" />
+      <details key="NoNavigableInterfaceOrDataType.description" value="The Classifier of an AssociationEnd cannot be an Interface or a DataType if the association is navigable away from that end." />
+      <details key="NoNavigableInterfaceOrDataType.level" value="error" />
+      <details key="NoNavigableInterfaceOrDataType.postDescription" value="The spec body reads self.owner-&gt;select (ae | ae &lt;self): owner is a single Association, not a collection, and &quot;ae &lt;self&quot; is missing the second character of the &lt;&gt; operator. Rendered here as self.owner.feature-&gt;select(ae | ae &lt;&gt; self), restricted to AssociationEnds - the reading the description requires." />
+      <details key="NoNavigableInterfaceOrDataType.specSource" value="(self.type.oclIsKindOf (Interface) or&#10;self.type.oclIsKindOf (DataType)) implies&#10;self.owner-&gt;select (ae | ae &lt;self)-&gt;forAll(ae | ae.isNavigable = #false)" />
+      <details key="SingleCompositeOwner.shortName" value="C-5-8" />
+      <details key="SingleCompositeOwner.name" value="Single Composite Owner" />
+      <details key="SingleCompositeOwner.description" value="An instance may not belong by composition to more than one composite Instance." />
+      <details key="SingleCompositeOwner.level" value="error" />
+      <details key="SingleCompositeOwner.postDescription" value="The spec body reads self.multiplicity.max. Core::Multiplicity has no attribute max; the upper bounds live in its MultiplicityRanges. Rendered here as self.multiplicity.range-&gt;forAll( r | r.upper &lt;= 1 )." />
+      <details key="SingleCompositeOwner.specSource" value="self.aggregation = #ak_composite implies self.multiplicity.max &lt;= 1" />
+      <details key="AggregationRequiresAssociation.shortName" value="C-5-9" />
+      <details key="AggregationRequiresAssociation.name" value="Aggregation Requires Association" />
+      <details key="AggregationRequiresAssociation.description" value="An AssociationEnd with composite or shared aggregation semantics must be owned by an Association." />
+      <details key="AggregationRequiresAssociation.level" value="error" />
+      <details key="AggregationRequiresAssociation.postDescription" value="The spec body names the literal #ak_shared. Core::AggregationKind has no such literal - its values are ak_none, ak_aggregate and ak_composite. Read as ak_aggregate, which is what the description (&quot;composite or shared aggregation semantics&quot;) means." />
+      <details key="AggregationRequiresAssociation.specSource" value="self.aggregation = #ak_composite or self.aggregation = #ak_shared implies&#10;self.owner.oclIsKindOf(Association)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An association end is an endpoint of an association, which connects the association to a classifier. Each association end is part of one association. The association ends of each association are ordered.&#10;&#10;In the metamodel, an AssociationEnd is part of an Association and specifies the connection of an Association to some other Classifier. Because AssociationEnds are a kind of StructuralFeature, they are owned and ordered by Association instances via the ClassifierFeature association. The StructuralFeatureType association is used to identify the Classifier to which the AssociationEnd is attached. Each AssociationEnd has a name and defines a set of properties of the connection.&#10;&#10;The multiplicity property of an association end specifies how many instances of the classifier at a given end (the one bearing the multiplicity value) may be associated with a single instance of the classifier at the other end. The association end also states whether or not the connection may be traversed towards the instance playing that role in the connection (the isNavigable attribute), that is, if the instance is directly reachable via the association." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="aggregation" lowerBound="1" eType="#//AggregationKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="When placed on one end (the &quot;target&quot; end), specifies whether the class on the target end is an aggregation with respect to the class on the other end (the &quot;source&quot; end). Only one end of an association can be an aggregation." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isNavigable" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="When placed on a target end, specifies whether traversal from a source instance to its associated target instances is possible. A value of true means that the association can be navigated by the source class and the target rolename can be used in navigation expressions. Specification of navigability for each direction is defined independently." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Generalization" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A generalization is a taxonomic relationship between a more general element and a more specific element. The more specific element is fully consistent with the more general element (it has all of its properties, members, and relationships) and may contain additional information.&#10;&#10;In the metamodel, a Generalization is a directed inheritance relationship, uniting a Classifier with a more general Classifier in a hierarchy. Generalization is a subtyping relationship; that is, an instance of the more general (&quot;parent&quot;) Classifier may be substituted by an instance of the more specific (&quot;child&quot;) Classifier.&#10;&#10;To understand inheritance fully, it is necessary to understand the concept of a full descriptor and a segment descriptor. A full descriptor is the full description needed to describe an instance of a metamodel object. It contains a description of all of the&#10;attributes, associations, and operations that the object contains.&#10;&#10;In a pre-object-oriented language, the full descriptor of a data structure was declared directly in its entirety. In an object-oriented language, the description of an object is built out of incremental segments that are combined using inheritance to produce a full descriptor for an object. The segments are the modeling elements that are actually declared in a model. Each classifier contains a list of features and other relationships that it adds to what it inherits from its ancestors. The mechanism of inheritance defines how full descriptors are produced from a set of segments connected by  generalization.The full descriptors are implicit, but they define the structure of actual instances. Features of a classifier that have private visibility are not visible to descendants of the classifier.&#10;&#10;If a classifier has no parent, then its full descriptor is the same as its segment descriptor. If a classifier has one or more parents, then its full descriptor contains the union of the features from its own segment descriptor and the segment descriptors of all of its ancestors. No attribute, operation, or association end with the same signature may be declared in more than one of the segments (in other words, they may not be redefined). A method may be declared in more than one segment. A method declared in any segment supersedes and replaces a method with the same signature declared in any ancestor. If two or more methods nevertheless remain, then they conflict and the model is ill-formed. The constraints on the full descriptor are the union of the constraints on the segment itself and all of its ancestors. If any of them are inconsistent, then the model is ill-formed.&#10;&#10;In any full descriptor for a classifier, each method must have a corresponding operation. In a concrete classifier, each operation in its full descriptor must have a corresponding method in the full descriptor.&#10;" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="child" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="generalization" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="generalization" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Classifier instance that acts as a child in the Generalization relationship." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parent" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="specialization" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="specialization" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Classifier instance that acts as a parent in an inheritance hierarchy." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="AggregationKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An enumeration that denotes what kind of aggregation an Association defines. When placed on a target end, specifies the relationship of the target end to the source end. &#10;&#10;The default value is ak_none." />
+    </eAnnotations>
+    <eLiterals name="ak_none">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The end is not an aggregate." />
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="ak_aggregate" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The end is an aggregate; therefore, the other end is a part and must have the&#10;aggregation value of none. The part may be contained in other aggregates." />
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="ak_composite" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The end is a composite; therefore, the other end is a part and must have the aggregation value of none. The part is strongly owned by the composite and may not be part of any other composite.&#10;" />
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+</ecore:EPackage>
+    

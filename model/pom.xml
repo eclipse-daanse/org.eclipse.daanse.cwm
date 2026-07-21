@@ -20,8 +20,40 @@
   <artifactId>org.eclipse.daanse.cwm.model</artifactId>
   <packaging>pom</packaging>
 
+  <!-- EMF-Laufzeit und die Fennec-Annotationen, die der Codegen in die generierten
+       Klassen schreibt: fuer jedes Modell-Modul gleich, cwm wie cwmx. -->
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.common</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.ecore</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.fennec.emf</groupId>
+      <artifactId>org.eclipse.fennec.emf.osgi.api</artifactId>
+      <version>0.1.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.fennec.emf</groupId>
+      <artifactId>org.eclipse.fennec.emf.osgi.component</artifactId>
+      <version>0.1.1</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+
   <modules>
     <module>cwm</module>
-    <module>cwmx</module>
+   <!-- <module>cwmx</module> -->
   </modules>
 </project>

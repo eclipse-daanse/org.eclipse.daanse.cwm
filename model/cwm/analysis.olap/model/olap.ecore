@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="olap" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/olap" nsPrefix="olap">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Online Analytical Processing (OLAP) is a class of analytic application software that exposes business data in a multidimensional format. This multidimensional format usually includes the consolidation of data drawn from multiple and diverse information sources. Unlike more traditionally structured representations (e.g., the tabular format of a relational database), the multidimensional orientation is a more natural expression of the way business enterprises view their strategic data. For example, an analyst might use an OLAP application to examine total sales revenue by product and geographic region over time, or, perhaps, compare sales margins for the same fiscal periods of two consecutive years. The ultimate objective of OLAP is the efficient construction of analytical models that transform raw business data into strategic business insight.&#10;&#10;There are many ways to implement OLAP. Most OLAP systems are constructed using OLAP server tools that enable logical OLAP structures to be built on top of a variety of physical database systems, such as relational or native multidimensional databases.&#10;&#10;The following features are generally found in most OLAP systems:&#10;&#10;    Multidimensional representation of business data.&#10;    Upward consolidation of multidimensional data in a hierarchical manner, possibly with the application of specialized processing rules.&#10;    The ability to navigate a hierarchy from a consolidated value to the lower level values forming it.&#10;    Support for time-series analysis; i.e., OLAP users are generally concerned with data and consolidations at specific points in time -- By date, week, quarter, etc.&#10;    Support for modeling and scenario analysis -- A user should be able to apply arbitrary &quot;what-if&quot; analyses to a result set without affecting the stored information.&#10;    Consistent response times, regardless of how queries are formulated -- This is critical for effective analysis and modeling.&#10;&#10;OLAP applications integrate well into the data warehousing environment, because a data warehouse provides relatively clean and stable data stores to drive the OLAP application. These data stores are usually maintained in relational tables that can be read directly by OLAP tools or loaded into OLAP servers. These relational tables are often structured in a manner that reveals the inherent dimensionality of the data (such as the ubiquitous Star and Snowflake schemas). Also, the data transformation and mapping services provided by a data warehouse can be used to supply OLAP systems with both metadata and data. Transformation-related metadata can be used to track the&#10;lineage of consolidated OLAP data back to its various sources.&#10;&#10;The primary objectives of the CWM OLAP package are:&#10;&#10;    Define a metamodel of essential OLAP concepts common to most OLAP systems.&#10;    Provide a facility whereby instances of the OLAP metamodel are mapped to deployment-capable structures (i.e., models of physical data resources, such as the CWM Relational and Multidimensional packages).&#10;    Ensure that navigation through the logical OLAP model hierarchy and its various resource models is always performed in a uniform manner (i.e., by defining a standard usage of the CWM Transformation package as a means of implementing these mappings).&#10;    Leverage services provided by other CWM packages, where appropriate (e.g., use the CWM Foundation package to supply a standard representation of expressions).&#10;&#10;The OLAP package depends on the following packages:&#10;&#10;   org.omg::CWM::ObjectModel::Core&#10;   org.omg::CWM::Foundation::Expressions&#10;   org.omg::CWM::Analysis::Transformation&#10;&#10;The major classes and associations of the OLAP metamodel are shown in Figure 14-1.  Schema is the logical container of all elements comprising an OLAP model. It is the root element of the model hierarchy and marks the entry point for navigating OLAP models.&#10;&#10;A Schema contains Dimensions and Cubes. A Dimension is an ordinate within a multidimensional structure and consists of a list of unique values (i.e., members) that share a common semantic meaning within the domain being modeled. Each member designates a unique position along its ordinate.&#10;&#10;A Cube is a collection of analytic values (i.e., measures) that share the same dimensionality. This dimensionality is specified by a set of unique Dimensions from the Schema. Each unique combination of members in the Cartesian product of the Cube�s Dimensions identifies precisely one data cell within a multidimensional structure.&#10;&#10;CubeDimensionAssociation relates a Cube to its defining Dimensions. Features relevant to Cube-Dimension relationships (e.g., calcHierarchy) are exposed by this class.&#10;&#10;A Dimension has zero or more Hierarchies. A Hierarchy is an organizational structure that describes a traversal pattern through a Dimension, based on parent/child relationships between members of a Dimension. Hierarchies are used to define both navigational and consolidation/computational paths through the Dimension (i.e., a value associated with a child member is aggregated by one or more parents). For example, a Time Dimension with a base periodicity of days might have a Hierarchy&#10;specifying the consolidation of days into weeks, weeks into months, months into quarters, and quarters into years.&#10;&#10;A specific Hierarchy may be designated as the default Hierarchy for display purposes (e.g., a user interface that displays the Dimension as a hierarchical tree of members).  CubeDimensionAssociation can also identify a particular Hierarchy as the default Hierarchy for consolidation calculations performed on the Cube.&#10;&#10;MemberSelection models mechanisms capable of partitioning a Dimension�s collection of members. For example, consider a Geography Dimension with members representing cities, states, and regions. An OLAP client interested specifically in cities might define an instance of MemberSelection that extracts the city members.&#10;&#10;CubeRegion models a sub-unit of a Cube that is of the same dimensionality as the Cube itself. Each &quot;dimension&quot; of a CubeRegion is represented by a MemberSelection of the corresponding Dimension  of the Cube. Each MemberSelection may define some subset of its Dimension�s members.&#10;&#10;CubeRegions are used to implement Cubes. A Cube may be realized by a set of CubeRegions that map portions of the logical Cube to physical data sources. The MemberSelections defining CubeRegions can also be grouped together via MemberSelectionGroups, enabling the definition of CubeRegions with specific semantics. For example, one can specify a CubeRegion containing only the &quot;input level&quot; data cells of a Cube.&#10;&#10;A CubeRegion may own any number of CubeDeployments. CubeDeployment is a metaclass that represents an implementation strategy for a multidimensional structure. The ordering of the CubeDeployment classes may optionally be given some implementation-specific meaning (e.g., desired order of selection of several possible deployment strategies, based on optimization considerations).&#10;&#10;The OLAP metamodel defines two special types of Dimension: Time and Measure. A Time Dimension provides a means of representing time-series data within a multidimensional structure. The members of a Time Dimension usually define some base periodicity (e.g., days of the week). The implementation of a Time Dimension might provide support for advanced &quot;time-intelligent&quot; functionality, such as the ability to automatically convert between different periodicities and calendars.&#10;&#10;The members of a Measure Dimension describe the meaning of the analytic values stored in each data cell of a multidimensional structure. For example, an OLAP application may define Sales, Quantity and Weight as its measures. In this case, each data cell within the Cube stores three values, with each value corresponding to one of the three measures. A measure may have an associated data type. For example, Sales might be of a monetary type, Quantity an integer, and Weight a real number.&#10;&#10;The OLAP metamodel specifies two subclasses of Hierarchy: LevelBasedHierarchy and ValueBasedHierarchy.&#10;&#10;LevelBasedHierarchy describes hierarchical relationships between specific levels of a Dimension. LevelBasedHierarchy is used to model both &quot;pure level&quot; hierarchies (e.g., dimension-level tables) and &quot;mixed&quot; hierarchies (i.e., levels plus linked nodes). Dimensional levels are modeled by the Level class, a subclass of MemberSelection that partitions a Dimension�s members into disjoint subsets, each representing a distinct level.&#10;&#10;For example, the Geography Dimension cited earlier contains members representing cities, states, and regions, such as &quot;Stamford&quot;, &quot;Connecticut&quot;, and &quot;NorthEast&quot;. It might also contain a single member called &quot;USA&quot; representing all regions of the United States. Therefore, the Geography Dimension could have four Levels named &quot;City&quot;, &quot;State&quot;, 'Region&quot;, and &quot;ALL&quot;, respectively. Each Level specifies the subset of members belonging to it: All cities belong to the &quot;City&quot; Level, all states belong to the &quot;State&quot; Level, all regions belong to the &quot;Region&quot; Level, and the single &quot;USA&quot; member belongs to the &quot;ALL&quot; Level.&#10;&#10;When used in the definition of a consolidation path, the meaning of &quot;level&quot; is quite clear: Members occupying a given Level consolidate into the next higher Level (e.g., City rolls up into State, State into Region, and Region into ALL).&#10;&#10;LevelBasedHierarchy contains an ordered collection of HierarchyLevelAssocations that defines the natural hierarchy of the Dimension. The ordering defines the hierarchical structure in top-down fashion (i.e., the &quot;first&quot; HierarchyLevelAssociation in the ordered collection represents the upper-most level of the dimensional hierarchy).&#10;&#10;A HierarchyLevelAssociation may own any number of DimensionDeployments. DimensionDeployment is a metaclass that represents an implementation strategy for hierarchical Dimensions. The ordering of the DimensionDeployment classes may optionally be given an implementation-specific meaning (e.g., desired order of selection of several possible deployment strategies, based on optimization&#10;considerations).&#10;&#10;A ValueBasedHierarchy defines a hierarchical ordering of members in which the concept of level has little or no significance. Instead, the topological structure of the hierarchy conveys meaning. ValueBasedHierarchies are often used to model situations where members are classified or ranked according to their distance from a common root member (e.g., an organizational chart of a corporation). In this case, each member of the hierarchy has some specific &quot;metric&quot; or &quot;value&quot; associated it with it. ValueBasedHierarchy can be used to model pure &quot;linked node&quot; hierarchies (e.g.,&#10;asymmetric hierarchical graphs or parent-child tables). &#10;&#10;As with LevelBasedHierarchy, ValueBasedHierarchy also has an ordered collection of dimensionDeployments, where the ordering semantics are left to implementations to define.&#10;&#10;Figure 14-3 illustrates how classes of the OLAP metamodel inherit from the CWM&#10;Object Model. Two classes requiring further explanation are:&#10;&#10;    Measure: A subclass of Attribute that describes the meaning of values stored in the data cells of a multidimensional structure. Different OLAP models often give different interpretations to the term &quot;measure&quot;. In a relational Star Schema, individual measures might be represented by non-key columns of a Fact table (e.g., &quot;Sales&quot; and &quot;Quantity&quot; columns). In this case, measure may be an attribute of a Cube or CubeRegion that models the Fact table. On the other hand, measures can&#10;also be represented by members of a Measure Dimension. A Fact table supporting this representation has a single Measure column with column values consisting of the members &quot;Sales&quot; and &quot;Quantity&quot;, and a single &quot;value&quot; column (i.e., an implicit data dimension) storing the corresponding measure values. A similar notion of Measure Dimension is used in modeling pure hypercube representations of&#10;multidimensional servers. Thus, the concept of measure can be represented either as a Dimenson or as an Attribute, depending on the type of OLAP system being modeled.&#10;&#10;    Coded Level: A subclass of Level that assigns a unique encoding, or label, to each of its members. CodedLevel is not essential to the OLAP metamodel, but is provided as a helper class for certain applications that might benefit from the ability of OLAP systems to structure data hierarchically. For example, CodedLevel could be used to model systems of nomenclature or classification.&#10;&#10;The CWM OLAP metamodel describes logical models of OLAP systems, but does not directly specify how an OLAP system is physically deployed. Modeling the deployment of an OLAP system requires mapping instances of OLAP metaclasses to instances of other CWM metaclasses representing physical resources (e.g., mapping an OLAP Dimension to a Relational Table). This approach offers several advantages:&#10;&#10;    The status of the OLAP metamodel as a conceptual model is preserved by this level of indirection. When using OLAP, a client may perceive to be working directly with OLAP objects, but the actual implementation of those objects is hidden from the client. For example, a client may view a member as a value of a Dimension, but whether that member value comes from a row of a relational table, or from a cell in a multidimensional database, is usually not obvious to the client. On the other hand, if a client needs to determine how a logical OLAP structure is physically realized, the metadata describing this mapping is fully available (assuming that the implementation allows the client to drill-down through the metadata).&#10;&#10;    The possibility of defining mappings based on expressions means that the amount of metadata required to describe large models (e.g., Dimensions containing large collections of members) can be kept within reasonable bounds. It is generally more efficient to provide expressions that specify where large metadata sets reside, how to connect to them, and how to map their contents, rather than representing them directly as part of the metadata content.&#10;&#10;All of the OLAP metaclasses are potential candidates for such deployment mappings. In addition, some OLAP models may also define mappings between several OLAP metaclass instances, forming a natural hierarchy of logical objects (e.g., Dimension Attributes are mapped to Level Attributes which, in turn, are mapped to Table Columns).&#10;&#10;The CWM Transformation package is used as the primary means of describing these mappings. A modeler constructing an OLAP model based on CWM will generally define instances of the TransformationMap metaclass to link logical OLAP objects together, and to link those logical objects to other objects representing their physical data sources.&#10;&#10;StructureMap is a subclass of TransformationMap that models structure-oriented transformation mappings (i.e., member identity and hierarchical structure). This type of transformation mapping needs to be connected to the OLAP metamodel in a very specific way (according to Level and Hierarchy), so the StructureMap subclass is defined to make these associations explicit. Two specific usages of StructureMap are defined: ListOfValues, which maps attributes identifying members residing at a specific Level, or at a specific Level within a particular Hierarchy, and ImmediateParent, which maps attributes identifying the hierarchical parent(s) of the members.&#10;&#10;On the other hand, relatively simple TransformationMaps can be defined within any OLAP model to represent attribute-oriented transformations (e.g., mapping Dimension Attributes to Table Columns that store attribute values).&#10;&#10;ContentMap is a subclass of TransformationMap that models content-oriented transformaton mappings (i.e., cell data or measure values). For example, an instance of ContentMap might be used to map each of a CubeRegion�s Measures to Columns of an underlying Fact Table.&#10;&#10;Note that, in either case (structural mapping or content mapping), the traversal patterns used by any CWM OLAP implementation are always the same, since both deployment mappings are based on the same usage of CWM TransformationMaps. In addition to representing structural mappings, instances of TransformationMap and its subclasses are also capable of storing implementation-dependent functions or procedures that yield the instance values associated with mapped model elements. For example, a &quot;list of values&quot; StructureMap might store an SQL statement such as &quot;select memberName from Product where productFamily = �consumerElectronics� &quot;, as the value of its formula attribute.&#10;&#10;Figure 14-4 illustrates the CWM metaclasses and associations that describe deployment mappings between logical OLAP models and physical resource models. Note that it is possible to combine both Cube (content) and Dimension (structure) deployments together within the context of a single OLAP Schema (via the DeploymentGroup metaclass). Thus, an OLAP Schema can have several possible deployments that users may select based on implementation-specific considerations (e.g., physical optimizations).&#10;&#10;OCL Representation of OLAP Constraints&#10;&#10;[C-1] Ensure that the Dimensions defining a Cube are unique.&#10;context Cube inv:&#10;self.cubeDimensionAssociation-&gt;forAll( c1, c2 | c1 &lt;&gt; c2 implies&#10;c1.dimension &lt;&gt; c2.dimension )&#10;&#10;[C-2] A Cube without CubeRegions cannot be mapped to a deployment structure (i.e., physical source of data).&#10;context Cube inv:&#10;self.cubeRegion-&gt;isEmpty implies self.isVirtual = true&#10;&#10;[C-3] If a calcHierarchy is defined, it must be a Hierarchy owned by the Dimension referenced by the CubeDimensionAssociation.&#10;context CubeDimensionAssociation inv:&#10;self.calcHierarchy-&gt;notEmpty implies self.calcHierarchy.dimension = self.dimension&#10;&#10;[C-4] A &quot;fully realized&quot; CubeRegion has no MemberSelectionGroups (and hence, no MemberSelections).&#10;context CubeRegion inv:&#10;self.isFullyRealized implies self.memberSelectionGroup-&gt;isEmpty&#10;&#10;[C-5] A CubeRegion defined by MemberSelections must have, for each Dimension of its owning Cube, a corresponding MemberSelection within each of its&#10;MemberSelectionGroups.&#10;context CubeRegion inv:&#10;self.memberSelectionGroup-&gt;notEmpty implies&#10;self.cube.cubeDimensionAssociation-&gt;forAll( d |&#10;self.memberSelectionGroup-&gt;forAll( g |&#10;g.memberSelection-&gt;exists( m | m.dimension = d.dimension ) ) )&#10;&#10;[C-6] A CubeRegion defined by MemberSelections must have, within each MemberSelectionGroup, a MemberSelection corresponding to each Dimension of its&#10;owning Cube.&#10;context CubeRegion inv:&#10;self.memberSelectionGroup-&gt;notEmpty implies&#10;self.memberSelectionGroup-&gt;forAll( g |&#10;g.memberSelection-&gt;forAll( m |&#10;self.cube.cubeDimensionAssociation-&gt;exists( d | d.dimension = m.dimension ) ) )&#10;&#10;[C-7] A Dimension may be a Time Dimension, a Measure Dimension, or neither, but never both types at the same time.&#10;context Dimension inv:&#10;not ( self.isTime and self.isMeasure )&#10;&#10;[C-8] The default display Hierarchy (if defined) must be one of the Hierarchies owned by the Dimension.&#10;context Dimension inv:&#10;self.displayDefault-&gt;notEmpty implies self.hierarchy-&gt;includes( self.displayDefault )&#10;&#10;[C-9] An instance of DimensionDeployment must be referenced exclusively by either a HierarchyLevelAssociation or a ValueBasedHierarchy.&#10;context DimensionDeployment inv:&#10;self.hierarchyLevelAssociation-&gt;isEmpty xor self.valueBasedHierarchy-&gt;isEmpty&#10;&#10;[C-10] Within a DimensionDeployment, an &quot;immediate parent&quot; StructureMap must always have an associated and distinct &quot;list of values&quot; StructureMap.&#10;context DimensionDeployment inv:&#10;self.immediateParent-&gt;notEmpty implies&#10;( self.listOfValues-&gt;notEmpty and self.listOfValues &lt;&gt; self.immediateParent )&#10;&#10;[C-11] A StructureMap referenced as a &quot;list of values&quot; StructureMap must not reside outside of the DimensionDeployment�s collection of StructureMaps.&#10;context DimensionDeployment inv:&#10;self.listOfValues-&gt;notEmpty implies self.structureMap-&gt;includes( self.listOfValues )&#10;&#10;[C-12] A StructureMap referenced as an &quot;immediate parent&quot; StructureMap must not reside outside of the DimensionDeployment�s collection of StructureMaps.&#10;context DimensionDeployment inv:&#10;self.immediateParent-&gt;notEmpty implies&#10;self.structureMap-&gt;includes( self.immediateParent )&#10;&#10;[C-13] The currentLevel of each HierarchyLevelAssociation must refer to a Level owned by the Dimension of the LevelBasedHierarchy containing the HierarchyLevelAssociation.&#10;context LevelBasedHierarchy inv:&#10;self.hierarchyLevelAssociation-&gt;notEmpty implies&#10;self.hierarchyLevelAssociation-&gt;forAll( h |&#10;self.dimension.memberSelection&#10;-&gt;select( oclType = Olap::Level )-&gt;includes( h.currentLevel ) )&#10;&#10;[C-14] No two HierarchyLevelAssociations may designate the same Level instance as their &quot;current level&quot;.&#10;context LevelBasedHierarchy inv:&#10;self.hierarchyLevelAssociation-&gt;forAll( h1, h2 | h1 &lt;&gt; h2 implies&#10;h1.currentLevel &lt;&gt; h2.currentLevel )" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.analysis" />
+    <details key="prefix" value="Olap" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="ContentMap" eSuperTypes="http://www.omg.org/spec/CWM/1.1/analysis/transformation#//TransformationMap">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="ContentMap is a subclass of TransformationMap that maps CubeRegion attributes to their physical data sources." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cubeDeployment" lowerBound="1" eType="#//CubeDeployment" transient="true" eOpposite="#//CubeDeployment/contentMap">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The CubeDeployment owning a ContentMap." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Cube" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="UniqueCubeDimensions VirtualCubeWithoutRegions" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="UniqueCubeDimensions" value="self.cubeDimensionAssociation-&gt;forAll( c1, c2 | c1 &lt;&gt; c2 implies&#10;c1.dimension &lt;&gt; c2.dimension )" />
+      <details key="VirtualCubeWithoutRegions" value="self.cubeRegion-&gt;isEmpty() implies self.isVirtual = true" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="UniqueCubeDimensions.shortName" value="C-1" />
+      <details key="UniqueCubeDimensions.name" value="Unique Cube Dimensions" />
+      <details key="UniqueCubeDimensions.description" value="Ensure that the Dimensions defining a Cube are unique." />
+      <details key="UniqueCubeDimensions.level" value="error" />
+      <details key="UniqueCubeDimensions.specSource" value="self.cubeDimensionAssociation-&gt;forAll( c1, c2 | c1 &lt;&gt; c2 implies&#10;c1.dimension &lt;&gt; c2.dimension )" />
+      <details key="VirtualCubeWithoutRegions.shortName" value="C-2" />
+      <details key="VirtualCubeWithoutRegions.name" value="Virtual Cube Without Regions" />
+      <details key="VirtualCubeWithoutRegions.description" value="A Cube without CubeRegions cannot be mapped to a deployment structure (i.e., physical source of data)." />
+      <details key="VirtualCubeWithoutRegions.level" value="error" />
+      <details key="VirtualCubeWithoutRegions.specSource" value="self.cubeRegion-&gt;isEmpty implies self.isVirtual = true" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A Cube is a collection of analytic values (i.e., measures) that share the same dimensionality.  This dimensionality is specified by a set of unique Dimensions from the Schema.  Each unique combination of members in the Cartesian product of the Cube�s Dimensions identifies precisely one data cell within a multidimensional structure.&#10;&#10;Synonyms: Multidimensional Array, Hypercube, Hypervolume.&#10;" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isVirtual" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If true, then this Cube is a Virtual Cube (i.e., it has no physical realization)." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cubeDimensionAssociation" ordered="false" upperBound="-1" eType="#//CubeDimensionAssociation" containment="true" eOpposite="#//CubeDimensionAssociation/cube">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="CubeDimAssocs owned by the Cube." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="schema" lowerBound="1" eType="#//Schema" transient="true" eOpposite="#//Schema/cube">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Schema owning a Cube." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cubeRegion" ordered="false" upperBound="-1" eType="#//CubeRegion" containment="true" eOpposite="#//CubeRegion/cube">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="CubeRegions owned by the Cube." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CubeDeployment" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="CubeDeployment represents a particular implementation strategy for the data portions of an OLAP model.  It does so by organizing a collection of ContentMaps, which in turn define a mapping to an implementation model." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cubeRegion" lowerBound="1" eType="#//CubeRegion" transient="true" eOpposite="#//CubeRegion/cubeDeployment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The CubeRegion owning a CubeDeployment." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deploymentGroup" lowerBound="1" eType="#//DeploymentGroup" eOpposite="#//DeploymentGroup/cubeDeployment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The DeploymentGroups referencing a CubeDeployment." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="contentMap" ordered="false" upperBound="-1" eType="#//ContentMap" containment="true" eOpposite="#//ContentMap/cubeDeployment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The collection of ContentMaps owned by a CubeDeployment." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CubeDimensionAssociation" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="CalcHierarchyOwnedByDimension" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="CalcHierarchyOwnedByDimension" value="self.calcHierarchy-&gt;notEmpty() implies self.calcHierarchy.dimension = self.dimension" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="CalcHierarchyOwnedByDimension.shortName" value="C-3" />
+      <details key="CalcHierarchyOwnedByDimension.name" value="CalcHierarchy Owned By Dimension" />
+      <details key="CalcHierarchyOwnedByDimension.description" value="If a calcHierarchy is defined, it must be a Hierarchy owned by the Dimension referenced by the CubeDimensionAssociation." />
+      <details key="CalcHierarchyOwnedByDimension.level" value="error" />
+      <details key="CalcHierarchyOwnedByDimension.specSource" value="self.calcHierarchy-&gt;notEmpty implies self.calcHierarchy.dimension = self.dimension" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="CubeDimensionAssociation relates a Cube to the Dimensions that define it.  Features relevant to Cube-Dimension relationships (e.g., calcHierarchy) are exposed by this class.&#10;" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cube" lowerBound="1" eType="#//Cube" transient="true" eOpposite="#//Cube/cubeDimensionAssociation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Cube owning CubeDimAssocs." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimension" lowerBound="1" eType="#//Dimension" eOpposite="#//Dimension/cubeDimensionAssociation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Dimension referenced by CubeDimAssocs." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="calcHierarchy" eType="#//Hierarchy" eOpposite="#//Hierarchy/cubeDimensionAssociation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Hierarchy designated by a CubeDimAssoc as the default Hierarchy to be used in consolidation calculations performed on the Cube." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CubeRegion" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="FullyRealizedNoMemberSelections MemberSelectionForEachDimension MemberSelectionMatchesDimensions" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="FullyRealizedNoMemberSelections" value="self.isFullyRealized implies self.memberSelectionGroup-&gt;isEmpty()" />
+      <details key="MemberSelectionForEachDimension" value="self.memberSelectionGroup-&gt;notEmpty() implies&#10;self.cube.cubeDimensionAssociation-&gt;forAll( d |&#10;self.memberSelectionGroup-&gt;forAll( g |&#10;g.memberSelection-&gt;exists( m | m.dimension = d.dimension ) ) )" />
+      <details key="MemberSelectionMatchesDimensions" value="self.memberSelectionGroup-&gt;notEmpty() implies&#10;self.memberSelectionGroup-&gt;forAll( g |&#10;g.memberSelection-&gt;forAll( m |&#10;self.cube.cubeDimensionAssociation-&gt;exists( d | d.dimension = m.dimension ) ) )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="FullyRealizedNoMemberSelections.shortName" value="C-4" />
+      <details key="FullyRealizedNoMemberSelections.name" value="Fully Realized No MemberSelections" />
+      <details key="FullyRealizedNoMemberSelections.description" value="A &quot;fully realized&quot; CubeRegion has no MemberSelectionGroups (and hence, no MemberSelections)." />
+      <details key="FullyRealizedNoMemberSelections.level" value="error" />
+      <details key="FullyRealizedNoMemberSelections.specSource" value="self.isFullyRealized implies self.memberSelectionGroup-&gt;isEmpty" />
+      <details key="MemberSelectionForEachDimension.shortName" value="C-5" />
+      <details key="MemberSelectionForEachDimension.name" value="MemberSelection For Each Dimension" />
+      <details key="MemberSelectionForEachDimension.description" value="A CubeRegion defined by MemberSelections must have, for each Dimension of its owning Cube, a corresponding MemberSelection within each of its MemberSelectionGroups." />
+      <details key="MemberSelectionForEachDimension.level" value="error" />
+      <details key="MemberSelectionForEachDimension.specSource" value="self.memberSelectionGroup-&gt;notEmpty implies&#10;self.cube.cubeDimensionAssociation-&gt;forAll( d |&#10;self.memberSelectionGroup-&gt;forAll( g |&#10;g.memberSelection-&gt;exists( m | m.dimension = d.dimension ) ) )" />
+      <details key="MemberSelectionMatchesDimensions.shortName" value="C-6" />
+      <details key="MemberSelectionMatchesDimensions.name" value="MemberSelection Matches Dimensions" />
+      <details key="MemberSelectionMatchesDimensions.description" value="A CubeRegion defined by MemberSelections must have, within each MemberSelectionGroup, a MemberSelection corresponding to each Dimension of its owning Cube." />
+      <details key="MemberSelectionMatchesDimensions.level" value="error" />
+      <details key="MemberSelectionMatchesDimensions.specSource" value="self.memberSelectionGroup-&gt;notEmpty implies&#10;self.memberSelectionGroup-&gt;forAll( g |&#10;g.memberSelection-&gt;forAll( m |&#10;self.cube.cubeDimensionAssociation-&gt;exists( d | d.dimension = m.dimension ) ) )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="CubeRegion models a sub-unit of a Cube of the same dimensionality as the Cube itself, with each Dimension optionally subsetted in its list of members.&#10;&#10;When mapped to its physical source, a CubeRegion contains data cells identified by the member combinations of the Cartesian product of the CubeRegion's associated Dimensions and Measures.&#10;&#10;The relative ordering of CubeDeployment classes optionally implies a desired order of selection of the CubeDeployments, based on implementation-specific considerations (e.g., optimized access of aggregate data).&#10;&#10;Synonyms: Sub-Cube, Partition, Slice, Region, Area.&#10;&#10;Misc. notes:&#10;1.  A CubeRegion is not a Cube, and a Cube is not a CubeRegion.&#10;2.  A Cube has a Measure and CubeRegion may have a corresponding measure (Measures are Attributes).&#10;3.  A Cube may or may not have CubeRegions.&#10;4.  If a Cube does not have a CubeRegion, then it's not physically mapped (it's virtual).  All physical mapping is based on the CubeRegion , not the Cube." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isReadOnly" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If true, then the CubeRegion content is read-only (i.e., may not be written or updated through the CubeRegion -- e.g., a CubeRegion implemented via an SQL view may not permit updates to the underlying base table)." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isFullyRealized" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If true, then this CubeRegion has a direct physical realization and is not bound by any MemberSelections." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cube" lowerBound="1" eType="#//Cube" transient="true" eOpposite="#//Cube/cubeRegion">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Cube owning CubeRegions." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="memberSelectionGroup" ordered="false" upperBound="-1" eType="#//MemberSelectionGroup" containment="true" eOpposite="#//MemberSelectionGroup/cubeRegion">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="MemberSelectionGroups owned by the CubeRegion." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cubeDeployment" upperBound="-1" eType="#//CubeDeployment" containment="true" eOpposite="#//CubeDeployment/cubeRegion">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The CubeDeployments owned by a CubeRegion." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DeploymentGroup" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="DeploymentGroup represents a logical grouping of model elements defining a single, complete deployment of an instance of Olap Schema (i.e., CubeDeployments and DimensionDeployments).&#10;&#10;The usage of DeploymentGroup is as follows: A user may specify a particular DeploymentGroup as the session-wide, default deployment for all metadata queries performed throughout the session. Alternatively, for queries involving some particular deployed object (e.g., a Cube or a Dimension), the user may be asked to choose from a list of deployments.  This either becomes the default deployment for the remainder of the session, or the user may continue to be asked to specify a deployment for each  subsequent query against deployed objects." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="schema" lowerBound="1" eType="#//Schema" transient="true" eOpposite="#//Schema/deploymentGroup">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Schema owning a DeploymentGroup." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cubeDeployment" ordered="false" upperBound="-1" eType="#//CubeDeployment" eOpposite="#//CubeDeployment/deploymentGroup">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The CubeDeployments referenced by a DeploymentGroup." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimensionDeployment" ordered="false" upperBound="-1" eType="#//DimensionDeployment" eOpposite="#//DimensionDeployment/deploymentGroup">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The DimensionDeployments referenced by a DeploymentGroup." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Dimension" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="NotTimeAndMeasure DisplayDefaultIsOwned" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="NotTimeAndMeasure" value="not ( self.isTime and self.isMeasure )" />
+      <details key="DisplayDefaultIsOwned" value="self.displayDefault-&gt;notEmpty() implies self.hierarchy-&gt;includes( self.displayDefault )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="NotTimeAndMeasure.shortName" value="C-7" />
+      <details key="NotTimeAndMeasure.name" value="Not Time And Measure" />
+      <details key="NotTimeAndMeasure.description" value="A Dimension may be a Time Dimension, a Measure Dimension, or neither, but never both types at the same time." />
+      <details key="NotTimeAndMeasure.level" value="error" />
+      <details key="NotTimeAndMeasure.specSource" value="not ( self.isTime and self.isMeasure )" />
+      <details key="DisplayDefaultIsOwned.shortName" value="C-8" />
+      <details key="DisplayDefaultIsOwned.name" value="Display Default Is Owned" />
+      <details key="DisplayDefaultIsOwned.description" value="The default display Hierarchy (if defined) must be one of the Hierarchies owned by the Dimension." />
+      <details key="DisplayDefaultIsOwned.level" value="error" />
+      <details key="DisplayDefaultIsOwned.specSource" value="self.displayDefault-&gt;notEmpty implies self.hierarchy-&gt;includes( self.displayDefault )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A Dimension is an ordinate within a multidimensional structure, and consists of an ordered list of values (i.e.,  members) that share a common semantic meaning within the domain being modeled.  Each member designates a unique position along its ordinate.&#10;&#10;Typical Dimensions are: Time, Product, Geography, Scenario (e.g., actual, budget, forecast), Measure (e.g., sales, quantity).&#10;" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isTime" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If true, then this Dimension is a Time Dimension (i.e., its members collectively represent a time series)." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isMeasure" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If true, then this Dimension is a Measure Dimension (i.e., its members represent Measures)." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="memberSelection" ordered="false" upperBound="-1" eType="#//MemberSelection" containment="true" eOpposite="#//MemberSelection/dimension">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="MemberSelections owned by the Dimension." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cubeDimensionAssociation" ordered="false" upperBound="-1" eType="#//CubeDimensionAssociation" eOpposite="#//CubeDimensionAssociation/dimension">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="CubeDimAssocs referencing the Dimension." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hierarchy" ordered="false" upperBound="-1" eType="#//Hierarchy" containment="true" eOpposite="#//Hierarchy/dimension">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Hierarchies owned by the Dimension." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="displayDefault" eType="#//Hierarchy" eOpposite="#//Hierarchy/defaultedDimension">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Hierarchy designated by the Dimension as its default Hierarchy for display purposes." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="schema" lowerBound="1" eType="#//Schema" transient="true" eOpposite="#//Schema/dimension">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Schema owning a Dimension" />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DimensionDeployment" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="ExclusiveHierarchyReference ImmediateParentRequiresListOfValues ListOfValuesInStructureMaps ImmediateParentInStructureMaps" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="ExclusiveHierarchyReference" value="self.hierarchyLevelAssociation-&gt;isEmpty() xor self.valueBasedHierarchy-&gt;isEmpty()" />
+      <details key="ImmediateParentRequiresListOfValues" value="self.immediateParent-&gt;notEmpty() implies&#10;( self.listOfValues-&gt;notEmpty() and self.listOfValues &lt;&gt; self.immediateParent )" />
+      <details key="ListOfValuesInStructureMaps" value="self.listOfValues-&gt;notEmpty() implies self.structureMap-&gt;includes( self.listOfValues )" />
+      <details key="ImmediateParentInStructureMaps" value="self.immediateParent-&gt;notEmpty() implies&#10;self.structureMap-&gt;includes( self.immediateParent )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="ExclusiveHierarchyReference.shortName" value="C-9" />
+      <details key="ExclusiveHierarchyReference.name" value="Exclusive Hierarchy Reference" />
+      <details key="ExclusiveHierarchyReference.description" value="An instance of DimensionDeployment must be referenced exclusively by either a HierarchyLevelAssociation or a ValueBasedHierarchy." />
+      <details key="ExclusiveHierarchyReference.level" value="error" />
+      <details key="ExclusiveHierarchyReference.specSource" value="self.hierarchyLevelAssociation-&gt;isEmpty xor self.valueBasedHierarchy-&gt;isEmpty" />
+      <details key="ImmediateParentRequiresListOfValues.shortName" value="C-10" />
+      <details key="ImmediateParentRequiresListOfValues.name" value="Immediate Parent Requires List Of Values" />
+      <details key="ImmediateParentRequiresListOfValues.description" value="Within a DimensionDeployment, an &quot;immediate parent&quot; StructureMap must always have an associated and distinct &quot;list of values&quot; StructureMap." />
+      <details key="ImmediateParentRequiresListOfValues.level" value="error" />
+      <details key="ImmediateParentRequiresListOfValues.specSource" value="self.immediateParent-&gt;notEmpty implies&#10;( self.listOfValues-&gt;notEmpty and self.listOfValues &lt;&gt; self.immediateParent )" />
+      <details key="ListOfValuesInStructureMaps.shortName" value="C-11" />
+      <details key="ListOfValuesInStructureMaps.name" value="List Of Values In StructureMaps" />
+      <details key="ListOfValuesInStructureMaps.description" value="A StructureMap referenced as a &quot;list of values&quot; StructureMap must not reside outside of the DimensionDeployment's collection of StructureMaps." />
+      <details key="ListOfValuesInStructureMaps.level" value="error" />
+      <details key="ListOfValuesInStructureMaps.specSource" value="self.listOfValues-&gt;notEmpty implies self.structureMap-&gt;includes( self.listOfValues )" />
+      <details key="ImmediateParentInStructureMaps.shortName" value="C-12" />
+      <details key="ImmediateParentInStructureMaps.name" value="Immediate Parent In StructureMaps" />
+      <details key="ImmediateParentInStructureMaps.description" value="A StructureMap referenced as an &quot;immediate parent&quot; StructureMap must not reside outside of the DimensionDeployment's collection of StructureMaps." />
+      <details key="ImmediateParentInStructureMaps.level" value="error" />
+      <details key="ImmediateParentInStructureMaps.specSource" value="self.immediateParent-&gt;notEmpty implies&#10;self.structureMap-&gt;includes( self.immediateParent )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="DimensionDeployment represents a particular implementation strategy for the dimensional/hierarchical portions of an OLAP model.  It does so by organizing a collection of StructureMaps, which in turn define a mapping to an implementation model.&#10;" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hierarchyLevelAssociation" eType="#//HierarchyLevelAssociation" transient="true" eOpposite="#//HierarchyLevelAssociation/dimensionDeployment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The HierarchyLevelAssociation owning DimensionDeployments." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="valueBasedHierarchy" eType="#//ValueBasedHierarchy" transient="true" eOpposite="#//ValueBasedHierarchy/dimensionDeployment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The ValueBasedHierarchy owning a DimensionDeployment." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="structureMap" ordered="false" upperBound="-1" eType="#//StructureMap" containment="true" eOpposite="#//StructureMap/dimensionDeployment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The StructureMaps owned by a DimensionDeployment." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="listOfValues" eType="#//StructureMap" eOpposite="#//StructureMap/dimensionDeploymentLV">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The StructureMap referenced by a DimensionDeployment as its &quot;list of values&quot; StructureMap." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="immediateParent" eType="#//StructureMap" eOpposite="#//StructureMap/dimensionDeploymentIP">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The StructureMap referenced by a DimensionDeployment as its &quot;immediate parent&quot;." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deploymentGroup" lowerBound="1" eType="#//DeploymentGroup" eOpposite="#//DeploymentGroup/dimensionDeployment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The DeploymentGroups referencing a DimensionDeployment." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Hierarchy" abstract="true" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A Hierarchy is an organizational structure that imposes a parent/child ordering on the members of the Dimension, usually to define either a navigational or consolidation/computational paths through the Dimension (i.e., a value associated with a child member is aggregated into one or more parents). " />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimension" lowerBound="1" eType="#//Dimension" transient="true" eOpposite="#//Dimension/hierarchy">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Dimension owning Hierarchies." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultedDimension" eType="#//Dimension" eOpposite="#//Dimension/displayDefault">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Dimension designating the Hierarchy as its default Hierarchy for display purposes." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cubeDimensionAssociation" ordered="false" upperBound="-1" eType="#//CubeDimensionAssociation" eOpposite="#//CubeDimensionAssociation/calcHierarchy">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="CubeDimAssocs designating the default Hierarchy to be used in consolidation calculations performed on the Cube." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hierarchyMemberSelectionGroup" ordered="false" upperBound="-1" eType="#//HierarchyMemberSelectionGroup" eOpposite="#//HierarchyMemberSelectionGroup/hierarchy">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The HierarchyMemberSelectionGroups referencing one or more Hierarchies." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HierarchyLevelAssociation" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="HierarchyLevelAssociation is a class that orders Levels within a LevelBasedHierarchy, and provides a means of mapping Level/Hierarchy-oriented  Dimension attributes to one or more physical deployments.&#10;&#10;The relative ordering of DimensionDeployment classes optionally implies a desired order of selection of DimensionDeployments, based on implementation-specific considerations (e.g., optimized access of aggregate data)." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="levelBasedHierarchy" lowerBound="1" eType="#//LevelBasedHierarchy" transient="true" eOpposite="#//LevelBasedHierarchy/hierarchyLevelAssociation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The LevelBasedHierarchy owning HierarchyLevelAssocs." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="currentLevel" lowerBound="1" eType="#//Level" eOpposite="#//Level/hierarchyLevelAssociation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Level designated by a HierarchyLevelAssoc as its current level." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimensionDeployment" upperBound="-1" eType="#//DimensionDeployment" containment="true" eOpposite="#//DimensionDeployment/hierarchyLevelAssociation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The DimensionDepolyments owned by a HierarchyLevelAssociation." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LevelBasedHierarchy" eSuperTypes="#//Hierarchy">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="CurrentLevelOwnedByDimension UniqueCurrentLevels" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="CurrentLevelOwnedByDimension" value="self.hierarchyLevelAssociation-&gt;notEmpty() implies&#10;self.hierarchyLevelAssociation-&gt;forAll( h |&#10;self.dimension.memberSelection&#10;-&gt;select( m | m.oclIsKindOf(Level) )-&gt;includes( h.currentLevel ) )" />
+      <details key="UniqueCurrentLevels" value="self.hierarchyLevelAssociation-&gt;forAll( h1, h2 | h1 &lt;&gt; h2 implies&#10;h1.currentLevel &lt;&gt; h2.currentLevel )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="CurrentLevelOwnedByDimension.shortName" value="C-13" />
+      <details key="CurrentLevelOwnedByDimension.name" value="Current Level Owned By Dimension" />
+      <details key="CurrentLevelOwnedByDimension.description" value="The currentLevel of each HierarchyLevelAssociation must refer to a Level owned by the Dimension of the LevelBasedHierarchy containing the HierarchyLevelAssociation." />
+      <details key="CurrentLevelOwnedByDimension.level" value="error" />
+      <details key="CurrentLevelOwnedByDimension.postDescription" value="The spec body selects with oclType = Olap::Level, an OCL 1.x construct. Rendered here as oclIsKindOf(Level), which also admits the subclass CodedLevel - matching the intent that the current level be a Level owned by the Dimension." />
+      <details key="CurrentLevelOwnedByDimension.specSource" value="self.hierarchyLevelAssociation-&gt;notEmpty implies&#10;self.hierarchyLevelAssociation-&gt;forAll( h |&#10;self.dimension.memberSelection&#10;-&gt;select( oclType = Olap::Level )-&gt;includes( h.currentLevel ) )" />
+      <details key="UniqueCurrentLevels.shortName" value="C-14" />
+      <details key="UniqueCurrentLevels.name" value="Unique Current Levels" />
+      <details key="UniqueCurrentLevels.description" value="No two HierarchyLevelAssociations may designate the same Level instance as their &quot;current level&quot;." />
+      <details key="UniqueCurrentLevels.level" value="error" />
+      <details key="UniqueCurrentLevels.specSource" value="self.hierarchyLevelAssociation-&gt;forAll( h1, h2 | h1 &lt;&gt; h2 implies&#10;h1.currentLevel &lt;&gt; h2.currentLevel )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A LevelBasedHierarchy is a hierarchy that describes relationships between specific levels of a Dimension. LevelBasedHierarchy can be used to model to &quot;pure level&quot; hierarchies (e.g., dimension-level tables) and &quot;mixed&quot; hierarchies (i.e., levels + linked nodes).&#10;" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hierarchyLevelAssociation" upperBound="-1" eType="#//HierarchyLevelAssociation" containment="true" eOpposite="#//HierarchyLevelAssociation/levelBasedHierarchy">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="HierarchyLevelAssocs owned by the LevelBasedHierarchy." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MemberSelectionGroup" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="MemberSelectionGroup enables the grouping together of semantically-related MemberSelections." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="memberSelection" ordered="false" lowerBound="1" upperBound="-1" eType="#//MemberSelection" eOpposite="#//MemberSelection/memberSelectionGroup">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="MemberSelections referenced by MemberSelGrps." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cubeRegion" lowerBound="1" eType="#//CubeRegion" transient="true" eOpposite="#//CubeRegion/memberSelectionGroup">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The CubeRegion owning MemberSelectionGroups." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MemberSelection" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="MemberSelection represents an arbitrary subset of the members of a Dimension." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimension" lowerBound="1" eType="#//Dimension" transient="true" eOpposite="#//Dimension/memberSelection">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Dimension owning MemberSelections." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="memberSelectionGroup" ordered="false" upperBound="-1" eType="#//MemberSelectionGroup" eOpposite="#//MemberSelectionGroup/memberSelection">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="MemberSelGrps referencing MemberSelections." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Schema" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Schema contains all elements comprising an OLAP model.  A Schema may also contain any number of DeploymentGroups, representing the various physical deployments of the logical Schema." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cube" ordered="false" upperBound="-1" eType="#//Cube" containment="true" eOpposite="#//Cube/schema">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Cubes owned by a Schema." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimension" ordered="false" upperBound="-1" eType="#//Dimension" containment="true" eOpposite="#//Dimension/schema">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Dimension owned by a Schema." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deploymentGroup" ordered="false" upperBound="-1" eType="#//DeploymentGroup" containment="true" eOpposite="#//DeploymentGroup/schema">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The DeploymentGroups owned by a Schema." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ValueBasedHierarchy" eSuperTypes="#//Hierarchy">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="ValueBasedHierarchy is a subclass of Hierarchy that ranks Dimension members according to their relative distance from the root.  Each member of a ValueBasedHierarchy has a specific &quot;metric&quot; or &quot;value&quot; associated with it.&#10;ValueBasedHierarchy is used to model pure &quot;linked node&quot; hierarchies (e.g., parent-child tables)." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimensionDeployment" upperBound="-1" eType="#//DimensionDeployment" containment="true" eOpposite="#//DimensionDeployment/valueBasedHierarchy">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The DimensionDepolyments owned by a ValueBasedHierarchy." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Level" eSuperTypes="#//MemberSelection">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Level is a subclass of MemberSelection that assigns each member of a Dimension to a specific hierarchical level within the Dimension." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hierarchyLevelAssociation" ordered="false" upperBound="-1" eType="#//HierarchyLevelAssociation" eOpposite="#//HierarchyLevelAssociation/currentLevel">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The HierarchyLevelAssocs designating this Level as their current level." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CodedLevel" eSuperTypes="#//Level">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="CodedLevel is a subclass of Level that assigns a unique encoding, or label, to each of its Dimension members." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="encoding" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/expressions#//ExpressionNode" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Encoding is an expression that generates a unique encoding, or label, for each member of a CodedLevel." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Measure" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Measure is a subclass of Attribute representing Dimension Measures (e.g., Sales, Quantity, Weight).  Synonym: Variable." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StructureMap" eSuperTypes="http://www.omg.org/spec/CWM/1.1/analysis/transformation#//TransformationMap">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="StructureMap is a subclass of TransformationMap that maps Dimension attributes to their physical data sources.&#10;&#10;(Note: Multiple StructureMaps may be grouped together into single, cohesive unit via TransformationTask.)" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimensionDeployment" lowerBound="1" eType="#//DimensionDeployment" transient="true" eOpposite="#//DimensionDeployment/structureMap">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The DimensionDeployment owning a StructureMap." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimensionDeploymentLV" eType="#//DimensionDeployment" eOpposite="#//DimensionDeployment/listOfValues">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The DimensionDeployment referencing a &quot;list of values&quot; StructureMap." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimensionDeploymentIP" eType="#//DimensionDeployment" eOpposite="#//DimensionDeployment/immediateParent">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The DimensionDeployment referencing an &quot;immedate parent&quot; StructureMap." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HierarchyMemberSelectionGroup" eSuperTypes="#//MemberSelectionGroup">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This subtype of MemberSelectionGroup allows users to specify that a particular cube region is determined by hierarchy. This allows the description of data to vary by hierarchy and, therefore, provides the ability to model multiple measure values per hierarchy" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hierarchy" ordered="false" lowerBound="1" upperBound="-1" eType="#//Hierarchy" eOpposite="#//Hierarchy/hierarchyMemberSelectionGroup">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Hierarchies referenced by one or more HierarchyMemberSelectionGroups." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
+    

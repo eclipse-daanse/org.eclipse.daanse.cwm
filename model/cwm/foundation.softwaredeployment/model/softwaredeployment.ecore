@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="softwaredeployment" nsURI="http://www.omg.org/spec/CWM/1.1/foundation/softwaredeployment" nsPrefix="softwaredeployment">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The Software Deployment package depends on the following packages:&#10;&#10;    org.omg::CWM::ObjectModel::Core&#10;    org.omg::CWM::Foundation::BusinessInformation&#10;    org.omg::CWM::Foundation::TypeMapping&#10;&#10;The Software Deployment package contains classes to record how the software in a data warehouse is used.&#10;&#10;A software package is represented as a SoftwareSystem object, which is a subtype of Subsystem. A SoftwareSystem may reference one or more TypeSystems that define the datatypes supported by the SoftwareSystem. The mappings between datatypes in different TypeSystems may be recorded as TypeMappings, as described in the TypeMapping metamodel.&#10;&#10;The separate components of a software package are each represented as Components that are either owned or imported by the SoftwareSystem. When a SoftwareSystem is installed, the deployment is recorded as a DeployedSoftwareSystem and a set of DeployedComponents.&#10;&#10;A DeployedComponent represents the deployment of a specific Component on a specific computer. Dependencies between DeployedComponents on the same computer may be documented as Usage dependencies between them.&#10;&#10;Individual computers are represented as Machine objects, located at a Site. A Site represents a geographical location, which may be recorded at any relevant level of granularity, e.g. a country, a building, or a room in a building. Hierarchical links between Sites at different levels of granularity may be documented.&#10;&#10;A DataManager is a DeployedComponent such as a DBMS or file management system that provides access to data. It may be associated with one or more data Packages identifying the Schema, Relational Catalog, Files or other data containers that it provides access to.&#10;&#10;A DataProvider is a DeployedComponent that acts as a client to provide access to data held by a DataManager. For example, an ODBC or JDBC client on a specific Machine would be represented as a DataProvider. A DataProvider may have several ProviderConnections, each identifying a DataManager that may be accessed using the DataProvider.&#10;&#10;If a DataProvider uses a name for a data Package that is different from the actual name used by the DataManager, a PackageUsage object can be added to record this. &#10;&#10;As a DataProvider is a subtype of DataManager, it is possible for a DataProvider to access data from a DataManager which is actually a DataProvider acting as a client to yet another DataManager.&#10;&#10;The model for the Software Deployment package is shown in three diagrams. The first diagram shows the objects related to software deployment, while the second diagram displays the DataManager and DataProvider area of the model. The third diagram shows the inheritance structure for all the classes in the Software Deployment package.&#10;&#10;OCL Representation of SoftwareDeployment Constraints&#10;&#10;[C-8-1] A PackageUsage must have a single Package (or subtype of Package) as its supplier&#10;context PackageUsage inv:&#10;self.supplier-&gt;size=1 and&#10;self.supplier-&gt;at(1).oclIsKindOf(Package)&#10;&#10;[C-8-2] A ProviderConnection must not associate a DataProvider with itself&#10;context ProviderConnection inv:&#10;self.dataManager &lt;&gt; self.dataProvider&#10;&#10;[C-8-3] A Site must not have a containingSite reference that refers to itself.&#10;context Site inv:&#10;self.containingSite -&gt; forAll (c | c &lt;&gt; self)" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.foundation" />
+    <details key="prefix" value="Softwaredeployment" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Site" eSuperTypes="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//Location">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="SiteSelfReference" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="SiteSelfReference" value="self.containingSite -&gt; forAll (c | c &lt;&gt; self)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="SiteSelfReference.shortName" value="C-8-3" />
+      <details key="SiteSelfReference.name" value="Site Self-Reference" />
+      <details key="SiteSelfReference.description" value="A Site must not have a containingSite reference that refers to itself." />
+      <details key="SiteSelfReference.level" value="error" />
+      <details key="SiteSelfReference.specSource" value="self.containingSite -&gt; forAll (c | c &lt;&gt; self)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A Site represents a geographical location. It provides a grouping mechanism for a group of machines at the same location.&#10;&#10;Sites may be documented at different levels of granularity; containment links may be used to record hierarchical relationships between Sites." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="containingSite" ordered="false" upperBound="-1" eType="#//Site">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="containedSite" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="containedSite" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies other Sites of which the current Site forms a part." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Machine" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Namespace">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A Machine represents a computer. The Site at which the Machine is located and the Components deployed on the Machine may be recorded." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ipAddress" upperBound="-1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A fixed IP address for the Machine." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hostName" upperBound="-1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A Host Name for the Machine. This may be used to identify the Machine on the network when IP addresses are dynamically allocated." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="machineID" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An identification code for the Machine." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deployedComponent" ordered="false" upperBound="-1" eType="#//DeployedComponent" containment="true" eOpposite="#//DeployedComponent/machine">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the DeployedComponents on the Machine." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="site" eType="#//Site">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="machine" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="machine" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Site on which the Machine is located." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SoftwareSystem" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Subsystem">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A SoftwareSystem represents a specific release of a software product. It consists of a set of software Components." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the type of the software product. One of the following predefined values should be used if appropriate:&#10;&#10;    OS, DBMS, MDDB, FileSystem, ODBC, JDBC or Application." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="subtype" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This is used in conjunction with the type attribute to provide additional information about the type of the software product.&#10;&#10;For some of the predefined types, suggested subtype values are listed below:&#10;&#10;   For an Operating System product (type OS):  &#10;      AIX, Linux, MVS, NT, Solaris, SunOS, VMS or Windows.&#10;   For a Database Management System product (type DBMS): &#10;      DB2, DMS II, IMS, Informix, Oracle, SQLServer or Sybase.&#10;   For a Multidimensional Database product (type MDDB): &#10;      Essbase or Express." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="supplier" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The supplier of the software product." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The version identification for the software product." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="typespace" ordered="false" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/typemapping#//TypeSystem">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="supportingSystem" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="supportingSystem" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies a TypeSystem containing datatypes supported by the SoftwareSystem." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DeployedComponent" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A DeployedComponent represents the deployment of a Component on a specific Machine.&#10;&#10;It may represent the deployment of any type of Component. However, if the Component is part of a SoftwareSystem, the DeployedComponent should be part of a DeployedSoftwareSystem.&#10;&#10;Usage dependencies may be used to document that one DeployedComponent uses another DeployedComponent." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pathname" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A pathname for the DeployedComponent within the Machine�s file system." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="component" lowerBound="1" eType="#//Component">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="deployment" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="deployment" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Component deployed by this DeployedComponent." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="machine" lowerBound="1" eType="#//Machine" transient="true" eOpposite="#//Machine/deployedComponent">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Machine on which a DeployedComponent is deployed." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="usedComponents" ordered="false" upperBound="-1" eType="#//DeployedComponent" eOpposite="#//DeployedComponent/usingComponents">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the DeployedComponent instances that use this DeployedComponent." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="usingComponents" ordered="false" upperBound="-1" eType="#//DeployedComponent" eOpposite="#//DeployedComponent/usedComponents">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the DeployedComponent instances that this DeployedComponent instance uses." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DeployedSoftwareSystem" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A DeployedSoftwareSystem represents a deployment of a SoftwareSystem.&#10;&#10;Its associated DeployedComponents identify the individual Component deployments that constitute the DeployedSoftwareSystem. These DeployedComponents are not necessarily all deployed on the same Machine." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fixLevel" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Describes the fix level of the DeployedSoftwareSystem instance." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="softwareSystem" lowerBound="1" eType="#//SoftwareSystem">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="deployment" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="deployment" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the SoftwareSystem deployed." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataManager" eSuperTypes="#//DeployedComponent">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A DataManager represents a DeployedComponent that manages access to data. For example, a deployed DBMS or File Management System would be represented as a DataManager.&#10;&#10;The DataManager may be associated with one or more data Packages identifying the Schema, Relational Catalog, Files, or other data container that it provides access to." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isCaseSensitive" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates whether or not the DataManager treats lower case letters within object names as being different from the corresponding upper case letters." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataPackage" ordered="false" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="dataManager" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="dataManager" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies a Package containing the definition of the data made available by the&#10;DataManager." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataProvider" eSuperTypes="#//DataManager">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A DataProvider is a deployed software Component that acts as a client to provide access to data that is managed by another product. For instance, a DataProvider might represent a deployed ODBC or JDBC product.&#10;&#10;The DataProvider may have resourceConnection references to ProviderConnections identifying the DataManagers to which it provides access." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="resourceConnection" ordered="false" upperBound="-1" eType="#//ProviderConnection" containment="true" eOpposite="#//ProviderConnection/dataProvider">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the ProviderConnections that the DataProvider may use to access DataManagers." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ProviderConnection" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="ProviderConnectionSelfReference" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="ProviderConnectionSelfReference" value="self.dataManager &lt;&gt; self.dataProvider" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="ProviderConnectionSelfReference.shortName" value="C-8-2" />
+      <details key="ProviderConnectionSelfReference.name" value="Provider Connection Self-Reference" />
+      <details key="ProviderConnectionSelfReference.description" value="A ProviderConnection must not associate a DataProvider with itself." />
+      <details key="ProviderConnectionSelfReference.level" value="error" />
+      <details key="ProviderConnectionSelfReference.specSource" value="self.dataManager &lt;&gt; self.dataProvider" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A ProviderConnection represents a connection that allows a DataProvider acting as a client to access data from a specific DataManager. For example a ProviderConnection could represent a connection from an ODBC or JDBC client to a DBMS." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isReadOnly" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates whether the ProviderConnection only allows read access to the DataManager." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataProvider" lowerBound="1" eType="#//DataProvider" transient="true" eOpposite="#//DataProvider/resourceConnection">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the DataProvider that uses the ProviderConnection." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataManager" lowerBound="1" eType="#//DataManager">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="clientConnection" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="clientConnection" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the DataManager accessed by the ProviderConnection." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Component" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A Component represents a physical piece of implementation of a system, including software code (source, binary or executable) or equivalents such as scripts or command files. A Component is a subtype of Classifier, and so may have its own Features, such as Attributes and Operations.&#10;&#10;Deployment of a Component on a specific Machine is represented as a DeployedComponent." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="designPackage" ordered="false" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="component" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="component" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Package instance containing the Component's design." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PackageUsage" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Dependency">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="SinglePackageSupplier" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="SinglePackageSupplier" value="self.supplier-&gt;size()=1 and&#10;self.supplier-&gt;asSequence()-&gt;at(1).oclIsKindOf(core::Package)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="SinglePackageSupplier.shortName" value="C-8-1" />
+      <details key="SinglePackageSupplier.name" value="Single Package Supplier" />
+      <details key="SinglePackageSupplier.description" value="A PackageUsage must have a single Package (or subtype of Package) as its supplier." />
+      <details key="SinglePackageSupplier.level" value="error" />
+      <details key="SinglePackageSupplier.specSource" value="self.supplier-&gt;size=1 and&#10;self.supplier-&gt;at(1).oclIsKindOf(Package)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A PackageUsage represents a usage of a Package. It is particularly relevant in situations where a specific usage uses an alternative name for the Package, as this alternative name can be recorded using the packageAlias attribute.&#10;&#10;For example, if a DataProvider representing an ODBC or JDBC client uses a name for a relational database that is different from the dataPackage name used by the RDBMS server, a PackageUsage that has the relevant ProviderConnection as client and the server�s data Package as supplier can be added. Its packageAlias attribute can be used to record the name by which the data Package is known to the DataProvider." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="packageAlias" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Name">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If this attribute is present, it identifies the name by which the Package is known to the client." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
+    

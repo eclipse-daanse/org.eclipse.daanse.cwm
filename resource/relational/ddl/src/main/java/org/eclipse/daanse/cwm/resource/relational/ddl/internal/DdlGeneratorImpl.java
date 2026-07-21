@@ -37,16 +37,16 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
-import org.eclipse.daanse.cwm.util.objectmodel.core.Namespaces;
-import org.eclipse.daanse.cwm.util.resource.relational.ColumnSets;
-import org.eclipse.daanse.cwm.util.resource.relational.ForeignKeys;
-import org.eclipse.daanse.cwm.util.resource.relational.Indexes;
-import org.eclipse.daanse.cwm.util.resource.relational.NamedColumnSets;
-import org.eclipse.daanse.cwm.util.resource.relational.PrimaryKeys;
-import org.eclipse.daanse.cwm.util.resource.relational.Schemas;
-import org.eclipse.daanse.cwm.util.resource.relational.Tables;
-import org.eclipse.daanse.cwm.util.resource.relational.UniqueConstraints;
-import org.eclipse.daanse.cwm.util.resource.relational.Views;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Namespaces;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ForeignKeys;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Indexes;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.NamedColumnSets;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.PrimaryKeys;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Tables;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.UniqueConstraints;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
 import org.eclipse.daanse.sql.model.schema.ColumnDefinition;
 import org.eclipse.daanse.sql.model.schema.SchemaReference;
 import org.eclipse.daanse.sql.model.schema.TableReference;
@@ -130,7 +130,7 @@ public final class DdlGeneratorImpl implements DdlGenerator {
         if (features.contains(Feature.UNIQUE)) {
             for (Table table : tables) {
                 TableReference tref = tableRef(schema, table, TableReference.TYPE_TABLE);
-                for (UniqueConstraint uc : Tables.findUniqueConstraints(table)) {
+                for (UniqueConstraint uc : Tables.uniqueConstraints(table)) {
                     if (uc instanceof PrimaryKey) {
                         continue;
                     }
@@ -178,7 +178,7 @@ public final class DdlGeneratorImpl implements DdlGenerator {
             for (Table table : tables) {
                 TableReference tref = tableRef(schema, table, TableReference.TYPE_TABLE);
                 int idx = 0;
-                for (ForeignKey fk : Tables.findForeignKeys(table)) {
+                for (ForeignKey fk : Tables.foreignKeys(table)) {
                     Optional<Table> refTable = ForeignKeys.targetTable(fk);
                     if (refTable.isEmpty()) {
                         continue;
@@ -322,7 +322,7 @@ public final class DdlGeneratorImpl implements DdlGenerator {
             for (Table table : tables) {
                 TableReference tref = tableRef(schema, table, TableReference.TYPE_TABLE);
                 int idx = 0;
-                for (ForeignKey fk : Tables.findForeignKeys(table)) {
+                for (ForeignKey fk : Tables.foreignKeys(table)) {
                     String name = nameOrDefault(fk, "fk_" + table.getName() + "_" + (++idx));
                     out.add(dialect.ddlGenerator().dropConstraint(tref, name, true));
                 }
@@ -354,7 +354,7 @@ public final class DdlGeneratorImpl implements DdlGenerator {
         if (features.contains(Feature.UNIQUE)) {
             for (Table table : tables) {
                 TableReference tref = tableRef(schema, table, TableReference.TYPE_TABLE);
-                for (UniqueConstraint uc : Tables.findUniqueConstraints(table)) {
+                for (UniqueConstraint uc : Tables.uniqueConstraints(table)) {
                     if (uc instanceof PrimaryKey) {
                         continue;
                     }
