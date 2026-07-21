@@ -26,11 +26,6 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLDataType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-/**
- * Factories and inspection helpers for {@link SQLSimpleType}. SQL-99 spec types
- * live on the nested {@link Sql99} class. Every factory method ends in
- * {@code Type} and emits a fresh instance.
- */
 public final class SqlSimpleTypes {
 
     private SqlSimpleTypes() {
@@ -154,9 +149,8 @@ public final class SqlSimpleTypes {
     }
 
     /**
-     * Best-effort {@link JDBCType} for a CWM {@link SQLDataType}: prefers the
-     * explicit type-number, then falls back to a name match. This is the pure
-     * CWM &rarr; JDBC type-code direction (no JDBC runtime types involved).
+     * Best-effort {@link JDBCType} for a CWM {@link SQLDataType}: prefers the explicit
+     * type-number, then falls back to a name match.
      */
     public static JDBCType toJdbcType(SQLDataType sqlType) {
         if (sqlType == null) {
@@ -197,11 +191,9 @@ public final class SqlSimpleTypes {
     }
 
     /**
-     * Build a CWM {@link SQLSimpleType} from the parts of a JDBC column-metadata
-     * row, reusing the SQL-99 registry where {@code typeName} is known and
-     * overriding the type-number with the actual JDBC {@code dataType} code.
-     * Takes plain values (no JDBC metadata wrapper) so this stays the pure
-     * JDBC &rarr; CWM type direction without a jdbc.db dependency.
+     * Build a CWM {@link SQLSimpleType} from the parts of a JDBC column-metadata row,
+     * reusing the SQL-99 registry where {@code typeName} is known and overriding the
+     * type-number with the actual JDBC {@code dataType} code.
      *
      * @param typeName      DBMS type name (e.g. {@code "varchar"}), may be null
      * @param dataType      JDBC type code, may be null

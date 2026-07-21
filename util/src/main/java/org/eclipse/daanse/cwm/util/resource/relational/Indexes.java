@@ -14,14 +14,15 @@
 package org.eclipse.daanse.cwm.util.resource.relational;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.cwm.model.cwm.foundation.keysindexes.IndexedFeature;
+import org.eclipse.daanse.cwm.model.cwm.foundation.keysindexes.KeysindexesPackage;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
+import org.eclipse.daanse.cwm.util.objectmodel.core.InverseReferences;
 import org.eclipse.daanse.cwm.util.objectmodel.core.Namespaces;
 
 public final class Indexes {
@@ -39,15 +40,27 @@ public final class Indexes {
     }
 
     /**
-     * SQLIndexes whose {@code spannedClass} is {@code table}. Walks the table's
-     * owning schema; returns an empty list when the table has no parent yet.
+     * SQLIndexes whose {@code spannedClass} is {@code table}, wherever they are owned.
+     * Reverse navigation — see {@link InverseReferences} for the index it needs.
      */
     public static List<SQLIndex> spanning(Table table) {
-        Optional<Schema> schema = NamedColumnSets.findSchema(table);
-        if (schema.isEmpty()) return List.of();
-        return indexStream(schema.get())
-                .filter(i -> i.getSpannedClass() == table)
-                .toList();
+        return spanningStream(table).toList();
+    }
+
+    /** Stream twin of {@link #spanning}. */
+    public static Stream<SQLIndex> spanningStream(Table table) {
+        return InverseReferences.referencing(table,
+                KeysindexesPackage.Literals.INDEX__SPANNED_CLASS, SQLIndex.class);
+    }
+
+    /** Unique SQLIndexes whose {@code spannedClass} is {@code table}. */
+    public static List<SQLIndex> uniqueSpanning(Table table) {
+        return uniqueSpanningStream(table).toList();
+    }
+
+    /** Stream twin of {@link #uniqueSpanning}. */
+    public static Stream<SQLIndex> uniqueSpanningStream(Table table) {
+        return spanningStream(table).filter(SQLIndex::isIsUnique);
     }
 
     /** Columns referenced by {@code idx}, in index column order. */

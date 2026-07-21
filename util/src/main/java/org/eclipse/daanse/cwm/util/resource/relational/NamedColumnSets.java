@@ -20,10 +20,6 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.util.objectmodel.core.Namespaces;
 
-/**
- * Helpers specific to {@link NamedColumnSet}. For column accessors use
- * {@link ColumnSets} — they apply to every {@code ColumnSet} subtype.
- */
 public final class NamedColumnSets {
 
     private NamedColumnSets() {
