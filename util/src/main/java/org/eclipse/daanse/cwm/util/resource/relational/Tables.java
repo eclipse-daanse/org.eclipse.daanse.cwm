@@ -13,96 +13,76 @@
  */
 package org.eclipse.daanse.cwm.util.resource.relational;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.eclipse.daanse.cwm.model.cwm.foundation.keysindexes.KeyRelationship;
 import org.eclipse.daanse.cwm.model.cwm.foundation.keysindexes.UniqueKey;
-import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Feature;
-import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.StructuralFeature;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
+import org.eclipse.daanse.cwm.util.objectmodel.core.Namespaces;
 
 public final class Tables {
 
     private Tables() {
     }
 
-    /** Primary key found via column back-references, or empty if none. */
+    /** Primary key owned by the table, or empty if none. */
     public static Optional<PrimaryKey> findPrimaryKey(Table table) {
         if (table == null) {
             return Optional.empty();
         }
-        for (Feature f : table.getFeature()) {
-            if (!(f instanceof StructuralFeature sf)) {
-                continue;
-            }
-            for (UniqueKey uk : sf.getUniqueKey()) {
-                if (uk instanceof PrimaryKey pk) {
-                    return Optional.of(pk);
-                }
-            }
-        }
-        return Optional.empty();
-    }
-
-    /** Stream variant of {@link #findUniqueConstraints(Table)}. */
-    public static Stream<UniqueConstraint> uniqueConstraintStream(Table table) {
-        return findUniqueConstraints(table).stream();
-    }
-
-    /** Stream variant of {@link #findForeignKeys(Table)}. */
-    public static Stream<ForeignKey> foreignKeyStream(Table table) {
-        return findForeignKeys(table).stream();
+        return Namespaces.ownedElementStream(table, PrimaryKey.class).findFirst();
     }
 
     /**
-     * All unique constraints (including the primary key) on the table,
+     * All unique constraints (including the primary key) owned by the table,
      * deduplicated, declaration order.
      */
-    public static List<UniqueConstraint> findUniqueConstraints(Table table) {
-        List<UniqueConstraint> out = new ArrayList<>();
-        if (table == null) {
-            return out;
-        }
-        for (Feature f : table.getFeature()) {
-            if (!(f instanceof StructuralFeature sf)) {
-                continue;
-            }
-            for (UniqueKey uk : sf.getUniqueKey()) {
-                if (uk instanceof UniqueConstraint uc && !out.contains(uc)) {
-                    out.add(uc);
-                }
-            }
-        }
-        return out;
+    public static List<UniqueConstraint> uniqueConstraints(Table table) {
+        return uniqueConstraintStream(table).toList();
+    }
+
+    /** Stream twin of {@link #uniqueConstraints}. */
+    public static Stream<UniqueConstraint> uniqueConstraintStream(Table table) {
+        return Namespaces.ownedElementStream(table, UniqueConstraint.class).distinct();
+    }
+
+    /** All foreign keys owned by the table, deduplicated, declaration order. */
+    public static List<ForeignKey> foreignKeys(Table table) {
+        return foreignKeyStream(table).toList();
+    }
+
+    /** Stream twin of {@link #foreignKeys}. */
+    public static Stream<ForeignKey> foreignKeyStream(Table table) {
+        return Namespaces.ownedElementStream(table, ForeignKey.class).distinct();
     }
 
     /**
-     * All foreign keys declared on any column of this table, deduplicated,
-     * declaration order.
+     * Columns of {@code table} that are single-column unique: covered by a
+     * single-column {@link UniqueKey} (primary key or unique constraint) or by
+     * a single-column unique index.
      */
-    public static List<ForeignKey> findForeignKeys(Table table) {
-        List<ForeignKey> out = new ArrayList<>();
-        if (table == null) {
-            return out;
-        }
-        for (Feature f : table.getFeature()) {
-            if (!(f instanceof Column col)) {
-                continue;
+    public static List<Column> singleColumnUniqueColumns(Table table) {
+        LinkedHashSet<Column> unique = new LinkedHashSet<>();
+        Namespaces.ownedElementStream(table, UniqueKey.class)
+                .filter(uk -> uk.getFeature().size() == 1)
+                .map(uk -> uk.getFeature().get(0))
+                .filter(Column.class::isInstance)
+                .map(Column.class::cast)
+                .forEach(unique::add);
+        for (SQLIndex index : Indexes.uniqueSpanning(table)) {
+            List<Column> columns = Indexes.columns(index);
+            if (columns.size() == 1) {
+                unique.add(columns.get(0));
             }
-            for (KeyRelationship kr : col.getKeyRelationship()) {
-                if (kr instanceof ForeignKey fk && !out.contains(fk)) {
-                    out.add(fk);
-                }
-            }
         }
-        return out;
+        return List.copyOf(unique);
     }
 
     /**

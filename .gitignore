@@ -38,3 +38,4 @@ pnpm-debug.log*
 *.sln
 *.sw?
 .flattened-pom.xml
+spec/

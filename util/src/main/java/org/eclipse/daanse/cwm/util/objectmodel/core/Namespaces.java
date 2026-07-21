@@ -30,6 +30,9 @@ public final class Namespaces {
      * {@code getNamespace()}.
      */
     public static <T extends Namespace> Optional<T> walkUpTo(Namespace start, Class<T> type) {
+        if (type == null) {
+            return Optional.empty();
+        }
         Namespace ns = start;
         while (ns != null) {
             if (type.isInstance(ns)) {
@@ -45,7 +48,7 @@ public final class Namespaces {
      * {@code type}.
      */
     public static <T extends ModelElement> Stream<T> ownedElementStream(Namespace ns, Class<T> type) {
-        if (ns == null) {
+        if (ns == null || type == null) {
             return Stream.empty();
         }
         return ns.getOwnedElement().stream().filter(type::isInstance).map(type::cast);

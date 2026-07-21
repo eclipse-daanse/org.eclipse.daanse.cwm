@@ -6,8 +6,11 @@
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *   Stefan Bischof (bipolis.org) - initial
  */
 
 @org.osgi.annotation.bundle.Export
 @org.osgi.annotation.versioning.Version("0.0.1")
-package org.eclipse.daanse.cwm.util.objectmodel.core;
+package org.eclipse.daanse.cwm.util.foundation.businessinformation;
