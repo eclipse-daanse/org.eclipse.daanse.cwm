@@ -37,7 +37,7 @@ import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.ProducedColumn
 import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.Resolution;
 import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.SqlResolver;
 import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.Validation;
-import org.eclipse.daanse.cwm.util.resource.relational.Columns;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Columns;
 
 import ai.starlake.transpiler.CatalogNotFoundException;
 import ai.starlake.transpiler.ColumnNotFoundException;

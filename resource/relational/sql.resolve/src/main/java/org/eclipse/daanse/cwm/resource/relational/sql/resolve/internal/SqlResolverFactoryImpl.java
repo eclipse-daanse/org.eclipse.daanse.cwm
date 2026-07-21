@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.SqlResolver;
 import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.SqlResolverFactory;
-import org.eclipse.daanse.cwm.util.resource.relational.Schemas;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
 import org.osgi.service.component.annotations.Component;
 
 /**

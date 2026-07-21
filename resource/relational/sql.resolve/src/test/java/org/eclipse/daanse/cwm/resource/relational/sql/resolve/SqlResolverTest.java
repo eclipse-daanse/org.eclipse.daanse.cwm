@@ -241,7 +241,7 @@ class SqlResolverTest {
         for (Column c : cs) {
             if (!colName.equals(c.getName()))
                 continue;
-            var owner = org.eclipse.daanse.cwm.util.resource.relational.Columns.namedOwner(c).orElse(null);
+            var owner = org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Columns.namedOwner(c).orElse(null);
             if (owner != null && tableName.equals(owner.getName()))
                 return c;
         }

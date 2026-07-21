@@ -23,6 +23,20 @@ import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
 public interface CwmLoader {
 
     /**
+     * Tag name of the {@code TaggedValue} (value {@code "true"}) the loader
+     * attaches to a {@code View} that stems from a materialized view — CWM 1.1
+     * has no dedicated class for them.
+     */
+    String TAG_MATERIALIZED = "materialized";
+
+    /**
+     * {@code type} of the {@code Description}s the loader creates from JDBC
+     * {@code REMARKS} metadata. CWM leaves {@code Description::type} usage-defined,
+     * so this vocabulary belongs to the loader rather than to the CWM utilities.
+     */
+    String DESCRIPTION_TYPE_JDBC_REMARKS = "JDBC-REMARKS";
+
+    /**
      * Load {@code info} into a fresh CWM {@link Catalog}, honouring {@code config}
      * (a {@code null} config means {@link JdbcToCwmConfig#all()}).
      */

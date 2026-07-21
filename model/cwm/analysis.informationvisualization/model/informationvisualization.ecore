@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="informationvisualization" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/informationvisualization" nsPrefix="informationvisualization">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The CWM Information Visualization metamodel defines metadata supporting the problem domain of &quot;information publishing&quot; or, more generally, &quot;information visualization&quot;.&#10;&#10;Within the data warehousing environment, data is collected from numerous, diverse sources and transformed into a unified representation that facilitates the analysis of data for purposes of gaining business insight. Robust and flexible information visualization tools are key to the effective analysis of this information. Information visualization tools must be capable of understanding and preserving the &quot;logical structure&quot; of data warehouse information, while enabling the user to perform any number of &quot;rendering transformations&quot; on information content (e.g., displaying the same query result set in several different formats, such as a printed report, Web page, pie chart, bar graph, etc.).&#10;&#10;Since information visualization is a very broad problem domain, with a diverse set of possible solutions and many evolving standards, the CWM Information Visualization metamodel defines very generic, container-like metadata constructs that either contain or reference more complex visualization mechanisms at the M1-level. These metadata structures are intended to support the minimal metadata required to interchange more complex M1 models of visualization mechanisms.&#10;&#10;The Information Visualization package depends on the following packages:&#10;&#10;    org.omg.cwm.objectmodel.core&#10;    org.omg.cwm.foundation.expressions&#10;&#10;RenderedObject is the logical proxy for an arbitrary ModelElement that is to be rendered via some rendering transformation or process. A RenderedObject may be composed of an arbitrary number of other RenderedObjects (i.e., components), and may have topological relationships to still other RenderedObjects. The formula attribute allows for the specification of any implementation-dependent expression that completes the definition of a RenderedObject. For example, the formula might specify the position of the RenderedObject within a two-dimensional grid, or in relation to one of its neighbors; e.g., formula = &quot;neighbor(x, y) + (delta-x, delta-y)&quot;.&#10;&#10;A RenderedObject generally references one or more Renderings that specify how the enderedObject is actually presented. One of these associated Renderings may optionally be designated as a default Rendering. &#10;&#10;A Rendering is semantically equivalent to a transformation, in that it transforms a source RenderedObject to some target &quot;displayed&quot; (or otherwise &quot;presented&quot; object -- e.g., a displayed image or an audio clip) . An instance of Rendering is fully specified via its formula attribute, which, like RenderedObject, contains an implementation-dependent expression.&#10;&#10;Thus, a RenderedObject may be viewed as the &quot;logical description&quot; of an object to be rendered, independently of how it is actually presented by any of its associated Renderings, and Renderings may be viewed as transformations that control the presentation of the RenderedObject while preserving its logical structure. &#10;&#10;Note that a RenderedObject may be the target of a complex transformation (i.e., utilizing the CWM Transformation package). For example, an N-dimensional OLAP cube might be transformed into an equivalent, two-dimensional, composite RenderedObject, with several dimensions mapped to row and column edges, respectively, and all other dimensions constrained to single member values. Several Renderings may then be defined and associated with the resultant RenderedObject, mapping the two-dimensional logical structure to the surface of a display screen in various different formats (e.g., spreadsheet, pie chart, bar graph, etc.).&#10;&#10;Possible types of Renderings include: Screen, paper, voice, Web, HTML documents, XML/XSL, languages based on extensions to XML, SVG, visual objects, responses to keying (e.g., keying interception plus rules), etc. &#10;&#10;XSLRendering represents a useful subtype of Rendering that�s based on XSL (e.g., this subtype�s formula might contain a procedure that uses XSL to create an HTML document).&#10;&#10;Finally, RenderedObjectSet represents a simple container of both logical RenderedObjects and available Renderings.&#10;&#10;The inheritance of the Information Visualization metamodel from the Object Model is shown in Fig. 16-2.&#10;&#10;OCL Representation of Information Visualization Constraints&#10;&#10;[C-1] The set of Renderings includes the default Rendering.&#10;context RenderedObject inv:&#10;self.defaultRendering-&gt;notEmpty implies&#10;self.rendering-&gt;includes( self.defaultRendering )&#10;&#10;[C-2] A RenderedObject may not reference itself as a Neighbor nor as a Component.&#10;context RenderedObject&#10;inv: self.neighbor-&gt;excludes( self )&#10;inv: self.component-&gt;excludes( self )&#10;&#10;[C-3] A RenderedObject may not reference one of its Neighbors as a Component (and vice versa).&#10;context RenderedObject inv:&#10;(self.neighbor-&gt;notEmpty and self.component-&gt;notEmpty) implies&#10;self.neighbor-&gt;intersection( self.component )-&gt;isEmpty&#10;&#10;The transitive closure of Neighbors of an instance of RenderedObject must not include the RenderedObject instance.&#10;&#10;The transitive closure of Components of an instance of RenderedObject must not include the RenderedObject instance." />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.analysis" />
+    <details key="prefix" value="Informationvisualization" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="RenderedObject" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="DefaultRenderingIncluded RenderedObjectSelfReference RenderedObjectComponentSelfReference NeighborsNotComponents" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="DefaultRenderingIncluded" value="self.defaultRendering-&gt;notEmpty() implies&#10;self.rendering-&gt;includes( self.defaultRendering )" />
+      <details key="RenderedObjectSelfReference" value="self.neighbor-&gt;excludes( self )&#10;" />
+      <details key="RenderedObjectComponentSelfReference" value="self.component-&gt;excludes( self )" />
+      <details key="NeighborsNotComponents" value="(self.neighbor-&gt;notEmpty() and self.component-&gt;notEmpty()) implies&#10;self.neighbor-&gt;intersection( self.component )-&gt;isEmpty()" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="DefaultRenderingIncluded.shortName" value="C-1" />
+      <details key="DefaultRenderingIncluded.name" value="Default Rendering Included" />
+      <details key="DefaultRenderingIncluded.description" value="The set of Renderings includes the default Rendering." />
+      <details key="DefaultRenderingIncluded.level" value="error" />
+      <details key="DefaultRenderingIncluded.specSource" value="self.defaultRendering-&gt;notEmpty implies&#10;self.rendering-&gt;includes( self.defaultRendering )" />
+      <details key="RenderedObjectSelfReference.shortName" value="C-2" />
+      <details key="RenderedObjectSelfReference.name" value="RenderedObject Self-Reference" />
+      <details key="RenderedObjectSelfReference.description" value="A RenderedObject may not reference itself as a Neighbor nor as a Component." />
+      <details key="RenderedObjectSelfReference.level" value="error" />
+      <details key="RenderedObjectSelfReference.specSource" value="self.neighbor-&gt;excludes( self )&#10;inv: self.component-&gt;excludes( self )" />
+      <details key="RenderedObjectComponentSelfReference.shortName" value="C-1b" />
+      <details key="RenderedObjectComponentSelfReference.name" value="RenderedObject Component Self-Reference" />
+      <details key="RenderedObjectComponentSelfReference.description" value="A RenderedObject may not be its own component." />
+      <details key="RenderedObjectComponentSelfReference.level" value="error" />
+      <details key="RenderedObjectComponentSelfReference.specSource" value="inv: self.component-&gt;excludes( self )" />
+      <details key="NeighborsNotComponents.shortName" value="C-3" />
+      <details key="NeighborsNotComponents.name" value="Neighbors Not Components" />
+      <details key="NeighborsNotComponents.description" value="A RenderedObject may not reference one of its Neighbors as a Component (and vice versa)." />
+      <details key="NeighborsNotComponents.level" value="error" />
+      <details key="NeighborsNotComponents.specSource" value="(self.neighbor-&gt;notEmpty and self.component-&gt;notEmpty) implies&#10;self.neighbor-&gt;intersection( self.component )-&gt;isEmpty" />
+      <details key="NeighborsNotComponents.postDescription" value="Transitive closure constraints on Neighbors and Components." />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="RenderedObject serves as a logical &quot;proxy&quot; for an arbitrary ModelElement that is to be&#10;rendered." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="formula" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/expressions#//ExpressionNode" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Allows for the specification of any implementation-dependent expression that completes the definition of a RenderedObject." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="action" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies some implementation-dependent action associated with a RenderedObject." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fileName" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies the name of a file persisting an instance of RenderedObject." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies some implementation-dependent type associated with a RenderedObject" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="url" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies a URL identifying some instance of RenderedObject." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="composite" ordered="false" upperBound="-1" eType="#//RenderedObject" eOpposite="#//RenderedObject/component">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&quot;Composite&quot; RenderedObjects referencing &quot;component&quot; RenderedObjects." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="component" ordered="false" upperBound="-1" eType="#//RenderedObject" eOpposite="#//RenderedObject/composite">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&quot;Component&quot; RenderedObjects referenced by &quot;composite&quot; RenderedObjects." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultRendering" eType="#//Rendering" eOpposite="#//Rendering/defaultedRenderedObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Rendering referenced by one or more RenderedObjects as the default Rendering." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="modelElement" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="renderedObject" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="renderedObject" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Model Element referenced by Rendered Objects." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="neighbor" ordered="false" upperBound="-1" eType="#//RenderedObject" eOpposite="#//RenderedObject/referencingNeighbor">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="RenderedObjects referenced by this RenderedObject as its &quot;neighbor&quot; (or neighboring object)." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="referencingNeighbor" ordered="false" upperBound="-1" eType="#//RenderedObject" eOpposite="#//RenderedObject/neighbor">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="RenderedObjects referencing this RenderedObject as its &quot;neighbor&quot;." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="renderedObjectSet" ordered="false" lowerBound="1" eType="#//RenderedObjectSet" transient="true" eOpposite="#//RenderedObjectSet/renderedObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="RenderedObjectSet owning this RenderedObject. CWM 1.1 association RenderedObjectSetOwnsRenderedObjects." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rendering" ordered="false" upperBound="-1" eType="#//Rendering" eOpposite="#//Rendering/renderedObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Renderings available for this RenderedObject. CWM 1.1 association RenderedObjectsReferenceRenderings." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RenderedObjectSet" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="RenderedObjectSet is a container of RenderedObjects and available Renderings." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rendering" ordered="false" upperBound="-1" eType="#//Rendering" containment="true" eOpposite="#//Rendering/renderedObjectSet">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Renderings owned by a RenderedObjectSet." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="renderedObject" ordered="false" upperBound="-1" eType="#//RenderedObject" containment="true" eOpposite="#//RenderedObject/renderedObjectSet">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="RenderedObjects owned by a RenderedObjectSet. CWM 1.1 association RenderedObjectSetOwnsRenderedObjects." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Rendering" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Feature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Rendering is a specification of how an associated RenderedObject is to be &quot;rendered&quot; in some medium.  This usually consists of a projection of an object of arbitrary dimensionality onto a 2-dimensional surface, but it may also include non-physical representations as well (such as audio).&#10;&#10;A Rendering is semantically equivalent to a Transformation, in that it transforms a source RenderedObject to some target &quot;presented&quot; object.  An instance of Rendering is fully specified via its formula attribute, which contains an implementation-dependent expression that defines the transformation and tracks transformation lineage.&#10;&#10;Possible types of instances of Rendering:&#10;Screen, Paper, Voice, Web, HTML Document, XML/XSL, languages based on extensions to XML, SVG, Visual objects, responses to keying (keying interception plus rules), etc." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="formula" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/expressions#//ExpressionNode" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Implementation-dependent procedure for generating the Rendering (e.g., a usage of XSL to generate an HTML document).  Tracks the transformation lineage of the Rendering." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="action" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies some implementation-dependent action associated with a Rendering." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fileName" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies the name of a file persisting an instance of Rendering." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies some implementation-dependent type associated with a Rendering." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="url" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies a URL identifying some instance of Rendering." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultedRenderedObject" ordered="false" upperBound="-1" eType="#//RenderedObject" eOpposite="#//RenderedObject/defaultRendering">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="RenderedObjects referencing this Rendering as the default Rendering." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="renderedObjectSet" lowerBound="1" eType="#//RenderedObjectSet" transient="true" eOpposite="#//RenderedObjectSet/rendering">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="RenderedObjectSet owning Renderings." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="renderedObject" ordered="false" upperBound="-1" eType="#//RenderedObject" eOpposite="#//RenderedObject/rendering">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="RenderedObjects that reference this Rendering. CWM 1.1 association RenderedObjectsReferenceRenderings." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="XSLRendering" eSuperTypes="#//Rendering">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="XSLRendering represents a useful subclass of Rendering based on XSL (i.e., this subclass' formula might contain a procedure that uses XSL to create an HTML document)." />
+    </eAnnotations>
+  </eClassifiers>
+</ecore:EPackage>
+    

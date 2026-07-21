@@ -54,7 +54,6 @@
 
   <modules>
     <module>model</module>
-    <module>util</module>
     <module>data</module>
     <module>resource</module>
     <module>testkit</module>

@@ -20,96 +20,35 @@
     <version>${revision}</version>
   </parent>
   <artifactId>org.eclipse.daanse.cwm.model.cwm</artifactId>
+  <packaging>pom</packaging>
   <name>Daanse CWM Model EMF</name>
+  <description>Das CWM-1.1-Metamodell, geschnitten in 21 Einheiten entlang der
+    Paketabhaengigkeiten. Siehe PACKAGES.md fuer Inventar, Ebenen und
+    Schnitt-Regel.</description>
 
-
-  <dependencies>
-    <dependency>
-      <groupId>org.geckoprojects.emf.utils</groupId>
-      <artifactId>org.gecko.emf.json</artifactId>
-      <version>1.5.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>org.eclipse.emf.common</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>org.eclipse.emf.ecore</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.fennec.emf</groupId>
-      <artifactId>org.eclipse.fennec.emf.osgi.api</artifactId>
-      <version>0.1.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.fennec.emf</groupId>
-      <artifactId>org.eclipse.fennec.emf.osgi.component</artifactId>
-      <version>0.1.1</version>
-      <scope>runtime</scope>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.eclipse.daanse</groupId>
-        <artifactId>org.eclipse.daanse.tooling.emf.codegen.maven</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-            <configuration>
-              <ecoreFile>model/cwm.ecore</ecoreFile>
-              <outputDirectory>target/generated-sources/emf</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>biz.aQute.bnd</groupId>
-            <artifactId>biz.aQute.bndlib</artifactId>
-            <version>7.2.0</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.6.0</version>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>target/generated-sources/emf</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <!-- Reihenfolge = Abhaengigkeitsebene, siehe PACKAGES.md Teil B -->
+  <modules>
+    <module>objectmodel.core</module>
+    <module>analysis.businessnomenclature</module>
+    <module>foundation.businessinformation</module>
+    <module>foundation.datatypes</module>
+    <module>foundation.expressions</module>
+    <module>foundation.keysindexes</module>
+    <module>foundation.typemapping</module>
+    <module>objectmodel.behavioral</module>
+    <module>objectmodel.instance</module>
+    <module>objectmodel.relationships</module>
+    <module>analysis.informationvisualization</module>
+    <module>foundation.softwaredeployment</module>
+    <module>resource.multidimensional</module>
+    <module>resource.record</module>
+    <module>resource.relational</module>
+    <module>resource.xml</module>
+    <module>analysis.transformation</module>
+    <module>analysis.datamining</module>
+    <module>analysis.olap</module>
+    <module>management.warehouseoperation</module>
+    <module>management.warehouseprocess</module>
+  </modules>
 
 </project>

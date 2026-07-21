@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
-import org.eclipse.daanse.cwm.util.resource.relational.Schemas;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
 
 /**
  * Asserts a schema exists (or is absent, per {@link #expectAbsent()}) and

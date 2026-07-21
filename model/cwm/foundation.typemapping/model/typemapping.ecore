@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="typemapping" nsURI="http://www.omg.org/spec/CWM/1.1/foundation/typemapping" nsPrefix="typemapping">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The TypeMapping package depends on the following packages:&#10;&#10;    org.omg::CWM::ObjectModel::Core&#10;&#10;The TypeMapping package supports the mapping of data types between different systems. The purpose of these mappings is to indicate data types in different systems that are sufficiently compatible that data values can be interchanged between them. Multiple mappings are allowed between any pair of types and a means of identifying the preferred mapping is provided.&#10;&#10;OCL Representation of TypeMapping Constraints&#10;&#10;[C-8-1] The sourceType and targetType references may not refer to the same&#10;Classifier instance.&#10;context TypeMapping inv:&#10;self.sourceType &lt;&gt; self.targetType&#10;&#10;[C-8-2] A TypeSystem may own only Classifiers and TypeMappings.&#10;context TypeSystem inv:&#10;self.ownedElement-&gt;forAll( e | e.oclIsKindOf(Classifier) or e.oclIsKindOf(TypeMapping))" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.foundation" />
+    <details key="prefix" value="Typemapping" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="TypeMapping" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="DifferentSourceAndTargetTypes" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="DifferentSourceAndTargetTypes" value="self.sourceType &lt;&gt; self.targetType" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="DifferentSourceAndTargetTypes.shortName" value="C-8-1" />
+      <details key="DifferentSourceAndTargetTypes.name" value="Different Source And Target Types" />
+      <details key="DifferentSourceAndTargetTypes.description" value="The sourceType and targetType references may not refer to the same Classifier instance." />
+      <details key="DifferentSourceAndTargetTypes.level" value="error" />
+      <details key="DifferentSourceAndTargetTypes.specSource" value="self.sourceType &lt;&gt; self.targetType" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="TypeMapping instances permit the creation of mappings between data types defined within different environments and are used to indicate data type compatibilities that permit direct assignment of values from one environment (the &quot;source&quot; type) into equivalent values in another environment (the &quot;target&quot; type). For example, an integer field data type in a record-oriented DBMS (the source type) might be mapped to a compatible integer data type in a relational DBMS (the target type).&#10;&#10;Whereas the actual transfer of data values between environments is accomplished using the CWM�s Transformation package, TypeMapping instances can be used the identify both the permissible and preferred mappings between data types. Value interchange between a pair of data types is considered permissible if a TypeMapping instance is defined for the pair. A TypeMapping instance is considered the preferred mapping if the instance�s isBestMatch attribute has the value true.&#10;&#10;Typically, there will be one TypeMapping Instance between a pair of data types that is considered the preferred mapping. To promote flexible use of this feature, there is no requirement that a preferred TypeMapping instance must be identified between a pair of data types nor are multiple preferred instances prohibited. In these latter cases, however, the precise semantics are usage-defined.&#10;&#10;Interchange between data types defined by non-preferred mappings may often function as intended. However, the isLossy boolean may be set to indicate that such interchanges may be subject to validity restrictions in certain circumstances. For example, it may be valid to move data values from a 32-bit integer data type to a 16-bit integer data type as long as the actual values in the 32-bit underlying data type do not exceed the range permitted for 16-bit integers. The CWM Foundation leaves the understanding and handling of such differences to individual tools. If such differences must be modeled, consider using the CWM Transformation package to filter data values during interchange.&#10;&#10;TypeMapping instances are unidirectional, so two instances are required to show that a data type pair can be mutually interchanged between environments." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isBestMatch" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True if this TypeMapping instance represents the best available mapping between a pair of data types in different software systems." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isLossy" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True if this TypeMapping instance may result in a data conversion error if the source data is within certain ranges. For example, storing a 32-bit unsigned integer value into a 16-bit unsigned integer container will result in a data conversion error only when the source data has a value greater than 65535." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceType" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="mappingFrom" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="mappingFrom" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Classifier instance that is the source of information exchange." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetType" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="mappingTo" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="mappingTo" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Classifier instance that is the target of information exchange." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TypeSystem" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="TypeSystemOwnedElements" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="TypeSystemOwnedElements" value="self.ownedElement-&gt;forAll( e | e.oclIsKindOf(core::Classifier) or e.oclIsKindOf(TypeMapping))" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="TypeSystemOwnedElements.shortName" value="C-8-2" />
+      <details key="TypeSystemOwnedElements.name" value="TypeSystem Owned Elements" />
+      <details key="TypeSystemOwnedElements.description" value="A TypeSystem may own only Classifiers and TypeMappings." />
+      <details key="TypeSystemOwnedElements.level" value="error" />
+      <details key="TypeSystemOwnedElements.specSource" value="self.ownedElement-&gt;forAll( e | e.oclIsKindOf(Classifier) or e.oclIsKindOf(TypeMapping))" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Instances of the TypeSystem class collect together the data types (subclasses of Classifier) defined by a software system and the TypeMapping instances defining how they are mapped to data types in other TypeSystems. TypeMapping instances collected by a TypeSystem instance include both those in which the software system�s data types act as sources and as targets of mappings. Classifiers and TapeMappings are&#10;maintained in a single collection via the ElementOwnership association but can be distinguished by their respective types.&#10;&#10;Because it is a Package, a TypeSystem can also serve to collect together the Classifier instances for a particular software system." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A string describing the version identification of the type system represented." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
+  

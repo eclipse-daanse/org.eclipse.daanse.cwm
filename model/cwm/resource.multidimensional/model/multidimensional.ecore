@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="multidimensional" nsURI="http://www.omg.org/spec/CWM/1.1/resource/multidimensional" nsPrefix="multidimensional">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The CWM Multidimensional metamodel is a generic representation of a multidimensional database.&#10;&#10;Multidimensional databases are OLAP databases that are directly implemented by multidimensional database systems. In a multidimensional database, key OLAP constructs (dimensions, hierarchies, etc.) are represented by the internal data structures of a ultidimensional database server, and common OLAP operations (consolidation, drill-down, etc.) are performed by the server acting on those data structures. &#10;&#10;Multidimensional databases are often classified as &quot;physical OLAP&quot; or &quot;MOLAP&quot; (memory-based OLAP) databases.&#10;&#10;Multidimensional databases offer enhanced performance and flexibility over OLAP systems that simulate multidimensional functionality using other technologies (e.g., relational database or spreadsheet):&#10;&#10;Performance: Multidimensional databases provide rapid consolidation times and formula calculations, and consistent query response times regardless of query complexity. This is accomplished, in part, through the use of efficient cell storage techniques and highly-optimized index paths.&#10;&#10;Flexibility: The specification and use of multidimensional schemas and queries (including the design of cubes, dimensions, hierarchies, member formulas, the manipulation of query result sets, etc.) can be accomplished in a relatively straight-forward manner, since the server directly supports (and exposes) the multidimensional paradigm.&#10;&#10;The CWM Multidimensional metamodel does not attempt to provide a complete representation of all aspects of commercially available, multidimensional databases. Unlike relational database management systems, multidimensional databases tend to be proprietary in structure, and there are no published, widely agreed upon, standard representations of the logical schema of a multidimensional database. Therefore, the CWM Multidimensional Database metamodel is oriented toward complete generality of specification. Tool-specific extensions to the metamodel are relatively easy to formulate, and several examples are provided in Volume 2, Extensions, of the CWM Specification.&#10;&#10;The Multidimensional package depends on the following packages:&#10;&#10;    org.omg::CWM::ObjectModel::Core&#10;    org.omg::CWM::ObjectModel::Instance&#10;&#10;The major classes and associations of the Multidimensional metamodel are shown in Figure 11-1.&#10;&#10;Schema is the container of all elements comprising a Multidimensional model. It also represents the logical unit of deployment of a Multidimensional database instance.&#10;Dimension represents a physical dimension in a Multidimensional database. Whereas&#10;the OLAP metamodel defines �dimension� as a purely conceptual entity, this&#10;Dimension represents the dimension object exposed by the programming model of a&#10;Multidimensional database.&#10;A Dimension may reference other instances of Dimension to form arbitrarily complex&#10;dimensional structures (e.g., hierarchies with varying levels of detail).&#10;&#10;DimensionedObject represents an attribute of Dimension. Examples of DimensionedObjects include measures (variables), formulas, consolidation functions, member alias names, etc. DimensionedObjects are contained by the Schema and referenced by the Dimensions that use them. &#10;&#10;MemberSet represents the collection of Members associated with an instance of Dimension, and MemberValue represents an instance value of a Member. MemberSet, Member and MemberValue enable the specification and interchange of both M1-level Multidimensional models and associated M0-level data values.&#10;&#10;Figure 11-2 illustrates the inheritance of the Multidimensional classes from metaclasses of the Object Model.&#10;&#10;OCL Representation of Multidimensional Constraints&#10;&#10;[C-1] A Dimension may not reference itself as a component, nor as a composite.&#10;context Dimension&#10;inv: self.component-&gt;excludes( self )&#10;inv: self.composite-&gt;excludes( self )&#10;&#10;The transitive closure of components of an instance of Dimension must not include the&#10;Dimension instance.&#10;&#10;The transitive closure of composites of an instance of Dimension must not include the&#10;Dimension instance." />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.resource" />
+    <details key="prefix" value="Multidimensional" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Dimension" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="DimensionSelfReference DimensionCompositeSelfReference" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="DimensionSelfReference" value="self.component-&gt;excludes( self )&#10;" />
+      <details key="DimensionCompositeSelfReference" value="self.composite-&gt;excludes( self )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="DimensionSelfReference.shortName" value="C-1" />
+      <details key="DimensionSelfReference.name" value="Dimension Self-Reference" />
+      <details key="DimensionSelfReference.description" value="A Dimension may not reference itself as a component, nor as a composite." />
+      <details key="DimensionSelfReference.level" value="error" />
+      <details key="DimensionSelfReference.specSource" value="self.component-&gt;excludes( self )&#10;inv: self.composite-&gt;excludes( self )" />
+      <details key="DimensionCompositeSelfReference.shortName" value="C-8-1b" />
+      <details key="DimensionCompositeSelfReference.name" value="Dimension Composite Self-Reference" />
+      <details key="DimensionCompositeSelfReference.description" value="A Dimension may not be its own composite." />
+      <details key="DimensionCompositeSelfReference.level" value="error" />
+      <details key="DimensionCompositeSelfReference.specSource" value="inv: self.composite-&gt;excludes( self )" />
+      <details key="DimensionSelfReference.postDescription" value="The transitive closure of components and composites must not include the Dimension instance." />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Dimension represents physical dimension in a multidimensional database (e.g., a dimension object defined by the programming model/API of an OLAP database server). Tool-specific extensions to the Multidimensional package will generally contain classes that derive from Dimension." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimensionedObject" upperBound="-1" eType="#//DimensionedObject" eOpposite="#//DimensionedObject/dimension">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="DimensionedObjects referenced by Dimensions." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="composite" ordered="false" upperBound="-1" eType="#//Dimension" eOpposite="#//Dimension/component">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&quot;Composite&quot; Dimensions referencing &quot;Component&quot; Dimensions." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="component" ordered="false" upperBound="-1" eType="#//Dimension" eOpposite="#//Dimension/composite">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&quot;Component&quot; Dimensions referenced by &quot;Composite&quot; Dimensions." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="schema" lowerBound="1" eType="#//Schema" transient="true" eOpposite="#//Schema/dimension">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Schema owning Dimensions." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="memberSet" ordered="false" upperBound="-1" eType="#//MemberSet" containment="true" eOpposite="#//MemberSet/dimension">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="MemberSets owned by a Dimension." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DimensionedObject" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="DimensionedObject represents an attribute of Dimension." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimension" ordered="false" upperBound="-1" eType="#//Dimension" eOpposite="#//Dimension/dimensionedObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Dimensions referencing DimensionedObjects." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="schema" lowerBound="1" eType="#//Schema" transient="true" eOpposite="#//Schema/dimensionedObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Schema owning DimensionedObjects." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Member" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//Object">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Member represents a member of a Dimension." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MemberSet" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//Extent">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="MemberSet represents the collection of Members associated with an instance of Dimension." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimension" lowerBound="1" eType="#//Dimension" transient="true" eOpposite="#//Dimension/memberSet">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Dimension owning MemberSets." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MemberValue" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//DataValue">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="MemberValue represents an instance value of a Member." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Schema" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Schema contains all elements comprising a Multidimensional database." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimensionedObject" ordered="false" upperBound="-1" eType="#//DimensionedObject" containment="true" eOpposite="#//DimensionedObject/schema">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="DimensionedObjects owned by a Schema." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimension" ordered="false" upperBound="-1" eType="#//Dimension" containment="true" eOpposite="#//Dimension/schema">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Dimensions owned by a Schema." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
+    

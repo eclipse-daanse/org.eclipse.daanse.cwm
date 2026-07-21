@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="behavioral" nsURI="http://www.omg.org/spec/CWM/1.1/objectmodel/behavioral" nsPrefix="behavioral">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The Behavioral metamodel depends on the following package:&#10;&#10;   org.omg::CWM::ObjectModel::Core&#10;&#10;The Behavioral metamodel collects together classes and associations that describe the behavior of CWM types and provides a foundation for recording the invocations of defined behaviors. The elements of the Behavioral metamodel are shown in the following figure.&#10;&#10;OCL Representation of Behavioral Constraints&#10;&#10;Operations&#10;&#10;The operation hasSameSignature checks if the argument has the same signature as the instance itself.&#10;   hasSameSignature ( b : BehavioralFeature ) : Boolean;&#10;   hasSameSignature (b) =&#10;   (self.name = b.name) and&#10;   (self.parameter-&gt;size = b.parameter-&gt;size) and&#10;   Sequence{ 1..(self.parameter-&gt;size) }-&gt;forAll( index : Integer |&#10;   b.parameter-&gt;at(index).type =&#10;   self.parameter-&gt;at(index).type and&#10;   b.parameter-&gt;at(index).kind =&#10;   self.parameter-&gt;at(index).kind   )&#10;&#10;The operation allOperations results in a Set containing all Operations of the Classifier itself and all its inherited Operations.&#10;   allOperations : Set(Operation);&#10;   allOperations = self.allFeatures-&gt;select(f | f.ockIsKindOf(Operations))&#10;&#10;The operation allMethods results in a Set containing all Methods of the Classifier itself and all its inherited Methods.&#10;   allOperations : Set(Method);&#10;   allMethods = self.allFeatures-&gt;select(f | f.ockIsKindOf(Method))&#10;&#10;Constraints&#10;&#10;[C-4-1] All Parameters should have a unique name.&#10;context BehavioralFeature inv:&#10;self.parameter-&gt;forAll(p1, p2 | p1.name = p2.name implies p1 = p2)&#10;&#10;[C-4-2] The type of the Parameters should be included in the Namespace of the Classifier.&#10;context BehavioralFeature inv:&#10;self.parameter-&gt;forAll( p | self.owner.namespace.allContents-&gt;includes (p.type) )&#10;&#10;[C-4-3] The number of arguments must be the same as the number of parameters of the Operation.&#10;context CallAction inv:&#10;self.actualArgument-&gt;size = self.operation.parameter-&gt;size&#10;&#10;[C-4-4] An Interface can only contain Operations.&#10;context Interface inv:&#10;self.allFeatures-&gt;forAll( f | f.oclIsKindOf( Operation ) )&#10;&#10;[C-4-5] An Interface cannot contain any ModelElements.&#10;context Interface inv:&#10;self.allContents-&gt;isEmpty&#10;&#10;[C-4-6] All Features defined in an Interface are public.&#10;context Interface inv:&#10;self.allFeatures-&gt;forAll( f | f.visibility = #public )&#10;&#10;[C-4-7] If the realized Operation is a query, then so is the Method.&#10;context Method inv:&#10;self.specification-&gt;isQuery implies self.isQuery" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.objectmodel" />
+    <details key="prefix" value="Behavioral" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Argument" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Argument is an expression describing how to determine an actual value passed in a CallAction.&#10;&#10;In the metamodel an Argument is a composite part of a CallAction and contains a meta-attribute, value, of type Expression. It states how the actual argument is determined when the owning CallAction is executed." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Expression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An expression determining the actual Argument instance when executed." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="callAction" eType="#//CallAction" transient="true" eOpposite="#//CallAction/actualArgument">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the CallAction instance representing a particular invocation of an Operation." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BehavioralFeature" abstract="true" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Feature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="UniqueParameterNames ParameterTypeInNamespace" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="UniqueParameterNames" value="self.parameter-&gt;forAll(p1, p2 | p1.name = p2.name implies p1 = p2)" />
+      <details key="ParameterTypeInNamespace" value="self.parameter-&gt;forAll( p | self.owner.namespace.allContents()-&gt;includes (p.type) )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="UniqueParameterNames.shortName" value="C-4-1" />
+      <details key="UniqueParameterNames.name" value="Unique Parameter Names" />
+      <details key="UniqueParameterNames.description" value="All Parameters should have a unique name." />
+      <details key="UniqueParameterNames.level" value="warning" />
+      <details key="UniqueParameterNames.specSource" value="self.parameter-&gt;forAll(p1, p2 | p1.name = p2.name implies p1 = p2)" />
+      <details key="ParameterTypeInNamespace.shortName" value="C-4-2" />
+      <details key="ParameterTypeInNamespace.name" value="Parameter Type In Namespace" />
+      <details key="ParameterTypeInNamespace.description" value="The type of the Parameters should be included in the Namespace of the Classifier." />
+      <details key="ParameterTypeInNamespace.level" value="warning" />
+      <details key="ParameterTypeInNamespace.specSource" value="self.parameter-&gt;forAll( p | self.owner.namespace.allContents-&gt;includes (p.type) )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A behavioral feature refers to a dynamic feature of a model element, such as an operation or method. In the metamodel, BehavioralFeature specifies a behavioral aspect of a Classifier. All different kinds of behavioral aspects of a Classifier, such as Operation and Method, are subclasses of BehavioralFeature.&#10;&#10;BehavioralFeature is an abstract metaclass.&#10;" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isQuery" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies whether an execution of the BehavioralFeature leaves the state of the system unchanged. True indicates that the state is unchanged; false indicates that side-effects may occur." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parameter" upperBound="-1" eType="#//Parameter" containment="true" eOpposite="#//Parameter/behavioralFeature">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Parameter instances that describe the parameters of the BehavioralFeature." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CallAction" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="ArgumentCountMatchesParameters" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="ArgumentCountMatchesParameters" value="self.actualArgument-&gt;size() = self.operation.parameter-&gt;size()" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="ArgumentCountMatchesParameters.shortName" value="C-4-3" />
+      <details key="ArgumentCountMatchesParameters.name" value="Argument Count Matches Parameters" />
+      <details key="ArgumentCountMatchesParameters.description" value="The number of arguments must be the same as the number of parameters of the Operation." />
+      <details key="ArgumentCountMatchesParameters.level" value="error" />
+      <details key="ArgumentCountMatchesParameters.specSource" value="self.actualArgument-&gt;size = self.operation.parameter-&gt;size" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A call action is an action resulting in an invocation of an operation.&#10;&#10;The purpose of a CallAction is to identify the actual Arguments used in a specific invocation of an Operation." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="actualArgument" upperBound="-1" eType="#//Argument" containment="true" eOpposite="#//Argument/callAction">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Argument instances representing the actual arguments passed during Operation invocation." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operation" lowerBound="1" eType="#//Operation">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="callAction" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="callAction" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Operation instance for which the CallAction instance records an invocation." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Event" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Event is a specification of an observable occurrence. The occurrence that generates an event instance is assumed to take place at an instant in time." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parameter" upperBound="-1" eType="#//Parameter" containment="true" eOpposite="#//Parameter/event">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the ordered set of Parameter instances owned by an Event that describe the Event�s parameters." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Interface" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="EmptyInterfaceContents InterfaceContainsOnlyOperations PublicInterfaceFeatures" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="PublicInterfaceFeatures" value="self.allFeatures()-&gt;forAll( f | f.visibility = core::VisibilityKind::vk_public )" />
+      <details key="InterfaceContainsOnlyOperations" value="self.allFeatures()-&gt;forAll( f | f.oclIsKindOf( behavioral::Operation ) )" />
+      <details key="EmptyInterfaceContents" value="self.allContents()-&gt;isEmpty()" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="InterfaceContainsOnlyOperations.shortName" value="C-4-4" />
+      <details key="InterfaceContainsOnlyOperations.name" value="Interface Contains Only Operations" />
+      <details key="InterfaceContainsOnlyOperations.description" value="An Interface can only contain Operations." />
+      <details key="InterfaceContainsOnlyOperations.level" value="error" />
+      <details key="InterfaceContainsOnlyOperations.specSource" value="self.allFeatures-&gt;forAll( f | f.oclIsKindOf( Operation ) )" />
+      <details key="EmptyInterfaceContents.shortName" value="C-4-5" />
+      <details key="EmptyInterfaceContents.name" value="Empty Interface Contents" />
+      <details key="EmptyInterfaceContents.description" value="An Interface cannot contain any ModelElements." />
+      <details key="EmptyInterfaceContents.level" value="error" />
+      <details key="EmptyInterfaceContents.specSource" value="self.allContents-&gt;isEmpty" />
+      <details key="PublicInterfaceFeatures.shortName" value="C-4-6" />
+      <details key="PublicInterfaceFeatures.name" value="Public Interface Features" />
+      <details key="PublicInterfaceFeatures.description" value="All Features defined in an Interface are public." />
+      <details key="PublicInterfaceFeatures.level" value="error" />
+      <details key="PublicInterfaceFeatures.specSource" value="self.allFeatures-&gt;forAll( f | f.visibility = #public )" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Interface is a named set of operations that specify the behavior of an element.&#10;&#10;In the metamodel, an Interface contains a set of Operations that together define a service offered by a Classifier realizing the Interface. A Classifier may offer several services, which means that it may realize several Interfaces, and several Classifiers may realize the same Interface." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Method" eSuperTypes="#//BehavioralFeature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="QueryOperationImpliesQueryMethod MethodVisibilityMatchesOperation" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="MethodVisibilityMatchesOperation" value="self.visibility = self.specification.visibility" />
+      <details key="QueryOperationImpliesQueryMethod" value="self.specification.isQuery implies self.isQuery" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="SingleMethodPerOperation.shortName" value="C-4-12" />
+      <details key="SingleMethodPerOperation.name" value="Single Method Per Operation" />
+      <details key="SingleMethodPerOperation.description" value="There may be at most one Method for a given Classifier (as owner of the Method) and Operation (as specification of the Method) pair." />
+      <details key="SingleMethodPerOperation.level" value="error" />
+      <details key="SingleMethodPerOperation.specSource" value="self.owner.allMethods-&gt;select( operation = self.operation )-&gt;size = 1" />
+      <details key="SingleMethodPerOperation.postDescription" value="Not executable: builds on the additional operation Classifier::allMethods, CWM 1.1 §4.4.4.1, which in turn depends on Classifier.parent() / allFeatures() - see the notes on those operations. The body also names self.operation, while the reference declared by MOF on Method is called &quot;specification&quot;." />
+      <details key="MethodRealizesLatestOverriding.shortName" value="C-4-11" />
+      <details key="MethodRealizesLatestOverriding.name" value="Method Realizes Latest Overriding" />
+      <details key="MethodRealizesLatestOverriding.description" value="If the realized Operation has been overridden one or more times in the ancestors of the owner of the Method, then the Method must realize the latest overriding." />
+      <details key="MethodRealizesLatestOverriding.level" value="error" />
+      <details key="MethodRealizesLatestOverriding.specSource" value="self.specification.owner.allOperations-&gt;includesAll(&#10;( self.owner.allOperations-&gt;select( op |&#10;self.hasSameSignature( op ) ) )" />
+      <details key="MethodRealizesLatestOverriding.postDescription" value="Not executable: the expression is defective in the OMG source (four opening but three closing parentheses). Recorded verbatim under specSource rather than repaired, so the deviation stays visible. It also builds on Classifier::allOperations and BehavioralFeature::hasSameSignature." />
+      <details key="SpecificationIsOwnerOperation.shortName" value="C-4-10" />
+      <details key="SpecificationIsOwnerOperation.name" value="Specification Is Owner Operation" />
+      <details key="SpecificationIsOwnerOperation.description" value="The realized Operation must be a feature (possibly inherited) of the same Classifier as the Method." />
+      <details key="SpecificationIsOwnerOperation.level" value="error" />
+      <details key="SpecificationIsOwnerOperation.specSource" value="self.owner.allOperations-&gt;includes( self.specification )" />
+      <details key="SpecificationIsOwnerOperation.postDescription" value="Not executable: builds on the additional operation Classifier::allOperations, CWM 1.1 §4.4.4.1, which in turn depends on Classifier.parent() / allFeatures() - see the notes on those operations." />
+      <details key="MethodVisibilityMatchesOperation.shortName" value="C-4-9" />
+      <details key="MethodVisibilityMatchesOperation.name" value="Method Visibility Matches Operation" />
+      <details key="MethodVisibilityMatchesOperation.description" value="The visibility of the Method should be the same as for the realized Operation." />
+      <details key="MethodVisibilityMatchesOperation.level" value="error" />
+      <details key="MethodVisibilityMatchesOperation.specSource" value="self.visibility = self.specification.visibility" />
+      <details key="MethodSignatureMatchesOperation.shortName" value="C-4-8" />
+      <details key="MethodSignatureMatchesOperation.name" value="Method Signature Matches Operation" />
+      <details key="MethodSignatureMatchesOperation.description" value="The signature of the Method should be the same as the signature of the realized Operation." />
+      <details key="MethodSignatureMatchesOperation.level" value="error" />
+      <details key="MethodSignatureMatchesOperation.specSource" value="self.hasSameSignature( self.specification )" />
+      <details key="MethodSignatureMatchesOperation.postDescription" value="Not executable: builds on the additional operation BehavioralFeature::hasSameSignature(b), CWM 1.1 §4.4.4.1, which in turn depends on Classifier.parent() / allFeatures() - see the notes on those operations." />
+      <details key="QueryOperationImpliesQueryMethod.shortName" value="C-4-7" />
+      <details key="QueryOperationImpliesQueryMethod.name" value="Query Operation Implies Query Method" />
+      <details key="QueryOperationImpliesQueryMethod.description" value="If the realized Operation is a query, then so is the Method." />
+      <details key="QueryOperationImpliesQueryMethod.level" value="error" />
+      <details key="QueryOperationImpliesQueryMethod.specSource" value="self.specification-&gt;isQuery implies self.isQuery" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Method is the implementation of an Operation. It specifies the algorithm or procedure that effects the results of an Operation." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="body" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ProcedureExpression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A specification of the Method in some appropriate form (such as a programming language). The exact form of a Method�s specification and knowledge of the language in which it is described is outside the scope of the CWM." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="specification" lowerBound="1" eType="#//Operation" eOpposite="#//Operation/method">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Operation that a Method implements." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Operation" eSuperTypes="#//BehavioralFeature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Operation is a service that can be requested from an object to effect behavior. An Operation has a signature, which describes the parameters that are possible (including possible return values).&#10;&#10;In the metamodel, an Operation is a BehavioralFeature that can be applied to instances of the Classifier that contains the Operation.&#10;&#10;Operation is the specification, while Method is the implementation." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isAbstract" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If true, then the Operation does not have an implementation, and one must be supplied by a descendant. If false, the Operation must have an implementation in the class or inherited from an ancestor." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="method" ordered="false" upperBound="-1" eType="#//Method" eOpposite="#//Method/specification">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the set of Methods defined for an Operation." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Parameter" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Parameters are used in the specification of operations, methods and events. A Parameter may include a name, type, and direction of communication." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultValue" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Expression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An Expression whose evaluation yields a value to be used when no argument is supplied for the Parameter." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1" eType="#//ParameterDirectionKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies what kind of a Parameter is required." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="behavioralFeature" eType="#//BehavioralFeature" transient="true" eOpposite="#//BehavioralFeature/parameter">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the BehavioralFeature instance owner of a Parameter instance." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="event" eType="#//Event" transient="true" eOpposite="#//Event/parameter">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Event owning a set of Parameter instances." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="parameter" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="parameter" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Classifier instance the defines the type of a Parameter." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ParameterDirectionKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="In the metamodel ParameterDirectionKind defines an enumeration that denotes if a Parameter is used for supplying an argument and/or for returning a value. The enumeration values are:&#10;&#10;The default value is pdk_in." />
+    </eAnnotations>
+    <eLiterals name="pdk_in">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An input Parameter (may not be modified)." />
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="pdk_inout" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An input Parameter that may be modified." />
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="pdk_out" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An output Parameter (may be modified to communicate information to the caller)." />
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="pdk_return" value="3">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A return value of a call." />
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+</ecore:EPackage>
+    

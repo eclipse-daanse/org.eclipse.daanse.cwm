@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="expressions" nsURI="http://www.omg.org/spec/CWM/1.1/foundation/expressions" nsPrefix="expressions">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The Expressions package depends on the following packages:&#10;&#10;    org.omg::CWM::ObjectModel::Core&#10;&#10;The CWM Expressions metamodel provides basic support for the definition of expression trees within the CWM. The intent of the Expressions metamodel is to provide a place for other CWM packages (such as Transformation) and CWM compliant tools to record shared expressions in a common form that can be used for interchange and lineage tracking.&#10;&#10;The expression concept in the CWM Foundation takes a functional view of expression trees, resulting in the ability of relatively few expression types to represent a broad range of expressions. Every function or traditional mathematical operator that appears in an expression hierarchy is represented as a FeatureNode. For example, the arithmetic plus operation �a + b� can be thought of as the function �sum(a, b).� The semantics of a particular function or operation are left to specific tool implementations and are not captured by the CWM. &#10;&#10;The hierarchical nature of the CWM�s representation of expressions is achieved by the recursive nature of the OperationArgument association. This association allows the sub-hierarchies within an expression to be treated as actual parameters of their parent nodes.&#10;&#10;OCL Representation of Expressions Constraints&#10;&#10;[C-5-1] A FeatureNode that has parameters other than the&quot;this&quot; parameter represents a Feature that is also an Operation.&#10;context FeatureNode inv:&#10;if self.feature.ownerScope = #instance&#10;then self.argument-&gt;size &gt; 1 implies&#10;   self.feature.oclIsKindOf(Operation)&#10;else self.argument-&gt;size &gt; 0 implies&#10;   self.feature.oclIsKindOf(Operation)&#10;endif&#10;&#10;[C-5-2] If the FeatureNode represents an instance-scope feature, the first argument is a &quot;this&quot; or &quot;self&quot; argument; that is, the object invoking the feature. The convention is enforced by checking that the type of the first argument is the same as the type of the feature.&#10;context FeatureNode inv:&#10;self.feature.ownerScope = #instance implies&#10;self.argument-&gt;first.type.allFeatures-&gt;includes(self.feature)&#10;&#10;[C-5-3] If the FeatureNode represents a BehavioralFeature, the number of arguments must be equal to the number of the BehavioralFeature�s parameters, plus one for the �this� parameter if the BehavioralFeature is of instance scope.&#10;context FeatureNode inv:&#10;self.feature.oclIsKindOf(BehavioralFeature) implies&#10;(if self.feature.ownerScope = #instance&#10;   then self.argument-&gt;size =&#10;      self.feature.oclAsType(BehavioralFeature).parameters-&gt;size + 1&#10;   else self.argument-&gt;size =&#10;      self.feature.oclAsType(BehavioralFeature).parameters-&gt;size&#10;endif)" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.foundation" />
+    <details key="prefix" value="Expressions" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="ExpressionNode" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="All node types within an expression are derived from the ExpressionNode type.&#10;&#10;An expression is stored as a collection of instances of the subtypes of ExpressionNode arranged in a hierarchical fashion. The ExpressionNode instance at the top (or �root�) of the hierarchy represents the value of the expression and serves as a starting point for expression evaluation. Refer to the descriptions of the subtypes of ExpressionNode (ElementNode, ConstantNode, and FeatureNode) for additional information about the representation of expressions.&#10;&#10;One important purpose for providing storage of expressions as a general feature of the CWM is to promote sharing them between tools and to provide a means for recording lineage relationships between components within expressions. Specific details of the implementation of expression operators are left to the implementing tools.&#10;&#10;When ExpressionNode is used as the type of an Attribute, an instance of the Attribute can contain either an expression tree as described here or a textual representation of the expression in body and language values of in an attribute of type Expression (defined ObjectModel). The expression attribute is provided for the latter usage. To obtain CWM�s sharing and lineage tracking features for elements within an expression, the expression must be represented as an expression hierarcy." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Expression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains a textual representation of the expression relevant for this ExpressionNode instance." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="expressionNode" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="expressionNode" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Classifier instance that represents the type of the expression at this level in the expression hierarchy. Although, formally, each node within an expression tree is capable of having a value and therefore, a data type, this reference is optional because modeling the data type of intermediate nodes in an expression tree is not always interesting, thereby reducing the effort required to create expression trees." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="featureNode" eType="#//FeatureNode" transient="true" eOpposite="#//FeatureNode/argument">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the FeatureNode for which this ExpressionNode instance represents the value of an argument. Because arguments can themselves represent entire expression sub-trees, this reference is used to create hierarchies of expression nodes, permitting representation of entire expression trees within the CWM." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConstantNode" eSuperTypes="#//ExpressionNode">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Instances of the ConstantNode class are ExpressionNodes that represent constant values within expressions. Appropriate uses of the ConstantNode class place the values of constants in the value attribute, rather than in the expression::body attribute inherited from ExpressionNode. The latter attribute is intended for a different purpose; see the description of the ExpressionNode class for details." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Any">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value of a constant in an expression tree." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ElementNode" eSuperTypes="#//ExpressionNode">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An ElementNode is a node in an expression that references some ModelElement instance. This subclass of ExpressionNode allows an expression to reference any CWM model element that is not a Feature and cannot, therefore, be represented as a FeatureNode.&#10;&#10;Typically, use of this subclass of ExpressionNode implies that a tool attempting to evaluate the expression will be able to determine if the referenced ModelElement instance is also an instance of some interesting subclass of ModelElement that contains a value of interest in the expression.&#10;" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="modelElement" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="elementNode" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="elementNode" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the ModelElement instance which this ElementNode references." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FeatureNode" eSuperTypes="#//ExpressionNode">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="FeatureNodeParametersRequireOperation InstanceFeatureThisArgument BehavioralFeatureArgumentCount" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="FeatureNodeParametersRequireOperation" value="if self.feature.ownerScope = core::ScopeKind::sk_instance&#10;then self.argument-&gt;size() &gt; 1 implies&#10; self.feature.oclIsKindOf(behavioral::Operation)&#10;else self.argument-&gt;size() &gt; 0 implies&#10; self.feature.oclIsKindOf(behavioral::Operation)&#10;endif" />
+      <details key="InstanceFeatureThisArgument" value="self.feature.ownerScope = core::ScopeKind::sk_instance implies&#10;self.argument-&gt;first().type.allFeatures()-&gt;includes(self.feature)" />
+      <details key="BehavioralFeatureArgumentCount" value="self.feature.oclIsKindOf(behavioral::BehavioralFeature) implies&#10;(if self.feature.ownerScope = core::ScopeKind::sk_instance&#10;then self.argument-&gt;size() =&#10; self.feature.oclAsType(behavioral::BehavioralFeature).parameter-&gt;size() + 1&#10; else self.argument-&gt;size() =&#10; self.feature.oclAsType(behavioral::BehavioralFeature).parameter-&gt;size()&#10;endif)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="BehavioralFeatureArgumentTypes.shortName" value="C-5-4" />
+      <details key="BehavioralFeatureArgumentTypes.name" value="BehavioralFeature Argument Types" />
+      <details key="BehavioralFeatureArgumentTypes.description" value="If the FeatureNode represents a BehavioralFeature, the types of the arguments must match, in order, the types of the parameters, allowing for the optional presence of a leading &quot;this&quot; parameter." />
+      <details key="BehavioralFeatureArgumentTypes.level" value="error" />
+      <details key="BehavioralFeatureArgumentTypes.specSource" value="self.feature.oclIsKindOf(BehavioralFeature) implies&#10;(if self.feature.ownerScope = #instance&#10;then self.argument-&gt;forAll(arg : Integer |&#10;self.argument-&gt;at(arg + 1)&#10;.allSuperTypes.union(self.argument.oclType)-&gt;&#10;includes(self.feature.oclAsType(BehavioralFeature)&#10;.parameters-&gt;at(arg))&#10;else self.argument-&gt;forAll(arg : Integer |&#10;self.argument-&gt;at(arg)&#10;.allSuperTypes.union(self.argument.oclType)-&gt;&#10;includes(self.feature.oclAsType(BehavioralFeature)&#10;.parameters-&gt;at(arg))&#10;endif)" />
+      <details key="BehavioralFeatureArgumentTypes.postDescription" value="Not executable: the expression is defective in the OMG source (the closing parenthesis of each forAll( is missing before else and before endif). Recorded verbatim under specSource rather than repaired, so the deviation stays visible. It further relies on allSuperTypes and oclType, which OCL 2.x does not provide." />
+      <details key="FeatureNodeParametersRequireOperation.shortName" value="C-5-1" />
+      <details key="FeatureNodeParametersRequireOperation.name" value="FeatureNode Parameters Require Operation" />
+      <details key="FeatureNodeParametersRequireOperation.description" value="A FeatureNode that has parameters other than the &quot;this&quot; parameter represents a Feature that is also an Operation." />
+      <details key="FeatureNodeParametersRequireOperation.level" value="error" />
+      <details key="FeatureNodeParametersRequireOperation.specSource" value="if self.feature.ownerScope = #instance&#10;then self.argument-&gt;size &gt; 1 implies&#10; self.feature.oclIsKindOf(Operation)&#10;else self.argument-&gt;size &gt; 0 implies&#10; self.feature.oclIsKindOf(Operation)&#10;endif" />
+      <details key="InstanceFeatureThisArgument.shortName" value="C-5-2" />
+      <details key="InstanceFeatureThisArgument.name" value="Instance Feature This Argument" />
+      <details key="InstanceFeatureThisArgument.description" value="If the FeatureNode represents an instance-scope feature, the first argument is a &quot;this&quot; or &quot;self&quot; argument; that is, the object invoking the feature. The convention is enforced by checking that the type of the first argument is the same as the type of the feature." />
+      <details key="InstanceFeatureThisArgument.level" value="error" />
+      <details key="InstanceFeatureThisArgument.specSource" value="self.feature.ownerScope = #instance implies&#10;self.argument-&gt;first.type.allFeatures-&gt;includes(self.feature)" />
+      <details key="BehavioralFeatureArgumentCount.shortName" value="C-5-3" />
+      <details key="BehavioralFeatureArgumentCount.name" value="BehavioralFeature Argument Count" />
+      <details key="BehavioralFeatureArgumentCount.description" value="If the FeatureNode represents a BehavioralFeature, the number of arguments must be equal to the number of the BehavioralFeature's parameters, plus one for the &quot;this&quot; parameter if the BehavioralFeature is of instance scope." />
+      <details key="BehavioralFeatureArgumentCount.level" value="error" />
+      <details key="BehavioralFeatureArgumentCount.specSource" value="self.feature.oclIsKindOf(BehavioralFeature) implies&#10;(if self.feature.ownerScope = #instance&#10;then self.argument-&gt;size =&#10; self.feature.oclAsType(BehavioralFeature).parameters-&gt;size + 1&#10; else self.argument-&gt;size =&#10; self.feature.oclAsType(BehavioralFeature).parameters-&gt;size&#10;endif)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The FeatureNode class represents ExpressionNode instances that are features (i.e., attributes or operations) of some Classifier instance within the CWM.&#10;&#10;A FeatureNode with a null OperationArgument association represents either a parameter-less operation or an attribute value obtained from some StructuralFeature instance." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="feature" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Feature">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="featureNode" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="featureNode" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Feature (attribute or operation) which this FeatureNode instance represents." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="argument" upperBound="-1" eType="#//ExpressionNode" containment="true" eOpposite="#//ExpressionNode/featureNode">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the ExpressionNode instances that represent the actual arguments for this FeatureNode. If the argument reference is null, the FeatureNode is an attribute or parameter-less function or operation." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
+    

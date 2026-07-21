@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="xml" nsURI="http://www.omg.org/spec/CWM/1.1/resource/xml" nsPrefix="xml">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="XML is rapidly becoming a very important type of data resource, especially in the Internet environment. On the one hand, HTML is evolving to be XML-compliant; in the near future, all HTML documents can be expected to become valid XML documents. On the other hand, XML is quickly becoming the standard format for interchange of data and/or metadata (e.g., XMI). Therefore, XML documents (or streams) representing data and/or metadata can be expected to appear everywhere. &#10;&#10;The XML package contains classes and associations that represent common metadata describing XML data resources. It is based on XML 1.0 [XML]. XML Schema is an ongoing activity in the W3C. As future standards are adopted by the W3C on XML Schema, this package will be revised and extended accordingly.&#10;&#10;This section provides a description of the main features of the XML package.&#10;&#10;An XML schema contains a set of definitions and declarations, in the form of XML element type definitions. An XML element type may contain a set of XML attributes and/or a content model. An attribute can have one of the following defaults: required, implied, default, or fixed. The content model can be one of the following types: empty, any, mixed, or element. Except for the empty content model, a content model consists of constituent parts, particularly element type references. The allowed occurrence of the constituents can be one of the following types: one, zero or one, zero or more, or&#10;one or more.&#10;&#10;An any content model consists of any element types. A mixed content model consists of character data and specified element type references. An element content model consists of specified element type references and/or element content models. An element content model can be one of the following types: choice or sequence.&#10;&#10;The XML package depends on the following packages:&#10;&#10;    omg.org::CWM::ObjectModel::Core&#10;    omg.org::CWM::ObjectModel::Instance&#10;    omg.org::CWM::Foundation::DataTypes&#10;&#10;The metamodel diagram for the XML package is split into two parts. The first diagram shows the XML classes and associations, while the second shows the inheritance hierarchy.&#10;&#10;OCL Representation of XML Constraints&#10;&#10;   None" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.resource" />
+    <details key="prefix" value="Xml" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Schema" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents an XML schema which contains a set of definitions and declarations. In XML, this is known as document type definition, or DTD, which provides a grammar for a class of documents." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the version of the XML." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="xmlNamespace" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the XML namespace of the Schema." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ElementType" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents an XML element type definition. In XML, each document contains one or more elements. The element structure may, for validation purposes, be constrained using element type and attribute declarations. An element type declaration constrains the element�s content." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="content" eType="#//Content" eOpposite="#//Content/elementType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Content of the ElementType." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Attribute" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents an XML attribute declaration. In XML, attributes are used to associate name-value pairs with elements. Each attribute declaration specifies the name, data type, and default value (if any) of each attribute associated with a given element type." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultKind" lowerBound="1" eType="#//AttributeDefault">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the kind of attribute default." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Content" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents the content model of an ElementType. In XML, each document contains one or more elements, the boundaries of which are normally delimited by start-tags and end-tags. The body between the start-tag and end-tag is called the element�s content. An element type declaration constrains the element�s content." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="#//ContentType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the type of the content model." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="occurrence" lowerBound="1" eType="#//OccurrenceType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the allowed occurrence of the content constituents." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elementType" ordered="false" upperBound="-1" eType="#//ElementType" eOpposite="#//ElementType/content">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the ElementType." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ownedElementType" ordered="false" upperBound="-1" eType="#//ElementTypeReference" eOpposite="#//ElementTypeReference/ownerContent">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the owned ElementTypeReferences." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ElementContent" eSuperTypes="#//Content">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents an element content which contains only ElementTypeReferences. In XML, an element type has element content when elements of that type must contain only child elements (no character data), optionally separated by white space. In this case, the constraint includes a content model that governs the allowed types of the child elements and the order in which they are allowed to appear." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="order" lowerBound="1" eType="#//ElementOrderType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the order type of the element content." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ownerContent" ordered="false" upperBound="-1" eType="#//ElementContent" eOpposite="#//ElementContent/ownedContent">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the owner ElementContent." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ownedContent" ordered="false" upperBound="-1" eType="#//ElementContent" eOpposite="#//ElementContent/ownerContent">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the owned ElementContents." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MixedContent" eSuperTypes="#//Content">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents a mixed content of character data and ElementTypeReferences. In XML, an element type has mixed content when elements of that type may contain character data, optionally interspersed with child elements. In this case, the types of the child elements may be constrained, but not their order or their number of occurrences." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="text" lowerBound="1" eType="#//Text" containment="true" eOpposite="#//Text/ownerContent">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Text of the MixedContent." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="AttributeDefault">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="required, implied, default, fixed" />
+    </eAnnotations>
+    <eLiterals name="xml_required" />
+    <eLiterals name="xml_implied" value="1" />
+    <eLiterals name="xml_default" value="2" />
+    <eLiterals name="xml_fixed" value="3" />
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ContentType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="empty, any, mixed, element" />
+    </eAnnotations>
+    <eLiterals name="xml_empty" />
+    <eLiterals name="xml_any" value="1" />
+    <eLiterals name="xml_mixed" value="2" />
+    <eLiterals name="xml_element" value="3" />
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="OccurrenceType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="one, zeroOrOne, zeroOrMore, OneOrMore" />
+    </eAnnotations>
+    <eLiterals name="xml_one" />
+    <eLiterals name="xml_zeroOrOne" value="1" />
+    <eLiterals name="xml_zeroOrMore" value="2" />
+    <eLiterals name="xml_oneOrMore" value="3" />
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ElementOrderType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="choice, sequence" />
+    </eAnnotations>
+    <eLiterals name="xml_choice" />
+    <eLiterals name="xml_sequence" value="1" />
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ElementTypeReference" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents an XML element type reference. In XML, an element content or a mixed content of an element type may contain references to element type definitions." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="occurrence" lowerBound="1" eType="#//OccurrenceType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the allowed occurrence of the ElementTypeReference." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ownerContent" ordered="false" upperBound="-1" eType="#//Content" eOpposite="#//Content/ownedElementType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the owner Content." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Text" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents character data. In XML, a mixed content of an element type may contain text." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ownerContent" lowerBound="1" eType="#//MixedContent" transient="true" eOpposite="#//MixedContent/text">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the owner MixedContent." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Element" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//Object">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents an instance of an ElementType." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Document" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//Extent">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This represents an XML document, which is a collection of XML Elements." />
+    </eAnnotations>
+  </eClassifiers>
+</ecore:EPackage>
+  

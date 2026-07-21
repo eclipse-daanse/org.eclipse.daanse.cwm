@@ -1,0 +1,1651 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="datamining" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/datamining" nsPrefix="datamining">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="This package contains the metamodel that represents the data mining tasks, models, and other entities such as category matrix that are common across most data mining applications and tools, as well as their relationships to each other and their mappings to technical metadata." />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.analysis" />
+    <details key="prefix" value="Datamining" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eSubpackages name="miningcore" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/datamining/miningcore" nsPrefix="miningcore">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This package contains the basic packages that are required to implement a CWM DataMining interface. It is required that  at least this package and one more packge be implemented for compliance." />
+    </eAnnotations>
+    <eSubpackages name="miningdata" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/datamining/miningcore/miningdata" nsPrefix="miningdata">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This package defines the objects that describe the input data, the way the input data is to be treated, and the mapping between the input data and internal representation for which mining algorithms can understand." />
+      </eAnnotations>
+      <eClassifiers xsi:type="ecore:EClass" name="AttributeAssignment" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This object provides a mapping between a mining attribute (logical data) and a set of attributes in the input data (physical data).&#10;logicalAttribute is the mining attribute being mapped by this object.&#10;orderIdAttribute is used when ordering of attributes is required. In some cases, ordering of attributes is important (as in sequence analysis). In other cases, a sequence of an attribute is favored over having a set-valued attributes.&#10;&#10;AttributeAssignment can be reused among several tasks, but a MiningAttribute can be refered to by an AttributeAssignment within a task." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="logicalAttribute" ordered="false" lowerBound="1" upperBound="-1" eType="#//miningcore/miningdata/MiningAttribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="attrAssignment" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="attrAssignment" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="orderIdAttribute" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="attrAssignmnet" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="attrAssignmnet" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="AttributeAssignmentSet" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This object contains a set of AttributeAssignment objects and completes attribute assignment for a mining operation." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="assignment" ordered="false" lowerBound="1" upperBound="-1" eType="#//miningcore/miningdata/AttributeAssignment" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="set" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="set" />
+          </eAnnotations>
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="Identifies the AttributeAssignment instances belonging to this set. CWM 1.1 association AssignmentSetHasAssignment." />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EEnum" name="AttributeSelectionFunction">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This enumeration determines which attriute in the given data to select and map it to a set-valued logical attribute.&#10;The attributes that satisfy the given condition in this enumeration get selected." />
+        </eAnnotations>
+        <eLiterals name="isNotNull">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This allows a selector attribute to be chosen when the value of the attribute is not null. Whether the value or the attribute name is selected is based on ValueSelectionFunction." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="isNull" value="1">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This allows a selector attribute to be chosen when the value of the attribute is null. Whether the value or the attribute name is selected is based on ValueSelectionFunction." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="isOne" value="2">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This allows a selector attribute to be chosen when the value of the attribute is one. Whether the value or the attribute name is selected is based on ValueSelectionFunction." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="isZero" value="3">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This allows a selector attribute to be chosen when the value of the attribute is zero. Whether the value or the attribute name is selected is based on ValueSelectionFunction." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="isTrue" value="4">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This allows a selector attribute to be chosen when the value of the attribute is true. Whether the value or the attribute name is selected is based on ValueSelectionFunction." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="isFalse" value="5">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This allows a selector attribute to be chosen when the value of the attribute is false. Whether the value or the attribute name is selected is based on ValueSelectionFunction." />
+          </eAnnotations>
+        </eLiterals>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EEnum" name="AttributeType">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The AttributeType indicates if the attribute should be interpreted as categorical, ordinal, or numerical data. It is possible that attribute type is not specified when first creating a MiningAttribute. It can be set later." />
+        </eAnnotations>
+        <eLiterals name="categorical">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="A categorical attribute contains values that should be treated as distinct entities, with no implied relationship between the values." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="ordinal" value="1">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="An ordinal attribute contains values that should be treated as distinct entities with an explicit or implied ordering between the values." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="numerical" value="2">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="A numerical attribute contains values that should be treated as numbers with the usual mathematical operations applying to them." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="notSpecified" value="3">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="The attribute type has not been specified at the time of MiningAttribute object creation." />
+          </eAnnotations>
+        </eLiterals>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="AttributeUsage" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Feature">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="An AttributeUsage object specifies how a MinigAttribute is to be used for mining operations." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="usage" lowerBound="1" eType="#//miningcore/miningdata/UsageOption" defaultValueLiteral="active">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="The usage attribute  indicates if the MiningAttribute should be used by the model or not, according to the details specified in the UsageOption enumeration class.&#10;The default is &quot;active&quot;." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="weight" lowerBound="1" eType="#//miningcore/miningdata/Double" defaultValueLiteral="1.0">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="The attribute weight indicates the weight the algorithm should assign to an attribute. The default is 1.0, indicating no effect. The particular vendor defines what effect a given weight greater or less than one has on an attribute for a particular algorithm." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="suppressDiscretization" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean" defaultValueLiteral="false">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This suppresses discretization to be performed on the attribute being specified, if true.&#10;The default is false." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="suppressNormalization" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean" defaultValueLiteral="false" />
+        <eStructuralFeatures xsi:type="ecore:EReference" name="attribute" ordered="false" lowerBound="1" upperBound="-1" eType="#//miningcore/miningdata/LogicalAttribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="usage" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="usage" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="AttributeUsageSet" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="An AttributeUsageSet object contains a collection of AttributeUsage objects. This specifes how MinigAttributes are to be used or manipulated by a model. The specification may contain at most one AttributeUsage object for each MiningAttribute in the LogicalDataSpecification. The default usage is active for an attribute if no entry for a MiningAttribute is present." />
+        </eAnnotations>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="CategoricalAttributeProperties" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A CategoricalAttributeProperties object is used to describe properties of a categorical attribute. It lists the specific categories that are recognized in the attribute, as well as a taxonomy, or CategorizationGraph, that organizes the categories into a hierarchy.&#10;&#10;This metadata may or may not be used by the underlying algorithm. It may be leveraged to determine if data being supplied as input to a mining operation is sufficiently similar to the data used to build the model." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="taxonomy" eType="#//miningcore/miningdata/CategoryTaxonomy">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="categoricalProperties" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="categoricalProperties" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="category" upperBound="-1" eType="#//miningcore/miningdata/Category" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="categoricalProperties" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="categoricalProperties" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="DirectAttributeAssignment" eSuperTypes="#//miningcore/miningdata/AttributeAssignment">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Maps a pair of attributes from two different sources, for example a table column and a MiningAttribute.&#10;In this example, the table column is represented by attribute." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="attribute" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="directAttributeAssignment" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="directAttributeAssignment" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="LogicalAttribute" eSuperTypes="#//miningcore/miningdata/MiningAttribute">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A MiningAttribute object is a logical concept that describes a domain of data to be used as input to data mining operations. Mining attributes are typically either categorical, ordinal, or numerical. As such, a mining attribute references additional metadata that characterizes the attribute as either categorical, e.g., a list of the categories; or numerical, e.g., the bounds of the data." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="isSetValued" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean" defaultValueLiteral="false">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates that the values of the attribute being specified here are sets, if true." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="categoricalProperties" eType="#//miningcore/miningdata/CategoricalAttributeProperties" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="logicalAttribute" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="logicalAttribute" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="numericalProperties" eType="#//miningcore/miningdata/NumericalAttributeProperties" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="logicalAttribute" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="logicalAttribute" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="LogicalData" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A LogicalData object contains the set of MiningAttributes that describe the logical nature of the data used as input to data mining. The MiningAttributes within a LogicalData object are uniquely named." />
+        </eAnnotations>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="MiningAttribute" abstract="true" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This is an abstract class that describes the generic attribute to be used in mining operations." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="displayName" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="The optional displayName of an attribute indicates a name that an application may use as a substitute for the actual MiningAttribute name, which may be cryptic." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeType" lowerBound="1" eType="#//miningcore/miningdata/AttributeType">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="The attribute type indicates if the attribute is categorical, ordinal,  numerical, or not specified. &#10;&#10;If either categoricalProperties or numericalProperties are specified, a constraint exists to ensure the attributeType value is consistent with these attributes.&#10;&#10;This attribute allows a MiningAttribute to be identified with a particular type even if no additional properties are specified.&#10;&#10;If ordinal, then the OrdinalAttributeProperties must be specified to indicate the ordering of the categories." />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="NumericalAttributeProperties" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A NumericalAttributeProperties object is used to describe properties of the numerical attribute.&#10;This metadata may or may not be used by the underlying algorithm. It may be leveraged to determine if data being supplied as input to a mining operation is sufficiently similar to the data used to build the model." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="lowerBound" lowerBound="1" eType="#//miningcore/miningdata/Double">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates the lower bound (the smallest) of the values in the attribute." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="upperBound" lowerBound="1" eType="#//miningcore/miningdata/Double">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates the upper bound (the largest) of the values in the attribute." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="isDiscrete" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean" defaultValueLiteral="false">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates whether the values are discrete." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="isCyclic" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean" defaultValueLiteral="false">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates whether the values of the attributes are cyclic, i.e., the next value of the ending value is the starting value." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="anchor" eType="#//miningcore/miningdata/Double">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This specifies the value of the anchor." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="cycleBegin" eType="#//miningcore/miningdata/Double">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This specifies the starting value of the cycle." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="cycleEnd" eType="#//miningcore/miningdata/Double">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This specifies the ending value of the cycle." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="discreteStepSize" eType="#//miningcore/miningdata/Double">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This specifies the interval value between two adjacent discrete values when the attribute is discrete." />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EEnum" name="OrderType">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The OrderType specifies how categories should be ordered." />
+        </eAnnotations>
+        <eLiterals name="asIs">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value=" uses the implicit ordering of the categories in the list" />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="alphabetical" value="1">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="applies an ordering according to the locale as is standard with Java" />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="numeric" value="2">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="applies an ordering based on number values with smallest numbers first and expects values to have numeric data types" />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="date" value="3">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="applies an ordering based on date values with the earliest date first and expects values to have date data types" />
+          </eAnnotations>
+        </eLiterals>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="OrdinalAttributeProperties" eSuperTypes="#//miningcore/miningdata/CategoricalAttributeProperties">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="An OrdinalAttributeProperties object is used to describe properties of the ordinal attribute.  Ordinal attributes can use the &quot;ordered&quot; constraint on the MiningCategory class to use the &quot;asIs&quot; OrderType. The &quot;asIs&quot; allows the list ordering to imply a &quot;less than&quot; relationship between categories N and N+1. In addition, ordinals may be cyclic , e.g., days of the week." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="orderType" lowerBound="1" eType="#//miningcore/miningdata/OrderType">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="OrderType indicates how the sequence of categories should be interpreted as ordinal (potentially mapped to integers). " />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="isCyclic" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean" defaultValueLiteral="false">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates whether the values of the attributes are cyclic, i.e., the next value of the ending value is the starting value.&#10;The default is false." />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PhysicalData" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A PhysicalData object specifies the layout of the physical data to be used for mining, and if appropriate, the roles the various data columns play, via subclassing. The data referenced by a physical data object can be used in many capacities: model building, scoring, lift computation, statistical analysis, etc. &#10;&#10;PhysicalData supports specification of any data definable through a Class or set of Attributes, e.g., files, tables, and star schema.&#10;" />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="physicalData" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="physicalData" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PivotAttributeAssignment" eSuperTypes="#//miningcore/miningdata/AttributeAssignment">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This object provides a mapping where the input data is in transactional format. Each of the logical attributes ocurring in a pivoted table is mapped to three physical columns, presumably the same ones every time. If the data types don't match, the value column may be different in that case.&#10;Question: Seems that we need to have more than one logical attribute associated with this assignment." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="setIdAttribute" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="pivotAttrAssignment" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="pivotAttrAssignment" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="nameAttribute" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="pivotAttrAssignment" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="pivotAttrAssignment" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="valueAttribute" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="pivotAttrAssignmnet" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="pivotAttrAssignmnet" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ReversePivotAttributeAssignment" eSuperTypes="#//miningcore/miningdata/AttributeAssignment">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Constraint: The logicalAttribute must be set valued.&#10;This object is used when the input data is in tabular (2-D) form.&#10;&#10;The sets are represented by enumerating their elements based on the selection functions.&#10;For example, if the attribute selection function is &quot;isOne&quot; and the value selection function is &quot;attribute&quot;, the we get:&#10;A B C D E F&#10;1 0 0 1 0 0 = {A, D}&#10;0 0 0 0 0 1 = {F}&#10;0 0 0 0 0 0 = {}&#10;&#10;Each of the input attributes (A, B, C, D, E, and F) is a selector attribute in this object. It works best for a small number of members known a priori.&#10;&#10;In some cases, when the potential number of values is large, but it is also known that the set sizes are all small, e.g., less than 6, then we get the following:&#10;A    B    C    D    F&#10;X    Y   NULL NULL NULL = {X, Y}&#10;Z    NULL NULL NULL NULL = {Z}&#10;NULL NULL NULL NULL NULL = {}&#10;&#10;In the above example, the attribute selection function is &quot;isNotNull&quot; and the value selection function is &quot;value&quot;." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeSelectionFunction" lowerBound="1" eType="#//miningcore/miningdata/AttributeSelectionFunction">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This describes how the selector attributes are selected based on their values." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="valueSelectionFunction" lowerBound="1" eType="#//miningcore/miningdata/ValueSelectionFunction">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This describes whether the value or the name of a selector attribute to appear in the destination logical attribute when the selector attribute satisfies the specified AttributeSelectionFunction." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="selectorAttribute" ordered="false" lowerBound="1" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="reversePivotAttrAssignment" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="reversePivotAttrAssignment" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="SetAttributeAssignment" eSuperTypes="#//miningcore/miningdata/AttributeAssignment">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Constraint: The logicalAttribute must be set valued.&#10;This object  provides a mapping between a set-valued mining attribute and a set of attributes in the physical data.&#10;setIdAttribute is the set identifier of the set being mapped.&#10;memberAttribute represents a set of attributes being mapped to the set-valued mining attribute." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="setIdAttribute" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="setAttrAssignment" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="setAttrAssignment" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="memberAttribute" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="setAttrAssignment" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="setAttrAssignment" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EEnum" name="UsageOption">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="UsageOption specifies how a MiningAttribute is used for mining operations. " />
+        </eAnnotations>
+        <eLiterals name="active">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="The active option indicates that the attribute is used for for the mining function. This is the default for a mining attribute." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="supplementary" value="1">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="The supplementary option indicates that the attribute is not used for the mining function. It can be used to provide additional information used, e.g., for visualization or providing key attributes on apply output." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="target" value="2">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="The target option indicates that&#10;the attribute is active and used as a target for supervised model. This option is used for supervised models only. For unsupervised models a target option is the same as an the active option." />
+          </eAnnotations>
+        </eLiterals>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EEnum" name="ValueSelectionFunction">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Given an attribute that satisfies the specified attribute selection function, this enumeration determines whether to select value of the attribute or the attribute itself." />
+        </eAnnotations>
+        <eLiterals name="vsf_value">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This allows the &quot;value&quot; of the given selector attribute to be chosen in the logical attribute when the value of the attribute meets the AttributeSelectionFunction." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="vsf_attribute" value="1" />
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="Category" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This represents a discrete value. A collection of Category instances defines the values that may or may not be annotated with a mining attribute.&#10;" />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Any">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="Constraint on value: Datatype must define equality operator.&#10;" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="isNullCategory" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean" defaultValueLiteral="false">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="The optional attribute isNullCategory is set to true if the Category provided is the NULL category. &#10;&#10;If true, this invalidates any specification in the value attribute." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="displayName" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="The displayName is a string which may be used by applications to refer to that category." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="property" lowerBound="1" eType="#//miningcore/miningdata/CategoryProperty" defaultValueLiteral="valid">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This accepts a value of the enumeration identifying the role of this Category instance." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="prior" lowerBound="1" eType="#//miningcore/miningdata/Double">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This contains the prior probability associated with this Category, if any." />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="CategoryMap" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This is the common superclass of CategoryMapObject and CategoryMapTable supporting the CategorizationGraph class." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="isMultiLevel" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean" defaultValueLiteral="false">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates that this table or object represents multiple levels of the categorization graph, if true." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="isItemMap" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean" defaultValueLiteral="false">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates that this is a grouping of items to categories, if true." />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="CategoryMapObject" eSuperTypes="#//miningcore/miningdata/CategoryMap http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The object representation of categorization graph. Each object references a set of CategoryMapObjectEntries" />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="entry" ordered="false" upperBound="-1" eType="#//miningcore/miningdata/CategoryMapObjectEntry" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="mapObject" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="mapObject" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="CategoryMapObjectEntry" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Object representation of an edge in the categorization graph. This is analogous to a record in the CategoryMapTable. Each entry consists of child, parent, level and graphId attributes. If isItemMap is TRUE then the child attribute corresponds to item values." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="graphId" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Any">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="The graphId attribute identifies the graph to which this entry belongs and enables representing multiple categorization graphs in the same table. " />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="child" lowerBound="1" eType="#//miningcore/miningdata/Category">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="entry" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="entry" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="parent" ordered="false" lowerBound="1" upperBound="-1" eType="#//miningcore/miningdata/Category">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="entry" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="entry" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="CategoryMapTable" eSuperTypes="#//miningcore/miningdata/CategoryMap http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Tabular representation of a categorization graph. A categorization graph consists of zero or more tables. Each table can store the portion of the graph corresponding to a single level or multiple levels.  The table has three attributes, child, parent and graphId. " />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="childAttribute" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="map" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="map" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="mapTable" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="mapTable" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="graphIdAttribute" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="map" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="map" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="parentAttribute" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="map" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="map" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="CategoryMatrix" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A CategoryMatrix assigns numeric values to pairs of categories.&#10;It is either represented as a set of CategoryMatrixEntries or as a table." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="diagonalDefault" lowerBound="1" eType="#//miningcore/miningdata/Double" defaultValueLiteral="1.0">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="If a matrix cell in the diagonal is not specified use this value." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="offDiagonalDefault" lowerBound="1" eType="#//miningcore/miningdata/Double" defaultValueLiteral="0.0">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="If a matrix cell not in the diagonal is not specified use this value." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1" eType="#//miningcore/miningdata/MatrixProperty" defaultValueLiteral="mp_any">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="Type of matrix, 'diagonal', 'symmetric', or 'any'.&#10;If diagonal, then all values outside the diagonal are 0.&#10;If symmetric then value(i,j)=value(j,i)." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="category" ordered="false" lowerBound="2" upperBound="-1" eType="#//miningcore/miningdata/Category">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="categoryMatrix" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="categoryMatrix" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="CategoryMatrixEntry" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Defines the value of a single cell in a CategoryMatrix." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="#//miningcore/miningdata/Double">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="Value of a cell. It overwrites any default value in CategoryMatrix.&#10;For Cost matrix, value is intended to be a double. For ConfusionMatrix, the value can be either a &quot;count&quot; which is an integer value, or a &quot;percentage&quot; which is a double value. This is up to the implementation." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="columnIndex" lowerBound="1" eType="#//miningcore/miningdata/Category">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="categoryEntry" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="categoryEntry" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="rowIndex" lowerBound="1" eType="#//miningcore/miningdata/Category">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="categoryEntry" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="categoryEntry" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="CategoryMatrixObject" eSuperTypes="#//miningcore/miningdata/CategoryMatrix">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The object representation of CategoryMatrix. Each object references a set of CategoryMatrixEntry objects." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="entry" ordered="false" upperBound="-1" eType="#//miningcore/miningdata/CategoryMatrixEntry" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="categoryMatrix" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="categoryMatrix" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="CategoryMatrixTable" eSuperTypes="#//miningcore/miningdata/CategoryMatrix">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Table with three columns holding the definition of a category matrix.&#10;Tabular representation of a CategoryMatrix. A category matrix consists of exactly one table. The table has three row, column and value of the entry." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="source" ordered="false" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="matrixTable" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="matrixTable" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="columnAttribute" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="matrixTable" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="matrixTable" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="rowAttribute" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="matrixTable" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="matrixTable" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="valueAttribute" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="matrixTable" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="matrixTable" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EEnum" name="CategoryProperty">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Indicates if the category has a special meaning." />
+        </eAnnotations>
+        <eLiterals name="valid">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="If a MiningCategory is 'valid,' this value is expected as a regular value of the data." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="invalid" value="1">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="If a MiningCategory is 'invalid', this value is not expected as a regular value of the data. The mining algorithms may treat these categories differently from valid values.&#10;&#10;Invalid treatment applies to 'invalid' categories&#10;&#10;" />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="missing" value="2">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="If a MiningCategory is 'missing,' an accurrence of this value indicates that no information is available." />
+          </eAnnotations>
+        </eLiterals>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="CategoryTaxonomy" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A CategorizationGraph supports the specification of taxonomy or category hierarchy as required by data mining in the form of a directed acyclic graph. It enables two representations: 1) explicit specification of the graph through the referenced node class, and 2) referencing MiningData with specific attributes (columns) that store the data in tabular form.&#10;&#10;A CategorizationGraph can contain multiple &quot;root&quot; nodes, in a sense being a single representation for several possibly strict hierarchies. &#10;&#10;Constraint to have either the MiningData instances (CategoryMapTable) OR the java object instances (CategoryMap).&#10;&#10;Note: This is a &quot;graph&quot; as opposed to a &quot;hierarchy&quot; because it can have multiple roots, i.e. hierarchies in the same object." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="categoryMap" ordered="false" upperBound="-1" eType="#//miningcore/miningdata/CategoryMap" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="taxonomy" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="taxonomy" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="rootCategory" ordered="false" upperBound="-1" eType="#//miningcore/miningdata/Category">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="taxonomy" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="taxonomy" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EEnum" name="MatrixProperty">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This specifies the matrix property that describes the shape of the matrix." />
+        </eAnnotations>
+        <eLiterals name="mp_symmetric">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="The property that the matrix values for a rowId and a columnID are identical to those with exchanged id's." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="mp_diagonal" value="1">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="The property that all matrix values where rowID is different from ColumnID are 0.0" />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="mp_any" value="2">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="An arbitrary matrix, not necessarily diagonal or symmetric." />
+          </eAnnotations>
+        </eLiterals>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EDataType" name="Double" instanceClassName="java.lang.String" />
+    </eSubpackages>
+    <eSubpackages name="miningfunctionsettings" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/datamining/miningcore/miningfunctionsettings" nsPrefix="miningfunctionsettings">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This package defines the objects that contain the parameters specific to the mining functions. The separation of mining functions from mining algorithms enables the user to specify the type of the desired result without being concerned with a particular algorithm." />
+      </eAnnotations>
+      <eClassifiers xsi:type="ecore:EClass" name="MiningAlgorithmSettings" abstract="true" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A mining algorithm settings object captures the parameters associated with a particular algorithm. It allows a knowledgeable user to fine tune algorithm parameters. Generally, not all parameters must be specified, however, those specified are taken into account by the underlying data mining system. &#10;Separating mining algorithm from mining function provides a natural and convenient separation for those users experienced with data mining algorithms and those only familiar with mining functions.&#10;" />
+        </eAnnotations>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="MiningFunctionSettings" abstract="true" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A MiningFunctionSettings object captures the high level specification input for building a data mining model. The intent of mining function settings, is to allow a user to specify the type of result desired without having to specify a particular algorithm. &#10;&#10;Although mining function settings allow for the specification of algorithm, if this is omitted, the underlying data mining system is responsible for selecting the algorithm based on basic user-provided parameters.&#10;&#10;Subclasses throw exceptions if invalid algorithm-function pairs are supplied.&#10;&#10;" />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="desiredExecutionTimeInMinutes" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="The desiredExecutionTime attribute indicates the maximum execution time (in minutes) allowed for model building.  If NULL, the algrotihm determines for how long the model will build.&#10;&#10;This is to serve as a hint to the algorithm to adjust model building to meet the time constraint. Vendor implementations may support this to varying degrees, e.g., terminate model build if exceeds this limit, intelligently adjust algorithm parameters to meet this constraint, or dynamically distribute or parallelize the operation." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="algorithmSettings" eType="#//miningcore/miningfunctionsettings/MiningAlgorithmSettings">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="settings" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="settings" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="attributeUsageSet" eType="#//miningcore/miningdata/AttributeUsageSet" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="settings" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="settings" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="logicalData" lowerBound="1" eType="#//miningcore/miningdata/LogicalData">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="settings" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="settings" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+    </eSubpackages>
+    <eSubpackages name="miningmodel" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/datamining/miningcore/miningmodel" nsPrefix="miningmodel">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This package defines the basic MiningModel from which all model objects inherit as the result of a mining build task." />
+      </eAnnotations>
+      <eClassifiers xsi:type="ecore:EEnum" name="MiningFunction">
+        <eLiterals name="classification">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates any algorithm that is used for classification of one or more specified target attributes." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="regression" value="1">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates any algorithm that is used for regressing a value of any given attribute." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="clustering" value="2">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates any algorithm that is used for finding clusters of a given data set." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="associationRules" value="3">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates any algorithm that is used for finding associations between items in a given data set." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="attributeImportance" value="4">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates any algorithm that is used for finding a subset of attributes in a given data set based on certain importance criteria.&#10;This kind of function is also known as feature selection in the data mining literature, which is broader semantically than attribute importance." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="sequenceAnalysis" value="5">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates any algoithm that is used for finding and anayzing sequences in a given data set." />
+          </eAnnotations>
+        </eLiterals>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="MiningModel" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A MiningModel holds the metadata of the result of a mining (training) run.&#10;This information is sufficient to determine whether a model can be applied to given data." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="function" lowerBound="1" eType="#//miningcore/miningmodel/MiningFunction">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="Data mining function (as opposed to algorithm), e.g. classification or clustering.&#10;The following function names are predefined:&#10;attributeImportance&#10;associationRules&#10;classification&#10;regression&#10;clustering" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="algorithmName" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="Specific implementation of the data mining function, e.g. CART decision tree or SOM clustering.&#10;&#10;The following algorithm names are predefined (their functions in parentheses):&#10;decisionTree (classification, regression)&#10;neuralNetwork (classification, regression)&#10;naiveBayes (classification)&#10;selfOrganizingMap (clusteirng)&#10;kMeans (clustering)&#10;competitiveLearning" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="keyValue" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Any">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This optinoally represents the key value when the model is to be located." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="settings" eType="#//miningcore/miningfunctionsettings/MiningFunctionSettings">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="model" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="model" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="modelSignature" eType="#//miningcore/miningmodel/ModelSignature" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="model" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="model" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="modelLocation" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="model" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="model" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="keyAttribute" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="model" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="model" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ModelSignature" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The model signature is a description of the input needed to apply a data mining model." />
+        </eAnnotations>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="SignatureAttribute" eSuperTypes="#//miningcore/miningdata/MiningAttribute">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A SignatureAttribute object describes the input expected to a model. This is automatically produced as part of the model. It indicates not only the basic Attribute properties, but also how outliers and missing values were handled for model build. This is potentially duplicate information from the MiningFunctionSettings, but must be provided since MiningFunctionSettings are optional.&#10;&#10;If an attribute was normalized or discretized automatically by the Data Mining System, the specific details are provided in the SignatureAttribute object. The user is not expected to use this information to preprocess the data in any way. The Data Mining System uses this information to automatically preprocess data, if required." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="usageOption" lowerBound="1" eType="#//miningcore/miningdata/UsageOption">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="The usage intended for this attribute. A model signature consists only of 'active' and 'supplemental' attributes. 'Inactive' attributes are filtered out as they do not contribute to the model.&#10;&#10;Note that 'supplemental' attributes do not contribute to model apply." />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+    </eSubpackages>
+    <eSubpackages name="miningresult" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/datamining/miningcore/miningresult" nsPrefix="miningresult">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This package defines the basic MiningResult object from which all result objects inherit as the result of a specific mining task (other than build)." />
+      </eAnnotations>
+      <eClassifiers xsi:type="ecore:EClass" name="MiningResult" abstract="true" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A MiningResult holds the metadata of the result of a mining  run other than training that results in a model.&#10;It includes apply, test, and compute lift operations." />
+        </eAnnotations>
+      </eClassifiers>
+    </eSubpackages>
+    <eSubpackages name="miningtask" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/datamining/miningcore/miningtask" nsPrefix="miningtask">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This package defines the objects that are related to mining tasks. A MiningTask object represents a specific mining operation to be performed on a given data." />
+      </eAnnotations>
+      <eClassifiers xsi:type="ecore:EClass" name="ApplyContentItem" abstract="true" eSuperTypes="#//miningcore/miningtask/ApplyOutputItem">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This is an abstract class that describes an item to appear in the output based on the rank of the prediction." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="topNthIndex" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer" defaultValueLiteral="1">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates the rank of the prediction whose associated values (score, probability, and rule id) to appear in the output are specified by the subclasses." />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ApplyOutputItem" eSuperTypes="#//miningcore/miningdata/MiningAttribute">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This object describes an entity of apply output. It is usually stored in a destination attribute. The destination attribute is specified by an AttributeAssignment object.&#10;If Transactional output, then ApplyOutputItem does not have a destination attribute. Instead, the (name) entry for the attrNameAttribute is held in 'name' inherited from ModelElement" />
+        </eAnnotations>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EEnum" name="ApplyOutputOption">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This enumeration specifies how apply output is created." />
+        </eAnnotations>
+        <eLiterals name="appendToExisting">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates that the apply output is appended to an existing file/table (presumably, another apply output)." />
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals name="createNew" value="1">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This indicates that the apply output is to be stored in a new file/table." />
+          </eAnnotations>
+        </eLiterals>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ApplyProbabilityItem" eSuperTypes="#//miningcore/miningtask/ApplyContentItem">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This indicates that the probability value of the prediction (whose rank is specified here) should appear in the output." />
+        </eAnnotations>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ApplyRuleIdItem" eSuperTypes="#//miningcore/miningtask/ApplyContentItem">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This indicates that the rule ID of the prediction (whose rank is specified here) should appear in the output. This applies only to the models with rule IDs (such as decision tree models)." />
+        </eAnnotations>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ApplyScoreItem" eSuperTypes="#//miningcore/miningtask/ApplyContentItem">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This indicates that the score (target value) of the prediction (whose rank is specified here) should appear in the output." />
+        </eAnnotations>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ApplySourceItem" eSuperTypes="#//miningcore/miningtask/ApplyOutputItem">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This indicates that the source attribute specified here appears in the output as well." />
+        </eAnnotations>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="MiningApplyOutput" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This describes the ouput Specification for a MiningApplyTask.&#10;It contains a set of attributes (represented as ApplyOutputItem objects) holding the output information. These attributes can hold the score or other computed information, or else be copied from input columns for reference.&#10;" />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="item" lowerBound="1" upperBound="-1" eType="#//miningcore/miningtask/ApplyOutputItem" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="applyOutput" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="applyOutput" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="MiningApplyTask" eSuperTypes="#//miningcore/miningtask/MiningTask">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This describes a task that computes the result of an application of a data mining model to (new) data." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="outputOption" lowerBound="1" eType="#//miningcore/miningtask/ApplyOutputOption" defaultValueLiteral="createNew">
+          <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+            <details key="documentation" value="This specifies how the apply output is created. The default is &quot;createNew&quot;, which means the output is stored in a new file/table." />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="outputAssignment" lowerBound="1" eType="#//miningcore/miningdata/AttributeAssignmentSet">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="applyTask" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="applyTask" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="applyOutput" lowerBound="1" eType="#//miningcore/miningtask/MiningApplyOutput">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="applyTask" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="applyTask" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="MiningBuildTask" eSuperTypes="#//miningcore/miningtask/MiningTask">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This describes a task that builds a mining model, sometimes also called training task." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="resultModel" eType="#//miningcore/miningmodel/MiningModel">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="buildTask" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="buildTask" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="miningSettings" lowerBound="1" eType="#//miningcore/miningfunctionsettings/MiningFunctionSettings">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="buildTask" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="buildTask" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="validationAssignment" eType="#//miningcore/miningdata/AttributeAssignmentSet">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="buildTask" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="buildTask" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="settingsAssignment" eType="#//miningcore/miningdata/AttributeAssignmentSet">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="buildTask" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="buildTask" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="validationData" eType="#//miningcore/miningdata/PhysicalData">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="buildTask" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="buildTask" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="MiningTask" abstract="true" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This is an abstract class that describes an executable data mining task operating on data." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="inputModel" eType="#//miningcore/miningmodel/MiningModel">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="miningTask" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="miningTask" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="inputData" lowerBound="1" eType="#//miningcore/miningdata/PhysicalData">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="miningTask" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="miningTask" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="modelAssignment" eType="#//miningcore/miningdata/AttributeAssignmentSet">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="miningTask" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="miningTask" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="MiningTransformation" eSuperTypes="http://www.omg.org/spec/CWM/1.1/analysis/transformation#//Transformation">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This defines a mining task as a transformation." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="procedure" lowerBound="1" eType="#//miningcore/miningtask/MiningTask">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="transformation" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="transformation" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+    </eSubpackages>
+    <eSubpackages name="entrypoint" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/datamining/miningcore/entrypoint" nsPrefix="entrypoint">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This package defines the top-level objects of DataMining package which can be used as entry point in application programming." />
+      </eAnnotations>
+      <eClassifiers xsi:type="ecore:EClass" name="AuxiliaryObject" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This contains ancillary objects that must be part of a schema." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="attributeAssignmentSet" ordered="false" upperBound="-1" eType="#//miningcore/miningdata/AttributeAssignmentSet" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="auxiliaryObject" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="auxiliaryObject" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="Catalog" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This object is the top level entry point for CWM Data Mining package. It contains a set of schema." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="schema" ordered="false" upperBound="-1" eType="#//miningcore/entrypoint/Schema" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="catalog" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="catalog" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="Schema" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Namespace">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Container for all data mining top level objects." />
+        </eAnnotations>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="logicalData" ordered="false" upperBound="-1" eType="#//miningcore/miningdata/LogicalData" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="schema" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="schema" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="categoryMatrix" ordered="false" upperBound="-1" eType="#//miningcore/miningdata/CategoryMatrix" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="schema" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="schema" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="auxObjects" eType="#//miningcore/entrypoint/AuxiliaryObject" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="schema" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="schema" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="taxonomy" ordered="false" upperBound="-1" eType="#//miningcore/miningdata/CategoryTaxonomy" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="schema" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="schema" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="miningFunctionSettings" ordered="false" upperBound="-1" eType="#//miningcore/miningfunctionsettings/MiningFunctionSettings" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="schema" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="schema" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="miningModel" ordered="false" upperBound="-1" eType="#//miningcore/miningmodel/MiningModel" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="schema" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="schema" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="miningTask" ordered="false" upperBound="-1" eType="#//miningcore/miningtask/MiningTask" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="schema" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="schema" />
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="result" ordered="false" upperBound="-1" eType="#//miningcore/miningresult/MiningResult" containment="true">
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+            <details key="Property.oppositeRoleName" value="schema" />
+          </eAnnotations>
+          <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+            <details key="body" value="schema" />
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+    </eSubpackages>
+  </eSubpackages>
+  <eSubpackages name="clustering" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/datamining/clustering" nsPrefix="clustering">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This package contains the metamodel that represents clustering function, models, and settings." />
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EEnum" name="AggregationFunction">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Per ClusteringModel, there is one aggregation function: depending on the attribute type. The aggregated value is optimal if it is 0 (for distance measure) or greater values indicate optimal fit (for simiarity measure).&#10;In the definition of functions, Wi is the field weight in the attribute, and Xi and Yi are values." />
+      </eAnnotations>
+      <eLiterals name="euclidean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="kind = distance&#10;D = (sum(Wi * c(Xi,Yi)^2))^(1/2)" />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="squaredEuclidean" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="kind - distance (aka squared)&#10;D = sum(Wi * c(Xi, Yi)^2)&#10;&#10;Euclidean and squared Euclidean are essentially equivalent because only the minimum or maximum of values is needed in order to assign a cluster." />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="chebychev" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="kind = distance (aka maximum)&#10;D = max(Wi * c(Xi, Yi)) over all i" />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="cityBlock" value="3">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="kind = distance (aka sum)&#10;D = sum(Wi * c(Xi, Yi))" />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="minkovski" value="4">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="kind = distance (p is a parameter &gt; 0)&#10;D = (sum |Xi - Yi|^p)^(1/p)" />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="simpleMatching" value="5">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="kind = similarity (min=0, max=1)&#10;D = (a11 + a00) / (a11 + a10 + a01 + a00)&#10;&#10;For binary or categorical data, let two individuals compare their values for each attribute, and&#10;a11 = number of times where Xi=1 and Yi=1&#10;a10 = number of times where Xi=1 and Yi=0&#10;a01 = number of times where Xi=0 and Yi=1&#10;a00 = number of times where Xi=0 and Yi=0" />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="jaccard" value="6">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="kind = similarity&#10;D = a11 / (a11 + a10 + a01)" />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="tanimoto" value="7">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="kiind = similarity (min=0, max=1)&#10;D = (a11 + a00) / (a11 + 2*(a10+a01) + a00)" />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="binarySimilarity" value="8">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="kind = similarity (min=0, max=1, and c.. and d.. are parameters &gt; 0)&#10;D = (c11*a11 + c10*a10 + c01*a01 + c00*a00) / (d11*a11 + d10*a10 + d01*a01 + d00*a00)" />
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="AttributeComparisonFunction">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="When two records are compared, then either the distance or similarity is of interest. In both cases the measures can be compouted by a combination of an &quot;inner&quot; function and an &quot;outer&quot; function. The inner function compares two single field values and the outer function computes an aggregation over all fields.&#10;Each field has a comparison function, this is either defined as a default in ClusteringModel or it can be defined per attribute." />
+      </eAnnotations>
+      <eLiterals name="absDiff">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Absolute difference: c(x,y) = |x-y|" />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="gaussSim" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Gaussian similarity&#10;c(x,y) = exp(-ln(2)*z*z/(s*s))&#10;where z=x-y, and s is the value of attribute similarityValue (required in this case) in the attribute." />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="delta" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="c(x,y) = 0 if x=y, 1 else" />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="equal" value="3">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="c(x,y) = 1 if x=y, 0 else" />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="table" value="4">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="c(x,y) = look up in similarity matrix" />
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ClusteringAttributeUsage" eSuperTypes="#//miningcore/miningdata/AttributeUsage">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A ClusteringAttributeUsage is a subclass of AttributeUsage to support attribute usages that are specific to clustering algorithms. &#10;" />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeComparisonFunction" eType="#//clustering/AttributeComparisonFunction">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="When two records are compared then either the distance or the similarity is of interest. In both cases the measures can be computed by a combination of an 'inner' function and an 'outer' function. The inner function compares two single field values and the outer function computes an aggregation over all fields" />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="similarityScale" lowerBound="1" eType="#//miningcore/miningdata/Double">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="If the attributeComparisonFunction admits a value, then similarityScale is that value. Only valid for numerical attributes. NULL otherwise." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="comparisonMatrix" eType="#//miningcore/miningdata/CategoryMatrix">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="attribueUsage" />
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="attribueUsage" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ClusteringFunctionSettings" eSuperTypes="#//miningcore/miningfunctionsettings/MiningFunctionSettings">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A ClusteringFunctionSettings object is a subclass of MiningFunctionSettings that supports features unique to clustering algorithms, such as: self-organizing map and k-means." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxNumberOfClusters" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The maxNumberOfClusters attribute specifies the maximum number of clusters the clustering algorithm should generate." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="minClusterSize" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer" defaultValueLiteral="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The minClusterSize attribute specifies the minimum number of records (cases) that must be present in a cluster to establish a cluster." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="aggregationFunction" lowerBound="1" eType="#//clustering/AggregationFunction" />
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="ClusteringModelCBasis">
+      <eLiterals name="centerBased">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This value indicates the clustering algorithm being specified this is based on center of the cluster." />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="probabilityBased" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This value indicates the clustering algorithm being specified this is based on probability." />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="partitionBased" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This value indicates the clustering algorithm being specified this is based on partitions of the input data." />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="aggregationBased" value="3">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This value indicates the clustering algorithm being specified this is based on aggregated values of the input data." />
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="associationrules" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/datamining/associationrules" nsPrefix="associationrules">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This package contains the metamodel that represents the constructs for frequent itemset, association rules and sequence algorithms." />
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EClass" name="AssociationRulesFunctionSettings" eSuperTypes="#//associationrules/FrequentItemSetFunctionSettings">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An AssociationRulesFunctionSettings is a subclass of FrequentItemSetFunctionSettings that supports features that are unique to association rules algorithms." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="minimumConfidence" lowerBound="1" eType="#//miningcore/miningdata/Double">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This specifies the minimum confidence value of each association rule to be found." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="maximumRuleLength" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This is the maximum length of the antecedent and consequent item set sizes." />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="FrequentItemSetFunctionSettings" eSuperTypes="#//miningcore/miningfunctionsettings/MiningFunctionSettings">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This is a subclass of MiningFunctionSettings that specifies the parameters specific to frequent itemset algorithms." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="minimumSupport" lowerBound="1" eType="#//miningcore/miningdata/Double">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This specifies the minimum support of each frequent itemset to be found." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="maximumSetSize" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This specifies the maximum number of items to be included in any frequent itemset to be found." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="exclusion" ordered="false" upperBound="-1" eType="#//miningcore/miningdata/Category">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="settings" />
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="settings" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SequenceFunctionSettings" eSuperTypes="#//associationrules/FrequentItemSetFunctionSettings">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A SequenceFunctionSettings is a subclass of FrequentItemSetFunctionSettings that supports features that are unique to sequence rules algorithms." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="windowSize" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This specifies the size of the window to be considered when executing sequence algorithm in terms of the number of items." />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="supervised" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/datamining/supervised" nsPrefix="supervised">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This package contains the metamodel that represents the constructs for supervised learning algorithms. Approximation, attribute importance and classification must implement this package." />
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EClass" name="LiftAnalysisPoint" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This represents the lift result for the quantile of the input data specified in this object." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subsetOfRecords" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The number of records for which the lift (sum of target predictions or actual target values) is given." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="aggregateTarget" lowerBound="1" eType="#//miningcore/miningdata/Double">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The lift, i.e. the sum of actual positive targets for classification or the sum of the actual values for regression, for the specified subset of records." />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="LiftAnalysis" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This represents the result of lift computation applied to a supervised model." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="targetAttributeName" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This represents the name of the target attribute." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="point" ordered="false" lowerBound="1" upperBound="-1" eType="#//supervised/LiftAnalysisPoint" containment="true">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="liftAnalysis" />
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="liftAnalysis" />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="positiveTargetCategory" ordered="false" lowerBound="1" upperBound="-1" eType="#//miningcore/miningdata/Category">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="liftAnalysis" />
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="liftAnalysis" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MiningTestTask" eSuperTypes="#//miningcore/miningtask/MiningTask">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This represents a mining task that is used to check some aspect of the quality of a classification or regression model." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="computeLift" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean" defaultValueLiteral="false">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This indicates to perform lift computation as part of test task, if true. The default is false." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="positiveTargetCategory" ordered="false" lowerBound="1" upperBound="-1" eType="#//miningcore/miningdata/Category">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="testTask" />
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="testTask" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SupervisedFunctionSettings" eSuperTypes="#//miningcore/miningfunctionsettings/MiningFunctionSettings">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A SupervisedFunctionSettings is a subclass of MiningFunctionSettings that supports features that are unique and shared by  supervised functions, e.g., classification and approximation, as well as algorithms, e.g., decision trees and neural networks." />
+      </eAnnotations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MiningTestResult" eSuperTypes="#//miningcore/miningresult/MiningResult">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This represents the result of a test task applied to a supervised model." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberOfTestRecords" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This represents the number of records applied to the test task." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="liftAnalysis" eType="#//supervised/LiftAnalysis" containment="true">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="testResult" />
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="testResult" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="classification" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/datamining/classification" nsPrefix="classification">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This package contains the metamodel that represents classification function, models, and settings." />
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EClass" name="ApplyTargetValueItem" eSuperTypes="#//miningcore/miningtask/ApplyOutputItem">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This indicates that the probability value of the given target value is to appear in the output." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="targetValue" lowerBound="1" eType="#//miningcore/miningdata/Category">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="targetValueItem" />
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="targetValueItem" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ClassificationAttributeUsage" eSuperTypes="#//miningcore/miningdata/AttributeUsage">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="As a subclass of AttributeUsage, CategoricalAttributeUsage provides additional specification for categorical attributes only, in particular, a set of the positive categories. &#10;&#10;Positive categories are provided here since different models may choose different postive categories, hence it is not a characteristic of the data." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="positiveCategory" ordered="false" lowerBound="1" upperBound="-1" eType="#//miningcore/miningdata/Category">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="usage" />
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="usage" />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="priors" eType="#//classification/PriorProbabilities" containment="true">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="usage" />
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="usage" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ClassificationFunctionSettings" eSuperTypes="#//supervised/SupervisedFunctionSettings">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A ClassificationFunctionSettings object is a subclass of SupervisedFunctionSettings that supports features unique to the classification mining function and corresponding algorithms, specifically costMatrix.&#10;&#10;The costMatrix must be associated with the target MiningAttribute." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="costMatrix" eType="#//miningcore/miningdata/CategoryMatrix">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="settings" />
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="settings" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ClassificationTestResult" eSuperTypes="#//supervised/MiningTestResult">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This represents the result of a test task applied to a classification model." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="accuracy" lowerBound="1" eType="#//miningcore/miningdata/Double">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="If state is successful, the absolute number or the  percentage (between 0 and 100) of correct predictions on the inputData (test data). NULL in other states." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="confusionMatrix" eType="#//miningcore/miningdata/CategoryMatrix" containment="true">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="testResult" />
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="testResult" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ClassificationTestTask" eSuperTypes="#//supervised/MiningTestTask">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This represents a task to check the quality of a classification model. An overall accuracy and a 'class by class' confusion matrix can be computed." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="testResult" lowerBound="1" eType="#//classification/ClassificationTestResult" containment="true">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="testTask" />
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="testTask" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PriorProbabilities" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This represents a set of prior probabilities of the categories in a mining attribute. Mostly applies to a target MiningAttribute  used for classification.&#10;The sum of the probabilities in all priorsEntries must not exceed 1." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="prior" ordered="false" upperBound="-1" eType="#//classification/PriorProbabilitiesEntry" containment="true">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="priors" />
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="priors" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PriorProbabilitiesEntry" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This represents the probability of a category in the original data, i.e. before performing biased sampling to enrich individual values." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="priorProbability" lowerBound="1" eType="#//miningcore/miningdata/Double">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This represents the probability of the targetValue in the original data.&#10;The value must be in [0,1]" />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="targetValue" lowerBound="1" eType="#//miningcore/miningdata/Category">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="priorsEntry" />
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="priorsEntry" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="approximation" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/datamining/approximation" nsPrefix="approximation">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This package contains the metamodel that represents the constructs for approximation model (as known as regression)." />
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EClass" name="ApproximationFunctionSettings" eSuperTypes="#//supervised/SupervisedFunctionSettings">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An ApproximationFunctionSettings is a subclass of SupervisedFunctionSettings that supports features that are unique to approximate numerical values. &#10;&#10;This originally was named &quot;RegressionFunctionSettings&quot;, however, this implies a restriction on the type of algorithms that can be applied to solve the problem of approximation, or curve fitting." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="toleratedError" eType="#//miningcore/miningdata/Double">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The toleratedError is defined in terms of R-squared" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ApproximationTestResult" eSuperTypes="#//supervised/MiningTestResult">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This represents the result of a test task applied to an approximation model." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="meanPredictedValue" lowerBound="1" eType="#//miningcore/miningdata/Double">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Mean of the predicted values for test data. NULL if not computed." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="meanActualValue" lowerBound="1" eType="#//miningcore/miningdata/Double">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Mean of the actual values in the target attribute for test data. NULL if not computed." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="meanAbsoluteError" lowerBound="1" eType="#//miningcore/miningdata/Double">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Mean of the absolute values of the prediction error on the test data.. NULL if not computed." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="rmsError" lowerBound="1" eType="#//miningcore/miningdata/Double">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Root of the mean squared errors on the test data. NULL if not computed." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="rSquared" lowerBound="1" eType="#//miningcore/miningdata/Double">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The squared Pearson correlation coefficient computed on the test data. NULL if not computed." />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ApproximationTestTask" eSuperTypes="#//supervised/MiningTestTask">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This represents a task to check the quality of a regression model. A comparison of mean predicted values and mean actual values can be done and a number of numerical error measures can be computed.&#10;NULL values mean that the model did not compute the value." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="testResult" lowerBound="1" eType="#//approximation/ApproximationTestResult" containment="true">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="testTask" />
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="testTask" />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="attributeimportance" nsURI="http://www.omg.org/spec/CWM/1.1/analysis/datamining/attributeimportance" nsPrefix="attributeimportance">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This package contains the metamodel that represents the constructs for attribute importance model." />
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EClass" name="AttributeImportanceSettings" eSuperTypes="#//supervised/SupervisedFunctionSettings">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This is a subclass of MiningFunctionSettings that supports features unique to attribute importance identification, as known as feature selection." />
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="maximumResultSize" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The attribute maximumResultSize indicates to return the top N most important attributes. It may return fewer." />
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="returnTop" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean" defaultValueLiteral="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="If true, returns the most important attributes. If false, the least important." />
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>
+    

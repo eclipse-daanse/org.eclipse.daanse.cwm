@@ -30,7 +30,7 @@ trim_trailing_whitespace = unset
 [Makefile]
 indent_style = tab
 
-[**/*.{ecore,genmodel}]
+[**/*.{ecore,genmodel,uml}]
 charset = unset
 end_of_line = unset
 insert_final_newline = unset

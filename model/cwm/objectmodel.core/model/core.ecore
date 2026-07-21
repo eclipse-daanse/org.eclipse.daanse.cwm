@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="core" nsURI="http://www.omg.org/spec/CWM/1.1/objectmodel/core" nsPrefix="core">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The Core metamodel depends on no other packages.&#10;&#10;The ObjectModel Core metamodel contains basic metamodel classes and associations used by all other CWM metamodel packages, including other ObjectModel packages&#10;&#10;OCL Representation of Core Constraints&#10;&#10;Operations&#10;&#10;The operation allFeatures results in a Set containing all Features of the Classifier itself and all its inherited Features.&#10;   allFeatures : Set(Feature);&#10;   allFeatures = self.feature-&gt;union(self.parent.oclAsType(Classifier).allFeatures)&#10;&#10;The operation allAttributes results in a Set containing all Attributes of the Classifier itself and all its inherited Attributes.&#10;   allAttributes : set(Attribute);&#10;   allAttributes = self.allFeatures-&gt;select(f | f.oclIsKindOf(Attribute))&#10;&#10;The operation specification yields the set of Classifiers that the current Classifier realizes.&#10;   specification: Set(Classifier)&#10;   specification = self.clientDependency-&gt;&#10;   select(d | d.stereotype.name = &quot;realization&quot;&#10;      and d.supplier.oclIsKindOf(Classifier)).supplier.oclAsType(Classifier)&#10;&#10;The operation parent returns a Set containing all direct parents of a Classifier.&#10;   parent : Set(Classifier);&#10;   parent = self.generalization.parent&#10;&#10;The operation allParents returns a Set containing all the Classifiers inherited by this Classifier (the transitive closure), excluding the Classifier itself.&#10;   allParents : Set(Classifier);&#10;   allParents = self.parent-&gt;union(self.parent.allParents)&#10;&#10;The operation allContents returns a Set containing all ModelElements contained in the Classifier together with the contents inherited from its parents.&#10;   allContents : Set(ModelElement);&#10;   allContents = self.contents-&gt;union(self.parent.allContents-&gt;&#10;   select(e | e.elementOwnership.visibility = #public or &#10;      e.elementOwnership.visibility = #protected))&#10;&#10;The operation supplier results in a Set containing all direct suppliers of the ModelElement.&#10;   supplier : Set(ModelElement);&#10;   supplier = self.clientDependency.supplier&#10;&#10;The operation allSuppliers results in a Set containing all the ModelElements that are suppliers of this ModelElement, including the suppliers of these Model Elements. This is the transitive closure.&#10;   allSuppliers : Set(ModelElement);&#10;   allSuppliers = self.supplier-&gt;union(self.supplier.allSuppliers)&#10;&#10;The operation contents results in a Set containing all ModelElements contained by the Namespace.&#10;   contents : Set(ModelElement)&#10;   contents = self.ownedElement -&gt; union(self.namespace.contents)&#10;&#10;The operation allContents results in a Set containing all ModelElements contained by the Namespace.&#10;   allContents : Set(ModelElement);&#10;   allContents = self.contents&#10;&#10;The operation allVisibleElements results in a Set containing all ModelElements visible outside of the Namespace.&#10;   allVisibleElements : Set(ModelElement)&#10;   allVisibleElements = self.allContents -&gt; select(e |&#10;      e.elementOwnership.visibility = #public)&#10;&#10;The operation allSurroundingNamespaces results in a Set containing all surrounding Namespaces.&#10;   allSurroundingNamespaces : Set(Namespace)&#10;   allSurroundingNamespaces =&#10;      self.namespace-&gt;union(self.namespace.allSurroundingNamespaces)&#10;&#10;The operation contents results in a Set containing the ModelElements owned by or imported by the Package.&#10;   contents : Set(ModelElement)&#10;   contents = self.ownedElement-&gt;union(self.importedElement)&#10;&#10;The operation allImportedElements results in a Set containing the ModelElements imported by the Package.&#10;   allImportedElements : Set(ModelElement)&#10;   allImportedElements = self.importedElement&#10;&#10;The operation allContents results in a Set containing the ModelElements owned by or imported by the Package.&#10;   allContents : Set(ModelElement)&#10;   allContents = self.contents&#10;&#10;Constraints&#10;&#10;[C-3-1] A Constraint cannot be applied to itself.&#10;context Constraint inv:&#10;not self.constrainedElement-&gt;includes (self)&#10;&#10;[C-3-2] A DataType cannot contain any other ModelElements.&#10;context DataType inv:&#10;self.ownedElement-&gt;isEmpty&#10;&#10;[C-3-3] Tags associated with a model element (directly via a property list or indirectly via a stereotype) must not clash with any meta attributes associated with the model element.&#10;context ModelElement inv:&#10;-- cannot be specified with OCL" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.objectmodel" />
+    <details key="prefix" value="Core" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Element" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An element is an atomic constituent of a model. In the metamodel, an Element is the top metaclass in the metaclass hierarchy. Element is an abstract metaclass.&#10;" />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ModelElement" abstract="true" eSuperTypes="#//Element">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="UniqueTagNames StereotypeNotSelf" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="StereotypeNotSelf" value="self.stereotype-&gt;excludes(self)" />
+      <details key="UniqueTagNames" value="self.taggedValue-&gt;forAll(t1, t2 : TaggedValue |&#10;t1.tag = t2.tag implies t1 = t2)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="StereotypeNotSelf.shortName" value="C-3-5" />
+      <details key="StereotypeNotSelf.name" value="Stereotype Not Self" />
+      <details key="StereotypeNotSelf.description" value="A stereotype cannot extend itself." />
+      <details key="StereotypeNotSelf.level" value="error" />
+      <details key="StereotypeNotSelf.specSource" value="self.stereotype-&gt;excludes(self)" />
+      <details key="UniqueTagNames.shortName" value="C-3-4" />
+      <details key="UniqueTagNames.name" value="Unique Tag Names" />
+      <details key="UniqueTagNames.description" value="A model element must have at most one tagged value with a given tag name." />
+      <details key="UniqueTagNames.level" value="error" />
+      <details key="UniqueTagNames.specSource" value="self.taggedValue-&gt;forAll(t1, t2 : TaggedValue |&#10;t1.tag = t2.tag implies t1 = t2)" />
+      <details key="TagConflict.shortName" value="C-3-3" />
+      <details key="TagConflict.name" value="Tag Conflict" />
+      <details key="TagConflict.description" value="Tags associated with a model element (directly via a property list or indirectly via a stereotype) must not clash with any meta attributes associated with the model element." />
+      <details key="TagConflict.level" value="error" />
+      <details key="TagConflict.postDescription" value="-- cannot be specified with OCL" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A model element is an element that is an abstraction drawn from the system being modeled.&#10;&#10;In the metamodel, a ModelElement is a named entity in a Model. It is the base for all modeling metaclasses in the CWM. All other modeling metaclasses are either direct or indirect subclasses of ModelElement." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="#//Name">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An identifier for the ModelElement within its containing Namespace." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="visibility" lowerBound="1" eType="#//VisibilityKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies extent of the visibility of the ModelElement within its owning Namespace." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="clientDependency" ordered="false" upperBound="-1" eType="#//Dependency" eOpposite="#//Dependency/client">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies Dependency instances in which the ModelElement acts as a client." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constraint" ordered="false" upperBound="-1" eType="#//Constraint" eOpposite="#//Constraint/constrainedElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Constraint instances that restrict the possible states that a ModelElement may take." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="namespace" eType="#//Namespace" transient="true" eOpposite="#//Namespace/ownedElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Namespace, if any, that owns the ModelElement." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="importer" ordered="false" upperBound="-1" eType="#//Package" eOpposite="#//Package/importedElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Packages that import a ModelElement." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="taggedValue" ordered="false" upperBound="-1" eType="#//TaggedValue" containment="true" eOpposite="#//TaggedValue/modelElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the set of TaggedValue instances that extend a ModelElement." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Namespace" abstract="true" eSuperTypes="#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A namespace is a part of a model that contains a set of ModelElements each of whose&#10;names designates a unique element within the namespace. &#10;&#10;In the metamodel, a Namespace is a ModelElement that can own other ModelElements, such as Classifiers. The name of each owned ModelElement must be unique within the Namespace. Moreover, each contained ModelElement is owned by at most one Namespace. The concrete subclasses of Namespace may have additional constraints on which kind of elements may be contained. &#10;&#10;Namespace is an abstract metaclass.&#10;&#10;Note that explicit parts of a model element, such as the features of a Classifier, are not modeled as owned elements in a namespace. A namespace is used for unstructured contents such as the contents of a  package, or a class declared inside the scope of another class." />
+    </eAnnotations>
+    <eOperations ordered="false" name="contents" upperBound="-1" eType="ecore:EClass #//ModelElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="CWM 1.1 §4.3.4 additional operation: the ModelElements contained by this Namespace. Spec text reads &quot;self.ownedElement-&gt;union(self.namespace.contents)&quot;; the union with the ENCLOSING namespace is an erratum inherited from UML 1.x — it would make e.g. C-4-3 (EmptyInterfaceContents) unsatisfiable unless every surrounding namespace were empty too. Implemented as the owned elements only." />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+        <details key="body" value="self.ownedElement-&gt;asSet()" />
+      </eAnnotations>
+    </eOperations>
+    <eOperations ordered="false" name="allContents" upperBound="-1" eType="ecore:EClass #//ModelElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="CWM 1.1 §4.3.4 additional operation: all ModelElements contained by this Namespace." />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+        <details key="body" value="self.contents()-&gt;asSet()" />
+      </eAnnotations>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ownedElement" ordered="false" upperBound="-1" eType="#//ModelElement" containment="true" eOpposite="#//ModelElement/namespace">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the ModelElements owned by a Namespace." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Classifier" abstract="true" eSuperTypes="#//Namespace">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A classifier is an element that describes structural and behavioral features; it comes in several specific forms, including class, data type, interface, component, and others that are defined in other metamodel packages.&#10;&#10;Classifier is often used as a type.&#10;&#10;In the metamodel, a Classifier may declare a collection of Features, such as Attributes, Operations and Methods. It has a name, which is unique in the Namespace enclosing the Classifier. Classifier is an abstract metaclass.&#10;&#10;Classifier is a child of Namespace. As a Namespace, a Classifier may declare other Classifiers nested in its scope. Nested Classifiers may be accessed by other Classifiers only if the nested Classifiers have adequate visibility. There are no data value or state consequences of nested Classifiers, i.e., it is not an aggregation or composition." />
+    </eAnnotations>
+    <eOperations ordered="false" name="parent" upperBound="-1" eType="ecore:EClass #//Classifier">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="CWM 1.1 §4.3.4 additional operation: all direct parents of this Classifier." />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+        <details key="body" value="self.generalization.parent-&gt;asSet()" />
+      </eAnnotations>
+      <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+        <details key="specSource" value="parent = self.generalization.parent" />
+        <details key="postDescription" value="Evaluable via Eclipse OCL hidden opposites: MOF declares no Reference &quot;generalization&quot; on Classifier, so the end name is recorded as Property.oppositeRoleName on Generalization::child. The body therefore keeps the specification wording verbatim. Note that a hidden opposite is always Collection-typed, hence the -&gt;asSet(). Evaluation requires an ECrossReferenceAdapter on the instance model - without it the navigation silently yields an empty collection." />
+      </eAnnotations>
+    </eOperations>
+    <eOperations ordered="false" name="allFeatures" upperBound="-1" eType="ecore:EClass #//Feature">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="CWM 1.1 §4.3.4 additional operation: all Features of the Classifier itself plus all inherited Features." />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+        <details key="body" value="self.feature-&gt;asSet()-&gt;union(self.parent().allFeatures()-&gt;asSet())" />
+      </eAnnotations>
+      <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+        <details key="specSource" value="allFeatures = self.feature-&gt;union(self.parent.oclAsType(Classifier).allFeatures)" />
+      </eAnnotations>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isAbstract" lowerBound="1" eType="#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An abstract Classifier is not instantiable." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="feature" upperBound="-1" eType="#//Feature" containment="true" eOpposite="#//Feature/owner">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Features owned by a Classifier instance and provides their ordering." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Class" eSuperTypes="#//Classifier">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A class is a description of a set of objects that share the same attributes, operations, methods, relationships, and semantics. A class may use a set of interfaces to specify collections of operations it provides to its environment. In the metamodel, a Class describes a set of objects sharing a collection of Features that are common to the set of objects.&#10;&#10;The purpose of a Class is to declare a collection of Features that fully describe the structure and behavior of objects. Some Classes may not be directly instantiated. These Classes are said to be abstract and exist only for other Classes to inherit and reuse the Features declared by them. No object may be a direct instance of an abstract Class, although an object may be an indirect instance of one through a subclass that is non-abstract.&#10;&#10;A Class acts as the namespace for various kinds of contained elements defined within its scope, including classes, interfaces and associations (note that this is purely a scoping construction and does not imply anything about aggregation). The contained classes can be used as ordinary classes in the container class. If a class inherits another class, the contents of the ancestor are available to its descendents if the visibility of an element is public or protected; however, if the visibility is private, then the element is not visible and therefore not available in the descendant." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataType" eSuperTypes="#//Classifier">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="EmptyDataType" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="EmptyDataType" value="self.ownedElement-&gt;isEmpty()" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="EmptyDataType.shortName" value="C-3-2" />
+      <details key="EmptyDataType.name" value="Empty DataType" />
+      <details key="EmptyDataType.description" value="A DataType cannot contain any other ModelElements." />
+      <details key="EmptyDataType.level" value="error" />
+      <details key="EmptyDataType.specSource" value="self.ownedElement-&gt;isEmpty" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A data type is a type whose values have no identity (i.e., they are pure values). Data types include primitive built-in types (such as integer and string) as well as definable enumeration types.&#10;&#10;In the metamodel, a DataType defines a special kind of Classifier in which operations are all pure functions (i.e., they can return data values but they cannot change data values, because they have no identity). For example, an &quot;add&quot; operation on a number with another number as an argument yields a third number as a result; the target and argument are unchanged.&#10;&#10;A DataType is a special kind of Classifier whose instances are primitive values, not objects. For example, integers and strings are usually treated as primitive values. A primitive value does not have an identity, so two occurrences of the same value cannot be differentiated. Usually, DataTypes are used for specification of the type of an attribute or parameter." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Package" eSuperTypes="#//Namespace">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A package is a grouping of model elements.&#10;&#10;In the metamodel, Package is a subclass of Namespace. A Package contains ModelElements such as Packages and Classifiers. A Package may also contain Constraints and Dependencies between ModelElements of the Package.&#10;&#10;The purpose of the package construct is to provide a general grouping mechanism. In fact, its only semantics is to define a namespace for its contents. The package construct can be used for organizing elements for any purpose; the criteria to use for grouping elements together into one package are not defined.&#10;&#10;A package owns a set of model elements, with the implication that if the package is removed from the model, so are the elements owned by the package. Elements with names, such as classifiers, that are owned by the same package must have unique names within the package, although elements in different packages may have the same name.&#10;&#10;There may be relationships between elements contained in the same package, and between an element in one package and an element in a surrounding package at any level. In other words, elements �see� all the way out through nested levels of packages.&#10;&#10;Elements in peer packages, however, are encapsulated and are not a priori visible to each other. The same goes for elements in contained packages, i.e. packages do not see &quot;inwards&quot;.&#10;&#10;Elements owned by a Package can be made available to other Packages by importing&#10;them. Although any ModelElement may be imported by a Package, imported&#10;ModelElements are typically other Packages. When an element is imported by a&#10;package it extends the namespace of that package. Thus the elements available in a&#10;Package consists of its owned and imported ModelElements." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="importedElement" ordered="false" upperBound="-1" eType="#//ModelElement" eOpposite="#//ModelElement/importer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies ModelElements imported by a Package." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Subsystem" eSuperTypes="#//Classifier #//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A subsystem is a grouping of model elements that represents a behavioral unit in a physical system. A subsystem offers interfaces and has operations.&#10;&#10;In the metamodel, Subsystem is a subclass of both Package and Classifier. As such it may have a set of Features.&#10;&#10;The purpose of the subsystem construct is to provide a grouping mechanism for specifying a behavioral unit of a physical system. Apart from defining a namespace for its contents, a subsystem serves as a specification unit for the behavior of its contained model elements.&#10;&#10;The contents of a subsystem is defined in the same way as for a package, thus it&#10;consists of owned elements and imported elements, with unique names within the&#10;subsystem." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Model" eSuperTypes="#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A model captures a view of a physical system. It is an abstraction of the physical system, with a certain purpose. The model completely describes those aspects of the physical system that are relevant to the purpose of the model, at the appropriate level of detail.&#10;&#10;In the metamodel, Model is a subclass of Package. It contains a containment hierarchy of ModelElements that together describe the physical system. A Model also contains a set of ModelElements that represents the environment of the system. &#10;&#10;Different Models can be defined for the same physical system, where each model represents a view of the physical system defined by its purpose and abstraction level, e.g. an analysis model, a design model, an implementation model. Typically different models are complementary and defined from the perspectives (viewpoints) of different system stakeholders." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Feature" abstract="true" eSuperTypes="#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A feature is a property, like attribute or operation, which is encapsulated within a Classifier.&#10;&#10;In the metamodel, a Feature declares a structural or behavioral characteristic of an instance of a Classifier or of the Classifier itself. Feature is an abstract metaclass." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ownerScope" eType="#//ScopeKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies whether the Feature appears in every instance of the Classifier or whether it appears only once for the entire Classifier." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="owner" eType="#//Classifier" transient="true" eOpposite="#//Classifier/feature">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Classifier instance that owns the Feature." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StructuralFeature" abstract="true" eSuperTypes="#//Feature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A structural feature refers to a static feature of a model element.&#10;&#10;In the metamodel, a StructuralFeature declares a structural aspect of a Classifier that is typed, such as an attribute. For example, it specifies the multiplicity and changeability of the StructuralFeature. StructuralFeature is an abstract metaclass." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="changeability" lowerBound="1" eType="#//ChangeableKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies whether the value may be modified after the object is created." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="multiplicity" eType="#//Multiplicity" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The possible number of data values for the feature that may be held by an instance. The cardinality of the set of values is an implicit part of the feature. In the common case in which the multiplicity is 1..1, then the feature is a scalar (i.e., it holds exactly one value)." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ordering" eType="#//OrderingKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies whether the set of instances is ordered. The ordering must be determined and maintained by Operations that add values to the feature. This property is only relevant if the multiplicity is greater than one." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targetScope" eType="#//ScopeKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies whether the targets are ordinary Instances or are Classifiers." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//Classifier">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="structuralFeature" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="structuralFeature" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Classifier defining the type of a StructuralFeature." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Attribute" eSuperTypes="#//StructuralFeature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An Attribute describes a named slot within a classifier that may hold a value." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="initialValue" eType="#//Expression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An Expression specifying the value of the attribute upon initialization. It is meant to be evaluated at the time the object is initialized. (Note that an explicit constructor may supersede an initial value.)" />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Constraint" eSuperTypes="#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="SelfReferenceConstraint" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="SelfReferenceConstraint" value="not self.constrainedElement-&gt;includes(self)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="SelfReferenceConstraint.shortName" value="C-3-1" />
+      <details key="SelfReferenceConstraint.name" value="Self-Reference Constraint" />
+      <details key="SelfReferenceConstraint.description" value="A Constraint cannot be applied to itself." />
+      <details key="SelfReferenceConstraint.level" value="error" />
+      <details key="SelfReferenceConstraint.specSource" value="not self.constrainedElement-&gt;includes(self)" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A constraint is a semantic condition or restriction expressed in text.&#10;&#10;In the metamodel, a Constraint is a BooleanExpression on an associated ModelElement(s) which must be true for the model to be well formed. This restriction can be stated in natural language, or in different kinds of languages with well-defined semantics. Certain Constraints are predefined, others may be user defined. Note that a Constraint is an assertion, not an executable mechanism.&#10;&#10;The specification is written as an expression in a designated constraint language. The language can be specially designed for writing constraints (such as OCL), a programming language, mathematical notation, or natural language. If constraints are to be enforced by a model editor tool, then the tool must understand the syntax and semantics of the constraint language. Because the choice of language is arbitrary, constraints can be used as an extension mechanism.&#10;&#10;The constraint concept allows new semantics to be specified linguistically for a model element. In the metamodel a Constraint directly attached to a ModelElement describes semantic restrictions that this ModelElement must obey.&#10;" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="body" lowerBound="1" eType="#//BooleanExpression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A BooleanExpression that must be true when evaluated for an instance of a system to be well-formed. A boolean expression defining the constraint. Expressions are written as strings in a designated language. For the model to be well formed, the expression must always yield a true value when evaluated for instances of the constrained elements at any time when the system is stable (i.e., not during the execution of an atomic operation)." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constrainedElement" upperBound="-1" eType="#//ModelElement" eOpposite="#//ModelElement/constraint">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the ModelElements whose state is constrained by the Constraint instance." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Dependency" eSuperTypes="#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A dependency states that the implementation or functioning of one or more elements requires the presence of one or more other elements.&#10;&#10;In the metamodel, a Dependency is a directed relationship from a client (or clients) to a supplier (or suppliers) stating that the client is dependent on the supplier (i.e., the client element requires the presence and knowledge of the supplier element).&#10;&#10;A dependency specifies that the semantics of a set of model elements requires the presence of another set of model elements. This implies that if the source is somehow modified, the dependents probably must be modified. The reason for the dependency can be specified in several different ways (e.g., using natural language or an algorithm) but is often implicit.&#10;&#10;Whenever the supplier element of a dependency changes, the client element is potentially invalidated. After such invalidation, a check should be performed followed by possible changes to the derived client element. Such a check should be performed after which action can be taken to change the derived element to validate it again." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" eType="#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains a description of the nature of the dependency relationship between the client and supplier. The list of possible values is open-ended. However, CWM predefines the values &quot;Abstraction&quot; and &quot;Usage&quot;." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="client" ordered="false" lowerBound="1" upperBound="-1" eType="#//ModelElement" eOpposite="#//ModelElement/clientDependency">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the ModelElements that are clients of the Dependency instance." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="supplier" ordered="false" lowerBound="1" upperBound="-1" eType="#//ModelElement">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="supplierDependency" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="supplierDependency" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the ModelElements that are suppliers of the Dependency instance." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Expression" eSuperTypes="#//Element">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="In the metamodel an Expression defines a statement which will evaluate to a (possibly empty) set of instances when executed in a context. An Expression does not modify the environment in which it is evaluated. An expression contains an expression string and the name of an interpretation language with which to evaluate the string." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="body" lowerBound="1" eType="#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The text of the expression expressed in the given language." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="language" eType="#//Name">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Names the language in which the expression body is represented. The interpretation of the expression depends on the language. If the language name is omitted, no interpretation for the expression can be assumed. In general, a language name should be spelled and capitalized exactly as it appears in the document defining the language. For example, use COBOL, not Cobol; use Ada, not ADA; use PostScript, not Postscript." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BooleanExpression" eSuperTypes="#//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="In the metamodel BooleanExpression defines a statement which will evaluate to an instance of Boolean when it is evaluated." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ProcedureExpression" eSuperTypes="#//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="In the metamodel ProcedureExpression defines a statement which will result in a change to the values of its environment when it is evaluated." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Multiplicity" eSuperTypes="#//Element">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="In the metamodel a Multiplicity defines a non-empty set of non-negative integers. A set which only contains zero ({0}) is not considered a valid Multiplicity. Every Multiplicity has at least one corresponding String  representation.&#10;" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="range" ordered="false" lowerBound="1" upperBound="-1" eType="#//MultiplicityRange" containment="true" eOpposite="#//MultiplicityRange/multiplicity">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the set of MultiplicityRange instances owned by a Multiplicity." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MultiplicityRange" eSuperTypes="#//Element">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="In the metamodel a MultiplicityRange defines a range of integers. The upper bound of the range cannot be below the lower bound. The lower bound must be a nonnegative integer. The upper bound must be a nonnegative integer or the special value unlimited, which indicates there is no upper bound on the range. &#10;" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lower" lowerBound="1" eType="#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies the positive integer lower bound of the range." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="upper" lowerBound="1" eType="#//UnlimitedInteger">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies the upper bound of the range, which is a positive integer or the special value �unlimited� indicating no upper bound is defined." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="multiplicity" lowerBound="1" eType="#//Multiplicity" transient="true" eOpposite="#//Multiplicity/range">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Multiplicity instance that owns the MultiplicityRange." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Stereotype" eSuperTypes="#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="BaseClassRequired" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="BaseClassRequired" value="self.baseClass &lt;&gt; ''" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="BaseClassRequired.shortName" value="C-3-6" />
+      <details key="BaseClassRequired.name" value="Base Class Required" />
+      <details key="BaseClassRequired.description" value="The base class name must be provided." />
+      <details key="BaseClassRequired.level" value="error" />
+      <details key="BaseClassRequired.specSource" value="Set {self.baseClass}-&gt;notEmpty" />
+      <details key="BaseClassRequired.postDescription" value="The specification body Set {self.baseClass}-&gt;notEmpty is a tautology: a Set literal built from one element is never empty, whatever baseClass contains. The intent stated in the description (&quot;the base class name must be provided&quot;) is expressed here as a non-empty check on the String attribute." />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The stereotype concept provides a way of branding (classifying) model elements so that they behave as if they were instances of new virtual metamodel constructs. These model elements have the same structure (attributes, associations, operations) as similar non-stereotyped model elements of the same kind. The stereotype may specify additional constraints and required tagged values that apply to model elements. In addition, a stereotype may be used to indicate a difference in meaning or usage between two model elements with identical structure.&#10;&#10;In the metamodel the Stereotype metaclass is a subclass of ModelElement. Tagged Values and Constraints attached to a Stereotype apply to all ModelElements branded by that Stereotype.&#10;&#10;A stereotype keeps track of the base class to which it may be applied. The base class is a class in the metamodel (not a user-level modeling element) such as Class, Association, etc. If a model element is branded by an attached stereotype, then the CWM base class of the model element must be the base class specified by the stereotype or one of the subclasses of that base class." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="baseClass" lowerBound="1" eType="#//Name">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies the name of a modeling element to which the stereotype applies, such as Class, Association, Constraint, etc. This is the name of a metaclass, that is, a class from the metamodel itself rather than a user model class." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stereotypeConstraint" ordered="false" upperBound="-1" eType="#//Constraint" containment="true">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="constrainedStereotype" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="constrainedStereotype" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the set of Constraint instances defined for the Stereotype instance." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="extendedElement" ordered="false" upperBound="-1" eType="#//ModelElement">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="stereotype" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="stereotype" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the set of ModelElements to which the Stereotype instance applies." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="requiredTag" ordered="false" upperBound="-1" eType="#//TaggedValue" containment="true" eOpposite="#//TaggedValue/stereotype">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies a set of TaggedValues, each of which specifies a tag that an element classified by the Stereotype is required to have." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TaggedValue" eSuperTypes="#//Element">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A tagged value allows information to be attached to any model element in the form of a &quot;tagged value&quot; pair (i.e., name = value). The interpretation of tagged value semantics is intentionally beyond the scope of CWM. It must be determined by user or tool conventions. It is expected that tools will define tags to supply information needed for their operations beyond the basic semantics of CWM. Such information could include code generation options, model management information, or user-specified semantics.&#10;&#10;Even though TaggedValues are a simple and straightforward extension technique, their use restricts semantic interchange of metadata to only those tools that share a common understanding of the specific tagged value names." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tag" lowerBound="1" eType="#//Name">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the name of the TaggedValue. This name determines the semantics that are applicable to the contents of the value attribute." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the current value of the TaggedValue." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stereotype" eType="#//Stereotype" transient="true" eOpposite="#//Stereotype/requiredTag">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies a Stereotype instance that owns the TaggedValue instance." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="modelElement" eType="#//ModelElement" transient="true" eOpposite="#//ModelElement/taggedValue">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the ModelElement instance that owns the TaggedValue instance." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Any" instanceClassName="java.lang.String">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The Any data type is used to indicate that an attribute or parameter may take values from any of the available data types. In CWM, the set of data types an Any attribute or parameter may assume includes the data types and enumerations described in this chapter plus any available instances of the Classifier class. &#10;&#10;There is no default value for data type Any." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Boolean" instanceClassName="boolean">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Boolean defines an enumeration that denotes a logical condition.&#10;&#10;The default for data type Boolean is false." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Float" instanceClassName="java.lang.String">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The Float data type is used to indicate that an attribute or parameter may take on floating point numeric values. The number of significant digits and other representational details are implementation defined. &#10;&#10;The default for the Float data type is the value 0.0." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Integer" instanceClassName="long">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Integer represents the predefined type of integers. An instance of Integer is an element in the (infinite) set of integers (..., -2, -1, 0, 1, 2, ...). &#10;&#10;The default for Integer is 0." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Name" instanceClassName="java.lang.String">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Name defines a token which is used for naming ModelElements and similar usages. Each Name has a corresponding String representation. For purposes of exchange a name should be represented as a String.&#10;&#10;The default for the Name data type is an empty string." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="String" instanceClassName="java.lang.String">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="String defines a piece of text. Strings do not normally have a defined length; rather, they are considered to be arbitrarily long (practical limits on the length of Strings exist, but are implementation dependent). When String is used as the type of an Attribute, string length sometimes can be specified (see the Relational and Record packages for examples).&#10;&#10;The default for the String data type is an empty string." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Time" instanceClassName="java.lang.String">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Time defines a statement which will define the time of occurrence of an event. The specific format of time expressions is not specified here and is subject to implementation considerations.&#10;&#10;There is no default for the Time data type." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="UnlimitedInteger" instanceClassName="long">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="UnlimitedInteger defines a data type whose range is the nonnegative integers augmented by the special value &quot;unlimited&quot;. It is used for the upper bound of multiplicities.&#10;&#10;The default for an UnlimitedInteger is the special value &quot;unlimited&quot;." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ChangeableKind">
+    <eLiterals name="ck_changeable">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value=" No restrictions on modification." />
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="ck_frozen" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value may not be changed from the source end after the creation and initialization of the source object. Operations on the other end may change a value." />
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="ck_addOnly" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If the multiplicity is not fixed, values may be added at any time from the source object, but once created a value may not be removed from the source end. Operations on the other end may change a value." />
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="OrderingKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="In the metamodel OrderingKind defines an enumeration that specifies how the elements of a set are arranged. Used in conjunction with elements that have a multiplicity in cases when the multiplicity value is greater than one. The ordering must be determined and maintained by operations that modify the set.&#10;&#10;The default value is ok_unordered." />
+    </eAnnotations>
+    <eLiterals name="ok_unordered">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The elements of the set have no inherent ordering." />
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="ok_ordered" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The elements of the set have a sequential ordering." />
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ScopeKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="In the metamodel ScopeKind defines an enumeration that denotes whether a feature belongs to individual instances or an entire classifier.&#10;&#10;The default value is sk_instance." />
+    </eAnnotations>
+    <eLiterals name="sk_instance">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The feature pertains to instances of a Classifier. For example, it is a distinct attribute in each instance or an operation that works on an instance." />
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="sk_classifier" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The feature pertains to an entire Classifier. For example, it is an attribute shared by the entire Classifier or an operation that works on the Classifier, such as a creation operation." />
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="VisibilityKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="In the metamodel VisibilityKind defines an enumeration that denotes how the element to which it refers is seen outside the enclosing name space.&#10;&#10;The default value is vk_public." />
+    </eAnnotations>
+    <eLiterals name="vk_public">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Other elements may see and use the target element." />
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="vk_protected" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Descendants of the source element may see and use the target element." />
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="vk_private" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Only the source element may see and use the target element." />
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="vk_package" value="3">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value=" Elements declared in the same package as the target element may see and use the target element. " />
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="vk_notapplicable" value="4">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="May be used where namespaces do not support the concept of visibility." />
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+</ecore:EPackage>
+    

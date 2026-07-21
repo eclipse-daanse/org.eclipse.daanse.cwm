@@ -31,6 +31,8 @@ public final class JdbcToCwmConfig {
     private final boolean includeUniqueConstraints;
     private final boolean includeCheckConstraints;
     private final boolean includeTriggers;
+    private final boolean includeProcedures;
+    private final boolean includeMaterializedViews;
 
     private JdbcToCwmConfig(Builder b) {
         this.catalogName = b.catalogName;
@@ -42,6 +44,8 @@ public final class JdbcToCwmConfig {
         this.includeUniqueConstraints = b.includeUniqueConstraints;
         this.includeCheckConstraints = b.includeCheckConstraints;
         this.includeTriggers = b.includeTriggers;
+        this.includeProcedures = b.includeProcedures;
+        this.includeMaterializedViews = b.includeMaterializedViews;
     }
 
     /** {@code null} (default) lets the loader pick the database name. */
@@ -83,6 +87,14 @@ public final class JdbcToCwmConfig {
         return includeTriggers;
     }
 
+    public boolean includeProcedures() {
+        return includeProcedures;
+    }
+
+    public boolean includeMaterializedViews() {
+        return includeMaterializedViews;
+    }
+
     /** Import everything. */
     public static JdbcToCwmConfig all() {
         return new Builder().build();
@@ -102,6 +114,8 @@ public final class JdbcToCwmConfig {
         private boolean includeUniqueConstraints = true;
         private boolean includeCheckConstraints = true;
         private boolean includeTriggers = true;
+        private boolean includeProcedures = true;
+        private boolean includeMaterializedViews = true;
 
         private Builder() {
         }
@@ -153,6 +167,16 @@ public final class JdbcToCwmConfig {
 
         public Builder includeTriggers(boolean include) {
             this.includeTriggers = include;
+            return this;
+        }
+
+        public Builder includeProcedures(boolean include) {
+            this.includeProcedures = include;
+            return this;
+        }
+
+        public Builder includeMaterializedViews(boolean include) {
+            this.includeMaterializedViews = include;
             return this;
         }
 

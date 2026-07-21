@@ -80,12 +80,12 @@ public final class SqlGenFixture {
         PrimaryKey customersPk = RF.createPrimaryKey();
         customersPk.setName("PK_CUSTOMERS");
         customersPk.getFeature().add(cId);
-        cId.getUniqueKey().add(customersPk);
+        customers.getOwnedElement().add(customersPk);
 
         UniqueConstraint uc = RF.createUniqueConstraint();
         uc.setName("UC_CUSTOMERS_EMAIL");
         uc.getFeature().add(cEmail);
-        cEmail.getUniqueKey().add(uc);
+        customers.getOwnedElement().add(uc);
 
         CheckConstraint cc = RF.createCheckConstraint();
         cc.setName("CK_CUSTOMERS_ID_POS");
@@ -118,13 +118,13 @@ public final class SqlGenFixture {
         PrimaryKey ordersPk = RF.createPrimaryKey();
         ordersPk.setName("PK_ORDERS");
         ordersPk.getFeature().add(oId);
-        oId.getUniqueKey().add(ordersPk);
+        orders.getOwnedElement().add(ordersPk);
 
         ForeignKey fk = RF.createForeignKey();
         fk.setName("FK_ORDERS_CUSTOMERS");
         fk.getFeature().add(oCustomerId);
         fk.setUniqueKey(customersPk);
-        oCustomerId.getKeyRelationship().add(fk);
+        orders.getOwnedElement().add(fk);
         fk.setDeleteRule(ReferentialRuleType.IMPORTED_KEY_CASCADE);
         // Oracle FKs don't accept ON UPDATE — emitter respects this on Oracle.
         fk.setUpdateRule(ReferentialRuleType.IMPORTED_KEY_NO_ACTION);

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="datatypes" nsURI="http://www.omg.org/spec/CWM/1.1/foundation/datatypes" nsPrefix="datatypes">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The DataTypes package depends on the following packages:&#10;&#10;    org.omg::CWM::ObjectModel::Core&#10;&#10;The CWM DataTypes metamodel supports definition of metamodel constructs that modelers can use to create the specific data types they need. Although the CWM Foundation itself does not contain specific data type definitions, a number of data type definitions for widely used environments are provided (in the CWM Data Types chapter) as examples of the appropriate usage of CWM Foundation classes for creating&#10;data type definitions.&#10;&#10;OCL Representation of DataTypes Constraints&#10;&#10;[C-4-1] A TypeAlias instance cannot alias itself.&#10;context TypeAlias inv:&#10;self.type &lt;&gt; self&#10;&#10;[C-4-2] A Union can have at most one default UnionMember instance.&#10;context Union inv:&#10;self.allFeatures-&gt;select(isDefault)-&gt;size &lt;= 1&#10;" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.foundation" />
+    <details key="prefix" value="Datatypes" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Enumeration" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//DataType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The Enumeration class is intended as a starting point from which enumerated data types can be created. An enumerated data type is a collection of identifiers often used as the permitted states that some other attribute or property of the enumerated type may take.&#10;&#10;The isOrdered attribute of an Enumeration instance is used to determine if the ordered constraint on the EnumerationLiterals association is relevant for the enumeration. The particular ordering of EnumerationLiteral instances is obtained from the ordered constraint on the association even if the value attributes of the EnumerationLiteral instances contain non-null values that might be used to determine ordering. This is done to provide more flexible ordering semantics.&#10;&#10;An instance of Enumeration is also required to create a range data type. Refer to the EnumerationLiteral class for details." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isOrdered" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the ordered constraint on the EnumerationLiterals association is relevant. Otherwise, the ordering of EnumerationLiteral instances is considered unspecified.&#10;" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="literal" ordered="false" lowerBound="1" upperBound="-1" eType="#//EnumerationLiteral" containment="true" eOpposite="#//EnumerationLiteral/enumeration">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the EnumerationLiteral instances relevant for a particular Enumeration instance. If the Enumeration�s isOrdered attribute is True, the ordering constraint on this association end can be used to determine a logical ordering for the EnumerationLiteral instances. Otherwise, ordering is ignored." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EnumerationLiteral" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="EnumerationLiteral instances describe the enumeration identifiers, and possibly the&#10;values, associated with an enumerated data type. Enumeration identifiers are contained&#10;in the name attribute derived from the EnumerationLiteral instance�s ModelElement superclass.&#10;&#10;EnumerationLiteral instances may also be used to define expression-based values such as ranges. To do so, simply state the membership expression in the instance�s value. For example, a range literal can be created by setting the value attribute to &quot;m..n&quot;, where m represents the lower bound of the range, and n, the upper bound. In this way, ranges and other more complicated expressions can be intermixed with simple&#10;enumeration literals. For example, an enumeration might contain the literals &quot;1&quot;, &quot;2&quot;, &quot;4..7&quot;, and &quot;&gt; 10&quot;.&#10;&#10;Consequently, a simple range data type can be created with an Enumeration instance that owns a single EnumerationLiteral instance. For example, a data type for positive integers could be created as shown in the following instance diagram. A model attribute of this data type might then be declared as &quot;posInt : PositiveInteger&quot;." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Expression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value associated with an enumeration identifier can be stored here. The attribute is optional because enumeration literals are not required to have a specific, displayable value. This is indicated by either an empty value attribute or a value attribute value whose expression body attribute is a zero-length string." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="enumeration" lowerBound="1" eType="#//Enumeration" transient="true" eOpposite="#//Enumeration/literal">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Enumeration instance for which this enumeration literal is relevant." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="QueryExpression" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ProcedureExpression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="QueryExpression instances contain query statements in language-dependent form." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TypeAlias" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//DataType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="TypeAliasSelfReference" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="TypeAliasSelfReference" value="self.type &lt;&gt; self" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="TypeAliasSelfReference.shortName" value="C-4-1" />
+      <details key="TypeAliasSelfReference.name" value="TypeAlias Self-Reference" />
+      <details key="TypeAliasSelfReference.description" value="A TypeAlias instance cannot alias itself." />
+      <details key="TypeAliasSelfReference.level" value="error" />
+      <details key="TypeAliasSelfReference.specSource" value="self.type &lt;&gt; self" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The TypeAlias class is intended to provide a renaming capability for Classifier instances. This class is required to support situations in which creation of an alias for a class effectively creates a new class. For example, CORBA IDL type aliases have different typeCodes than their base types and are therefore treated as distinct types." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="alias" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="alias" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Classifier instance for which this TypeAlias instance acts as an alias." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Union" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="SingleDefaultUnionMember" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="SingleDefaultUnionMember" value="self.allFeatures()-&gt;select( f | f.oclIsKindOf(UnionMember) and&#10; f.oclAsType(UnionMember).isDefault )-&gt;size() &lt;= 1" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="SingleDefaultUnionMember.shortName" value="C-4-2" />
+      <details key="SingleDefaultUnionMember.name" value="Single Default UnionMember" />
+      <details key="SingleDefaultUnionMember.description" value="A Union can have at most one default UnionMember instance." />
+      <details key="SingleDefaultUnionMember.level" value="error" />
+      <details key="SingleDefaultUnionMember.specSource" value="self.allFeatures-&gt;select(isDefault)-&gt;size &lt;= 1" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The Union class represents programming language unions and similarly structured data types. Because of the diversity of union semantics found across software systems, the Union and UnionMember classes are likely candidates for specialization to better capture union semantics in specific language extension packages.&#10;&#10;A discriminated Union has a collection of UnionMembers that determine the sets of contents that the Union may contain. Such Unions have an attribute called the discriminator that identifies the memberCase value of the UnionMember that the Union currently contains. The discriminator is found via the UnionDiscriminator association to StructuralFeature. The discriminator may be embedded within UnionMembers or may be located outside the discriminator. If it is located within UnionMembers, the discriminator should occur in every UnionMember at the same location (often, the first).&#10;&#10;Undiscriminated unions (for example, a C language union) are also supported, but have an empty discriminator reference, and the memberCase attribute of the UnionMembers it contains is ignored.&#10;&#10;Undiscriminated Unions are often used to represent alternate views of a single physical&#10;storage area. A fine degree of control over this aspect of Unions may be obtained by&#10;creating a class that derives from both UnionMember and FixedOffsetField (in the&#10;CWM Record package) and setting the offset attribute instances of that class&#10;accordingly." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="discriminator" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="discriminatedUnion" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="discriminatedUnion" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the StructuralFeature instance that serves as the discriminator for the Union." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UnionMember" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="UnionMembers are described as features of a Union and each represents one of the members of a Union. Note, however, that multiple case values can map to a single UnionMember. If isDefault is true, the union member is the default member.&#10;&#10;UnionMember instances are allowed to have a memberCase and be the default case. UnionMember instances often represent structured storage areas. A particular UnionMember may be associated with a Classifier that describes its internal structure via the StructuralFeatureType association (defined in the ObjectModel::Core package). For example, the Record::Group class, itself a Classifier, can be used as the type of a UnionMember in a manner completely analogous to how it is used to describe the type of a structured field (see the instance diagrams in the Record metamodel chapter for details)." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="memberCase" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Expression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the value of the Union�s discriminator for this UnionMember." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isDefault" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates if this UnionMember is the default member of the Union (implying that when unstated, the Union�s discriminator would assume this instance�s memberCase value)." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
+    

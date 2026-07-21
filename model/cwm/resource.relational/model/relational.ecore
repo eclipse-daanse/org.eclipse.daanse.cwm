@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmi:version="2.0" name="relational" nsURI="http://www.omg.org/spec/CWM/1.1/resource/relational" nsPrefix="relational">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true" />
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The Relational package describes data accessible through a relational interface such as a native RDBMS, ODBC, or JDBC. The Relational package is based on the [SQL] standard section concerning RDBMS catalogs.&#10;&#10;The scope of the top level container, Catalog, is intended to cover all the tables a user can use in a single statement. A catalog is also the unit which is managed by a data resource. A catalog contains schemas which themselves contain tables. Tables are made of columns which have an associated data type.&#10;&#10;The Relational package uses constructs in the ObjectModel package to describe the object extensions added to SQL by the [SQL] standards. &#10;&#10;The Relational package also addresses the issues of indexing, primary keys and foreign keys by extending the corresponding concepts from the Foundation packages.&#10;&#10;The Relational package depends on the following packages:&#10;&#10;    org.omg::CWM::ObjectModel::Behavioral&#10;    org.omg::CWM::ObjectModel::Core&#10;    org.omg::CWM::ObjectModel::Instance&#10;    org.omg::CWM::Foundation::DataTypes&#10;    org.omg::CWM::Foundation::KeysIndexes&#10;&#10;The Relational package references the ObjectModel and Foundation packages.&#10;&#10;OCL Representation of Relational Constraints&#10;&#10;[C-1] temporaryScope is valid only if the isTemporary is True.&#10;context Tabl e inv:&#10;self.temporaryScope.notEmpty implies self.isTemporary=True&#10;&#10;[C-2] checkOption is valid only if isReadOnly is False.&#10;context View inv:&#10;self.checkOption implies self.isReadOnly=False&#10;&#10;[C-3] scale is valid only if precision is specified.&#10;context Column inv:&#10;self.scale.nonEmpty implies self.precision.notEmpty" />
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwm.resource" />
+    <details key="prefix" value="Relational" />
+    <details key="oSGiCompatible" value="true" />
+    <details key="literalsInterface" value="true" />
+    <details key="loadInitialization" value="false" />
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#10;&#10;This program and the accompanying materials are made&#10;available under the terms of the Eclipse Public License 2.0&#10;which is available at https://www.eclipse.org/legal/epl-2.0/&#10;&#10;SPDX-License-Identifier: EPL-2.0" />
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Catalog" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A Catalog is the unit of logon and identification. It also identifies the scope of SQL statements: the tables contained in a catalog can be used in a single SQL statement." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultCharacterSetName" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name of the default character set used for the values in the column.&#10;This field applies only to columns whose datatype is a character string." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultCollationName" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name of the default collation sequence used to sort the data values in the column." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Schema" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A schema is a named collection of tables" />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ColumnSet" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A set of columns, representing either the result of a query, a view or a physical table." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NamedColumnSet" eSuperTypes="#//ColumnSet">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A catalogued set of columns, which may be Table or View.&#10;&#10;Note for typed tables: It is assumed that the typed table will own a set of columns conforming to the type they are OF. This set of columns allows the manipulation of the table by products which ignore this [SQL] extension. It also allows the columns of type REF, to be copied to a column with a SCOPE reference." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="usingTrigger" ordered="false" upperBound="-1" eType="#//Trigger" eOpposite="#//Trigger/usedColumnSet">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A Trigger which references this table in its expression" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//SQLStructuredType" eOpposite="#//SQLStructuredType/columnSet">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="For typed Tables and Views, reference to the base SQLStructuredType.&#10;" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="optionScopeColumn" ordered="false" upperBound="-1" eType="#//Column" eOpposite="#//Column/optionScopeColumnSet">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Reference to the Column which contains theSCOPE clause." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Table" eSuperTypes="#//NamedColumnSet">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="TemporaryScopeRequiresIsTemporary" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="TemporaryScopeRequiresIsTemporary" value="self.temporaryScope-&gt;notEmpty() implies self.isTemporary = true" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="TemporaryScopeRequiresIsTemporary.shortName" value="C-1" />
+      <details key="TemporaryScopeRequiresIsTemporary.name" value="TemporaryScope Requires IsTemporary" />
+      <details key="TemporaryScopeRequiresIsTemporary.description" value="temporaryScope is valid only if the isTemporary is True." />
+      <details key="TemporaryScopeRequiresIsTemporary.level" value="error" />
+      <details key="TemporaryScopeRequiresIsTemporary.specSource" value="self.temporaryScope.notEmpty implies self.isTemporary=True" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A materialized NamedColumnSet." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isTemporary" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates that the table content is temporary. SQL92 standards provide two types of temporary tables (local Temporary and Global Temporary). However, RDBMS products have implemented variations on this theme. It is recommended that the product manufacturers provide specific temporary information (besides the temporaryScope attribute) in their extensions. " />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="temporaryScope" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute is meaningful only when the isTemporary flag is True [C-1]. The scope indicates when the data of this table are available. &quot;SESSION&quot;, &quot;APPLICATION&quot; are examples of possible values. Look at the Scope attribute for Global Temporary tables in the SQL standards for more details." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isSystem" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates that the Table is a System Table (generally part of or view on the system catalog)." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="trigger" upperBound="-1" eType="#//Trigger" eOpposite="#//Trigger/table">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Associates triggers executed during changes to the table." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="View" eSuperTypes="#//NamedColumnSet">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="CheckOptionRequiresNotReadOnly" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="CheckOptionRequiresNotReadOnly" value="self.checkOption implies self.isReadOnly = false" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="CheckOptionRequiresNotReadOnly.shortName" value="C-2" />
+      <details key="CheckOptionRequiresNotReadOnly.name" value="CheckOption Requires Not ReadOnly" />
+      <details key="CheckOptionRequiresNotReadOnly.description" value="checkOption is valid only if isReadOnly is False." />
+      <details key="CheckOptionRequiresNotReadOnly.level" value="error" />
+      <details key="CheckOptionRequiresNotReadOnly.specSource" value="self.checkOption implies self.isReadOnly=False" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A view is a non-materialized set of rows, defined by the associated query.&#10;" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isReadOnly" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates whether the underlying tables can be updated through an update to this View." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="checkOption" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This field is meaningful only if the view is not ReadOnly. CheckOption indicates that the RDBMS will validate that changes made to the data verify the view filtering condition and belong to the view result set." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="queryExpression" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/datatypes#//QueryExpression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The query associated with the View.&#10;&#10;The query result must match the set of Columns associated with the View (in parent class ColumnSet)" />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="QueryColumnSet" eSuperTypes="#//ColumnSet">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The result set of a query." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="query" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/datatypes#//QueryExpression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The query expression generating this result. The language attribute of the expression should generally begin with &quot;SQL&quot;" />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SQLDataType" abstract="true" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A SQLDataType is used to reference any datatype associated with a column" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeNumber" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number assigned to the datatype by the owning RDBMS" />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SQLDistinctType" eSuperTypes="http://www.omg.org/spec/CWM/1.1/foundation/datatypes#//TypeAlias #//SQLDataType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A datatype defined as a Distinct Type, per [SQL] standard." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="length" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The length of fixed length character or byte strings. Maximum length if length is&#10;variable." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="precision" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The total number of digits in the field" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="scale" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of digits on the right of the decimal separator." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sqlSimpleType" lowerBound="1" eType="#//SQLSimpleType">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="sqlDistinctType" />
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="sqlDistinctType" />
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Simple type used to define the distinct class." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SQLSimpleType" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//DataType #//SQLDataType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A simple datatype used with an SQL column. Examples are Integer, Varchar, LOB, CLOB, etc..." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="characterMaximumLength" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="See [SQL], corresponding field in DATA_TYPE_DESCRIPTOR" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="characterOctetLength" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="See [SQL], corresponding field in DATA_TYPE_DESCRIPTOR" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="numericPrecision" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="See [SQL], corresponding field in DATA_TYPE_DESCRIPTOR" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="numericPrecisionRadix" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="See [SQL], corresponding field in DATA_TYPE_DESCRIPTOR" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="numericScale" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="See [SQL], corresponding field in DATA_TYPE_DESCRIPTOR" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dateTimePrecision" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="See [SQL], corresponding field in DATA_TYPE_DESCRIPTOR" />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SQLStructuredType" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class #//SQLDataType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A Datatype defined as Structured Type, per [SQL] standard." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="columnSet" ordered="false" upperBound="-1" eType="#//NamedColumnSet" eOpposite="#//NamedColumnSet/type">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A NamedColumnSet created as of this type." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="referencingColumn" ordered="false" upperBound="-1" eType="#//Column" eOpposite="#//Column/referencedTableType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Reference to a column of an SQLStructuredType (otherType) which is created with a REF clause referencing this SQLStructuredType (thisType). Note that in general, otherType and thisType are two different instances of SQLStructuredType." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Column" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="ScaleRequiresPrecision" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="ScaleRequiresPrecision" value="self.scale-&gt;notEmpty() implies self.precision-&gt;notEmpty()" />
+    </eAnnotations>
+    <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
+      <details key="ScaleRequiresPrecision.shortName" value="C-3" />
+      <details key="ScaleRequiresPrecision.name" value="Scale Requires Precision" />
+      <details key="ScaleRequiresPrecision.description" value="scale is valid only if precision is specified." />
+      <details key="ScaleRequiresPrecision.level" value="error" />
+      <details key="ScaleRequiresPrecision.specSource" value="self.scale-&gt;notEmpty implies self.precision-&gt;notEmpty" />
+      <details key="ScaleRequiresPrecision.specSource" value="self.scale.nonEmpty implies self.precision.notEmpty" />
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A column in a result set, a view, a table, or an SQLStructuredType." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="precision" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The total number of digits in the field." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="scale" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of digits on the right of the decimal separator." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isNullable" lowerBound="1" eType="#//enumerations/NullableType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates if null values are valid in this column.&#10;&#10;Note: Default values for Column data are provided in initialValue in the UML Attribute class (the class from which the Column class inherits)." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="length" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The length of fixed length character or byte strings. Maximum length if length is variable." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="collationName" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name of the collation sequence used to sort the data values in the column.&#10;This applies only to columns whose datatype is a form of character string." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="characterSetName" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name of the character set used for the values in the column.&#10;This field applies only to columns whose datatype is a character string." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="referencedTableType" eType="#//SQLStructuredType" eOpposite="#//SQLStructuredType/referencingColumn">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The column, used in an SQLStructuredType is a REF to a type. This references the REF�ed SQLStructuredType. " />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="optionScopeColumnSet" eType="#//NamedColumnSet" eOpposite="#//NamedColumnSet/optionScopeColumn">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Reference to the NamedColumnSet indicated in the SCOPE clause of the Column definition.&#10;&#10;&#10;" />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Procedure" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/behavioral#//Method">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class describes Relational DBMS Stored procedures and functions." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="#//enumerations/ProcedureType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A Procedure can be either a Function or a true Procedure. This indicates whether this object returns a value or not." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Trigger" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An action run by the DBMS when specified events occur on the table owning the Trigger" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="eventManipulation" lowerBound="1" eType="#//enumerations/EventManipulationType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates what types of events are using the current Trigger." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="actionCondition" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//BooleanExpression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A boolean expression which defines when the trigger has to be executed" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="actionStatement" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ProcedureExpression" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Trigger action itself" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="actionOrientation" lowerBound="1" eType="#//enumerations/ActionOrientationType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="It indicates if the trigger is called once per statement execution or before or after each row of the table is modified." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="conditionTiming" lowerBound="1" eType="#//enumerations/ConditionTimingType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="It indicates if the trigger activity is run before or after the statement or row is modified." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="conditionReferenceNewTable" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The alias for the owning table name, used in the actionStatement, to represent the state of the table after the insert/delete/update" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="conditionReferenceOldTable" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The alias for the name of the owning table, used in the actionStatement, to represent the state of the table before the update/delete/insert." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="usedColumnSet" ordered="false" upperBound="-1" eType="#//NamedColumnSet" eOpposite="#//NamedColumnSet/usingTrigger">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="NamedColumnSets referenced by the actionStatement or the actionCondition." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1" eType="#//Table" eOpposite="#//Table/trigger">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The table which owns the Trigger" />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SQLIndex" eSuperTypes="http://www.omg.org/spec/CWM/1.1/foundation/keysindexes#//Index">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An Index on a table." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="filterCondition" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Which subset of the table is indexed" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isNullable" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Entries in this index can be null" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="autoUpdate" lowerBound="1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The index is updated automatically" />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UniqueConstraint" eSuperTypes="http://www.omg.org/spec/CWM/1.1/foundation/keysindexes#//UniqueKey">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A condition to define uniqueness of rows in a table. An example of UniqueConstraint is a primary key" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deferrability" lowerBound="1" eType="#//enumerations/DeferrabilityType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates if the validity of the UniqueConstraint is to be tested at each statement or at the end of a transaction." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ForeignKey" eSuperTypes="http://www.omg.org/spec/CWM/1.1/foundation/keysindexes#//KeyRelationship">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A Foreign Key associates columns from one table with columns of another table.&#10;&#10;" />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deleteRule" lowerBound="1" eType="#//enumerations/ReferentialRuleType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An enumerated type. Indicates the disposition of the data records containing the foreign key value when the record of the matching primary key is deleted." />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="updateRule" lowerBound="1" eType="#//enumerations/ReferentialRuleType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Same as deleteRule for updates of the primary key data record" />
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deferrability" lowerBound="1" eType="#//enumerations/DeferrabilityType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates if the validity of the ForeignKey is to be tested at each statement or at the end of a transaction." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SQLIndexColumn" eSuperTypes="http://www.omg.org/spec/CWM/1.1/foundation/keysindexes#//IndexedFeature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Associates an index with its columns.&#10;&#10;This is really an association (link) class. It is associated with one index and one column.&#10;" />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PrimaryKey" eSuperTypes="#//UniqueConstraint">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="There is only one UniqueConstraint of type PrimaryKey per Table. It is implemented specifically by each RDBMS." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Row" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//Object">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An instance of a ColumnSet." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ColumnValue" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//DataValue">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The value in a column instance." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CheckConstraint" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Constraint">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A rule that specifies the values allowed in one or more columns of every row of a table." />
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deferrability" lowerBound="1" eType="#//enumerations/DeferrabilityType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates the timing of the constraint enforcement during multiple-user updates." />
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RowSet" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//Extent">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Each instance of RowSet owns a collection of Row instances. The inherited association between Namespace (a superclass of Package) and ModelElement is used to contain Instances." />
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SQLParameter" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/behavioral#//Parameter">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Parameters of stored procedures." />
+    </eAnnotations>
+  </eClassifiers>
+  <eSubpackages name="enumerations" nsURI="http://www.omg.org/spec/CWM/1.1/resource/relational/enumerations" nsPrefix="enumerations">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The enumerations and datatypes used in the Relational model." />
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EEnum" name="ActionOrientationType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Used in Trigger. &#10;It indicates if the trigger is called once per statement execution or before/after each row of the table is modified." />
+      </eAnnotations>
+      <eLiterals name="row">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The Trigger is executed befors/after each row modification, even if the SQL statement modifies several rows of the table." />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="statement" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The Trigger is called once per statement execution, independently of the number of changes made by the statement." />
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="ConditionTimingType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Used in Triggers.&#10;It indicates if the trigger activity is run before or after the statement or row is modified." />
+      </eAnnotations>
+      <eLiterals name="before">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The Trigger activity is run before the data is changed in the table." />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="after" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This Trigger activity is run after the data are modified in the table." />
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="DeferrabilityType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Used in Foreign Keys&#10;Indicates if the Foreign Key validation should be deferred to the end of the transaction or executed immadiately at the end of the statement.&#10;This is the value used at the beginning of a transaction. It can be changed within a transaction." />
+      </eAnnotations>
+      <eLiterals name="initiallyDeferred">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="By default, the test for Foreign Key validity is performed at the end of the transaction" />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="initiallyImmediate" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="By default, the test for ForeignKey validity is performed at each statement" />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="notDeferrable" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The test for Foreign Key validity is performed at each statement and cannot be changed in the transaction." />
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="EventManipulationType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Used in Trigger.&#10;Indicates what types of events are using the current Trigger. &#10;" />
+      </eAnnotations>
+      <eLiterals name="insert">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The Trigger activity is used for each insert statement on the table." />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="delete" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The Trigger is used for each delete statement on the table." />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="update" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The Trigger is used for each update statement of the table. " />
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="NullableType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Used in Column.&#10;Indicates if a Column may contain null values." />
+      </eAnnotations>
+      <eLiterals name="columnNoNulls">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The Column may not contain null values" />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="columnNullable" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The column may contain null values" />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="columnNullableUnknown" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="It is not known whether null values are allowed or not. " />
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="ProcedureType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Used in Procedure.&#10;Indicates if the Procedure is a Function or a Procedure" />
+      </eAnnotations>
+      <eLiterals name="procedure">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This is a procedure, without returned value." />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="function" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="This is a function, with a returned value." />
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="ReferentialRuleType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Used in Foreign Key.&#10;It indicates the action taken on the row containing a foreign key value, when the primary key value referenced is deleted or updated." />
+      </eAnnotations>
+      <eLiterals name="importedKeyNoAction">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The row with the foreign key remains and the foreign key will not match a primary key." />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="importedKeyCascade" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The row with the foreign key is deleted." />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="importedKeySetNull" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The foreign key value is set to NULL." />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="importedKeyRestrict" value="3">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The deletion or update of the primary key is not permitted and will fail." />
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="importedKeySetDefault" value="4">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The foreign key is set to the default value of its column." />
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>
+    
