@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="mips" nsURI="http://www.omg.org/spec/CWMMIP/1.0/" nsPrefix="mips">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The purpose of this specification (CWM Metadata Interchange Patterns, or CWM MIP) is to add a semantic context to the interchange of metadata in terms of recognized sets of objects or object patterns. It introduces the term &quot;Unit of Interchange&quot; (UOI) to define a valid, recognizable CWM interchange. From this information, a user of CWM, working in conjunction with CWM MIP, should be able to produce truly interoperable tools.&#xA;&#xA;CWM describes a format to interchange metadata, but lacks the knowledge to describe any particular type of interchange. The need to define the context of a CWM interchange was discovered when the CWM co-submitting companies produced the CWM Interoperability Showcase: in order to make an effective demonstration of CWM technology, the participants needed to agree upon the set of metadata to be interchanged.&#xA;&#xA;CWM MIP augments the current CWM metamodel definitions by adding a new metamodel package. This new metamodel provides the structural framework to identify both a UOI and an associated model of a pattern, and provides the necessary object definitions to describe both. The CWM MIP metamodel extends the CWM standard without altering any existing CWM implementations. This allows users of CWM MIP to use the data warehouse models defined by CWM and add the semantics of how to produce a UOI without an intrusion into the CWM definition.&#xA;&#xA;There are two primary classes: UnitOfInterchange, a subclass of CWM Namespace that contains the complete CWM instance (model/metadata) being interchanged, and InterchangePattern, which formally describes the pattern that the content of UnitOfInterchange conforms to.&#xA;&#xA;The MOF-typed references of ModeledSemanticContext and ModeledGraphSubset are mapped onto the corresponding CWM ObjectModel classes: the source model carries only empty stubs for MOF::Model::ModelElement and MOF::Model::Association.&#xA;&#xA;Source: OMG Common Warehouse Metamodel Metadata Interchange Patterns, v1.0 (formal/04-03-25), and the Rational Rose model CWMMIP.cat of 2003-11-06."/>
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model"/>
+    <details key="prefix" value="Mips"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="literalsInterface" value="true"/>
+    <details key="loadInitialization" value="false"/>
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="InterchangePattern" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="InterchangePattern formally describes a CWM Metadata Interchange pattern. Such a pattern may describe the content of one or more instances of UnitOfInterchange referenced by InterchangePattern."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name of the interchange pattern."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The version of the interchange pattern."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="uri" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A URI identifying a human-readable pattern specfication document that describes the interchange pattern."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="classification" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the structural classification of the pattern: Micro Pattern, Domain Pattern, Macro Pattern."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="category" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the usage category of the pattern: Mapping, Typing, Extension, Interpretation, Generation, Structural."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="projection" ordered="false"
+        lowerBound="1" upperBound="-1" eType="#//Projection" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An object-valued array of type Projection that describes the metamodel graph subset defining the semantic context of the pattern. If this attribute contains more than one value, then the complete projection of the pattern is the graph union of multiple projection object values. This attribute has a multiplicity of 1..*."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentPattern" ordered="false"
+        upperBound="-1" eType="#//InterchangePattern">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="compositePattern"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="compositePattern"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="References the collection of component patterns that this pattern is comprised of (if any). This reference is a derived attribute based on the componentPattern end of the reflexive association."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UnitOfInterchange" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Namespace">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="UnitOfInterchange is a subclass of CWM Namespace that contains the complete CWM instance (model/metadata) being interchanged."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="interchangePattern" eType="#//InterchangePattern">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="unitOfInterchange"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="unitOfInterchange"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Reference to any related instance of InterchangePattern."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Projection" abstract="true" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Projection is an abstract base class that models the semantic context of the pattern, where by semantic context we mean a well-defined subset of the CWM metamodel graph."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SemanticContext" eSuperTypes="#//Projection">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="SemaniticContext is a concrete subclass of Projection that specifies a projection by naming the CWM model elements and associations comprising the projection, along with any constraints on those elements."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="element" ordered="false"
+        upperBound="-1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Element contains the names of the CWM metamodel classes comprising the Projection, expressed as string-based, logical names. This attribute has a multiplicity of 0..*. These logical names may refer to elements from multiple CWM metamodel packages."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="association" ordered="false"
+        upperBound="-1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Association contains the names of CWM associations comprising the Projection, expressed as string-based logical names. This attribute has a multiplicity of 0..*. These logical names may refer to associations from any number of CWM packages, including associations that span packages."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="anchorElement" ordered="false"
+        upperBound="-1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="AnchorElement names CWM metamodel elements from the Projection that have some distinguished meaning. Generally, these elements are thought of as root objects of the metamodel Projection graph and are used as starting points for navigating the graph. This attribute has a multiplicity of 0..*. Although a Projection may have multiple anchor points, in practice, most Projections will usually have a single anchor point."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constraint" ordered="false"
+        upperBound="-1" eType="#//PatternConstraint" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Constraint is a collection of pattern constraints that apply to elements and associations comprising the Projection. This attribute has a multiplicity of 0..*."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GraphSubset" eSuperTypes="#//Projection">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="GraphSubset is a concrete subclass of Projection that allows a projection to be specified by an expression which, when evaluated, describes some physical sub-graph of the CWM UML model."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="element" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Element is the logical name of a CWM metamodel element (usually a package or class) comprising the physical projection."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deepCopy" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="DeepCopy is a Boolean attribute which, when true, implies that all connected elements and their attributes, within the boundaries of the specified package, are to be included in the pattern projection."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="copyDepth" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="CopyDepth is an integer value that specifies the number of graph edges to traverse when establishing the physical graph projection, in cases when deepCopy is false."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="aggregationsOnly" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="AggregationsOnly is a Boolean attribute which, when true, specifies that only composite elements and their components are to be included in the physical graph projection."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="includeAssociations" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="IncludeAssociations is a Boolean attribute which, when true, specifies that associations are to be included in the physical graph projection."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ModeledSemanticContext" eSuperTypes="#//SemanticContext">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="ModeledSemanticContext is a subclass of SemanticContext that adds references to instances of MOF ModelElements and MOF Associations, as well as an association to MOF ModelElements as a means of specifying anchor classes. Constraints may be specified within ModelSemanticContext via the inherited SemanticContext::constraint attribute.&#xA;&#xA;Note that this class generally supports the construction of &quot;explicitly modeled&quot; pattern definitions; that is, pattern definitions composed of MOF metaclass instances (or MOF metaobjects), rather than simply logical class names."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mofElement" ordered="false"
+        upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="modeledProjection"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="modeledProjection"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Reference to the set of MOF ModelElements comprising a Projection."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mofAnchorElement" ordered="false"
+        upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="modeledSemanticContext"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="modeledSemanticContext"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Reference to the set of MOF ModelElements comprising a Projection that play the role of anchor elements."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mofAssociation" ordered="false"
+        upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/relationships#//Association">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="modeledProjection"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="modeledProjection"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Reference to the set of MOF Associations comprising a Projection."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ModeledGraphSubset" eSuperTypes="#//GraphSubset">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="ModeledGraphSubset is a subclass of GraphSubset that adds a reference to a single instance of MOF ModelElement.&#xA;&#xA;Note that this class generally supports the construction of &quot;explicitly modeled&quot; pattern definitions; that is, pattern definitions composed of MOF metaclass instances (or MOF metaobjects), rather than simply logical class names."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mofElement" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="modeledGraphSubset"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="modeledGraphSubset"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Reference to the set of MOF ModelElements defining the graphical subset of a Projection."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PatternConstraint" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="PatternConstraint is used to define constraints against the metamodel Projection. There is no requirement to use any particular constraint language. However, if OCL is used, the OCL expression contained by PatternConstraint::body must be a valid OCL expression relative to the modeling context of the Projection."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="body" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Constraint expressed as a textual string in some constraint language."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="language" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specfies the names of the constraint language used."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Restriction" eSuperTypes="#//PatternConstraint">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Restriction is a subclass of PatternConstraint that imposes structural constraints on an instance of a Projection. The resulting structure is then regarded as being invariant with regard to other values that might be supplied in the construction of the pattern instance (e.g., values of certain class attributes)."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BindingParameter" eSuperTypes="#//PatternConstraint">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="BindingParameter is a subclass of PatternConstraint that typically asserts values (or value ranges) for class attributes. BindingParameters do not influence structure, but influence content instead."/>
+    </eAnnotations>
+  </eClassifiers>
+</ecore:EPackage>

@@ -54,6 +54,7 @@
 
   <modules>
     <module>cwm</module>
+    <module>mips</module>
    <!-- <module>cwmx</module> -->
   </modules>
 </project>
