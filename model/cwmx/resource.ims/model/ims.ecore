@@ -1,0 +1,1327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="ims" nsURI="http://www.omg.org/spec/CWMX/1.1/resource/ims" nsPrefix="ims">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwmx.resource"/>
+    <details key="prefix" value="Ims"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="literalsInterface" value="true"/>
+    <details key="loadInitialization" value="false"/>
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="ACBLIB" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents the collection of components needed for an IMS ACB (Application Control Block).&#xA;&#xA;An IMS application will use one or more PSBs. For an application to be compiled successfully, all of the PSBs and all of the DBDs referenced by those PSBs must be collected into an ACBLIB."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dbd" ordered="false" upperBound="-1"
+        eType="#//DBD">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The DBDs used in this ACBLIB."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="psb" ordered="false" upperBound="-1"
+        eType="#//PSB">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The PSBs used in this ACBLIB"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AccessMethod" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An instance of a subtype of this virtual class holds access-method-specific attributes of a DBD user object. DBDs with access methods MSDB, INDEX, HIDAM, DEDB or HDAM will use instances of the subclasses of this object class."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dbd" lowerBound="1" eType="#//DBD">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="DBD extended by this access method instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DBD" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/record#//RecordFile">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An instance of this object class represents an IMS Data Base Description, which is the Root entity for a DBD object.&#xA;&#xA;DBDs describe the organization of data and the pathways by which an application program can retrieve or store Records. A Record within a DBD is called a Segment. Segments are connected by parent-child relationships to create the information hierarchy."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="exit" ordered="false" upperBound="-1"
+        eType="#//Exit" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Data capture exit used by this DBD."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="acblib" ordered="false"
+        upperBound="-1" eType="#//ACBLIB">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The ACBLIB(s) in which the DBD is used."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataset" ordered="false"
+        upperBound="-1" eType="#//Dataset" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Dataset information for this DBD."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="segment" ordered="false"
+        upperBound="-1" eType="#//Segment" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Segments that are part of this DBD."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="accessMethod" eType="#//AccessMethod"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Connection to additional attributes and relationships that apply to a specific access method."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="library" ordered="false"
+        upperBound="-1" eType="#//DBDLib">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="DBDLIB(s) in which DBD is stored."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pcb" ordered="false" upperBound="-1"
+        eType="#//PCB">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The PCBs that are based on this DBD."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dliAccess" eType="#//imstypes/AccessMethodType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds the access method of the DBD. PSINDEX, PHDAM, and PHIDAM are new valid values added for IMS V6."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isVSAM" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute indicates whether the operating system access method for the DBD is VSAM. It affects the string in the ACCESS keyword in the generated DBD when dliAccess=GSAM, HDAM,or HIDAM."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="passwordFlag" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute is a flag to indicate whether PASSWD=YES should be specified on the DBD macro."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="versionString" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This is a 255-character string that is generated with the VERSION keyword to serve as a descriptive label on the DBD."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DBDLib" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A DBDLib is a collection of DBDs, comparable to a COPYlib for data structures."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dbd" ordered="false" upperBound="-1"
+        eType="#//DBD">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="DBDs stored in the DBDLIB."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DEDB" eSuperTypes="#//AccessMethod">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An instance of this object class represents a DBD user object that has access=DEDB. A DEDB DBD is a Fast Path DBD designed for very fast transactions. It must have a randomizing module name to be valid. STAGE and XCI (Extended Call Interface) were new parameters added with IMS 5."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rmName" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute is the name of the executable module used to randomize the database."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stage" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies whether or not the randomizer is a 1 or 2 stage process (default is 1)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="extendedCall" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies whether or not the ramdomizer should use the extended call interface."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Dataset" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Instances of this object type are used to hold attributes for the DATASET and AREA macro statements.&#xA;&#xA;DATASET and AREA macro statements describe the physical storage of the DBD in MVS datasets that are connected to an application by use of DD Statements in the JCL."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dbd" lowerBound="1" eType="#//DBD">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="DBD that uses this DATASET statement."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="segment" ordered="false"
+        upperBound="-1" eType="#//SegmentComplex">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Segment whose physical data is stored in the physical dataset represented by the DATASET statement."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dd1name" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Name of the primary or input dataset"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="device" eType="#//imstypes/DeviceType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute is the DEVICE specified on the DATASET statement."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="model" eType="#//imstypes/ModelType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds the model part of the DEVICE attribute on the DATASET statement. The value is not relevant for most device types."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dd2name" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Name of overflow or output dataset."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="size1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Size of area or primary or input dataset. For DEDB databases, valid values are: 512, 1024, 2048, 4096, 8192, 12288, 16384, 20480, 24576, 28672, and the Default value is 4096"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="size2" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Size of overflow or output dataset"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="recordLength1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Record length in primary or input dataset."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="recordLength2" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Record length in primary or input dataset."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="blockingFactor1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Blocking factor in primary or input dataset"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="blockingFactor2" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Blocking factor in overflow or output dataset."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="datasetLabel" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds a label used for reverse referencing of datasets in a HDAM or HIDAM database."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="freeBlockFrequency" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute describes the frequency of free blocks in the initial dataset layout. Valid Values are 0, 2-100, null"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="freeSpacePercentage" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute describes the percentage of free space in the initial dataset layout. Valid Values are 0-99, null"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="recordFormat" eType="#//imstypes/RECFMType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute describes the record format for a GSAM database. Valid Values are F, FB, V, VB, U, null"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="scanCylinders" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute describes the number of cylinders to be scanned to find space for new data. Valid values are 0-255"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="searchAlgorithm" eType="#//imstypes/AlgorithmType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies where should IMS look for space in which to put new data. Valid Values are 0, 1, 2, null"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="root" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds total space allocated to the root addressable part of the AREA in terms of UOWs. A value of 0 represents a null value. Valid Values are 0 or 2-32767"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rootOverflow" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds the amount of space reserved for independent overflow in terms of units of work. A value of 0 represents a null value. Valid values are 0 or 1-32767.&#xA;&#xA;Constraints:&#xA;&#xA;    root and rootOverflow must be specified together.&#xA;    The value in rootOverflow must be less than the value in root."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="uow" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds the number of control intervals in a unit of work. A value of 0 represents a null value. Valid values: 0 or 2-32767"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="uowOverflow" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds the number of control intervals in overflow section of a unit of work. A value of 0 represents a null value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Exit" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents a Data Capture exit routine, which is specified to enable DB2 applications and end users to access updated IMS data. Data Capture exits can apply to an entire DBD or to a specific segment."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dbd" eType="#//DBD">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The DBD instance that uses this data capture exit."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="segment" eType="#//Segment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The Segment instance that uses this data capture exit."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies whether the exit routine is passed the physical concatenated key. This key identifies the physical segment updated by the application. A value of TRUE makes to KEY, a value of FALSE maps to NOKEY."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="data" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies whether the physical segment data is passed to the exit routine for updating. When DATA is specified and a Segment Edit/Compression exit routine is also used, the data passed is expanded data. A value of TRUE maps to DATA, a value of FALSE maps to NODATA."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="path" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies whether the data from each segment in the physical roots hierarchical path must be passed to the exit routine for an updated segment. A value of TRUE maps to PATH; a value of FALSE maps to NOPATH."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="log" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies whether the data capture control blocks and data should be written to the IMS system log. A value of TRUE maps to LOG; a value of FALSE maps to NOLOG."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cascade" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies whether the exit routine is called when DL/I deletes this segment because the application deleted a parent segment. Using CASCADE ensures that data is captured for the defined segment. A value of TRUE maps to CASCADE; a value of FALSE maps to NOCASCADE."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cascadeKey" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies whether to pass the physical concatenated key to the exit. This key identifies the segment being deleted by a cascade delete. A value of TRUE maps to PATH; a value of FALSE maps to NOPATH."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cascadeData" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The attribute specifies whether to pass segment data to the exit routine for a cascade delete. DATA also identifies the segment being deleted when the physical concatenated key is unable to do so."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cascadePath" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies whether to allow an application to separately access several segments for a cascade delete. A value of TRUE maps to PATH; a value of FALSE maps to NOPATH."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Field" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/record#//FixedOffsetField">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This sub-type is used to add the attributes that apply to a Record Field only within the context of a specific DBD. One or more Fields within a Segment can be defined as a Sequence Field, which is the Key for the segment. A Sequence Field can be defined as Unique or Multiple. A Segment description does not have to include all of the Fields defined within the data structure."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ddataIndex" ordered="false"
+        upperBound="-1" eType="#//SecondaryIndex">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The index that uses this field as duplicate data."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="searchIndex" ordered="false"
+        upperBound="-1" eType="#//SecondaryIndex">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The index that uses this field for a search field."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="senField" ordered="false"
+        upperBound="-1" eType="#//SenField">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Instances of this relationship type are used to connect a SensitiveField instance to the Field instance that represents a field to which the sensitiveSegment is sensitive."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subseqIndex" ordered="false"
+        upperBound="-1" eType="#//SecondaryIndex">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The index that uses this field as a subsequence field."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sequenceField" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute is a flag to indicate whether the dataItem instance should be generated as a sequence field or not."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="uniqueSequence" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute is a flag to indicate whether the dataItem instance should be generated as a unique sequence field."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fieldLength" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The attribute holds the length of the data item. This value should come from the data item itself."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="generated" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates if the field has been generated by analyzing the &quot;copybook&quot; associated with the structure/segment, or if the field is coming directly from the IMS catalog"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HDAM" eSuperTypes="#//AccessMethod">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An instance of this object class represents a DBD user object that has access=HDAM. These attributes are part of the randomizing module information that a valid HDAM DBD must have. HDAM is a full-function DBD with indexing and logical relationships."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rmName" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute is the name of the executable module used to randomize the database."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="relativeBlockNumber" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The maximum relative block number that the user wishes to allow a randomizing module to produce for a database. This attributes determines the number of control intervals or blocks in the root-addressable area of a HDAM database. Valid Values: 0 or 1-16777215"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rootAnchorPoints" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of root anchor points desired in each control interval of block in the root addressable area. Valid Values: 0 or 1-255"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rootMaxBytes" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The maximum number of bytes of database record that can be stored in the root-addressable&#xA;area in a series of inserts unbroken by a call to another database record."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HIDAM" eSuperTypes="#//AccessMethod">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An instance of this object class represents a DBD user object with an access method of HIDAM. A HIDAM DBD must have a primary index relationship to be valid. The relationship maps to an LCHILD statement under the root segment that has POINTER=INDX and no associated XDFLD statement. A HIDAM DBD is a full function DBD with indexing and logical relationships."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="index" eType="#//INDEX">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The primary index for this HIDAM DBD"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="INDEX" eSuperTypes="#//AccessMethod">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An instance of the DBDindex object class represents a DBD user object that can be used to index a HIDAM database or a segment in a HDAM, HIDAM or HISAM database. The indexing relationship maps to the LCHILD statement in the macro language description of an index DBD. An INDEX DBD can also be treated as a normal single-segment DBD."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sharingIndex" ordered="false"
+        upperBound="16" eType="#//INDEX">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The second and later Index DBDs that share a dataset."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sharedIndex" eType="#//INDEX">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The first DBD that defines the Dataset shared by the rest of the index DBDs."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="secondaryTarget" eType="#//SecondaryIndex">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The secondary index relationship to a complex segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="senseg" ordered="false"
+        upperBound="-1" eType="#//SenSegment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The sensitive segments indexed by this Index DBD"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryTarget" eType="#//HIDAM">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The HIDAM DBD for which this Index is the primary index."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sequencedPCB" ordered="false"
+        upperBound="-1" eType="#//PCB">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The PCB(s) that use this secondary index for processing sequence."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dosCompatibility" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute indicates whether the index DBD was created with DLI/DOS with a segment code as part of the prefix."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="protect" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute is a flag for data integrity in index pointer segments."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LCHILD" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This type holds the attributes that apply to the relationship used to connect a SegmentComplex instance to the SegmentComplex instances for which it is the logical parent (maps to LCHILD statement and to the PARENT keyword on the SEGM statement)."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lparent" lowerBound="1"
+        eType="#//SegmentComplex">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The segment that represents the parent in a logical parent relationship."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lchild" lowerBound="1"
+        eType="#//SegmentComplex">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The child segment in the logical parent relationship."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pairedSegment" eType="#//SegmentComplex">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The pair relationship to a physical child of the logical parent segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="counter" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds a flag for whether COUNTER keyword is to be used in the POINTER= parameter on the child segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lcPointer" eType="#//imstypes/ChildPointerType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds a value used in the POINTER keyword on the LCHILD macro to specify amount of pointer fields to be reserved in the logical parent segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lparentFlag" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds a flag for whether LPARNT keyword is to be used in the POINTER= parameter on the child segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ltwin" eType="#//imstypes/LPointerType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds a value to be used in the POINTER= parameter on the child segment in order to specify logical twin pointers."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rules" eType="#//imstypes/RulesType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds a value used in the RULES keyword on the LCHILD macro to control the logical twin sequence."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="virtualParent" eType="#//imstypes/ParentType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds a value used in the PARENT parameter on the logical child segment to specify whether the concatenated key of the logical parent segment is stored with each logical child segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MSDB" eSuperTypes="#//AccessMethod">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A DBD with access=MSDB (Mass Storage Data Base) has msdbField and msdbType information instead of physical datasaet information."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="msdbField" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds a search field name for a Mass Storage Data Base.&#xA;&#xA;Update Constraints&#xA;&#xA;    A string is required in msdbField when msdbType=FIXED, TERM,or DYNAMIC for the DBD user object to be valid.&#xA;    The string in msdbField must not be the same as the name on any FIELD statement in this DBD.&#xA;msdbField must be null when msdbType=NO."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="msdbType" eType="#//imstypes/MSDBtype">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies the type of Mass Storage Data Base. It may be NO (nonterminal-related without terminal-related keys which has key and sequence field as part of the segment), FIXED (terminal-related fixed), TERM (nonterminal-related with terminal-related keys), DYNAMIC (terminal-related dynamic) or null"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PCB" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/record#//RecordFile">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A PCB is a series of macro instructions contained in a PSB. PCBs which come in three varieties:&#xA;&#xA;    TP (Teleprocessing) PCBs describe a connection to a terminal&#xA;    GSAM PCBs connect a PSB to a input or output file.&#xA;    DB PCBs connect a PSB to the data defined by a DBD."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dbd" eType="#//DBD">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The DBD on which this PCB is based."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="senSegment" ordered="false"
+        upperBound="-1" eType="#//SenSegment" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The sensitive segments included in this PCB."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="psb" ordered="false" upperBound="-1"
+        eType="#//PSB">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The PSB(s) that use this PCB."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="procSeq" eType="#//INDEX">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The secondary index that this PCB uses as a processing sequence."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pcbType" eType="#//imstypes/PCBType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The type of PCB - whether GSAM, DB or TP"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="list" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies whether a named PCB is included in the PCB list passed to the application program at entry. TRUE includes the PCB in the PCB list, FALSE excludes it from the PCB list."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="keyLength" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value specified in bytes of the longest concatenated key for a hierarchic path of sensitive segments used by the application program in the logical data structure."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="processingOptions" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds a string that represents the processing options on either the sensitive segments or the data set declared in this PCB and which can be used in an associated application program."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="positioning" eType="#//imstypes/PositioningType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies whether single or multiple positioning is desired for the logical data structure. Single or multiple positioning provides a functional variation in the call. Multiple positioning is not supported by HSAM."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sequentialBuffering" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value in this attribute specifies if this PCB will be buffered using sequential buffering (SB). True means the SB should be activated conditionally (COND); False means that SB should not be used for this DB PCB (NO)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alternateResponse" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies whether this PCB can be used instead of the I/O PCB for responding to terminal in response mode, conversational mode, or exclusive mode."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="express" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies whether messages from this alternate PCB are to be sent (TRUE) or are to be backed out (FALSE) if the application program should terminate abnormally."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="modify" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies whether the alternate PCB is modifiable. This feature allows for the dynamic modification of the destination name associated with this PCB."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sameTerminal" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies whether IMS should verify that the logical terminal named in the response alternate PCB is assigned to the same physical terminal as the logical terminal that originated the input message."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="destinationType" eType="#//imstypes/LTermType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The attribute specifies whether the ltermName attribute signifies a logical terminal (LTERM) or a transaction code (NAME). This attribute maps to the LTERM or NAME keyword on the PCB macro statement."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ltermName" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies the name of the actual destination of the message and is either a logical terminal name or a transaction-code name. When the name is a transaction-code name, output messages to this PCB are queued for input to the program used to process the transaction-code named by the NAME attribute. The name must be specified in the users IMS/VS system definition as a logical terminal name or transaction code. This attribute maps to the LTERM/NAME keyword on the PCB macro statement."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PSB" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/record#//RecordFile">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An instance of this object class represents the root entity of a PSB user object. Within IMS, a PSB (Program Specification Block) is a series of PCB macro instructions that describe an application programs I/O operations and its view and use of segments and fields in IMS databases. The types of PCBs are TP PCB which describes interactions with logical terminals, GSAM PCB which is based on a GSAM DBD used as an input or output dataset, and DB PCB which can relate to segments and fields in its base DBD."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="acblib" ordered="false"
+        upperBound="-1" eType="#//ACBLIB">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The ACBLIB(s) that use this PSB."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="library" ordered="false"
+        upperBound="-1" eType="#//PSBLib">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The PSBLIB(s) in which this PSB is stored."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pcb" ordered="false" upperBound="-1"
+        eType="#//PCB">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The PCBs used by this PSB."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="compatibility" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value in this attribute provides for compatibility between BMP or MSG and Batch-DL/I parameter lists. When TRUE, the PSB is always treated as if there were an I/O PCB, no matter how it is used. When FALSE, the PSB has an I/O PCB added only when run in a BMP or MSG region."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ioErrorOption" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value in this attribute represents the condition code returned to the operating system when IMS/VS terminates normally and one or more input or output errors occurred on any data base during the application program execution."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ioaSize" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds the size of the largest I/O area to be used by the application program. The size specification is used to determine the amount of main storage reserved in the PSB pool to hold the control regions copy of the users I/O area data during scheduling of this application program. If this value is not specified, the ACB utility program calculates a maximum I/O area size to be used as a&#xA;default. The size calculated is the total length of all sensitive segments in the longest possible path call. The value specified is in bytes."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="language" eType="#//imstypes/PSBLanguageType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds the language label used on the PSBGEN statement."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lockMaximum" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value in this attribute indicates the maximum number of locks an application program can get at one time. The value is specified in units of 1000. For example, a lockMaximum value of 5 indicates a maximum of 5000 locks at one time. A value of 0 turns off the limit."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maximumQxCalls" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value in this attribute represents the maximum number of data base calls with Qx command codes which may be issued between synchronization points. If this number is exceeded, the application program will abend."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="onlineImageCopy" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies whether the user of this PSB is authorized to execute the Online Data Base Image Copy utility or the Surveyor utility feature run as a BMP against a data based named in this PSB. When TRUE, use of the Online Image Copy and the Surveyor utility feature is allowed; When FALSE, use of the Online Image copy and the Surveyor utility feature is prohibited."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ssaSize" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value in this attribute represents the maximum total length of all SSAs to be used by the application program. The size specification is used to determine the amount of main storage reserved in the PSB pool to hold the control regions copy of the users SSA string during scheduling of this application program. If not specified, the ACB utility program calculates the maximum SSA size to be used as a default. The size calculated is the maximum number of levels in any PCB within this PSB times 280. The value specified is in bytes."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="writeToOperator" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attributes holds a subparameter of the IOEROPN parameter. It is tied to the &quot;write-to-operator-with-reply&quot; function in the Utility Control facility. When TRUE, a WTOR for the DFS0451A I/O error message is issued, and DL/I waits for the operator to respond before continuing."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PSBLib" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A collection of PSBs - comparable to a COPYlib for data structures."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="psb" ordered="false" upperBound="-1"
+        eType="#//PSB">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The PSBs stored in this PSBLIB."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SecondaryIndex" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This type holds the attributes on the relationships between a SegmentComplex instance and the INDEX instances that act as secondary indexes for the DBD (maps to combination of LCHILD and XDFLD statements)."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="indexSource" eType="#//SegmentComplex">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The segment that contains the Search, Subsequence and Duplicate data fields for the index relationship."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="index" lowerBound="1" eType="#//INDEX">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The index used in the secondary index relationship."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ddataFields" ordered="false"
+        upperBound="5" eType="#//Field">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Fields used for duplicate data in the index relationship."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="segment" lowerBound="1"
+        eType="#//SegmentComplex">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The segment that is being indexed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="searchFields" ordered="false"
+        upperBound="5" eType="#//Field">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The fields used for search fields by the secondary index."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subseqFields" ordered="false"
+        upperBound="5" eType="#//Field">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The fields used as subsequence fields by the secondary index."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="constant" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds a character string that defines a one-byte self-defining term with which every index pointer segment in a particular secondary index is identified. It is used to identify index pointer segments for a specific secondary index when multiple secondary indexes reside in the same database."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exitRoutine" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute is the name of the executable module that suppresses creation of index pointer segments."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nullValue" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds a character string that is a one-byte self-defining term. The creation of index pointer segments is suppressed when the specified value is contained in the search field of an index pointer segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Segment" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/record#//RecordDef">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An instance of this object class represents a segment within a DBD user object. A segment is the IMS-view of a data structure that maps the fields in the segment."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="exit" ordered="false" upperBound="-1"
+        eType="#//Exit" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Data capture exit used by this segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dbd" lowerBound="1" eType="#//DBD">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="DBD that owns this segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="logical" ordered="false"
+        upperBound="-1" eType="#//SegmentLogical">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The logical segment that is based on this physical segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="child" ordered="false"
+        upperBound="-1" eType="#//Segment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The physical child segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//Segment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The physical parent segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="senseg" ordered="false"
+        upperBound="-1" eType="#//SenSegment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The sensitive segments that use this segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exitFlag" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute is a flag to indicate whether a segment will use the data capture exits specified on the DBD. A valid of FALSE maps to use of EXIT=NONE parameter on the SEGM macro. This flag has no meaning when exits points to any instances of PropagatedBy."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="frequency" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds estimated number of times that this segment will occur for each occurrence of its physical parent."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maximumLength" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds the length of a fixed-length segment, or the maximum length of a variable length segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minimumLength" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds the minimum length of a variable length segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rules" eType="#//imstypes/RulesType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attributes holds the value that indicates where to place new occurrences of this segment type in the physical database."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="subsetPointers" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds the number of subset pointers in a direct dependent segment in a DEDB DBD. Valid values are 0-8."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="directDependent" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute indicates whether the segment is direct dependent or sequential. A value of TRUE specifies use of DIR as the segment type on the generated DBD. A value of FALSE specifies use of SEQ on the generated DBD. This attribute is ignored for the root segment of the DBD user object."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pcPointer" eType="#//imstypes/ChildPointerType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute describes the type of physical child pointer to be stored in the prefix area of the segment in the DBD. Valid Values are SNGL, DBLE, null"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SegmentComplex" eSuperTypes="#//Segment">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This subclass of Segment supports the full-function features that are limited to HDAM, HIDAM and HISAM databases: specifically logical children and secondary indexes."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourcedIndex" ordered="false"
+        upperBound="-1" eType="#//SecondaryIndex">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The index that uses fields in this segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="secondaryIndex" ordered="false"
+        upperBound="32" eType="#//SecondaryIndex" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The secondary index relationships that would be represented as LCHILD/XDFLD statement sets."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lchild" ordered="false"
+        upperBound="-1" eType="#//LCHILD" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The relationship to the logical children relationships."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lparent" eType="#//LCHILD">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The relationship to the logical parent relationship instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pairedLCHILD" eType="#//LCHILD">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The child segment in the logical parent relationship. The pair relationship to a logical child of the physical parent segment"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataset" eType="#//Dataset">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Reference to a physical dataset in which this segments physical data is stored."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deleteFlag" eType="#//imstypes/FlagsType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds the value used for the delete rule."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="insertFlag" eType="#//imstypes/FlagsType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds the value used for the insert rule. bidirectional is not used for the insert flag."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="replaceFlag" eType="#//imstypes/FlagsType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds the value used for the replace rule. bidirectional is not used for the replace flag."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="segmPointer" eType="#//imstypes/PointerType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds the string used for pointer keyword value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dsGroup" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This is used to arrange the segments in a partitioned database in a manner comparable to arranging them within datasets in earlier versions of IMS"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SegmentLogical" eSuperTypes="#//Segment">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An instance of this object class represents a segment in a DBD user object that has access method of LOGICAL. Segments in a logical DBD use segments in other DBDs instead of defining physical data."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="physical" ordered="false"
+        upperBound="2" eType="#//Segment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The real segment that is the basis of the logical segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="keyData1" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute indicates how segment data will be handled when the logical DBD is processed.&#xA;&#xA;A value of TRUE specifies use of &quot;DATA&quot; as the type in the first parameter of the SOURCE keyword in the generated DBD, which directs the segment key to be placed in the key feedback area and the segment data to be placed in the users I/O area.&#xA;&#xA;A value of FALSE specified use of &quot;KEY&quot; as the type, which directs only the key to be placed in the key feedback area."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="keyData2" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute indicates how segment data will be handled when the logical DBD is processed.&#xA;&#xA;A value of TRUE specifies use of &quot;DATA&quot; as the type in the second parameter of the SOURCE keyword in the generated DBD, which directs the segment key to be placed in the key feedback area and the segment data to be placed in the users I/O area.&#xA;&#xA;A value of FALSE specified use of &quot;KEY&quot; as the type, which directs only the key to be placed in the key feedback area. A value of NULL indicates that there is no second SOURCE parameter."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SenField" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/record#//FixedOffsetField">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This relationship associates a SensitiveSegment instance to the Field instances that represent the fields in the segment to which the PCB must be sensitive.&#xA;&#xA;Field level sensitivity provides an increased level of data independence by isolating application programs from changes in the arrangement of fields within a segment and addition or deletion of data within a segment. Additionally, it enhances data security by limiting an application program to a subset of fields within a segment and controlling replace operations at the field level."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="field" lowerBound="1" eType="#//Field">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The field to which the PCB is sensitive."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="senSegment" lowerBound="1"
+        eType="#//SenSegment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The segment that is sensitive to this field."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="replace" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value of this attribute specifies whether this field may be altered on a replace call."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SenSegment" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/record#//RecordDef">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The type holds the attributes that apply to a PCBs use of a specific segment within a DBD. Application programs using a PCB can only access the segments to which that PCB is sensitive, protecting an hiding some of the data covered by the DBD."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="index" ordered="false"
+        upperBound="32" eType="#//INDEX">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The indices of this sensitive segment"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pcb" lowerBound="1" eType="#//PCB">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The PCB that includes this sensitive segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="segment" lowerBound="1"
+        eType="#//Segment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="One segment to which the PCB is sensitive."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="senField" ordered="false"
+        upperBound="-1" eType="#//SenField" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The field to which the segment is sensitive."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="procoptSENSEG" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute holds the processing options allowable for use of this sensitive segment by an associated application program. It has the same meaning as the same attribute in the PCB, plus other options may be specified here which are not allowed on the PCB. This PROCOPT overrides the PCB PROCOPT."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="subsetPointers" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This attribute specifies sensitivity to the array of subset pointers, each of which may be R (read sensitive), U (update sensitive), or N (not sensitive)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eSubpackages name="imstypes" nsURI="http://www.omg.org/spec/CWMX/1.1/resource/ims/imstypes"
+      nsPrefix="imstypes">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This package contains enumeration types for IMS classes."/>
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EEnum" name="AccessMethodType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Access method types"/>
+      </eAnnotations>
+      <eLiterals name="imsam_DEDB">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Data Entry Data Base"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsam_GSAM" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Generalized Sequential Access Method"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsam_HDAM" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Hierarchical Direct Access Method"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsam_HIDAM" value="3">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Hierarchical Indexed Direct Access Method"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsam_HISAM" value="4">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Hierarchical Indexed Sequential Access Method"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsam_HSAM" value="5">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Hierarchical Sequential Access Method"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsam_INDEX" value="6">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="index database"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsam_LOGICAL" value="7">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Logical database"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsam_MSDB" value="8">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Mass Storage Data Base"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsam_PSINDEX" value="9">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Partitioned Index"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsam_PHDAM" value="10">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Partitioned HDAM"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsam_PHIDAM" value="11">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Partitioned HIDAM"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsam_SHSAM" value="12">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Simple (single segment) HSAM"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsam_SHISAM" value="13">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Simple (single segment)  HISAM"/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="AlgorithmType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="LPointer types"/>
+      </eAnnotations>
+      <eLiterals name="imsat_0">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Specifies that IMS chooses which HD space search algorithm to use.  Maps to a value of SEARCHA=0."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsat_1" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Specifies that IMS uses the HD space search algorithm that does not search for space in the second-most desirable block or CI. Maps to SEARCHA=1"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsat_2" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Specifies that IMS uses the HD space search algorithm that includes a search for space in the second-most desirable block or CI. Maps to SEARCHA=2"/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="ChildPointerType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Child pointer types"/>
+      </eAnnotations>
+      <eLiterals name="imscp_SNGL">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Use single pointers in the prefix area (SNGL parameter)."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imscp_DBLE" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Use double pointers in the prefix area (DBLE parameter)."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imscp_NONE" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Use no pointers in the prefix area."/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="DeviceType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Device types"/>
+      </eAnnotations>
+      <eLiterals name="imsdt_2305"/>
+      <eLiterals name="imsdt_2319" value="1"/>
+      <eLiterals name="imsdt_3330" value="2"/>
+      <eLiterals name="imsdt_3350" value="3"/>
+      <eLiterals name="imsdt_3375" value="4"/>
+      <eLiterals name="imsdt_3380" value="5"/>
+      <eLiterals name="imsdt_3390" value="6"/>
+      <eLiterals name="imsdt_2400" value="7"/>
+      <eLiterals name="imsdt_3400" value="8"/>
+      <eLiterals name="imsdt_TAPE" value="9"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="FlagsType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Flag types"/>
+      </eAnnotations>
+      <eLiterals name="imsft_P">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Specifies the path type that must be used to insert, delete, or replace a segment is physical."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsft_L" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Specifies the path type that must be used to insert, delete, or replace a segment is logical."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsft_V" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Specifies the path type that must be used to insert, delete, or replace a segment is virtual."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imdft_B" value="3">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Specifies the path type that must be used to insert, delete, or replace a segment is bidirectional virtual."/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="LPointerType">
+      <eLiterals name="imslp_LTWIN">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Reserves a 4-byte logical twin forward pointer field in the prefix of occurrences of the logical child segment type being defined."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imslp_LTWINBWD" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Reserves a 4-byte logical twin forward pointer field and&#xA;a 4-byte logical twin backward field in the prefix of occurrences of the logical child segment type being defined."/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="LTermType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="LTerm types"/>
+      </eAnnotations>
+      <eLiterals name="imstp_LTERM">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The PCB ltermName attribute signifies a logical terminal.&#xA;LTERM=ltermName is used in the DL/I macro statement"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imstp_NAME" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The PCB ltermName attribute signifies a transaction code.&#xA;NAME=ltermName is used in the DL/I macro statement"/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="MSDBtype">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Parent types"/>
+      </eAnnotations>
+      <eLiterals name="imsmt_NO">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="nonterminal-related without terminal-related keys which has key and sequence field as part of the segment"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsmt_TERM" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="nonterminal-related with terminal-related keys"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsmt_FIXED" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="terminal-related fixed"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsmt_DYNAMIC" value="3">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="terminal-related dynamic"/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="ModelType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Model types"/>
+      </eAnnotations>
+      <eLiterals name="imsdt_1"/>
+      <eLiterals name="imsdt_2" value="1"/>
+      <eLiterals name="imsdt_11" value="2"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="PCBType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="PCB types"/>
+      </eAnnotations>
+      <eLiterals name="imspt_DB">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="database type"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imspt_GSAM" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="GSAM type - connects to a GSAM DBD as a link to a file."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imspt_TP" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Teleprocessing type"/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="PSBLanguageType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="PSB language types"/>
+      </eAnnotations>
+      <eLiterals name="imslt_ASSEM">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Assembler programming language"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imslt_C" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="C programming language"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imslt_COBOL" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="COBOL  programming language"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imslt_PLI" value="3">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="PL/I programming language"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imslt_PASCAL" value="4">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Pascal programming language"/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="ParentType">
+      <eLiterals name="ims_VIRTUAL">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="the concatenated key of the logical parent segment is not stored with each logical child segment"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="ims_PHYSICAL" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="the concatenated key of the logical parent segment is physically stored with each logical child segment"/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="PointerType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Pointer types"/>
+      </eAnnotations>
+      <eLiterals name="imspn_NOTWIN">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Is used to prevent reserving space for a physical twin forward pointer in the prefix of occurrences of the segment type being defined."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imspn_TWIN" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Reserves a 4-byte physical twin forward pointer field in the segment prefix being defined."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imspn_HIER" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Reserves a 4-byte hierarchic forward pointer field in the prefix of occurrences of the segment type being defined."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imspn_TWINBWD" value="3">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Reserves a 4-byte physical twin forward pointer field and a 4-byte physical twin backward pointer field in the segment prefix being defined.  The twin backward pointers provide increased delete performance."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imspn_HIERBWD" value="4">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Reserves a 4-byte hierarchic forward pointer field and a 4-byte hierarchic backward pointer field in the prefix of occurrences of the segment type being defined. Hierarchic backward pointers provide increased delete performance."/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="PositioningType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Positioning types"/>
+      </eAnnotations>
+      <eLiterals name="imsps_Single">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Single positioning is desired for the logical data structure"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsps_Multiple" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Multiple positioning is desired for the logical data structure"/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="RECFMType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Record format types"/>
+      </eAnnotations>
+      <eLiterals name="imsrf_F">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Records are Fixed-length"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsrf_FB" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Records are Fixed length and Blocked."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsrf_V" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Records are Variable length"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsrf_VB" value="3">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Records are Variable length and Blocked"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsrf_U" value="4">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Record format is Undefined"/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="RulesType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Rules types"/>
+      </eAnnotations>
+      <eLiterals name="imsrt_FIRST">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="For segments without a sequence field defined, a new occurrence is inserted before all existing physical twins. For segments with a nonunique sequence field defined, a new occurrence is inserted before all existing physical twins with the same sequence field value."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsrt_LAST" value="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="For segments without a sequence field defined, a new occurrence is inserted after all existing physical twins. For segments with a nonunique sequence field defined, a new occurrence is inserted after all existing physical twins with the same sequence field value."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="imsrt_HERE" value="2">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="For segments without a sequence field, a new occurrence is inserted immediately before the physical twin on which position was established. If a position was not established on a physical twin of the segment being inserted, the new occurrence is inserted before all existing physical twins. For segments with a nonunique sequence field defined, a new occurrence is inserted immediately before the physical twin with the same sequence field value on which position was established. If a position was not established on a physical twin with the same sequence field value, the new occurrence is inserted before all physical twins with the same sequence field value. The insert position is dependent on the position established by the previous DL/I call."/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>

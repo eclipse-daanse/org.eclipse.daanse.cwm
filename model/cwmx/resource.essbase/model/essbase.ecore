@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="essbase" nsURI="http://www.omg.org/spec/CWMX/1.1/resource/essbase"
+    nsPrefix="essbase">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwmx.resource"/>
+    <details key="prefix" value="Essbase"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="literalsInterface" value="true"/>
+    <details key="loadInitialization" value="false"/>
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Alias" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//DimensionedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An alias name for an Essbase Dimension member."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Application" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An Essbase Application is a named container of one or more Databases and their related files. In addition to the Database, an Application may include scripts that are used to load data into the database, calculate derived values, and prepare reports."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Comment" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//DimensionedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This is a user-defined comment that can be attached to an Essbase Dimension member."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Consolidation" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//DimensionedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Specifies how this Essbase Dimension member is to roll-up into its parent (e.g., attribute instance values include: +, -, *, /, %, ~)."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CurrencyConversion" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//DimensionedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Currency conversion tag for an Essbase Currency Dimension member (e.g., attribute instance values include: &quot;None&quot;, &quot;NoConversion&quot;, &quot;Category&quot;)."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataStorage" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//DimensionedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Data storage tag for an Essbase Dimension member (e.g., attribute instance values include: &quot;StoreData&quot;, &quot;DynamicCalc&amp;Store&quot;, &quot;DynamicCalc&quot;, &quot;NeverShare&quot;, &quot;LabelOnly&quot;, &quot;SharedMember&quot;)."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Database" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//Schema">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An Essbase Database is a unique, named multidimensional database implemented by an Essbase server."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="outline" lowerBound="1"
+        eType="#//Outline" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Reference the Outline owned by the Database."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isCurrency" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If true, then this Database is a Currency Database."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Dimension" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//Dimension">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An Essbase Dimension is the primary physical object used in the construction of Essbase Databases."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="outline" lowerBound="1"
+        eType="#//Outline">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="References the Outline that organizes this Dimension."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//DimensionType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The type of the Essbase Dimension."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isDense" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies if this Essbase Dimension is sparse or dense.  Generally affected by Dimension type (e.g., Accounts and Time Dimensions are usually dense)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="DimensionType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An enumeration defining possible types of Essbase Dimension."/>
+    </eAnnotations>
+    <eLiterals name="ess_none">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Denotes a Dimension of no particular type."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="ess_accounts" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Denotes an Accounts (i.e., Measures) Dimension."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="ess_time" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Denotes a Time Dimension."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="ess_country" value="3">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Denotes a Dimension representing a list of country codes or locales."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="ess_currencyPartition" value="4">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Denotes a Dimension used for currency conversions."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="ess_attribute" value="5">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Denotes a Dimension of user-defined attributes (UDAs)."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Formula" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//DimensionedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Formula used to calculate the value of an Essbase Dimension member."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Generation" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//DimensionedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Common name/identifier for members occupying the same generation in the Dimension hierarchy, as defined by the Outline."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ImmediateParent" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//DimensionedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Represents the immediate parent of an Essbase Dimension member in the Dimension hierarchy defined by the Outline."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Level" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//DimensionedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Common name/identifier for members occupying the same level in the Dimension hierarchy, as defined by the Outline."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LinkedPartition" eSuperTypes="#//Partition">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Subclass of Essbase Partition representing Linked Partitions."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MemberName" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//DimensionedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Name for an Essbase Dimension member."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OLAPServer" eSuperTypes="http://www.omg.org/spec/CWM/1.1/foundation/softwaredeployment#//DataManager">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A software process that implements one or more Essbase Databases."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Outline" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Namespace">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An Essbase Outline defines the structure of an Essbase Database, including the dimensional hierarchies, members, tags, types, consolidations, and mathematical relationships. Data is stored in the Database according to the structure defined in the Outline."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="database" lowerBound="1"
+        eType="#//Database">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="References the Database owning this Outline."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimension" ordered="false"
+        upperBound="-1" eType="#//Dimension">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="References the collection of Dimensions that this Outline organizes."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="aliasTableName" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name of the Alias Table to be used by this instance of Outline."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Partition" abstract="true" eSuperTypes="http://www.omg.org/spec/CWM/1.1/analysis/olap#//CubeRegion">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Defines an abstract Essbase partition class (the superclass of all Essbase partition types)."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isSource" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If true, then this Partition is a source Partition (i.e., a source of data values for some other target Partition)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isShared" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If true, then this Partition is a shared source Partition (i.e., shared by several targets)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="formula" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/expressions#//ExpressionNode"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Expression specifying the mapping of source Partition data cells to target Partition data cells."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReplicatedPartition" eSuperTypes="#//Partition">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Subclass of Essbase Partition representing Replicated Partitions."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeBalance" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//DimensionedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Time balance tag for an Essbase Accounts Dimension member (e.g., attribute instance&#xA;values include: &quot;None&quot;, &quot;First&quot;, &quot;Last&quot;, &quot;Average&quot;)."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TransparentPartition" eSuperTypes="#//Partition">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Subclass of Essbase Partition representing Transparent Partitions."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TwoPassCalculation" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//DimensionedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This is a tag specifying that a derived (calculated) Accounts member needs to be re-computed following the global calculation of an Essbase Database.&#xA;&#xA;This is done to provide a derived Accounts member thats dependent on other account members with a final, correct value, following the sequential calculation of both the Accounts and Time Dimensions (e.g., Profit % Sales)."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UDA" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//DimensionedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An Essbase user-defined attribute."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VarianceReporting" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/multidimensional#//DimensionedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Variance reporting tag for an Essbase Accounts Dimension (e.g., attribute instance values include: &quot;NonExpense&quot;, &quot;Expense&quot;)."/>
+    </eAnnotations>
+  </eClassifiers>
+</ecore:EPackage>

@@ -10,7 +10,9 @@
 * SPDX-License-Identifier: EPL-2.0
 **********************************************************************/
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.eclipse.daanse</groupId>
@@ -19,8 +21,17 @@
   </parent>
   <artifactId>org.eclipse.daanse.cwm.model.cwmx</artifactId>
   <packaging>pom</packaging>
+  <name>Daanse CWM Extensions (CWMX)</name>
+
   <modules>
-    <module>eorm</module>
-    <module>governance</module>
+    <module>foundation.er</module>
+    <module>resource.cobol</module>
+    <module>resource.dmsii</module>
+    <module>resource.ims</module>
+    <module>resource.essbase</module>
+    <module>resource.express</module>
+    <module>analysis.informationset</module>
+    <module>analysis.informationreporting</module>
   </modules>
+
 </project>
