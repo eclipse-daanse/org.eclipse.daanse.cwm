@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="informationset" nsURI="http://www.omg.org/spec/CWMX/1.1/analysis/informationset"
+    nsPrefix="informationset">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwmx.analysis"/>
+    <details key="prefix" value="Informationset"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="literalsInterface" value="true"/>
+    <details key="loadInitialization" value="false"/>
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="InfoSetAdministration" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents administrative details of an Information Set."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="date" ordered="false" upperBound="-1"
+        eType="#//InfoSetDate">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="infoSetAdmin"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="infoSetAdmin"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="References the InfoSetDate owned by InfoSetAdministration."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="priority" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The priority of an Information Set."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="acknowledgement" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If true, an acknowledgement is requested."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InfoSetDate" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This class represents dates relevant to an InformationSet such as date of dissemination&#xA;or receipt. It can have different formats."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Type of date, e.g. date of creation, validity period."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="format" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Format of date, time or period."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dateTime" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A date, time or period."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InformationSet" eSuperTypes="http://www.omg.org/spec/CWM/1.1/analysis/olap#//Schema">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="InformationSet contains all elements comprising an InformationSet database model."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="infoSetAdmin" ordered="false"
+        upperBound="-1" eType="#//InfoSetAdministration" containment="true">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="informationSet"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="informationSet"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="References the InfoSetAdministration owned by InformationSet."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rule" ordered="false" upperBound="-1"
+        eType="#//Rule">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="informationSet"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="informationSet"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="References the Rule owned by the InformationSet."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The version of an Information Set."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Rule" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This is a rule that performs one or more of the following:&#xA;&#xA;1) Defines the validation required for data extracted from the data resource part of the InformationSet, Segment or SegmentRegion. This can include the requirement or otherwise of other Segment or SegmentRegions based on the value of the data extracted from this Segment or SegmentRegion.&#xA;&#xA;2) Defines a calculation that can be used to derive data values, based on data values that are part of the InformationSet, Segment or SegmentRegion."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ruleExpression" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/expressions#//ExpressionNode"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This is the rule, which can be an expression or an expression tree."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="This allows the Rule to be categorized - for example validation, calculation."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Segment" eSuperTypes="http://www.omg.org/spec/CWM/1.1/analysis/olap#//Cube">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Segment represents a multidimensional structure. A Segment is defined by a collection of unique Dimensions from the InformationSet. Each unique combination of members in the Cartesian product of the Segments Dimensions identifies precisely one data cell within the multidimensional structure.&#xA;&#xA;Note that a logical segment is &quot;defined&quot; by a collection of unique Dimensions from the InformationSet, and is &quot;described&quot; by a collection of one or more Segment Regions."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rule" ordered="false" upperBound="-1"
+        eType="#//Rule">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="segment"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="segment"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="References the Rule owned by Segment."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="regionSequence" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ProcedureExpression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies the sequence of the SegmentRegion."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SegmentRegion" eSuperTypes="http://www.omg.org/spec/CWM/1.1/analysis/olap#//CubeRegion">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="SegmentRegion represents a sub-set of a Segment. A SegmentRegion may be used for exposing a subset of the dimensionality of a Segment. The Member Selections comprising a SegmentRegion always collectively define a subset of the total dimensionality of the associated Segment."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rule" ordered="false" upperBound="-1"
+        eType="#//Rule">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="segmentRegion"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="segmentRegion"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="References the Rule owned by SegmentRegion."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>

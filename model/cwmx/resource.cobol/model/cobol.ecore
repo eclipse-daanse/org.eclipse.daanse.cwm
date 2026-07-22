@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="cobol" nsURI="http://www.omg.org/spec/CWMX/1.1/resource/cobol"
+    nsPrefix="cobol">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwmx.resource"/>
+    <details key="prefix" value="Cobol"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="literalsInterface" value="true"/>
+    <details key="loadInitialization" value="false"/>
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EEnum" name="AccessType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An enumeration representing the values that a COBOLFD access mode may take."/>
+    </eAnnotations>
+    <eLiterals name="at_unspecified"/>
+    <eLiterals name="at_dynamic" value="1"/>
+    <eLiterals name="at_random" value="2"/>
+    <eLiterals name="at_sequential" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="BlockKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An enumeration representing the values that COBOLFD block size fields may take."/>
+    </eAnnotations>
+    <eLiterals name="bk_records"/>
+    <eLiterals name="bk_characters" value="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="COBOLFD" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class http://www.omg.org/spec/CWM/1.1/resource/record#//RecordFile">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Represents COBOL FD definitions. FDs describe files that are used in COBOL programs. &#xA;&#xA;The size of COBOLFD records may vary within a range bounded by the contents of the minRecords and maxRecords attributes and with a current size given by the field identified by the dependsOn reference. Two attributes and a reference are used to represent the necessary information. To illustrate the roles they play, the names of the attributes and the reference are substituted into the following COBOL syntax fragment:&#xA;&#xA;   RECORD IS VARYING FROM minRecords TO maxRecords DEPENDING ON dependsOn"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dependsOn" eType="#//COBOLItem">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLItem instance that contains the current record size for this COBOLFD instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="statusID" eType="#//COBOLItem">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLItem instance containing the status value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fileSection" lowerBound="1"
+        eType="#//FileSection">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the FileSection instances that contain this COBOLFD instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="linageInfo" ordered="false"
+        upperBound="4" eType="#//LinageInfo" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the LinageInfo instances relevant to this COBOLFD instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="padField" eType="#//COBOLItem">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLItem instance that contains the pad character."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relativeField" eType="#//COBOLItem">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLItem instance containing the current relative record offset in the file represented by the COBOLFD instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="organization" eType="#//FileOrganization">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the physical organization of the file."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="accessMode" eType="#//AccessType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the access mode of the file."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isOptional" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the file is optional at runtime."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reserveAreas" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the number of buffer areas reserved for the file."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="assignTo" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the name of the storage medium the file is assigned to."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="codeSetLit" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the name of the code set."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="blockSizeUnit" eType="#//BlockKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the unit type for the contents of the minBlocks and maxBlocks fields."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minBlocks" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the minimum number of &lt;units> per block, where &lt;unit> is specified by the blockSizeUnit attribute."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxBlocks" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the maximum number of &lt;units> per block, where &lt;unit> is specified by the blockSizeUnit attribute."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minRecords" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the minimum number of characters per record."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxRecords" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the maximum number of characters per record."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="labelKind" eType="#//LabelKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the label kind of the file."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isExternal" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the file is external."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isGlobal" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the file is global."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="padLiteral" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If not an empty string, contains the pad character. If an empty string, the padField reference may point to a COBOLField instance that contains the pad character."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="COBOLFDIndex" eSuperTypes="http://www.omg.org/spec/CWM/1.1/foundation/keysindexes#//Index">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A COBOLFDIndex instance represents a RECORD KEY or ALTERNATE RECORD KEY for an INDEXED file."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isAlternate" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, this is an alternate index."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="COBOLField" eSuperTypes="#//COBOLItem">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Represents fields that appear in COBOL record descriptions. COBOLField instances are associated with their owning RecordDef or Group instances via the UML owner/feature association between Feature and Classifier.&#xA;&#xA;The VALUE IS clause for a COBOLField instance is stored in the initialValue attribute inherited from the UML Attribute superclass.&#xA;&#xA;The &quot;occurs-depending&quot; syntax that may be attached to a COBOLField instance is addressed by a collection of attributes (occursLower and occursUpper) and a reference (dependingOnField). To illustrate the roles these attributes and references play, their names can be substituted into the following COBOL syntax fragment: &#xA;&#xA;    OCCURS occursLower TO occursUpper TIMES DEPENDING ON dependingOnField"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="occursKeyFieldInfo" ordered="false"
+        upperBound="-1" eType="#//OccursKey">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the OccursKey instances that describe how this field participates in the &quot;occurs&quot; keys of other fields."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dependingOnField" eType="#//COBOLItem">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLField instance that contains the number of occurrences of this field."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="occursKeyInfo" ordered="false"
+        upperBound="-1" eType="#//OccursKey" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the OccursKey instances describing the fields that make up the &quot;occurs&quot; key for this field."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="redefinedField" eType="#//COBOLField">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLField instances that this field redefines."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="redefinedByField" ordered="false"
+        upperBound="-1" eType="#//COBOLField">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLField instances that redefine this field."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="firstRenames" ordered="false"
+        upperBound="-1" eType="#//Renames">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Renames instances in which this COBOLField instance is the first renamed field."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="thruRenames" ordered="false"
+        upperBound="-1" eType="#//Renames">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Renames instances in which this COBOLField instance is the last renamed field."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="level" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The level number of a COBOLField."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="signKind" eType="#//SignKindType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The type of sign for the field."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isFiller" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the field is a filler field."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isJustifiedRight" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the content of the field is right justified."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isBlankWhenZero" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the field is interpreted as having the numeric value zero when the field contains blanks."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isSynchronized" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the field is synchronized."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="picture" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the picture specification for the field."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="occursLower" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If the field occurs, contains the lower bound of the number of possible occurrences."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="occursUpper" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If the field occurs, contains the upper bound of the number of possible occurrences."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="indexName" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A list of strings that are the names obtained from the INDEXED BY clause."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isExternal" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the field is external."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isGlobal" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the field is global."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="COBOLItem" abstract="true" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/record#//Field">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The COBOLItem class is an abstract metaclass that represents the commonalities shared by both the COBOLField and Renames metaclasses."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dependingFD" ordered="false"
+        upperBound="-1" eType="#//COBOLFD">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLFD instance for which this COBOLItem determines the record size."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="statusFD" ordered="false"
+        upperBound="-1" eType="#//COBOLFD">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies COBOLFD instances for which this COBOLItem acts as the statusID."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="linageInfo" ordered="false"
+        upperBound="-1" eType="#//LinageInfo">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the LinageInfo instances in which this COBOLItem participates."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="occurringField" ordered="false"
+        upperBound="-1" eType="#//COBOLField">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLField instances for which this COBOLItem contains the number of occurrences."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="paddedFD" ordered="false"
+        upperBound="-1" eType="#//COBOLFD">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLFD instances for which this COBOLItem contains the pad character."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relativeFD" ordered="false"
+        upperBound="-1" eType="#//COBOLFD">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLFD instances for which this COBOLItem instance acts as a relative record offset."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FileOrganization">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An enumeration representing the values that a COBOLFD  file organization may take."/>
+    </eAnnotations>
+    <eLiterals name="fo_unspecified"/>
+    <eLiterals name="fo_indexed" value="1"/>
+    <eLiterals name="fo_relative" value="2"/>
+    <eLiterals name="fo_sequential" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FileSection" eSuperTypes="#//Section">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Represents the File section of a COBOL Data Division."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cobolFD" ordered="false"
+        upperBound="-1" eType="#//COBOLFD" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Associates a COBOL File section with the COBOLFD instances that it contains."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="LabelKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An enumeration representing the values that a COBOLFD label kind may take."/>
+    </eAnnotations>
+    <eLiterals name="lk_unspecified"/>
+    <eLiterals name="lk_standard" value="1"/>
+    <eLiterals name="lk_omitted" value="2"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LinageInfo" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="LinageInfo instances are used to record the individual components of a LINAGE clause for a COBOLFD. A LINAGE clause is used to specify a page layout for a sequential file."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cobolItem" eType="#//COBOLItem">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLItem instance that contains the linage information.  If this refernce is empty, the value attribute must contain the linage information."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cobolFD" lowerBound="1"
+        eType="#//COBOLFD">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLFD instance for which this LinageInfo reference is valid."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the value of the LinageInfo. If the value is empty, the cobolField reference must identify a COBOLField instance that contains the value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//LinageInfoType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLItem instance that contains the linage information. If thisreference is empty, the value attribute must contain the linage information."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="LinageInfoType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An enumeration representing the types of linage information the are maintained for a COBOLFD."/>
+    </eAnnotations>
+    <eLiterals name="li_linage"/>
+    <eLiterals name="li_linageFooting" value="1"/>
+    <eLiterals name="li_linageTop" value="2"/>
+    <eLiterals name="li_linageBottom" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LinkageSection" eSuperTypes="#//Section">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Instances of Section describe the various sections of a COBOL Data Division. Section instances are use primarily as collection containers for the RecordDefs that a Section may contain."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OccursKey" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="This intersection class identifies the COBOLField instances that are parts of occurs keys and contains attributes relevant to the fields roles in the occurs key."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="occursKeyField" lowerBound="1"
+        eType="#//COBOLField">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLField instance that this OccursKey instance represents in the occurs key."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="occursKeyOf" lowerBound="1"
+        eType="#//COBOLField">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the COBOLField instance that owns the occurs key."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isAscending" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the COBOLField on the occursKeyField end is maintained in an ascending order in the occurs key. If False, the occursKeyField is maintained in descending order."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Renames" eSuperTypes="#//COBOLItem">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Renames instances define alternate identifiers for one or more contiguous COBOLField instances. Although they are not truly COBOL fields, Renames must be ordered in a record along with true COBOL fields. Because they are ObjectModel Features, they can be ordered among COBOL fields via the ClassifierFeature association."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="firstField" lowerBound="1"
+        eType="#//COBOLField">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the first field that is renamed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="thruField" eType="#//COBOLField">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the last field in a range of features that is renamed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReportWriterSection" eSuperTypes="#//Section">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Represents the Report Writer section of a COBOL Data Division. Although a metaclass for this section remains in the standard, the section itself appears to be deprecated."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Section" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Instances of Section describe the various sections of a COBOL Data Division.  Section instances are use primarily as collection containers for the RecordDefs that a Section may contain."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="record" ordered="false"
+        upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/resource/record#//RecordDef">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="section"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="section"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the RecordDef instances that describe the structure of 01 level records defined in the section."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="SignKindType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An enumeration representing the values that a COBOLField sign may take."/>
+    </eAnnotations>
+    <eLiterals name="sk_unsigned"/>
+    <eLiterals name="sk_leadingSign" value="1"/>
+    <eLiterals name="sk_trailingSign" value="2"/>
+    <eLiterals name="sk_leadingSepSign" value="3"/>
+    <eLiterals name="sk_trailingSepSign" value="4"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Usage" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//DataType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A subclass of UMLs DataType class representing valid COBOL usage types. The type attribute that a COBOLField inherits from StructuralFeature should point to one of the instances of Usage defined here.&#xA;&#xA;Defined M1 instances of the Usage class have the names: COMP, DISPLAY, and INDEX. Common extension data types (such as BINARY, PACKEDDECIMAL, COMP-1, COMP-2, COMP-3, etc.) can be easily added by creating addition M1 instances of Usage without the need to change the metamodel change."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WorkingStorageSection" eSuperTypes="#//Section">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Represents the Working Storage section of a COBOL Data Division."/>
+    </eAnnotations>
+  </eClassifiers>
+</ecore:EPackage>

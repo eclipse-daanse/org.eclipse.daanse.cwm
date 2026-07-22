@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="informationreporting" nsURI="http://www.omg.org/spec/CWMX/1.1/analysis/informationreporting"
+    nsPrefix="informationreporting">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwmx.analysis"/>
+    <details key="prefix" value="Informationreporting"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="literalsInterface" value="true"/>
+    <details key="loadInitialization" value="false"/>
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Report" eSuperTypes="http://www.omg.org/spec/CWM/1.1/analysis/informationvisualization#//RenderedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Report is a subclass of RenderedObject that defines a two-dimensional, formatted report. A Report may be rendered as a printed report, in HTML, or as a dynamic, online report."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReportAttribute" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="ReportAttribute is a subclass of UML Attribute that generally defines a ReportField. Note that ReportAttributes may be re-used in the definitions of multiple ReportFields."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReportExecution" eSuperTypes="http://www.omg.org/spec/CWM/1.1/analysis/transformation#//TransformationMap">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="ReportExecution is a subclass of TransformationMap that defines any necessary mappings and procedures for actually generating an instance of a Report."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReportField" eSuperTypes="http://www.omg.org/spec/CWM/1.1/analysis/informationvisualization#//RenderedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="ReportField defines a specific field within a ReportGroup."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReportGroup" eSuperTypes="http://www.omg.org/spec/CWM/1.1/analysis/informationvisualization#//RenderedObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="ReportGroup defines a grouping of fields on a report."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="reportQuery" ordered="false"
+        upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/datatypes#//QueryExpression">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="reportGroup"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="reportGroup"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="References the collection of QueryExpressions owned by a ReportGroup."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="groupType" eType="#//ReportGroupType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Specifies the type of a ReportGroup"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ReportGroupType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Defines ReportGroup types."/>
+    </eAnnotations>
+    <eLiterals name="header">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Header group type."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="footer" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Footer group type."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="detail" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Detail group type."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="other" value="3">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Other group type."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReportPackage" eSuperTypes="http://www.omg.org/spec/CWM/1.1/analysis/informationvisualization#//RenderedObjectSet">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Defines a grouping of related reports."/>
+    </eAnnotations>
+  </eClassifiers>
+</ecore:EPackage>

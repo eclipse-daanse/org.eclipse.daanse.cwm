@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="dmsii" nsURI="http://www.omg.org/spec/CWMX/1.1/resource/dmsii"
+    nsPrefix="dmsii">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.cwmx.resource"/>
+    <details key="prefix" value="Dmsii"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="literalsInterface" value="true"/>
+    <details key="loadInitialization" value="false"/>
+    <details key="copyrightText" value="Copyright (c) 2025 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Access" eSuperTypes="#//SetStructure">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Represents a DMSII Access which is used to specify the physical ordering of records in the DataSet that the Access spans. Unlike a Set instance, there is no separate physical file associated with an Access in a deployed database."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AutomaticSubset" eSuperTypes="#//Subset">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A Subset that has a membership expression. Records in the spanned DataSet instance are part of the AutomaticSubset instance if the expression in the condition attribute evaluates to True."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//BooleanExpression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the text of an expression that determines membership of the spanned DataSet's records in this AutomaticSubset instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DASDLComment" eSuperTypes="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//Description">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Contains the text of the single DASDL &lt;comment> that nearly every object in a DASDL source may have. These comments differ from Remarks in that there is only one instance per DASDL object, their position in the source is constrained, and they&#xA;are stored in the database description files. Remarks are not tied to particular database objects, can occur anywhere in a DASDL source, and exist only in the DASDL source itself. &#xA;&#xA;For all DASDLComments, the language attribute contains the string &quot;DASDL&quot;."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DASDLProperty" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The DASDL language source file from which DMS II databases are built contains a large number (>100) of options related primarily to the physical characteristics or deployment of DMS II databases and the data and set structures they contain.&#xA;Generally, these DASDL properties are of the form &lt;name> = &lt;string>, where the meaning of the contents of &lt;string> is specific to the property that is being described (i.e., knowing the content of &lt;name>). Also, new DASDL properties are added from time to time. Capturing these DASDL properties as &lt;name>/&lt;string> pairs has several important side-effects, including &#xA;&#xA;    a much simplified DMS II model overall,&#xA;    addition of new properties without having to change the model, and&#xA;    maintenance of the order (because of the ordered nature of the association to &#xA;        ModelElement) in which the property values were supplied in the DASDL source.&#xA;&#xA;Note that allowing a DASDL remark (i.e., a %-comment) to be a DASDL property in this case allows preservation of the order remarks with respect to other DASDL properties."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="owner" lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="dasdlProperty"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="dasdlProperty"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the ModelElement for which this DASDLProperty instance is relevant."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="text" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the text of the DASDL property. The precise content of the string is dependent upon the name of the DASDL property defined in the name attribute inherited from ModelElement."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataItem" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/record#//Field">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Instances of DataItem represent the individual data fields within a DataSet. The Group class in the CWM Foundations DataTypes package is also available for constructing collections of fields in a DataSet.&#xA;&#xA;The interpretation of the contents of some attributes of a DataItem instance are dependent upon the DataItems type. For example, the size attribute represents the maximum number of characters in ALPHA and KANJI items, the number of digits of&#xA;precision in a NUMERIC or REAL items, and the number of bits in a FIELD item. Refer to the definition of individual attributes for specifics."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="structure" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="dataItem"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="dataItem"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the DataSet or SetStructure instance to which this DataItem instance refers."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fieldBit" ordered="false"
+        upperBound="48" eType="#//FieldBit" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the FieldBit instance owned by the DataItem instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="keyDataSet" ordered="false"
+        upperBound="-1" eType="#//Set">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Set instances in whose key data parts this DataItem instance participates."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="occuringDataItem" ordered="false"
+        upperBound="-1" eType="#//DataItem">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the DataItem instances whose number of occurrences is defined by the value of this DataItem instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="occursDataItem" eType="#//DataItem">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the DataItem instance that contains the number of occurrences for this occurring DataItem instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="remapItem" ordered="false"
+        upperBound="-1" eType="#//RemapItem">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the RemapItem instances that remap this DataItem instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nullValue" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/expressions#//ExpressionNode"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies a value of a data item that is treated as representing a null value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isRequired" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the data item must have a value when the corresponding Dataset record is stored."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="size" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the declared size of a data type. The precise meaning of the attribute depends on the type of the DMS II data type being declared."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="scaleFactor" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the &lt;scale factor> value for DMS II data types."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isSigned" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the state of the signed indication (&quot;S&quot;) for REAL and NUMERIC data types. Not relevant for other data types."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="occurs" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates the number of times the data item occurs in the DataSet record. The occurs attribute is optional, existing only for data items that have an OCCURS clause in their definition."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isVirtual" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the DataItem instance is calculated when accessed using the expression stored in the virtualExpression attribute."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="virtualExpression" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/expressions#//ExpressionNode"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The expression used to calculate the value of a virtual DataItem."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isKanji" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True if the USAGE=KANJI clause was used. Otherwise USAGE=EBCDIC is assumed. Relevant only for ALPHA data items."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ccsVersion" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the CCSVersion specification of a data item."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isGemcosLiteral" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the DataItem instance was defined with the GEMCOS LITERAL clause."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isGemcosData" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the DataItem instance was defined with the GEMCOS DATA clause."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isGemcosSSN" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the DataItem instance was defined with the GEMCOS SSN clause."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isGemcosDBSN" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the DataItem instance was defined with the GEMCOS DBSN clause."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isComsProgram" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the DataItem instance was defined with the COMS PROGRAM clause."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isComsID" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the DataItem instance was defined with the COMS ID clause."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isComsLocator" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the DataItem instance was defined with the COMS LOCATOR clause."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isComsOutpQ" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the DataItem instance was defined with the COMS OUTPQ clause."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataSet" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature http://www.omg.org/spec/CWM/1.1/resource/record#//RecordDef">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A DataSet is the primary container of data records in a DMS II database. A DataSet instance that is owned by another DataSet instance is embedded in its owner.&#xA;&#xA;If the isGlobal attribute is True, the DataSet instance is the global data set -- a special data set with a single instance that contains database global data items."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="partitioningSet" eType="#//Set">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Set instance that serves as the partitioning set for this DataSet&#xA;instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isGlobal" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If isGlobal = True, the DataSet instance represents the databases global data record. There can be at most one DataSet instance with isGlobal = True for a given database, but multiple with isGlobal = False."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="organization" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the structural organization of the DataSet."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reorganize" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the reorganization clause attached the DataSet instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isRequiredAll" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the REQUIRED ALL clause was specified in the DASDL for this DataSet instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Database" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="For a given DASDL source, there can be at most one Database instance with isLogical = False (representing an independent, free standing database) and zero or more with isLogical = True (each representing a Logical Database declared within the physical database). A logical database can be owned by at most one database."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isLogical" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, this Database instance is a logical database."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="guardFile" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the name of the database guard file that contains access control information for the database."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the text of the DASDL source from which the database was created."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FieldBit" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="FieldBit instances name the individual bits in a DMS II field data item."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataItem" lowerBound="1"
+        eType="#//DataItem">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the DataItem instance that owns this FieldBit instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="KeyItem" eSuperTypes="http://www.omg.org/spec/CWM/1.1/foundation/keysindexes#//IndexedFeature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="KeyItem instances correspond to DASDL's &lt;key item> construct. Every Key instance has the inherited attribute isSorted = True and the inherited isAscending attribute set as indicated in the DASDL &lt;key item>. By default, isAscending = True."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="collation" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the value of the collation clause specified for a KeyItem instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PhysicalAccessOverride" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Feature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Collects together DASDLProperty instances associate with a physical access specification in the DASDL source."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PhysicalDataSet" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Identifies a physical deployment of a DMS II DataSet."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PhysicalDataSetOverride" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Feature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Collects together DASDLProperty instances associate with a physical data set specification in the DASDL source."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PhysicalDatabase" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Instances represent deployed physical DMS II databases.&#xA;&#xA;The INITIALIZE and MODEL statements are directives to the DASDL compiler and do not need to be modeled here. Rather, they cause specific actions to happen within a CWM repository. INITIALIZE causes the creation of the first PhysicalDatabase instance; MODEL causes the creation of additional PhysicalDatabase instances after the first."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PhysicalSet" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Identifies a physical deployment of a DMS II Set."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PhysicalSetOverride" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Feature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Collects together DASDLProperty instances associate with a physical set specification in the DASDL source."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Remap" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/record#//RecordDef http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Contains information identifying a Remap of a DMSII DataSet or Set. The features of a Remap instance must be RemapItem instances."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="structure" lowerBound="1"
+        eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="remap"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="remap"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the StructuralFeature instance that represents the remapped structure."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isRequiredAll" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, all items in the remap are required to be non-null."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isReadOnlyAll" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the READONLY ALL clause was specified."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isGivingException" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The isGivingException boolean is meaningful only if isReadOnlyAll = True. If the isGivingException boolean is absent, no exception clause was specified. If it is present, False indicates that the NO EXCEPTION clause was specified whereas True indicates the GIVING EXCEPTION clause."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="selectCondition" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the expression specified in a remap's SELECT clause."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RemapItem" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/record#//Field">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Maps a Remap instances field to its source, which may be some DataItem or an expression.&#xA;&#xA;The name attribute of a RemapItem instance defaults to the name attribute of the associated DataItem instance. If changed in the Remap definition by a &quot;&lt;identifier> =&quot; clause, the name attribute of the Remap instance is simply set to &lt;identifier>.&#xA;&#xA;The RemapItem instances initial value is stored in the initialValue attribute inherited from the CWM ObjectModels Attribute class."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataItem" ordered="false"
+        upperBound="-1" eType="#//DataItem">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the DataItem instance that this RemapItem instance remaps."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="occurs" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If specified, overrides the occurs attribute of the associated DataItem instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isRequired" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, overrides the isRequired attribute of the associated DataItem instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isHidden" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the corresponding DataItem is not visible to the user of the Remap."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isReadOnly" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the RemapItem is readonly."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isGivingException" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The isGivingException boolean is meaningful only if isReadOnly = True. If the isGivingException boolean is absent, no exception clause was specified. If it is present, False indicates that the NO EXCEPTION clause was specified whereas True indicates the GIVING EXCEPTION clause."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isVirtual" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="If True, the RemapItem instance is calculated when accessed using the expression stored in the virtualExpression attribute."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="virtualExpression" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/expressions#//ExpressionNode"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The expression used to calculate the value of a virtual RemapItem."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Remark" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Contains the text of a % comment embedded anywhere within a DASDL source (except at places where the Comment class should be used). Making Remarks a subtype of StructuralFeature allows their location and order within a DASDL source to be preserved."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="text" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the text of the Remark."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Set" eSuperTypes="#//SetStructure">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Represents a DMS II Set that spans some DataSet. Sets are represented by a physical file in a deployed DMSII database."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="partitionedDataSet" eType="#//DataSet">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the DataItem instances that make up this Set instances key data."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="keyDataItem" ordered="false"
+        upperBound="-1" eType="#//DataItem">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the DataItem instances that participate in the Set instances key data."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="partitionedSet" ordered="false"
+        upperBound="-1" eType="#//Set">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Set instances partitioned by this Set instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="partitioningSet" eType="#//Set">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Identifies the Set instance that act as a partitioning set for this Set instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="setType" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the set organization for this Set instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reorganize" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the content of the reorganization clause, if any, that was specified for the Set instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SetStructure" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature http://www.omg.org/spec/CWM/1.1/foundation/keysindexes#//Index">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="SetStructure instances represent access paths in DMS II. SetStructures are connected to the DataSet instances that they span via the ElementOwnership association inherited from the Index class in the CWM Foundations KeysIndexes package."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="duplicates" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Indicates the duplicates clause associated with the SetStructure instance."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Subset" eSuperTypes="#//Set">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Represents a subset of a DataSet instance. Because Subset instances have no membership expression, they are equivalent to DMS II's notion of a &quot;manual&quot; subset."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VariableFormatPart" eSuperTypes="http://www.omg.org/spec/CWM/1.1/resource/record#//RecordDef http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Represents the VariableFormatParts that can be associated with a DataSet."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="vfLabel" eType="ecore:EDataType http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Contains the value of &lt;integer label> identifying this variable format part. &lt;integer label>s are the values of the DMS II data item in the fixed part of the owning DataSet instance with the type RECORD TYPE."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="selectCondition" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//BooleanExpression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A boolean expression determining which records appear in the Remap."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
