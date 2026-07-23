@@ -16,15 +16,14 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.eclipse.daanse</groupId>
-    <artifactId>org.eclipse.daanse.cwm.model.cwmx</artifactId>
+    <artifactId>org.eclipse.daanse.cwm.model.daanse</artifactId>
     <version>${revision}</version>
   </parent>
-  <artifactId>org.eclipse.daanse.cwm.model.cwmx.governance</artifactId>
+  <artifactId>org.eclipse.daanse.cwm.model.daanse.governance</artifactId>
   <packaging>pom</packaging>
   <modules>
-    <module>base</module>
     <module>gdpr</module>
     <module>transparency</module>
-    <module>critis</module>
+    <module>criticality</module>
   </modules>
 </project>
