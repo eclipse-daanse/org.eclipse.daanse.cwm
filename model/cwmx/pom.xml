@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /*********************************************************************
-* Copyright (c) 2024 Contributors to the Eclipse Foundation.
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
 *
 * This program and the accompanying materials are made
 * available under the terms of the Eclipse Public License 2.0
@@ -22,6 +22,8 @@
   <artifactId>org.eclipse.daanse.cwm.model.cwmx</artifactId>
   <packaging>pom</packaging>
   <name>Daanse CWM Extensions (CWMX)</name>
+  <description>Die CWM-Erweiterungspakete aus dem Rose-Modell cwm_rose_03-11-06, je Paket
+    eine Einheit, nebeneinander wie im Kernmodell.</description>
 
   <modules>
     <module>foundation.er</module>

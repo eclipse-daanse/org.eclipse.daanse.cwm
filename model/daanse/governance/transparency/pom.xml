@@ -16,10 +16,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.eclipse.daanse</groupId>
-    <artifactId>org.eclipse.daanse.cwm.model.cwmx.governance</artifactId>
+    <artifactId>org.eclipse.daanse.cwm.model.daanse.governance</artifactId>
     <version>${revision}</version>
   </parent>
-  <artifactId>org.eclipse.daanse.cwm.model.cwmx.governance.critis</artifactId>
+  <artifactId>org.eclipse.daanse.cwm.model.daanse.governance.transparency</artifactId>
 
   <build>
     <plugins>
@@ -33,7 +33,7 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <ecoreFile>model/critis.ecore</ecoreFile>
+              <ecoreFile>model/transparency.ecore</ecoreFile>
               <outputDirectory>target/generated-sources/emf</outputDirectory>
             </configuration>
           </execution>
@@ -78,7 +78,12 @@
   <dependencies>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.model.cwmx.governance.base</artifactId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.core</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>

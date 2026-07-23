@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /*********************************************************************
-* Copyright (c) 2024 Contributors to the Eclipse Foundation.
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
 *
 * This program and the accompanying materials are made
 * available under the terms of the Eclipse Public License 2.0
@@ -16,10 +16,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.eclipse.daanse</groupId>
-    <artifactId>org.eclipse.daanse.cwm.model.cwmx.governance</artifactId>
+    <artifactId>org.eclipse.daanse.cwm.model.daanse.governance</artifactId>
     <version>${revision}</version>
   </parent>
-  <artifactId>org.eclipse.daanse.cwm.model.cwmx.governance.base</artifactId>
+  <artifactId>org.eclipse.daanse.cwm.model.daanse.governance.criticality</artifactId>
 
   <build>
     <plugins>
@@ -33,7 +33,7 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <ecoreFile>model/base.ecore</ecoreFile>
+              <ecoreFile>model/criticality.ecore</ecoreFile>
               <outputDirectory>target/generated-sources/emf</outputDirectory>
             </configuration>
           </execution>
@@ -74,12 +74,44 @@
     </plugins>
   </build>
 
-
   <dependencies>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.model.cwm</artifactId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.core</artifactId>
       <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.management.warehouseoperation</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.relationships</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.management.warehouseprocess</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
