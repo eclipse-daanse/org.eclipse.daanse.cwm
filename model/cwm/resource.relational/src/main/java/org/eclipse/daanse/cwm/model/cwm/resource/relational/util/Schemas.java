@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Catalog;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.QueryColumnSet;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
@@ -58,6 +59,16 @@ public final class Schemas {
     /** Stream of named column sets directly owned by {@code schema}. */
     public static Stream<NamedColumnSet> columnSetStream(Schema schema) {
         return Namespaces.ownedElementStream(schema, NamedColumnSet.class);
+    }
+
+    /** Query column sets (loaded ad-hoc/history queries) directly owned by {@code schema}. */
+    public static List<QueryColumnSet> queryColumnSets(Schema schema) {
+        return queryColumnSetStream(schema).toList();
+    }
+
+    /** Stream of query column sets directly owned by {@code schema}. */
+    public static Stream<QueryColumnSet> queryColumnSetStream(Schema schema) {
+        return Namespaces.ownedElementStream(schema, QueryColumnSet.class);
     }
 
     /** Find an owned table by name. */

@@ -38,6 +38,12 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
  *                        order from JSQLResolver's AST walk), identity-deduped.
  *                        Suitable for shaping composite indexes by query column
  *                        order. Empty on failure.
+ * @param predicateKinds  Best-effort {@link PredicateKind} classification of the
+ *                        WHERE / JOIN-ON predicates per column (equality vs.
+ *                        range vs. non-sargable). A column absent from this map
+ *                        could not be classified (ambiguous name, complex
+ *                        expression) — treat as unknown, not as sargable. Empty
+ *                        on failure.
  * @param tablesUsed      Tables, views and query-column-sets the query reads
  *                        from.
  * @param producedColumns The columns the query's SELECT projection emits, in
@@ -50,6 +56,6 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
  */
 public record Resolution(boolean ok, Optional<Failure> failure, String message, Set<Column> columnsUsed,
         Map<Column, EnumSet<ColumnUsage>> columnUsage, Map<ColumnUsage, List<Column>> clauseColumns,
-        Set<NamedColumnSet> tablesUsed, List<ProducedColumn> producedColumns, Set<String> functionNames,
-        String rewrittenSql) {
+        Map<Column, EnumSet<PredicateKind>> predicateKinds, Set<NamedColumnSet> tablesUsed,
+        List<ProducedColumn> producedColumns, Set<String> functionNames, String rewrittenSql) {
 }

@@ -33,6 +33,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.QueryColumnSet;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
 import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.ColumnUsage;
 import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.Failure;
+import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.PredicateKind;
 import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.ProducedColumn;
 import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.Resolution;
 import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.SqlResolver;
@@ -167,6 +168,7 @@ public final class SqlResolverImpl implements SqlResolver {
         columns.addAll(usage.keySet());
         Set<NamedColumnSet> tables = collectTables(columns);
         Set<String> functions = resolver.getFlatFunctionNames();
+        Map<Column, EnumSet<PredicateKind>> predicateKinds = PredicateClassifier.classify(statement, columns);
 
         // Produced columns — the SELECT projection. Use a fresh metadata copy
         // so the projection-resolution doesn't see leftover state from
@@ -183,7 +185,7 @@ public final class SqlResolverImpl implements SqlResolver {
         }
 
         return new Resolution(true, Optional.empty(), summary(columns, tables, produced), columns, usage, ordered,
-                tables, produced, functions == null ? Set.of() : functions, rewritten);
+                predicateKinds, tables, produced, functions == null ? Set.of() : functions, rewritten);
     }
 
     /**
@@ -294,8 +296,8 @@ public final class SqlResolverImpl implements SqlResolver {
     }
 
     private static Resolution failure(Failure f, String msg) {
-        return new Resolution(false, Optional.of(f), safe(msg), Set.of(), Map.of(), Map.of(), Set.of(), List.of(),
-                Set.of(), null);
+        return new Resolution(false, Optional.of(f), safe(msg), Set.of(), Map.of(), Map.of(), Map.of(), Set.of(),
+                List.of(), Set.of(), null);
     }
 
     private static String safe(String s) {

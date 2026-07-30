@@ -55,6 +55,7 @@
   <modules>
     <module>cwm</module>
     <module>mips</module>
-   <!-- <module>cwmx</module> -->
+    <module>cwmx</module>
+    <module>daanse</module>
   </modules>
 </project>
