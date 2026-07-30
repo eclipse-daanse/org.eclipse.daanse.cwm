@@ -31,6 +31,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
 import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.ColumnUsage;
 import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.Failure;
+import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.PredicateKind;
 import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.Resolution;
 import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.SqlResolver;
 import org.eclipse.daanse.cwm.resource.relational.sql.resolve.api.Validation;
@@ -116,6 +117,61 @@ class SqlResolverTest {
         assertNotNull(nameCol);
         assertTrue(res.columnUsage().get(nameCol).contains(ColumnUsage.ORDER_BY));
         assertEquals(List.of(nameCol), res.clauseColumns().get(ColumnUsage.ORDER_BY));
+    }
+
+    @Test
+    void classifiesEqualityAndRangePredicates() {
+        Schema sales = buildSalesSchema();
+        SqlResolver r = new SqlResolverFactoryImpl().create(List.of(sales));
+        Resolution res = r.resolve("select id from customer where name > 'a' and email = 'b'");
+
+        assertTrue(res.ok(), () -> res.message());
+        Column name = findByName(res.columnsUsed(), "name");
+        Column email = findByName(res.columnsUsed(), "email");
+        assertTrue(res.predicateKinds().get(name).contains(PredicateKind.RANGE));
+        assertTrue(res.predicateKinds().get(email).contains(PredicateKind.EQUALITY));
+    }
+
+    @Test
+    void classifiesInBetweenIsNullAndJoinPredicates() {
+        Schema sales = buildSalesSchema();
+        SqlResolver r = new SqlResolverFactoryImpl().create(List.of(sales));
+        Resolution res = r.resolve("select c.name from customer c "
+                + "join order_version o on c.id = o.customer_id "
+                + "where c.email in ('a', 'b') and o.total between 1 and 5 and c.name is null");
+
+        assertTrue(res.ok(), () -> res.message());
+        assertTrue(res.predicateKinds().get(findByName(res.columnsUsed(), "email"))
+                .contains(PredicateKind.EQUALITY));
+        assertTrue(res.predicateKinds().get(findByName(res.columnsUsed(), "total"))
+                .contains(PredicateKind.RANGE));
+        assertTrue(res.predicateKinds().get(findByName(res.columnsUsed(), "name"))
+                .contains(PredicateKind.EQUALITY));
+        // join keys are equality predicates on both sides (alias-qualified)
+        assertTrue(res.predicateKinds().get(findByNameInTable(res.columnsUsed(), "id", "customer"))
+                .contains(PredicateKind.EQUALITY));
+        assertTrue(res.predicateKinds().get(findByName(res.columnsUsed(), "customer_id"))
+                .contains(PredicateKind.EQUALITY));
+    }
+
+    @Test
+    void classifiesLikeAndWrappedColumnsAsSargabilityDemands() {
+        Schema sales = buildSalesSchema();
+        SqlResolver r = new SqlResolverFactoryImpl().create(List.of(sales));
+        Resolution res = r.resolve("select id from customer "
+                + "where name like 'x%' and email like '%y'");
+
+        assertTrue(res.ok(), () -> res.message());
+        // prefix match navigates like a range; leading wildcard cannot seek
+        assertTrue(res.predicateKinds().get(findByName(res.columnsUsed(), "name"))
+                .contains(PredicateKind.RANGE));
+        assertTrue(res.predicateKinds().get(findByName(res.columnsUsed(), "email"))
+                .contains(PredicateKind.NON_SARGABLE));
+
+        Resolution wrapped = r.resolve("select id from customer where upper(name) = 'X'");
+        assertTrue(wrapped.ok(), () -> wrapped.message());
+        assertTrue(wrapped.predicateKinds().get(findByName(wrapped.columnsUsed(), "name"))
+                .contains(PredicateKind.NON_SARGABLE));
     }
 
     @Test

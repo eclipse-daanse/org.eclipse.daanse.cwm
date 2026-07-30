@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="privilege" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege"
+    nsPrefix="privilege">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Gemeinsamer Kern der Datenbank-Berechtigungen als Daanse-Erweiterung (CWM 1.1 hat kein Security-Paket): der Traeger der Berechtigung ist direkt eine businessinformation::ResponsibleParty (die Spec nennt als Beispiel eine Rolle), die ihre Privilegien als ownedElement besitzt (Grantee = namespace) — ohne eigenen Wurzelcontainer. Privilegien sind Katalogzeilen (information_schema.table_privileges-Shape) auf relational::NamedColumnSet (TablePrivilege mit Aktions-Enum), relational::Procedure (ProcedurePrivilege, implizit EXECUTE) oder eine weitere ResponsibleParty (RolePrivilege, implizit Mitgliedschaft: GRANT rolle TO grantee)."/>
+    <details key="documentation.en" value="Common core of database grants as a Daanse extension (CWM 1.1 has no security package): the holder of a grant is directly a businessinformation::ResponsibleParty (the spec explicitly names a role as an example) owning its privileges as ownedElement (grantee = namespace) — without a dedicated root container. Privileges are catalog rows (information_schema.table_privileges shape) on relational::NamedColumnSet (TablePrivilege with an action enum), relational::Procedure (ProcedurePrivilege, implicitly EXECUTE) or another ResponsibleParty (RolePrivilege, implicitly membership: GRANT role TO grantee)."/>
+    <details key="caption.de" value="Privileg"/>
+    <details key="caption.en" value="Privilege"/>
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse.resource.relational"/>
+    <details key="prefix" value="Privilege"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="fileExtensions" value="cwmprivilege"/>
+    <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EEnum" name="TablePrivilegeAction">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Gemeinsamer Kern der Tabellen-Aktionen (alle Dialekte). Dialektspezifisches (TRUNCATE, TRIGGER, ALTER, ...) ist bewusst nicht Teil des Kerns. EXECUTE und Mitgliedschaft brauchen keine Enum — dort ist die Privilege-Unterklasse selbst die Aktion."/>
+      <details key="documentation.en" value="Common core of table actions (all dialects). Dialect specifics (TRUNCATE, TRIGGER, ALTER, ...) are deliberately not part of the core. EXECUTE and membership need no enum — there the privilege subclass itself is the action."/>
+    </eAnnotations>
+    <eLiterals name="SELECT" literal="SELECT"/>
+    <eLiterals name="INSERT" value="1" literal="INSERT"/>
+    <eLiterals name="UPDATE" value="2" literal="UPDATE"/>
+    <eLiterals name="DELETE" value="3" literal="DELETE"/>
+    <eLiterals name="REFERENCES" value="4" literal="REFERENCES"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Privilege" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Eine Berechtigungszeile, wie sie alle Datenbanken fuehren (information_schema.table_privileges, ALL_TAB_PRIVS, SYSCAT.TABAUTH, JDBC getTablePrivileges): Ziel, optional Grantor und WITH GRANT OPTION. Der Grantee ist die besitzende ResponsibleParty (namespace); PUBLIC ist eine gewoehnliche ResponsibleParty namens PUBLIC."/>
+      <details key="documentation.en" value="One grant row as all databases keep it (information_schema.table_privileges, ALL_TAB_PRIVS, SYSCAT.TABAUTH, JDBC getTablePrivileges): target, optional grantor and WITH GRANT OPTION. The grantee is the owning ResponsibleParty (namespace); PUBLIC is an ordinary ResponsibleParty named PUBLIC."/>
+      <details key="caption.de" value="Privileg"/>
+      <details key="caption.en" value="Privilege"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="granteeIsResponsibleParty"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot">
+      <details key="granteeIsResponsibleParty" value="not self.namespace.oclIsUndefined() and self.namespace.oclIsKindOf(businessinformation::ResponsibleParty)"/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="grantable">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="WITH GRANT OPTION (bei Mitgliedschaften: WITH ADMIN OPTION); null = unbekannt (information_schema is_grantable leer)."/>
+        <details key="documentation.en" value="WITH GRANT OPTION (for memberships: WITH ADMIN OPTION); null = unknown (empty information_schema is_grantable)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBooleanObject"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="grantor">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Vergebende ResponsibleParty; leer, wenn der Katalog sie nicht liefert."/>
+        <details key="documentation.en" value="Granting ResponsibleParty; empty when the catalog does not report it."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="grantedPrivilege"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="grantedPrivilege"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TablePrivilege" eSuperTypes="//Privilege">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Privileg auf einer Tabelle oder View (SELECT/INSERT/UPDATE/DELETE/REFERENCES), optional auf Spalten eingeschraenkt (GRANT UPDATE (a, b) ...; leer = ganze Tabelle). H2 und Snowflake kennen keine Spaltenprivilegien."/>
+      <details key="documentation.en" value="Privilege on a table or view (SELECT/INSERT/UPDATE/DELETE/REFERENCES), optionally restricted to columns (GRANT UPDATE (a, b) ...; empty = whole table). H2 and Snowflake have no column privileges."/>
+      <details key="caption.de" value="Tabellen-Privileg"/>
+      <details key="caption.en" value="Table Privilege"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="columnsBelongToTable"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot">
+      <details key="columnsBelongToTable" value="self.column->forAll(c | self.table.feature->includes(c))"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="action" lowerBound="1" eType="//TablePrivilegeAction">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Kanonische Tabellen-Aktion."/>
+        <details key="documentation.en" value="Canonical table action."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Zieltabelle/-view als CWM-Referenz (NamedColumnSet deckt Table und View)."/>
+        <details key="documentation.en" value="Target table/view as CWM reference (NamedColumnSet covers Table and View)."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="tablePrivilege"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="tablePrivilege"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//NamedColumnSet"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="column" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Spalteneinschraenkung des Privilegs; leer = ganze Tabelle. Die Spalten muessen zur Zieltabelle gehoeren."/>
+        <details key="documentation.en" value="Column restriction of the privilege; empty = whole table. The columns must belong to the target table."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="columnPrivilege"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="columnPrivilege"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//Column"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ProcedurePrivilege" eSuperTypes="//Privilege">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Privileg auf einer Funktion oder Prozedur — die Aktion ist implizit EXECUTE (relational::Procedure unterscheidet Funktion/Prozedur ueber type)."/>
+      <details key="documentation.en" value="Privilege on a function or procedure — the action is implicitly EXECUTE (relational::Procedure distinguishes function/procedure via type)."/>
+      <details key="caption.de" value="Prozedur-Privileg"/>
+      <details key="caption.en" value="Procedure Privilege"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="procedure" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Zielfunktion/-prozedur als CWM-Referenz."/>
+        <details key="documentation.en" value="Target function/procedure as CWM reference."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="procedurePrivilege"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="procedurePrivilege"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//Procedure"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RolePrivilege" eSuperTypes="//Privilege">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Rollenmitgliedschaft als Privileg-Zeile, wie die Datenbanken sie fuehren (pg_auth_members, mysql.role_edges, DBA_ROLE_PRIVS, sys.database_role_members): GRANT rolle TO grantee — die Aktion ist implizit die Mitgliedschaft. Der Grantee (besitzende ResponsibleParty) erbt die Privilegien der referenzierten Rolle; grantable=true entspricht WITH ADMIN OPTION."/>
+      <details key="documentation.en" value="Role membership as a privilege row, as the databases keep it (pg_auth_members, mysql.role_edges, DBA_ROLE_PRIVS, sys.database_role_members): GRANT role TO grantee — the action is implicitly the membership. The grantee (owning ResponsibleParty) inherits the referenced role's privileges; grantable=true corresponds to WITH ADMIN OPTION."/>
+      <details key="caption.de" value="Rollen-Privileg"/>
+      <details key="caption.en" value="Role Privilege"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="noSelfMembership"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot">
+      <details key="noSelfMembership" value="self.role &lt;> self.namespace"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="role" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Verliehene Rolle (ResponsibleParty), deren Privilegien der Grantee erbt."/>
+        <details key="documentation.en" value="Granted role (ResponsibleParty) whose privileges the grantee inherits."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="rolePrivilege"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="rolePrivilege"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>

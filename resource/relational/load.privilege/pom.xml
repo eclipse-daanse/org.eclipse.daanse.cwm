@@ -20,24 +20,13 @@
     <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>org.eclipse.daanse.cwm.resource.relational.ddl</artifactId>
-  <name>Daanse CWM Relational DDL Generation</name>
-  <description>Generate dialect-specific DDL from a CWM relational Schema:
-    CwmDdlGenerator emits ordered CREATE/DROP statements via the jdbc.db
-    dialect, using the SQL-99 type helpers in cwm.util.</description>
+  <artifactId>org.eclipse.daanse.cwm.resource.relational.load.privilege</artifactId>
+  <name>Daanse CWM Relational Privilege Load</name>
+  <description>Load the common core of JDBC privileges (roles, table and
+    routine privileges) from a MetaInfo snapshot into a privilege model
+    (PrivilegeLoader) — the authorization companion of the CwmLoader.</description>
+
   <dependencies>
-    <dependency>
-      <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.sql.jdbc.metadata</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.datatypes</artifactId>
-      <version>${project.version}</version>
-      <scope>compile</scope>
-    </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.core</artifactId>
@@ -46,19 +35,13 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation</artifactId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.relational</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege</artifactId>
-      <version>${project.version}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.relational</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
@@ -74,18 +57,6 @@
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.sql.dialect.api</artifactId>
-      <version>${jdbc-db.version}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.sql.jdbc.record</artifactId>
-      <version>${jdbc-db.version}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>org.eclipse.emf.common</artifactId>
       <scope>compile</scope>
@@ -96,42 +67,39 @@
       <scope>compile</scope>
     </dependency>
 
-    <!-- Test: round-trip the same CWM fixture against H2 (in-process),
-         PostgreSQL, MariaDB, SQL Server and Oracle via Testcontainers. -->
+    <!-- Test: unit test builds the snapshot from records; the PG round trip
+         creates real grants via Testcontainers and reuses the CwmLoader to
+         build the companion CWM catalog. -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.sql.jdbc.impl</artifactId>
+      <artifactId>org.eclipse.daanse.sql.jdbc.record</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>test</scope>
     </dependency>
-
-    <!-- PostgreSQL -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.resource.relational.load.jdbc</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.resource.relational.ddl</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.sql.dialect.api</artifactId>
+      <version>${jdbc-db.version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.sql.dialect.db.postgresql</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.7.3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>1.19.7</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.datasource.testkit.postgresql</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- H2 (in-process) -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.sql.dialect.db.h2</artifactId>
@@ -150,8 +118,6 @@
       <version>0.0.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-
-    <!-- MariaDB -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.sql.dialect.db.mariadb</artifactId>
@@ -176,8 +142,6 @@
       <version>0.0.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-
-    <!-- SQL Server -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.sql.dialect.db.mssqlserver</artifactId>
@@ -202,59 +166,45 @@
       <version>0.0.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-
-    <!-- Oracle (image is heavy) -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.sql.dialect.db.oracle</artifactId>
+      <artifactId>org.eclipse.daanse.sql.jdbc.impl</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.oracle.database.jdbc</groupId>
-      <artifactId>ojdbc11</artifactId>
-      <version>23.3.0.23.09</version>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.sql.jdbc.metadata</artifactId>
+      <version>${jdbc-db.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.7.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>oracle-free</artifactId>
+      <artifactId>postgresql</artifactId>
       <version>1.19.7</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.jdbc.datasource.testkit.oracle</artifactId>
+      <artifactId>org.eclipse.daanse.jdbc.datasource.testkit.postgresql</artifactId>
       <version>0.0.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>junit-jupiter</artifactId>
       <version>1.19.7</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-params</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
-      <!-- Publish a test-jar so the diff module can reuse the shared
-           cross-dialect test support (DialectProfile, SqlGenAssertions). -->
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
