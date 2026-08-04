@@ -82,6 +82,21 @@ public final class SqlSimpleTypes {
         return t;
     }
 
+    // Outside Sql99 on purpose: neither type is in the CWM specification's
+    // catalogue of SQL-99 data types (section 19.5), because SQL-99 has neither.
+    // BIGINT arrived with SQL:2003; TINYINT is a vendor invention throughout.
+    //
+    // That catalogue is not a closed set. The same section says practical
+    // SQL systems vary from the types it lists and points at the product
+    // documentation, and section 19.6 names java.sql.Types as the way to
+    // identify a type uniquely — which is what the typeNumber below does.
+    //
+    // So a model may say BIGINT. How each database spells it is the dialect's
+    // business: Oracle has no BIGINT and answers ORA-00902, so its DdlGenerator
+    // renders DECIMAL(15,0) via bigintTypeName(). Putting that compromise into
+    // the model instead would bake one database into a description meant for
+    // ten.
+
     private static final SQLSimpleType BIGINT_T = Templates.integral("BIGINT", Types.BIGINT);
     private static final SQLSimpleType TINYINT_T = Templates.integral("TINYINT", Types.TINYINT);
 

@@ -205,12 +205,31 @@ public class CsvRecordPublisher implements RecordSource<RawRecord> {
                 lineCounter++;
                 demand.decrementAndGet();
 
-                Map<String, String> fields = new LinkedHashMap<>();
-                for (int i = 0; i < fieldNames.size() && i < csvRecord.getFieldCount(); i++) {
-                    fields.put(fieldNames.get(i), csvRecord.getField(i));
+                // A row whose width differs from the header is a broken file, not
+                // a short row. Taking min() of the two and leaving the rest null
+                // turns a shifted separator into a table that loads cleanly and
+                // holds the wrong data - which is the failure mode that hides
+                // itself. Every field the header names must be present.
+                int width = fieldNames.size();
+                if (csvRecord.getFieldCount() != width) {
+                    if (!cancelled.getAndSet(true)) {
+                        closeResources();
+                        subscriber.onError(new IllegalStateException(csvFilePath + ", line " + lineCounter
+                                + ": expected " + width + " fields but the row has " + csvRecord.getFieldCount()));
+                    }
+                    return;
                 }
 
-                RawRecord rawRecord = new RawRecordR(Map.copyOf(fields), lineCounter);
+                // The names were fixed when the header was read; only the values
+                // change from row to row. Building a map here and looking the same
+                // keys up again downstream cost two maps and 2N hash operations a
+                // row, for a mapping that never varies.
+                String[] values = new String[width];
+                for (int i = 0; i < width; i++) {
+                    values[i] = csvRecord.getField(i);
+                }
+
+                RawRecord rawRecord = new RawRecordR(fieldNames, values, lineCounter);
 
                 try {
                     subscriber.onNext(rawRecord);

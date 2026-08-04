@@ -71,8 +71,23 @@ import org.eclipse.daanse.sql.dialect.api.Dialect;
  */
 public final class DdlGeneratorImpl implements DdlGenerator {
 
+    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DdlGeneratorImpl.class);
+
     private final Dialect dialect;
     private final DdlSettings settings;
+
+    /**
+     * Records that the dialect cannot do something the schema asks for.
+     *
+     * <p>
+     * Said out loud rather than passed over: a schema that quietly arrives with
+     * fewer entities than it describes looks exactly like a schema that was
+     * created in full, and the difference only shows up much later as a slow
+     * query or a missing constraint.
+     */
+    private void skipped(String what, String why) {
+        LOGGER.warn("db={} — {} not created: {}", dialect.name(), what, why);
+    }
 
     public DdlGeneratorImpl(Dialect dialect) {
         this(dialect, DdlSettings.defaults());
@@ -107,6 +122,10 @@ public final class DdlGeneratorImpl implements DdlGenerator {
         if (features == null || features.isEmpty()) {
             return List.of();
         }
+        // Deliberately not gated on supportsDdl(): that is derived from
+        // Connection.isReadOnly() and describes the session, not the language.
+        // A dialect built without a connection reports it as false, which would
+        // make this method silently produce nothing.
         List<String> out = new ArrayList<>();
         List<Table> tables = Schemas.tables(schema);
         List<View> views = Schemas.views(schema);
@@ -123,7 +142,10 @@ public final class DdlGeneratorImpl implements DdlGenerator {
                 if (features.contains(Feature.PRIMARY_KEY)) {
                     pkRef = primaryKeyRef(tref, table);
                 }
-                out.add(dialect.ddlGenerator().createTable(tref, cols, pkRef, settings.ifNotExists()));
+                // ifNotExists is a wish, not an instruction: a dialect without
+                // the clause would be handed SQL it cannot parse.
+                boolean ifNotExists = settings.ifNotExists() && dialect.supportsCreateTableIfNotExists();
+                out.add(dialect.ddlGenerator().createTable(tref, cols, pkRef, ifNotExists));
             }
         }
 
@@ -159,7 +181,12 @@ public final class DdlGeneratorImpl implements DdlGenerator {
             }
         }
 
-        if (features.contains(Feature.INDEX)) {
+        if (features.contains(Feature.INDEX) && !dialect.supportsIndexDdl()) {
+            // ClickHouse has said so all along; the generator wrote 96 CREATE
+            // INDEX statements at it regardless.
+            skipped("indexes", "this dialect has no CREATE INDEX");
+        } else if (features.contains(Feature.INDEX)) {
+            boolean ifNotExists = dialect.supportsCreateIndexIfNotExists();
             for (Table table : tables) {
                 TableReference tref = tableRef(schema, table, TableReference.TYPE_TABLE);
                 int idx = 0;
@@ -169,7 +196,7 @@ public final class DdlGeneratorImpl implements DdlGenerator {
                         continue;
                     }
                     String name = nameOrDefault(i, "idx_" + table.getName() + "_" + (++idx));
-                    out.add(dialect.ddlGenerator().createIndex(name, tref, colNames, i.isIsUnique(), true));
+                    out.add(dialect.ddlGenerator().createIndex(name, tref, colNames, i.isIsUnique(), ifNotExists));
                 }
             }
         }

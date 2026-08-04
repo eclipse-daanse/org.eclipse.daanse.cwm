@@ -41,32 +41,35 @@ public class TypeConverter {
     public static void setTypedValue(PreparedStatement ps, int index, JDBCType jdbcType, String value)
             throws SQLException {
         if (value == null || "NULL".equalsIgnoreCase(value)) {
-            ps.setObject(index, null);
+            // With a type code: an untyped null binds as "unspecified" on pgjdbc,
+            // which the server cannot resolve when a column is null in every tuple.
+            ps.setNull(index, jdbcType.getVendorTypeNumber());
             return;
         }
-
+            // parseX, not valueOf: valueOf boxes and unboxes again for the
+            // primitive setter, allocating once per value.
         switch (jdbcType) {
         case BOOLEAN:
-            ps.setBoolean(index, value.isEmpty() ? Boolean.FALSE : Boolean.valueOf(value));
+            ps.setBoolean(index, parseBoolean(value));
             break;
         case BIGINT:
-            ps.setLong(index, value.isEmpty() ? 0L : Long.valueOf(value));
+            ps.setLong(index, value.isEmpty() ? 0L : Long.parseLong(value));
             break;
         case DATE:
             ps.setDate(index, Date.valueOf(value));
             break;
         case INTEGER:
-            ps.setInt(index, value.isEmpty() ? 0 : Integer.valueOf(value));
+            ps.setInt(index, value.isEmpty() ? 0 : Integer.parseInt(value));
             break;
         case DECIMAL:
         case NUMERIC:
         case REAL:
         case DOUBLE:
         case FLOAT:
-            ps.setDouble(index, value.isEmpty() ? 0.0 : Double.valueOf(value));
+            ps.setDouble(index, value.isEmpty() ? 0.0 : Double.parseDouble(value));
             break;
         case SMALLINT:
-            ps.setShort(index, value.isEmpty() ? (short) 0 : Short.valueOf(value));
+            ps.setShort(index, value.isEmpty() ? (short) 0 : Short.parseShort(value));
             break;
         case TIMESTAMP:
             ps.setTimestamp(index, Timestamp.valueOf(value));
@@ -85,5 +88,33 @@ public class TypeConverter {
             ps.setString(index, value);
             break;
         }
+    }
+
+    /**
+     * Binds a boolean into a numeric column, as 1 or 0.
+     *
+     * <p>
+     * Most databases here store booleans as a number — see
+     * {@code DdlGenerator.booleanTypeName()} — and several refuse
+     * {@code setBoolean} against that column. The text is still read as a
+     * boolean, so both {@code 1/0} and {@code true/false} arrive correctly.
+     */
+    public static void setBooleanAsNumber(PreparedStatement ps, int index, String value) throws SQLException {
+        if (value == null || "NULL".equalsIgnoreCase(value)) {
+            ps.setNull(index, JDBCType.SMALLINT.getVendorTypeNumber());
+            return;
+        }
+        // An empty field is false, not null - the same reading the native path
+        // gives it, and the same the other types give an empty numeric field.
+        ps.setShort(index, parseBoolean(value) ? (short) 1 : (short) 0);
+    }
+
+    /**
+     * A boolean as a CSV writes it. {@code Boolean.valueOf("1")} is {@code false},
+     * so a source that encodes booleans as 1/0 - which the shipped datasets do -
+     * would load every one of them as false without this.
+     */
+    private static boolean parseBoolean(String value) {
+        return "1".equals(value) || "true".equalsIgnoreCase(value);
     }
 }
