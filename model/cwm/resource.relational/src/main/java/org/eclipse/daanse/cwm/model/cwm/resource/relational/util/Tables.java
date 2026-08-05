@@ -73,8 +73,8 @@ public final class Tables {
         Namespaces.ownedElementStream(table, UniqueKey.class).filter(uk -> uk.getFeature().size() == 1)
                 .map(uk -> uk.getFeature().get(0)).filter(Column.class::isInstance).map(Column.class::cast)
                 .forEach(unique::add);
-        for (SQLIndex index : Indexes.uniqueSpanning(table)) {
-            List<Column> columns = Indexes.columns(index);
+        for (SQLIndex index : SQLIndexes.uniqueSpanning(table)) {
+            List<Column> columns = SQLIndexes.columns(index);
             if (columns.size() == 1) {
                 unique.add(columns.get(0));
             }

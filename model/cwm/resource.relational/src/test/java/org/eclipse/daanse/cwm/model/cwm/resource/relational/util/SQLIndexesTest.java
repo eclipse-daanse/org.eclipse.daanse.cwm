@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.jupiter.api.Test;
 
-class IndexesTest {
+class SQLIndexesTest {
 
     private static final RelationalFactory RF = RelationalFactory.eINSTANCE;
 
@@ -63,16 +63,16 @@ class IndexesTest {
         SQLIndex empIdx = index(schema, emp, "IX_EMP", false, (Column) emp.getFeature().get(0));
         index(schema, dept, "IX_DEPT", false, (Column) dept.getFeature().get(0));
 
-        assertThat(Indexes.indexes(schema)).hasSize(2);
-        assertThat(Indexes.spanning(emp)).containsExactly(empIdx);
+        assertThat(SQLIndexes.indexes(schema)).hasSize(2);
+        assertThat(SQLIndexes.spanning(emp)).containsExactly(empIdx);
     }
 
     @Test
     void spanning_tableNothingPointsAt_empty() {
         Table orphan = RF.createTable();
         orphan.setName("ORPHAN");
-        assertThat(Indexes.spanning(orphan)).isEmpty();
-        assertThat(Indexes.uniqueSpanning(orphan)).isEmpty();
+        assertThat(SQLIndexes.spanning(orphan)).isEmpty();
+        assertThat(SQLIndexes.uniqueSpanning(orphan)).isEmpty();
     }
 
     /**
@@ -99,9 +99,9 @@ class IndexesTest {
         // the index lives in ADMIN, the table in DATA
         SQLIndex remote = index(admin, emp, "IX_REMOTE", true, (Column) emp.getFeature().get(0));
 
-        assertThat(Indexes.indexes(data)).isEmpty();
-        assertThat(Indexes.spanning(emp)).containsExactly(remote);
-        assertThat(Indexes.uniqueSpanning(emp)).containsExactly(remote);
+        assertThat(SQLIndexes.indexes(data)).isEmpty();
+        assertThat(SQLIndexes.spanning(emp)).containsExactly(remote);
+        assertThat(SQLIndexes.uniqueSpanning(emp)).containsExactly(remote);
     }
 
     /** Stream twins agree with their list counterparts. */
@@ -111,9 +111,9 @@ class IndexesTest {
         Table emp = table(schema, "EMP", "ID");
         SQLIndex idx = index(schema, emp, "UX", true, (Column) emp.getFeature().get(0));
 
-        assertThat(Indexes.spanningStream(emp)).containsExactly(idx);
-        assertThat(Indexes.uniqueSpanningStream(emp)).containsExactly(idx);
-        assertThat(Indexes.spanningStream(null)).isEmpty();
+        assertThat(SQLIndexes.spanningStream(emp)).containsExactly(idx);
+        assertThat(SQLIndexes.uniqueSpanningStream(emp)).containsExactly(idx);
+        assertThat(SQLIndexes.spanningStream(null)).isEmpty();
     }
 
     @Test
@@ -125,7 +125,7 @@ class IndexesTest {
         index(schema, emp, "IX_PLAIN", false, id);
         SQLIndex uniqueIdx = index(schema, emp, "UX_EMAIL", true, email);
 
-        assertThat(Indexes.uniqueSpanning(emp)).containsExactly(uniqueIdx);
+        assertThat(SQLIndexes.uniqueSpanning(emp)).containsExactly(uniqueIdx);
     }
 
     @Test
@@ -136,7 +136,7 @@ class IndexesTest {
         Column b = (Column) emp.getFeature().get(1);
         SQLIndex idx = index(schema, emp, "IX", false, b, a);
 
-        assertThat(Indexes.columns(idx)).containsExactly(b, a);
-        assertThat(Indexes.columns(null)).isEmpty();
+        assertThat(SQLIndexes.columns(idx)).containsExactly(b, a);
+        assertThat(SQLIndexes.columns(null)).isEmpty();
     }
 }

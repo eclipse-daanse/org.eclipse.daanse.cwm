@@ -60,7 +60,8 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.Referen
 import org.eclipse.daanse.cwm.resource.relational.load.jdbc.api.CwmLoader;
 import org.eclipse.daanse.cwm.resource.relational.load.jdbc.api.JdbcToCwmConfig;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
-import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SqlSimpleTypes;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SQLIndexes;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SQLSimpleTypes;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Tables;
 import org.eclipse.daanse.sql.jdbc.api.meta.IndexInfo;
 import org.eclipse.daanse.sql.jdbc.api.meta.IndexInfoItem;
@@ -327,7 +328,7 @@ public final class CwmLoaderImpl implements CwmLoader {
             col.setName(cr.name());
             ColumnMetaData md = cd.columnMetaData();
             col.setIsNullable(toCwmNullability(md.nullability()));
-            col.setType(SqlSimpleTypes.toCwmType(md.typeName(), md.dataType(), md.columnSize(), md.decimalDigits()));
+            col.setType(SQLSimpleTypes.toCwmType(md.typeName(), md.dataType(), md.columnSize(), md.decimalDigits()));
             md.columnSize().ifPresent(s -> col.setLength(s));
             md.decimalDigits().ifPresent(d -> col.setScale(d));
             md.columnDefault().filter(d -> !d.isBlank()).ifPresent(d -> {
@@ -621,8 +622,7 @@ public final class CwmLoaderImpl implements CwmLoader {
                     Column col = cmap.get(item.column().get().name());
                     if (col == null)
                         continue;
-                    SQLIndexColumn ic = RF.createSQLIndexColumn();
-                    ic.setFeature(col);
+                    SQLIndexColumn ic = SQLIndexes.indexColumn(col);
                     item.ascending().ifPresent(ic::setIsAscending);
                     idx.getIndexedFeature().add(ic);
                 }
@@ -730,7 +730,7 @@ public final class CwmLoaderImpl implements CwmLoader {
         SQLParameter sp = RF.createSQLParameter();
         sp.setName(col.name());
         sp.setKind(kind);
-        sp.setType(SqlSimpleTypes.toCwmType(col.typeName(), col.dataType(), col.precision(), col.scale()));
+        sp.setType(SQLSimpleTypes.toCwmType(col.typeName(), col.dataType(), col.precision(), col.scale()));
         return Optional.of(sp);
     }
 
@@ -747,7 +747,7 @@ public final class CwmLoaderImpl implements CwmLoader {
         SQLParameter sp = RF.createSQLParameter();
         sp.setName(col.name());
         sp.setKind(kind);
-        sp.setType(SqlSimpleTypes.toCwmType(col.typeName(), col.dataType(), col.precision(), col.scale()));
+        sp.setType(SQLSimpleTypes.toCwmType(col.typeName(), col.dataType(), col.precision(), col.scale()));
         return Optional.of(sp);
     }
 
