@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.instance.DataSlot;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.instance.util.DataSlots;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Row;
 
@@ -47,8 +48,8 @@ public final class Rows {
             return Optional.empty();
         }
         for (DataSlot ds : slots(row)) {
-            if (ds.getFeature() == column) {
-                return Optional.ofNullable(ds.getDataValue());
+            if (DataSlots.boundTo(ds, column)) {
+                return DataSlots.dataValue(ds);
             }
         }
         return Optional.empty();
