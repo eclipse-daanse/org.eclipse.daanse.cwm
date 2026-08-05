@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SqlSimpleTypes;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SQLSimpleTypes;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Feature;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.StructuralFeature;
@@ -45,7 +45,7 @@ import org.eclipse.daanse.sql.jdbc.record.schema.PrimaryKeyRecord;
  * {@link Dialect#ddlGenerator()} consumes. Every method takes an explicit
  * {@link TableReference} — schema/catalog derivation and DDL emission live in
  * the {@link DdlGenerator}. SQL type-code mapping is delegated to
- * {@link org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SqlSimpleTypes}.
+ * {@link org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SQLSimpleTypes}.
  */
 public final class CwmSchemaMapper {
 
@@ -76,7 +76,7 @@ public final class CwmSchemaMapper {
         Classifier type = col.getType();
         SQLDataType sqlType = type instanceof SQLDataType sdt ? sdt : null;
 
-        JDBCType jdbcType = SqlSimpleTypes.toJdbcType(sqlType);
+        JDBCType jdbcType = SQLSimpleTypes.toJdbcType(sqlType);
         String typeName;
         if (sqlType != null && sqlType.getName() != null && !sqlType.getName().isBlank()) {
             typeName = sqlType.getName();

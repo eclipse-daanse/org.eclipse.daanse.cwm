@@ -19,15 +19,17 @@ import java.util.stream.Stream;
 import org.eclipse.daanse.cwm.model.cwm.foundation.keysindexes.IndexedFeature;
 import org.eclipse.daanse.cwm.model.cwm.foundation.keysindexes.KeysindexesPackage;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndexColumn;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.InverseReferences;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Namespaces;
 
-public final class Indexes {
+public final class SQLIndexes {
 
-    private Indexes() {
+    private SQLIndexes() {
     }
 
     /** All SQLIndexes owned directly by {@code schema}. */
@@ -74,5 +76,27 @@ public final class Indexes {
         }
         return idx.getIndexedFeature().stream().map(IndexedFeature::getFeature).filter(Column.class::isInstance)
                 .map(Column.class::cast);
+    }
+
+    /**
+     * An {@code SQLIndex} over {@code columns} in the given order, spanning
+     * {@code table}. Not owned by a schema yet — the caller decides where it goes.
+     */
+    public static SQLIndex index(String name, boolean unique, Table table, Column... columns) {
+        SQLIndex idx = RelationalFactory.eINSTANCE.createSQLIndex();
+        idx.setName(name);
+        idx.setIsUnique(unique);
+        idx.setSpannedClass(table);
+        for (Column column : columns) {
+            idx.getIndexedFeature().add(indexColumn(column));
+        }
+        return idx;
+    }
+
+    /** The link from an index to one of its columns. */
+    public static SQLIndexColumn indexColumn(Column column) {
+        SQLIndexColumn ic = RelationalFactory.eINSTANCE.createSQLIndexColumn();
+        ic.setFeature(column);
+        return ic;
     }
 }

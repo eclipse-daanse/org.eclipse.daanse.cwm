@@ -40,7 +40,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Namespaces;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ForeignKeys;
-import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Indexes;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SQLIndexes;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.NamedColumnSets;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.PrimaryKeys;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
@@ -190,7 +190,7 @@ public final class DdlGeneratorImpl implements DdlGenerator {
             for (Table table : tables) {
                 TableReference tref = tableRef(schema, table, TableReference.TYPE_TABLE);
                 int idx = 0;
-                for (SQLIndex i : Indexes.spanning(table)) {
+                for (SQLIndex i : SQLIndexes.spanning(table)) {
                     List<String> colNames = indexColumnNames(i);
                     if (colNames.isEmpty()) {
                         continue;
@@ -360,7 +360,7 @@ public final class DdlGeneratorImpl implements DdlGenerator {
             for (Table table : tables) {
                 TableReference tref = tableRef(schema, table, TableReference.TYPE_TABLE);
                 int idx = 0;
-                for (SQLIndex i : Indexes.spanning(table)) {
+                for (SQLIndex i : SQLIndexes.spanning(table)) {
                     String name = nameOrDefault(i, "idx_" + table.getName() + "_" + (++idx));
                     out.add(dialect.ddlGenerator().dropIndex(name, tref, true));
                 }
@@ -468,7 +468,7 @@ public final class DdlGeneratorImpl implements DdlGenerator {
 
     private static List<String> indexColumnNames(SQLIndex i) {
         List<String> out = new ArrayList<>();
-        for (Column c : Indexes.columns(i)) {
+        for (Column c : SQLIndexes.columns(i)) {
             if (c.getName() != null) {
                 out.add(c.getName());
             }

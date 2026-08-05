@@ -26,9 +26,9 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLDataType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-public final class SqlSimpleTypes {
+public final class SQLSimpleTypes {
 
-    private SqlSimpleTypes() {
+    private SQLSimpleTypes() {
     }
 
     /** {@code VARCHAR(length)}. */
@@ -145,8 +145,8 @@ public final class SqlSimpleTypes {
         m.put("TIMESTAMP", Sql99::timestampType);
         m.put("TIMESTAMP WITH TIMEZONE", Sql99::timestampWithTimezoneType);
         m.put("INTERVAL", Sql99::intervalType);
-        m.put("BIGINT", SqlSimpleTypes::bigintType);
-        m.put("TINYINT", SqlSimpleTypes::tinyintType);
+        m.put("BIGINT", SQLSimpleTypes::bigintType);
+        m.put("TINYINT", SQLSimpleTypes::tinyintType);
         m.put("BLOB", Sql99::blobType);
         m.put("CLOB", Sql99::clobType);
         m.put("NCLOB", Sql99::nclobType);
@@ -378,7 +378,7 @@ public final class SqlSimpleTypes {
 
         /**
          * Alias for {@link #characterVaryingType()}. Prefer
-         * {@link SqlSimpleTypes#varcharType(int)} for a sized type.
+         * {@link SQLSimpleTypes#varcharType(int)} for a sized type.
          */
         public static SQLSimpleType varcharType() {
             return characterVaryingType();
