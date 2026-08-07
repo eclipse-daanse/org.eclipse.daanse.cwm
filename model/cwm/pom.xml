@@ -22,11 +22,7 @@
   <artifactId>org.eclipse.daanse.cwm.model.cwm</artifactId>
   <packaging>pom</packaging>
   <name>Daanse CWM Model EMF</name>
-  <description>Das CWM-1.1-Metamodell, geschnitten in 21 Einheiten entlang der
-    Paketabhaengigkeiten. Siehe PACKAGES.md fuer Inventar, Ebenen und
-    Schnitt-Regel.</description>
 
-  <!-- Reihenfolge = Abhaengigkeitsebene, siehe PACKAGES.md Teil B -->
   <modules>
     <module>objectmodel.core</module>
     <module>analysis.businessnomenclature</module>
