@@ -22,15 +22,6 @@
   <artifactId>org.eclipse.daanse.cwm.testkit</artifactId>
   <packaging>jar</packaging>
   <name>Daanse CWM Test Kit</name>
-  <description>CWM-side testkit in a single jar. The api package holds the
-    SPI types: DatabaseSupplier (returns CWM Schema), DataSupplier (CSV
-    resources + programmatic load), DatabaseCheckSuiteSupplier (DB
-    structural assertions), CsvAutoDetect, and the DatabaseCheckSuite
-    record family. The database package materializes a CWM Schema into a
-    JDBC DataSource via the dialect's DDL generator and asserts live
-    structure (DatabaseLayer, DatabaseCheckExecutor). The data package
-    loads CSV resources into those tables via the cwm.data pipeline
-    (DataLayer).</description>
 
   <dependencies>
     <dependency>
