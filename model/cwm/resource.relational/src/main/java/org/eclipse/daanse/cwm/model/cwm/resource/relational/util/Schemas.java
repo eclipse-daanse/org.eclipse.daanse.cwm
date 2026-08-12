@@ -71,6 +71,21 @@ public final class Schemas {
         return Namespaces.ownedElementStream(schema, QueryColumnSet.class);
     }
 
+    /**
+     * Query column sets owned by the schema directly or grouped inside nested
+     * {@code core::Package}s (any depth). A {@code Schema} is itself a
+     * {@code core::Package}, so nested schemas are traversed too.
+     */
+    public static List<QueryColumnSet> queryColumnSetsDeep(Schema schema) {
+        return queryColumnSetStreamDeep(schema).toList();
+    }
+
+    /** Stream twin of {@link #queryColumnSetsDeep}. */
+    public static Stream<QueryColumnSet> queryColumnSetStreamDeep(Schema schema) {
+        return Namespaces.ownedElementStreamDeep(schema, QueryColumnSet.class,
+                org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package.class);
+    }
+
     /** Find an owned table by name. */
     public static Optional<Table> findTable(Schema schema, String name) {
         return Namespaces.findOwnedByName(schema, Table.class, name);
