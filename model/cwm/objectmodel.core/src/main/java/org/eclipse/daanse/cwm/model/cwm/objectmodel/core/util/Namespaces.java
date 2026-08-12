@@ -60,6 +60,26 @@ public final class Namespaces {
     }
 
     /**
+     * Depth-first stream of owned elements of {@code type}: direct children of
+     * {@code ns} first, then (recursively) the children of every owned element
+     * that is an instance of {@code descendInto}. Encounter order follows the
+     * {@code ownedElement} list order at each level.
+     */
+    public static <T extends ModelElement> Stream<T> ownedElementStreamDeep(Namespace ns, Class<T> type,
+            Class<? extends Namespace> descendInto) {
+        if (ns == null || type == null || descendInto == null) {
+            return Stream.empty();
+        }
+        return ns.getOwnedElement().stream().flatMap(me -> {
+            Stream<T> self = type.isInstance(me) ? Stream.of(type.cast(me)) : Stream.empty();
+            Stream<T> below = descendInto.isInstance(me)
+                    ? ownedElementStreamDeep(descendInto.cast(me), type, descendInto)
+                    : Stream.empty();
+            return Stream.concat(self, below);
+        });
+    }
+
+    /**
      * First owned element of the given type with the given name; first match wins.
      */
     public static <T extends ModelElement> Optional<T> findOwnedByName(Namespace ns, Class<T> type, String name) {

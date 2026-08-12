@@ -14,6 +14,7 @@ package org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util;
 
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
@@ -30,6 +31,26 @@ public final class InverseReferences {
 
     private static final Logger LOGGER = System.getLogger(InverseReferences.class.getName());
     private static final AtomicBoolean MISSING_ADAPTER_WARNED = new AtomicBoolean(false);
+
+    /**
+     * The order every lookup comes back in: by name, then by containment path. The index behind
+     * these lookups is keyed by object identity, so its raw order is the machine's — it shifts
+     * with allocation history (and with it, the classpath) while the model is unchanged. Anything
+     * ordered downstream of a lookup (page sections, diagram nodes, layout) would inherit that
+     * shift; sorting here, at the source, is what keeps every consumer deterministic.
+     */
+    private static final Comparator<EObject> STABLE =
+            Comparator.comparing(InverseReferences::nameOf)
+                    .thenComparing(o -> {
+                        String fragment = EcoreUtil.getURI(o).fragment();
+                        return fragment == null ? "" : fragment;
+                    });
+
+    private static String nameOf(EObject element) {
+        EStructuralFeature name = element.eClass().getEStructuralFeature("name");
+        Object value = name == null ? null : element.eGet(name);
+        return value == null ? "" : value.toString();
+    }
 
     private InverseReferences() {
     }
@@ -65,7 +86,8 @@ public final class InverseReferences {
                 ? adapter.getNonNavigableInverseReferences(target)
                 : scan(target);
         return toStream(settings).filter(s -> s.getEStructuralFeature() == reference)
-                .map(EStructuralFeature.Setting::getEObject).filter(type::isInstance).map(type::cast);
+                .map(EStructuralFeature.Setting::getEObject).filter(type::isInstance).map(type::cast)
+                .sorted(STABLE);
     }
 
     /** List-returning twin of {@link #referencing}. */
@@ -91,7 +113,8 @@ public final class InverseReferences {
                 : scan(target);
         return toStream(settings).filter(s -> referenceName.equals(s.getEStructuralFeature().getName()))
                 .map(EStructuralFeature.Setting::getEObject)
-                .filter(o -> eClassName == null || eClassName.equals(o.eClass().getName()));
+                .filter(o -> eClassName == null || eClassName.equals(o.eClass().getName()))
+                .sorted(STABLE);
     }
 
     /** Adapter-free fallback: sweeps the ResourceSet, else the Resource, else the containment tree. */

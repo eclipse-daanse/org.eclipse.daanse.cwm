@@ -11,7 +11,9 @@ package org.eclipse.daanse.cwm.model.cwm.resource.relational.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CoreFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Catalog;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.QueryColumnSet;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
@@ -22,17 +24,45 @@ class SchemasTest {
     private static final RelationalFactory RF = RelationalFactory.eINSTANCE;
 
     @Test
-    void tablesAndViews_areTypeFiltered() {
+    void tablesViewsAndQueries_areTypeFiltered() {
         Schema sch = RF.createSchema();
         sch.setName("PUBLIC");
         Table t = RF.createTable();
         t.setName("EMP");
         sch.getOwnedElement().add(t);
         sch.getOwnedElement().add(RF.createView());
+        QueryColumnSet qcs = RF.createQueryColumnSet();
+        qcs.setName("TOP_EMPS");
+        sch.getOwnedElement().add(qcs);
 
         assertThat(Schemas.tables(sch)).singleElement().extracting(Table::getName).isEqualTo("EMP");
         assertThat(Schemas.views(sch)).hasSize(1);
+        // a QueryColumnSet is not a NamedColumnSet — columnSets stays tables+views
         assertThat(Schemas.columnSets(sch)).hasSize(2);
+        assertThat(Schemas.queryColumnSets(sch)).singleElement().extracting(QueryColumnSet::getName)
+                .isEqualTo("TOP_EMPS");
+    }
+
+    @Test
+    void queryColumnSetsDeep_traversesNestedPackages() {
+        Schema sch = RF.createSchema();
+        sch.setName("PUBLIC");
+        QueryColumnSet direct = RF.createQueryColumnSet();
+        direct.setName("DIRECT");
+        sch.getOwnedElement().add(direct);
+
+        org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package outer = CoreFactory.eINSTANCE.createPackage();
+        outer.setName("often used queries");
+        sch.getOwnedElement().add(outer);
+        org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package inner = CoreFactory.eINSTANCE.createPackage();
+        inner.setName("monthly");
+        outer.getOwnedElement().add(inner);
+        QueryColumnSet nested = RF.createQueryColumnSet();
+        nested.setName("NESTED");
+        inner.getOwnedElement().add(nested);
+
+        assertThat(Schemas.queryColumnSets(sch)).containsExactly(direct);
+        assertThat(Schemas.queryColumnSetsDeep(sch)).containsExactly(direct, nested);
     }
 
     @Test

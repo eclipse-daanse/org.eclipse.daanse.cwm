@@ -49,11 +49,15 @@ public class DatabaseRecordSink implements RecordSink<RawRecord> {
     private final List<FieldMapping> fieldMappings;
     private final List<JDBCType> jdbcTypes;
     private final int batchSize;
+    private final boolean boundedDemand;
 
     private Flow.Subscription subscription;
     private Connection connection;
     private PreparedStatement preparedStatement;
     private long batchCount;
+    private long rowsAtLastExecute;
+    private Throwable failure;
+    private boolean closedReported;
 
     /** Whether this database has transactions at all; ClickHouse has none. */
     private boolean transactional;
@@ -100,12 +104,42 @@ public class DatabaseRecordSink implements RecordSink<RawRecord> {
 
     public DatabaseRecordSink(DataSource dataSource, Dialect dialect, TableReference targetTable,
             List<FieldMapping> fieldMappings, List<JDBCType> jdbcTypes, int batchSize) {
+        this(dataSource, dialect, targetTable, fieldMappings, jdbcTypes, batchSize, false);
+    }
+
+    /**
+     * @param boundedDemand request records in windows of {@code batchSize}
+     *                      instead of unbounded — batch size, demand window and
+     *                      execution interval become one knob. Requires a
+     *                      reentrancy-safe upstream.
+     */
+    public DatabaseRecordSink(DataSource dataSource, Dialect dialect, TableReference targetTable,
+            List<FieldMapping> fieldMappings, List<JDBCType> jdbcTypes, int batchSize, boolean boundedDemand) {
         this.dataSource = dataSource;
         this.dialect = dialect;
         this.targetTable = targetTable;
         this.fieldMappings = fieldMappings;
         this.jdbcTypes = jdbcTypes;
         this.batchSize = batchSize;
+        this.boundedDemand = boundedDemand;
+    }
+
+    // --- observation hooks (no-ops here; an observing subclass adds telemetry) --
+
+    /** Called once after connection and statements are prepared. */
+    protected void onSinkOpened(String insertSql, Connection openedConnection) {
+    }
+
+    /** Called after each JDBC batch execution with the rows it carried. */
+    protected void onBatchExecuted(long rows, long nanos) {
+    }
+
+    /** Called after the final commit (transactional databases only). */
+    protected void onCommitted(long nanos) {
+    }
+
+    /** Called exactly once when the sink is done, successful or not. */
+    protected void onSinkClosed(Throwable terminalFailure, long writtenRows) {
     }
 
     /**
@@ -142,7 +176,8 @@ public class DatabaseRecordSink implements RecordSink<RawRecord> {
             }).toList();
             // The single-row statement always exists: it takes the tail of the file,
             // the rows that do not fill a whole block.
-            preparedStatement = connection.prepareStatement(dialect.ddlGenerator().insertInto(targetTable, columns));
+            String insertSql = dialect.ddlGenerator().insertInto(targetTable, columns);
+            preparedStatement = connection.prepareStatement(insertSql);
 
             tuplesPerStatement = Math.min(tuplesPerStatement(columns.size()),
                     dialect.ddlGenerator().maxInsertRows());
@@ -153,9 +188,12 @@ public class DatabaseRecordSink implements RecordSink<RawRecord> {
             batchCount = 0;
             boundRows = 0;
             resolveColumns();
+            onSinkOpened(insertSql, connection);
 
-            subscription.request(Long.MAX_VALUE);
+            subscription.request(boundedDemand ? Math.max(batchSize, tuplesPerStatement) : Long.MAX_VALUE);
         } catch (SQLException e) {
+            failure = e;
+            reportClosed();
             throw new JdbcSinkException("Failed to initialize database sink", e);
         }
     }
@@ -227,8 +265,10 @@ public class DatabaseRecordSink implements RecordSink<RawRecord> {
                 executeBatch();
             }
         } catch (SQLException e) {
+            failure = e;
             subscription.cancel();
             closeResources();
+            reportClosed();
             throw new JdbcSinkException("Error writing record at line " + item.lineNumber(), e);
         }
     }
@@ -244,7 +284,26 @@ public class DatabaseRecordSink implements RecordSink<RawRecord> {
         batchCount += block.size();
         block.clear();
         if (batchCount % batchSize < tuplesPerStatement) {
-            blockStatement.executeBatch();
+            timedExecute(blockStatement);
+        }
+    }
+
+    /** Executes a batch, reports it to the hook and re-requests when bounded. */
+    private void timedExecute(PreparedStatement statement) throws SQLException {
+        long start = System.nanoTime();
+        try {
+            statement.executeBatch();
+        } catch (SQLException e) {
+            onBatchExecuted(0, System.nanoTime() - start);
+            throw e;
+        }
+        long rows = batchCount - rowsAtLastExecute;
+        rowsAtLastExecute = batchCount;
+        if (rows > 0) {
+            onBatchExecuted(rows, System.nanoTime() - start);
+            if (boundedDemand) {
+                subscription.request(rows);
+            }
         }
     }
 
@@ -280,6 +339,7 @@ public class DatabaseRecordSink implements RecordSink<RawRecord> {
     @Override
     public void onError(Throwable throwable) {
         LOGGER.error("Error in database ETL pipeline", throwable);
+        failure = throwable;
         try {
             if (connection != null && transactional) {
                 connection.rollback();
@@ -288,13 +348,14 @@ public class DatabaseRecordSink implements RecordSink<RawRecord> {
             LOGGER.warn("Error rolling back transaction", e);
         }
         closeResources();
+        reportClosed();
     }
 
     @Override
     public void onComplete() {
         try {
             if (blockStatement != null) {
-                blockStatement.executeBatch();
+                timedExecute(blockStatement);
                 // The tail — fewer rows than the block statement has tuples — goes in
                 // one at a time through the single-row statement.
                 for (RawRecord record : block) {
@@ -303,19 +364,23 @@ public class DatabaseRecordSink implements RecordSink<RawRecord> {
                 }
                 batchCount += block.size();
                 block.clear();
-                preparedStatement.executeBatch();
+                timedExecute(preparedStatement);
             } else if (batchCount % batchSize != 0) {
                 executeBatch();
             }
             if (transactional) {
+                long start = System.nanoTime();
                 connection.commit();
                 connection.setAutoCommit(true);
+                onCommitted(System.nanoTime() - start);
             }
             LOGGER.debug("Database import completed for table {}", targetTable.name());
         } catch (SQLException e) {
+            failure = e;
             throw new JdbcSinkException("Error completing database import", e);
         } finally {
             closeResources();
+            reportClosed();
         }
     }
 
@@ -326,7 +391,14 @@ public class DatabaseRecordSink implements RecordSink<RawRecord> {
      * many durable transactions as it had batches.
      */
     private void executeBatch() throws SQLException {
-        preparedStatement.executeBatch();
+        timedExecute(preparedStatement);
+    }
+
+    private void reportClosed() {
+        if (!closedReported) {
+            closedReported = true;
+            onSinkClosed(failure, batchCount);
+        }
     }
 
     private void closeResources() {
