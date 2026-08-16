@@ -11,6 +11,7 @@ package org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Attribute;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Model;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CoreFactory;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Subsystem;
@@ -33,6 +34,22 @@ class NamespacesTest {
         assertThat(Namespaces.walkUpTo(t.getNamespace(), Subsystem.class)).containsSame(sch);
         assertThat(Namespaces.walkUpTo(t.getNamespace(), Model.class)).containsSame(cat);
         assertThat(Namespaces.walkUpTo(null, Subsystem.class)).isEmpty();
+    }
+
+    @Test
+    void nearest_followsContainmentNotNamespaceChain() {
+        Subsystem sch = CF.createSubsystem();
+        DataType t = CF.createDataType();
+        sch.getOwnedElement().add(t);
+        // a feature is contained via Classifier.feature, not ownedElement —
+        // its getNamespace() is null, only the containment walk finds an owner
+        Attribute col = CF.createAttribute();
+        t.getFeature().add(col);
+
+        assertThat(Namespaces.nearest(t)).containsSame(t);
+        assertThat(Namespaces.nearest(col)).containsSame(t);
+        assertThat(Namespaces.nearest(CF.createAttribute())).isEmpty();
+        assertThat(Namespaces.nearest(null)).isEmpty();
     }
 
     @Test
