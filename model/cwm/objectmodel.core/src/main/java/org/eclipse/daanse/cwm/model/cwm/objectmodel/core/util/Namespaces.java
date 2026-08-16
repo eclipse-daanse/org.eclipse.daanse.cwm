@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Namespace;
+import org.eclipse.emf.ecore.EObject;
 
 public final class Namespaces {
 
@@ -89,6 +90,31 @@ public final class Namespaces {
         for (ModelElement me : ns.getOwnedElement()) {
             if (type.isInstance(me) && name.equals(me.getName())) {
                 return Optional.of(type.cast(me));
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * The nearest namespace of {@code element} along the <em>containment</em>
+     * tree: the element itself if it is a {@link Namespace}, otherwise the
+     * closest {@code eContainer()} that is one. Unlike
+     * {@link #walkUpTo(Namespace, Class)}, which follows the
+     * {@code getNamespace()} chain (the {@code ownedElement} opposite), this
+     * walk also covers elements held in other containments — a feature,
+     * tagged value or expression has no namespace but does have a container.
+     * Empty for a detached element.
+     */
+    public static Optional<Namespace> nearest(ModelElement element) {
+        if (element == null) {
+            return Optional.empty();
+        }
+        if (element instanceof Namespace ns) {
+            return Optional.of(ns);
+        }
+        for (EObject c = element.eContainer(); c != null; c = c.eContainer()) {
+            if (c instanceof Namespace ns) {
+                return Optional.of(ns);
             }
         }
         return Optional.empty();

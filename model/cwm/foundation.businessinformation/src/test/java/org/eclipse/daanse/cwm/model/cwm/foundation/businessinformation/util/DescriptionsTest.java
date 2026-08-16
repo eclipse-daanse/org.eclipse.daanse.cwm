@@ -208,6 +208,88 @@ class DescriptionsTest {
     }
 
     @Test
+    void describe_upsertsPerElementTypeAndLanguage() {
+        DataType t = table("EMP");
+
+        Description created = Descriptions.describe(t, TYPE, "de_DE", "Alt");
+        assertThat(created.getLanguage()).isEqualTo("de-DE");
+        // a DataType is a Namespace, so its texts live in the element itself
+        assertThat(t.getOwnedElement()).contains(created);
+
+        Description updated = Descriptions.describe(t, TYPE, "de-DE", "Neu");
+        assertThat(updated).isSameAs(created);
+        assertThat(updated.getBody()).isEqualTo("Neu");
+
+        Description neutral = Descriptions.describe(t, TYPE, null, "Neutral");
+        assertThat(neutral).isNotSameAs(created);
+        assertThat(neutral.getLanguage()).isEqualTo("und");
+    }
+
+    @Test
+    void describe_failsLoudlyOnDetachedNonNamespace() {
+        Attribute detached = CF.createAttribute();
+        detached.setName("COL");
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalStateException.class,
+                () -> Descriptions.describe(detached, TYPE, "en", "text"));
+    }
+
+    @Test
+    void owner_isElementItselfOrNearestContainerNamespace() {
+        DataType t = table("EMP", "ID");
+        Attribute col = (Attribute) t.getFeature().get(0);
+
+        assertThat(Descriptions.owner(t)).isSameAs(t);
+        // a feature hangs in Classifier.feature, not ownedElement — the
+        // containment walk still finds the classifier
+        assertThat(Descriptions.owner(col)).isSameAs(t);
+    }
+
+    @Test
+    void localizedBody_resolvesViaLookupChain() {
+        DataType t = table("EMP");
+        Descriptions.describe(t, TYPE, "en", "English");
+        Descriptions.describe(t, TYPE, "de-DE", "Deutsch");
+        Descriptions.describe(t, TYPE, null, "Neutral");
+
+        assertThat(Descriptions.localizedBody(t, TYPE, java.util.Locale.GERMANY)).contains("Deutsch");
+        // de has no exact entry: the chain falls through to the neutral text
+        assertThat(Descriptions.localizedBody(t, TYPE, java.util.Locale.GERMAN)).contains("Neutral");
+        assertThat(Descriptions.localizedBody(t, TYPE, null)).contains("Neutral");
+        assertThat(Descriptions.localizedBody(t, "other", null)).isEmpty();
+    }
+
+    @Test
+    void localizedBody_lastGrabIsSmallestLanguageTag() {
+        DataType t = table("EMP");
+        Descriptions.describe(t, TYPE, "fr", "Francais");
+        Descriptions.describe(t, TYPE, "en", "English");
+
+        // no chain entry matches and no neutral text exists: the
+        // lexicographically smallest tag wins, deterministically
+        assertThat(Descriptions.localizedBody(t, TYPE, java.util.Locale.ITALIAN)).contains("English");
+    }
+
+    @Test
+    void writeAndRead_workAdapterFreeOnBareTrees() {
+        // no resource, no index: describe and localizedBody fall back to the
+        // owning-namespace scan
+        DataType t = CF.createDataType();
+        t.setName("EMP");
+        Descriptions.describe(t, TYPE, "en", "Text");
+
+        assertThat(Descriptions.localizedBody(t, TYPE, java.util.Locale.ENGLISH)).contains("Text");
+    }
+
+    @Test
+    void languageTag_canonicalizesAndAnswersEmptyForUndetermined() {
+        assertThat(Descriptions.languageTag("de_DE")).contains("de-DE");
+        assertThat(Descriptions.languageTag(" en ")).contains("en");
+        assertThat(Descriptions.languageTag(null)).isEmpty();
+        assertThat(Descriptions.languageTag("  ")).isEmpty();
+        assertThat(Descriptions.languageTag("und")).isEmpty();
+    }
+
+    @Test
     void nullSafe() {
         assertThat(Descriptions.all(null)).isEmpty();
         assertThat(Descriptions.all(null, TYPE)).isEmpty();
