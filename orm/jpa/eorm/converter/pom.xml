@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.daanse</groupId>
+    <artifactId>org.eclipse.daanse.cwm.orm.jpa.eorm</artifactId>
+    <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>org.eclipse.daanse.cwm.orm.jpa.eorm.converter</artifactId>
+  <name>Daanse CWM EORM to Fennec EORM Converter</name>
+  <description>Converts a Common Warehouse EORM model (CWM-EORM,
+    org.eclipse.daanse.cwm.model.cwmx.eorm) into the structurally equivalent
+    Fennec Persistence EORM model (org.eclipse.fennec.persistence.eorm), so a
+    warehouse-defined object/relational mapping can be consumed by the Fennec
+    persistence stack. Built on EMF's EcoreUtil.Copier; reads the source purely
+    through its Ecore metamodel, dropping warehouse-only information that has no
+    Fennec counterpart.</description>
+
+  <properties>
+    <fennec.orm.version>0.1.0-SNAPSHOT</fennec.orm.version>
+  </properties>
+
+  <dependencies>
+    <!-- Target metamodel: the Fennec EORM types this converter produces. -->
+    <dependency>
+      <groupId>org.eclipse.fennec.persistence.jpa</groupId>
+      <artifactId>org.eclipse.fennec.persistence.orm</artifactId>
+      <version>${fennec.orm.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.ecore</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.common</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <!-- Test: build a CWM-EORM source model and assert the converted result. -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwmx.eorm</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
