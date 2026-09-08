@@ -16,10 +16,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.eclipse.daanse</groupId>
-    <artifactId>org.eclipse.daanse.cwm.model.cwmx</artifactId>
+    <artifactId>org.eclipse.daanse.cwm.model.daanse</artifactId>
     <version>${revision}</version>
   </parent>
-  <artifactId>org.eclipse.daanse.cwm.model.cwmx.eorm</artifactId>
+  <artifactId>org.eclipse.daanse.cwm.model.daanse.orm</artifactId>
 
 
   <build>
@@ -34,7 +34,7 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <ecoreFile>model/eorm.ecore</ecoreFile>
+              <ecoreFile>model/orm.ecore</ecoreFile>
               <outputDirectory>target/generated-sources/emf</outputDirectory>
             </configuration>
           </execution>
@@ -79,8 +79,33 @@
   <dependencies>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.model.cwm</artifactId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.relational</artifactId>
       <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.core</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.relationships</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

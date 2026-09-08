@@ -22,8 +22,8 @@
   <name>Daanse CWM Models</name>
 
   <modules>
-  <!--
     <module>orm</module>
+  <!--
     <module>resource.r</module>
     <module>resource.json</module>
     <module>resource.calc</module>
