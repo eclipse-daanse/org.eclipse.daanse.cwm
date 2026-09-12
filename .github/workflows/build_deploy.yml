@@ -10,6 +10,11 @@ on:
 
 jobs:
   build_test:
+    # the reusable workflow publishes the JUnit results as a check run; a called
+    # workflow cannot widen the caller's token, so the scope is granted here
+    permissions:
+      contents: read
+      checks: write
     uses: eclipse-daanse/.github/.github/workflows/reuse_java_build_test.yml@main
 
   maven_deploy:
