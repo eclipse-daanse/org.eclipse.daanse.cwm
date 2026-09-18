@@ -184,12 +184,15 @@ public final class MigrationEmitterImpl implements MigrationEmitter {
                     .ifPresent(body -> out.add(dialect.ddlGenerator().createView(
                             ref(o.view(), TableReference.TYPE_VIEW), body, false)));
             case ChangeOp.ReplaceView o -> {
-                out.add(dialect.ddlGenerator().dropView(
-                        ref(o.oldView(), TableReference.TYPE_VIEW), true));
+                boolean orReplace = dialect.supportsCreateOrReplaceView();
+                if (!orReplace) {
+                    out.add(dialect.ddlGenerator().dropView(
+                            ref(o.oldView(), TableReference.TYPE_VIEW), true));
+                }
                 Views.queryBody(o.newView())
                         .filter(body -> !body.isBlank())
                         .ifPresent(body -> out.add(dialect.ddlGenerator().createView(
-                                ref(o.newView(), TableReference.TYPE_VIEW), body, false)));
+                                ref(o.newView(), TableReference.TYPE_VIEW), body, orReplace)));
             }
 
             //  triggers
