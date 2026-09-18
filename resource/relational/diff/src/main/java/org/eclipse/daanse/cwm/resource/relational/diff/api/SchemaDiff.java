@@ -33,12 +33,14 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
  * @param tablesChanged matched tables with at least one structural change
  * @param viewsChanged  matched views whose query body changed
  * @param tablesRenamed matched tables whose name changed
+ * @param commentsChanged table and column comments to set or remove, on
+ *                      matched tables and on added tables and columns
  */
 public record SchemaDiff(Schema oldSchema, Schema newSchema,
         List<Table> tablesAdded, List<Table> tablesDropped,
         List<View> viewsAdded, List<View> viewsDropped,
         List<TableDiff> tablesChanged, List<ViewBodyChange> viewsChanged,
-        List<TableRename> tablesRenamed) {
+        List<TableRename> tablesRenamed, List<CommentChange> commentsChanged) {
 
     public SchemaDiff {
         tablesAdded = List.copyOf(tablesAdded);
@@ -48,6 +50,7 @@ public record SchemaDiff(Schema oldSchema, Schema newSchema,
         tablesChanged = List.copyOf(tablesChanged);
         viewsChanged = List.copyOf(viewsChanged);
         tablesRenamed = List.copyOf(tablesRenamed);
+        commentsChanged = List.copyOf(commentsChanged);
     }
 
     /** {@code true} iff the two schemas are structurally identical. */
@@ -55,6 +58,6 @@ public record SchemaDiff(Schema oldSchema, Schema newSchema,
         return tablesAdded.isEmpty() && tablesDropped.isEmpty()
                 && viewsAdded.isEmpty() && viewsDropped.isEmpty()
                 && tablesChanged.isEmpty() && viewsChanged.isEmpty()
-                && tablesRenamed.isEmpty();
+                && tablesRenamed.isEmpty() && commentsChanged.isEmpty();
     }
 }

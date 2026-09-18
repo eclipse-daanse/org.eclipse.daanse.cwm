@@ -395,6 +395,24 @@ public final class LiquibaseChangelogWriter {
                 }
                 x.closeChangeSet();
             }
+            case ChangeOp.SetComment o -> {
+                String remarks = o.comment() == null ? "" : o.comment();
+                if (o.element() instanceof Column c) {
+                    x.openChangeSet(settings.author(), "SetComment|" + qualified(o.table())
+                            + "|" + c.getName() + "|" + remarks);
+                    x.emptyElement("setColumnRemarks", "schemaName", schemaNameOf(o.table()),
+                            "tableName", o.table().getName(), "columnName", c.getName(),
+                            "columnDataType", liquibaseType(c), "remarks", remarks);
+                } else {
+                    x.openChangeSet(settings.author(), "SetComment|" + qualified(o.table()) + "|" + remarks);
+                    x.emptyElement("setTableRemarks", "schemaName", schemaNameOf(o.table()),
+                            "tableName", o.table().getName(), "remarks", remarks);
+                }
+                if (settings.includeRollback()) {
+                    x.emptyRollback(); // the previous comment is not carried on the op
+                }
+                x.closeChangeSet();
+            }
         }
     }
 

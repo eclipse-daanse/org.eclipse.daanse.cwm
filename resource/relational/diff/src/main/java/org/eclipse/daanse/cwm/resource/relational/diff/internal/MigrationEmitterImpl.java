@@ -197,6 +197,16 @@ public final class MigrationEmitterImpl implements MigrationEmitter {
                     o.trigger()));
             case ChangeOp.DropTrigger o -> out.addAll(CwmSchemaMapper.dropTrigger(dialect, ref(o.table()),
                     o.trigger()));
+
+            //  comments
+            case ChangeOp.SetComment o -> {
+                if (o.element() instanceof Column c) {
+                    dialect.ddlGenerator().commentOnColumn(ref(o.table()), c.getName(), o.comment(),
+                            CwmSchemaMapper.columnMetaData(c)).ifPresent(out::add);
+                } else {
+                    dialect.ddlGenerator().commentOnTable(ref(o.table()), o.comment()).ifPresent(out::add);
+                }
+            }
         }
     }
 

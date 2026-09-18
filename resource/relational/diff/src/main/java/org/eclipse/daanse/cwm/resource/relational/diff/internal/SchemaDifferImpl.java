@@ -16,6 +16,7 @@ package org.eclipse.daanse.cwm.resource.relational.diff.internal;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeMarkers;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ColumnChange;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ColumnRename;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.CommentChange;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ConstraintRename;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.DiffSettings;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.IndexRename;
@@ -41,6 +42,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.Collections;
 
+import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Description;
+import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.CheckConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
@@ -83,6 +86,9 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
  *   <li>Triggers: paired likewise; any change (including the name) is drop + add.</li>
  *   <li>Views: same-named views with different bodies are surfaced as
  *       {@link ViewBodyChange}.</li>
+ *   <li>Comments: the body of the {@link DiffSettings#commentType()}
+ *       Description on tables and columns, including those of added tables
+ *       and columns.</li>
  * </ul>
  */
 @Component(service = SchemaDiffer.class)
@@ -115,11 +121,13 @@ public final class SchemaDifferImpl implements SchemaDiffer {
 
         List<TableRename> tablesRenamed = new ArrayList<>();
         List<TableDiff> tablesChanged = new ArrayList<>();
+        List<CommentChange> comments = new ArrayList<>();
         for (Pair<Table> p : tables.paired) {
             if (!Objects.equals(p.oldE().getName(), p.newE().getName())) {
                 tablesRenamed.add(new TableRename(p.oldE(), p.newE()));
             }
-            TableDiff td = diffTable(oldSchema, newSchema, p.oldE(), p.newE(), settings);
+            compareComment(p.newE(), p.oldE(), p.newE(), settings, comments);
+            TableDiff td = diffTable(oldSchema, newSchema, p.oldE(), p.newE(), settings, comments);
             if (!td.isEmpty()) {
                 tablesChanged.add(td);
             }
@@ -139,9 +147,14 @@ public final class SchemaDifferImpl implements SchemaDiffer {
             }
         }
 
+        for (Table t : tablesAdded) {
+            compareComment(t, null, t, settings, comments);
+            ColumnSets.columns(t).forEach(c -> compareComment(t, null, c, settings, comments));
+        }
+
         return new SchemaDiff(oldSchema, newSchema,
                 tablesAdded, tablesDropped, viewsAdded, viewsDropped,
-                tablesChanged, viewsChanged, tablesRenamed);
+                tablesChanged, viewsChanged, tablesRenamed, comments);
     }
 
     // pairing
@@ -251,7 +264,7 @@ public final class SchemaDifferImpl implements SchemaDiffer {
     //per-table diff
 
     private static TableDiff diffTable(Schema oldSchema, Schema newSchema, Table oldTable, Table newTable,
-            DiffSettings settings) {
+            DiffSettings settings, List<CommentChange> comments) {
         Pairing<Column> cols = pair(ColumnSets.columns(oldTable), ColumnSets.columns(newTable), settings);
 
         List<Column> columnsAdded = new ArrayList<>(cols.added);
@@ -280,7 +293,9 @@ public final class SchemaDifferImpl implements SchemaDiffer {
             if (!aspects.isEmpty()) {
                 columnsChanged.add(new ColumnChange(p.oldE(), p.newE(), aspects));
             }
+            compareComment(newTable, p.oldE(), p.newE(), settings, comments);
         }
+        columnsAdded.forEach(c -> compareComment(newTable, null, c, settings, comments));
 
         List<ConstraintRename> constraintsRenamed = new ArrayList<>();
         PrimaryKeyChange pkChange = comparePk(oldTable, newTable, constraintsRenamed);
@@ -339,6 +354,27 @@ public final class SchemaDifferImpl implements SchemaDiffer {
     }
 
     // field comparisons
+
+    /**
+     * Records a {@link CommentChange} when the comment of {@code newE} differs
+     * from that of {@code oldE}; a {@code null} {@code oldE} is a new element,
+     * which only counts when it carries a comment.
+     */
+    private static void compareComment(Table table, ModelElement oldE, ModelElement newE, DiffSettings settings,
+            List<CommentChange> out) {
+        if (settings.commentType() == null) {
+            return;
+        }
+        String oldC = oldE == null ? null : comment(oldE, settings.commentType());
+        String newC = comment(newE, settings.commentType());
+        if (!Objects.equals(oldC, newC)) {
+            out.add(new CommentChange(table, newE, oldC, newC));
+        }
+    }
+
+    private static String comment(ModelElement e, String type) {
+        return Descriptions.find(e, type).map(Description::getBody).orElse(null);
+    }
 
     static EnumSet<ColumnChange.Aspect> compareColumn(Column oldC, Column newC) {
         EnumSet<ColumnChange.Aspect> out = EnumSet.noneOf(ColumnChange.Aspect.class);
