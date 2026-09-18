@@ -82,7 +82,14 @@ public final class ChangePlannerImpl implements ChangePlanner {
         diff.viewsDropped().forEach(v -> p.dropView.add(new ChangeOp.DropView(v)));
         diff.viewsChanged().forEach(vc -> p.dropView.add(new ChangeOp.DropView(vc.oldView())));
 
-        // drop indexes / unique constraints / checks
+        // drop triggers, indexes / unique constraints / checks
+        for (TableDiff td : diff.tablesChanged()) {
+            td.triggersDropped().forEach(t -> p.dropMinor.add(new ChangeOp.DropTrigger(td.oldTable(), t)));
+        }
+        for (Table t : diff.tablesDropped()) {
+            // DROP TABLE takes its triggers along, but not their procedures
+            t.getTrigger().forEach(trg -> p.dropMinor.add(new ChangeOp.DropTrigger(t, trg)));
+        }
         for (TableDiff td : diff.tablesChanged()) {
             td.indexesDropped().forEach(i -> p.dropMinor.add(new ChangeOp.DropIndex(i)));
             td.uniqueConstraintsDropped()
@@ -178,9 +185,15 @@ public final class ChangePlannerImpl implements ChangePlanner {
             }
         }
 
-        // views last
+        // views, then triggers (their bodies may use anything created above)
         diff.viewsChanged().forEach(vc -> p.createView.add(new ChangeOp.CreateView(vc.newView())));
         diff.viewsAdded().forEach(v -> p.createView.add(new ChangeOp.CreateView(v)));
+        for (TableDiff td : diff.tablesChanged()) {
+            td.triggersAdded().forEach(t -> p.createView.add(new ChangeOp.CreateTrigger(td.newTable(), t)));
+        }
+        for (Table t : diff.tablesAdded()) {
+            t.getTrigger().forEach(trg -> p.createView.add(new ChangeOp.CreateTrigger(t, trg)));
+        }
 
         return p.flatten();
     }

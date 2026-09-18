@@ -28,11 +28,15 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLDataType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
 import org.eclipse.daanse.sql.model.schema.ColumnDefinition;
 import org.eclipse.daanse.sql.model.schema.ColumnMetaData;
 import org.eclipse.daanse.sql.model.schema.ColumnReference;
 import org.eclipse.daanse.sql.model.schema.TableReference;
+import org.eclipse.daanse.sql.model.schema.Trigger.TriggerTiming;
+import org.eclipse.daanse.sql.model.schema.Trigger.TriggerScope;
+import org.eclipse.daanse.sql.model.schema.Trigger.TriggerEvent;
 import org.eclipse.daanse.sql.dialect.api.Dialect;
 import org.eclipse.daanse.sql.jdbc.record.schema.ColumnDefinitionRecord;
 import org.eclipse.daanse.sql.jdbc.record.schema.ColumnMetaDataRecord;
@@ -133,5 +137,121 @@ public final class CwmSchemaMapper {
         case COLUMN_NULLABLE -> ColumnMetaData.Nullability.NULLABLE;
         case COLUMN_NULLABLE_UNKNOWN -> ColumnMetaData.Nullability.UNKNOWN;
         };
+    }
+
+    // triggers
+
+    /**
+     * CREATE statements for one trigger on {@code table}: for dialects with
+     * separate trigger procedures the procedure {@code <trigger>_fn} plus the
+     * trigger calling it, otherwise the trigger with its inline body. Empty
+     * when the trigger has no body, timing or event.
+     */
+    public static List<String> createTrigger(Dialect dialect, TableReference table, Trigger trigger) {
+        String body = triggerBody(trigger);
+        TriggerTiming timing = triggerTiming(trigger);
+        TriggerEvent event = triggerEvent(trigger);
+        if (body == null || timing == null || event == null) {
+            return List.of();
+        }
+        String name = triggerName(trigger, table);
+        String schemaName = table.schema().map(s -> s.name()).orElse(null);
+        List<String> out = new ArrayList<>();
+        Optional<String> proc = dialect.ddlGenerator().createTriggerProcedure(name + "_fn", schemaName, body);
+        if (proc.isPresent()) {
+            out.add(proc.get());
+            out.add(dialect.ddlGenerator().createTriggerUsingProcedure(name, schemaName, timing, event, table,
+                    triggerScope(trigger), triggerWhen(trigger), name + "_fn"));
+        } else {
+            out.add(dialect.ddlGenerator().createTrigger(name, timing, event, table, triggerScope(trigger),
+                    triggerWhen(trigger), body));
+        }
+        return out;
+    }
+
+    /** DROP statements for one trigger on {@code table}: the trigger and its {@code <trigger>_fn} procedure. */
+    public static List<String> dropTrigger(Dialect dialect, TableReference table, Trigger trigger) {
+        String name = triggerName(trigger, table);
+        String schemaName = table.schema().map(s -> s.name()).orElse(null);
+        List<String> out = new ArrayList<>(dialect.ddlGenerator().dropTriggerOnTable(name, table, true));
+        dialect.ddlGenerator().dropProcedure(name + "_fn", schemaName, true).ifPresent(out::add);
+        return out;
+    }
+
+    private static String triggerName(Trigger trigger, TableReference table) {
+        String n = trigger.getName();
+        return n == null || n.isBlank() ? "trg_" + table.name() : n;
+    }
+
+    /** The trigger body, or {@code null} when it is missing or blank. */
+    public static String triggerBody(Trigger t) {
+        if (t.getActionStatement() == null) {
+            return null;
+        }
+        String body = t.getActionStatement().getBody();
+        return (body == null || body.isBlank()) ? null : body;
+    }
+
+    /** The WHEN condition, or {@code null} when there is none. */
+    public static String triggerWhen(Trigger t) {
+        if (t.getActionCondition() == null) {
+            return null;
+        }
+        String cond = t.getActionCondition().getBody();
+        return (cond == null || cond.isBlank()) ? null : cond;
+    }
+
+    /** BEFORE / AFTER / INSTEAD OF, or {@code null} when not set. */
+    public static TriggerTiming triggerTiming(Trigger t) {
+        if (t.getConditionTiming() == null) {
+            return null;
+        }
+        String name = t.getConditionTiming().getName();
+        if (name == null) {
+            return null;
+        }
+        return switch (stripEnumPrefix(name).toUpperCase()) {
+        case "BEFORE" -> TriggerTiming.BEFORE;
+        case "AFTER" -> TriggerTiming.AFTER;
+        case "INSTEAD", "INSTEADOF" -> TriggerTiming.INSTEAD_OF;
+        default -> null;
+        };
+    }
+
+    /** INSERT / UPDATE / DELETE, or {@code null} when not set. */
+    public static TriggerEvent triggerEvent(Trigger t) {
+        if (t.getEventManipulation() == null) {
+            return null;
+        }
+        String name = t.getEventManipulation().getName();
+        if (name == null) {
+            return null;
+        }
+        return switch (stripEnumPrefix(name).toUpperCase()) {
+        case "INSERT" -> TriggerEvent.INSERT;
+        case "UPDATE" -> TriggerEvent.UPDATE;
+        case "DELETE" -> TriggerEvent.DELETE;
+        default -> null;
+        };
+    }
+
+    /** ROW or STATEMENT (the default). */
+    public static TriggerScope triggerScope(Trigger t) {
+        if (t.getActionOrientation() == null) {
+            return TriggerScope.STATEMENT;
+        }
+        String name = t.getActionOrientation().getName();
+        return switch (stripEnumPrefix(name == null ? "" : name).toUpperCase()) {
+        case "ROW" -> TriggerScope.ROW;
+        default -> TriggerScope.STATEMENT;
+        };
+    }
+
+    private static String stripEnumPrefix(String literal) {
+        if (literal == null) {
+            return "";
+        }
+        int us = literal.lastIndexOf('_');
+        return us >= 0 ? literal.substring(us + 1) : literal;
     }
 }

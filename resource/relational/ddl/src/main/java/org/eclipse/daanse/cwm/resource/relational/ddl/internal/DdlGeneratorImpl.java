@@ -249,18 +249,18 @@ public final class DdlGeneratorImpl implements DdlGenerator {
             List<TT> all = new ArrayList<>();
             for (Table table : tables) {
                 for (Trigger t : table.getTrigger()) {
-                    String body = triggerBody(t);
+                    String body = CwmSchemaMapper.triggerBody(t);
                     if (body == null) {
                         continue;
                     }
-                    TriggerTiming timing = triggerTiming(t);
-                    TriggerEvent event = triggerEvent(t);
+                    TriggerTiming timing = CwmSchemaMapper.triggerTiming(t);
+                    TriggerEvent event = CwmSchemaMapper.triggerEvent(t);
                     if (timing == null || event == null) {
                         continue;
                     }
-                    TriggerScope scope = triggerScope(t);
+                    TriggerScope scope = CwmSchemaMapper.triggerScope(t);
                     String name = nameOrDefault(t, "trg_" + table.getName());
-                    String when = triggerWhen(t);
+                    String when = CwmSchemaMapper.triggerWhen(t);
                     all.add(new TT(table, t, name, body, timing, event, scope, when));
                 }
             }
@@ -321,7 +321,7 @@ public final class DdlGeneratorImpl implements DdlGenerator {
             for (Table table : tables) {
                 TableReference tref = tableRef(schema, table, TableReference.TYPE_TABLE);
                 for (Trigger t : table.getTrigger()) {
-                    String body = triggerBody(t);
+                    String body = CwmSchemaMapper.triggerBody(t);
                     if (body == null) {
                         continue;
                     }
@@ -517,72 +517,5 @@ public final class DdlGeneratorImpl implements DdlGenerator {
             return "NO ACTION";
         }
         return null;
-    }
-
-    private static String triggerBody(Trigger t) {
-        if (t.getActionStatement() == null) {
-            return null;
-        }
-        String body = t.getActionStatement().getBody();
-        return (body == null || body.isBlank()) ? null : body;
-    }
-
-    private static String triggerWhen(Trigger t) {
-        if (t.getActionCondition() == null) {
-            return null;
-        }
-        String cond = t.getActionCondition().getBody();
-        return (cond == null || cond.isBlank()) ? null : cond;
-    }
-
-    private static TriggerTiming triggerTiming(Trigger t) {
-        if (t.getConditionTiming() == null) {
-            return null;
-        }
-        String name = t.getConditionTiming().getName();
-        if (name == null) {
-            return null;
-        }
-        return switch (stripEnumPrefix(name).toUpperCase()) {
-        case "BEFORE" -> TriggerTiming.BEFORE;
-        case "AFTER" -> TriggerTiming.AFTER;
-        case "INSTEAD", "INSTEADOF" -> TriggerTiming.INSTEAD_OF;
-        default -> null;
-        };
-    }
-
-    private static TriggerEvent triggerEvent(Trigger t) {
-        if (t.getEventManipulation() == null) {
-            return null;
-        }
-        String name = t.getEventManipulation().getName();
-        if (name == null) {
-            return null;
-        }
-        return switch (stripEnumPrefix(name).toUpperCase()) {
-        case "INSERT" -> TriggerEvent.INSERT;
-        case "UPDATE" -> TriggerEvent.UPDATE;
-        case "DELETE" -> TriggerEvent.DELETE;
-        default -> null;
-        };
-    }
-
-    private static TriggerScope triggerScope(Trigger t) {
-        if (t.getActionOrientation() == null) {
-            return TriggerScope.STATEMENT;
-        }
-        String name = t.getActionOrientation().getName();
-        return switch (stripEnumPrefix(name == null ? "" : name).toUpperCase()) {
-        case "ROW" -> TriggerScope.ROW;
-        default -> TriggerScope.STATEMENT;
-        };
-    }
-
-    private static String stripEnumPrefix(String literal) {
-        if (literal == null) {
-            return "";
-        }
-        int us = literal.lastIndexOf('_');
-        return us >= 0 ? literal.substring(us + 1) : literal;
     }
 }
