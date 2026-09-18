@@ -18,7 +18,9 @@ import java.util.Set;
 
 /** Schema entity kinds a {@link DdlGenerator} can emit or skip. */
 public enum Feature {
-    SCHEMA, TABLE, PRIMARY_KEY, UNIQUE, CHECK, INDEX, FOREIGN_KEY, VIEW, TRIGGER;
+    SCHEMA, TABLE, PRIMARY_KEY, UNIQUE, CHECK, INDEX, FOREIGN_KEY, VIEW, TRIGGER,
+    /** Table and column comments, from the {@link DdlSettings#commentType()} Descriptions. */
+    COMMENT;
 
     /** All features. */
     public static final Set<Feature> ALL = EnumSet.allOf(Feature.class);

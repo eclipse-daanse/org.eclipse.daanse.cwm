@@ -75,6 +75,25 @@ class RoundTripParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
+    @MethodSource("dialects")
+    void create_with_table_and_column_comments(DialectProfile profile) throws Exception {
+        ActiveDatabase db = activateOrSkip(profile);
+        try (Connection c = db.dataSource().getConnection()) {
+            Dialect dialect = db.dialect();
+            SqlGenFixture f = SqlGenFixture.build(profile.schemaName(), dialect);
+            SqlGenFixture.comment(f.schema, f.customers, "all customers");
+            SqlGenFixture.comment(f.schema, f.customers.getFeature().stream().filter(x -> "NAME".equals(x.getName())).findFirst().orElseThrow(), "it's the name");
+            Set<Feature> features = profile.nonTriggerFeatures();
+            try {
+                List<String> ddl = new DdlGeneratorFactoryImpl().create(dialect).createSchema(f.schema, features);
+                executeAll(c, ddl);
+            } finally {
+                profile.cleanup(c, f.schema, dialect, features);
+            }
+        }
+    }
+
+    @ParameterizedTest(name = "{0}")
     @MethodSource("triggerDialects")
     void shared_trigger_body_emits_one_procedure_for_two_triggers(DialectProfile profile) throws Exception {
         ActiveDatabase db = activateOrSkip(profile);

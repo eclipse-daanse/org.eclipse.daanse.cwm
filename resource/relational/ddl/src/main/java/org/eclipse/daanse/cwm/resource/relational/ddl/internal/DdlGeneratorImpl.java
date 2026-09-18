@@ -24,6 +24,8 @@ import org.eclipse.daanse.cwm.resource.relational.ddl.api.CwmSchemaMapper;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlGenerator;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.Feature;
+import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Description;
+import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.StructuralFeature;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.CheckConstraint;
@@ -66,8 +68,8 @@ import org.eclipse.daanse.sql.dialect.api.Dialect;
  * emitted.
  *
  * <p>
- * Create order: schema, table (+PK), unique, check, index, foreign key, view,
- * trigger. {@link #dropSchema} uses the reverse.
+ * Create order: schema, table (+PK), table and column comments, unique,
+ * check, index, foreign key, view, trigger. {@link #dropSchema} uses the reverse.
  */
 public final class DdlGeneratorImpl implements DdlGenerator {
 
@@ -146,6 +148,19 @@ public final class DdlGeneratorImpl implements DdlGenerator {
                 // the clause would be handed SQL it cannot parse.
                 boolean ifNotExists = settings.ifNotExists() && dialect.supportsCreateTableIfNotExists();
                 out.add(dialect.ddlGenerator().createTable(tref, cols, pkRef, ifNotExists));
+            }
+        }
+
+        if (features.contains(Feature.TABLE) && features.contains(Feature.COMMENT)
+                && settings.commentType() != null) {
+            for (Table table : tables) {
+                TableReference tref = tableRef(schema, table, TableReference.TYPE_TABLE);
+                comment(table).flatMap(text -> dialect.ddlGenerator().commentOnTable(tref, text))
+                        .ifPresent(out::add);
+                for (Column col : ColumnSets.columns(table)) {
+                    comment(col).flatMap(text -> dialect.ddlGenerator().commentOnColumn(tref, col.getName(), text,
+                            CwmSchemaMapper.columnMetaData(col))).ifPresent(out::add);
+                }
             }
         }
 
@@ -452,6 +467,10 @@ public final class DdlGeneratorImpl implements DdlGenerator {
             return null;
         }
         return CwmSchemaMapper.primaryKey(tref, pkOpt.get());
+    }
+
+    private Optional<String> comment(ModelElement element) {
+        return Descriptions.find(element, settings.commentType()).map(Description::getBody);
     }
 
     private static List<CheckConstraint> checkConstraintsOf(Table table) {
