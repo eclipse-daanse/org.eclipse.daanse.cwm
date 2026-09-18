@@ -1,0 +1,2681 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="sql" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.sql"
+    nsPrefix="sql">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Dialekt-neutrales Datenmodell fuer SQL-Anweisungen nach ANSI-SQL-Standard (ISO/IEC 9075). Dieses Basispaket enthaelt die wiederverwendbaren Bausteine: den vereinheitlichten Ausdrucksbaum (Expression mit Praedikaten als Subtypen), Literale sowie die Alias- und Referenz-Maschinerie. SELECT-spezifische Strukturen liegen im Subpaket 'select'."/>
+    <details key="documentation.en" value="Dialect-neutral data model for SQL statements following the ANSI-SQL standard (ISO/IEC 9075). This base package holds the reusable building blocks: the unified expression tree (Expression with predicates as subtypes), literals and the alias/reference machinery. SELECT-specific structures live in the 'select' subpackage."/>
+    <details key="caption.de" value="SQL-Anweisung"/>
+    <details key="caption.en" value="SQL Statement"/>
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse"/>
+    <details key="prefix" value="Sql"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="fileExtensions" value="sql"/>
+    <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EEnum" name="SetQuantifierKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Mengen-Quantifizierer (ALL/DISTINCT)."/>
+      <details key="documentation.en" value="Set quantifier (ALL/DISTINCT)."/>
+    </eAnnotations>
+    <eLiterals name="ALL" literal="ALL"/>
+    <eLiterals name="DISTINCT" value="1" literal="DISTINCT"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="SetOperatorKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Mengenoperator nach ANSI-SQL."/>
+      <details key="documentation.en" value="Set operator per ANSI-SQL."/>
+    </eAnnotations>
+    <eLiterals name="UNION" literal="UNION"/>
+    <eLiterals name="INTERSECT" value="1" literal="INTERSECT"/>
+    <eLiterals name="EXCEPT" value="2" literal="EXCEPT"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="JoinTypeKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Semantische Verbund-Art."/>
+      <details key="documentation.en" value="Semantic join type."/>
+    </eAnnotations>
+    <eLiterals name="INNER" literal="INNER"/>
+    <eLiterals name="LEFT" value="1" literal="LEFT"/>
+    <eLiterals name="RIGHT" value="2" literal="RIGHT"/>
+    <eLiterals name="FULL" value="3" literal="FULL"/>
+    <eLiterals name="CROSS" value="4" literal="CROSS"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ComparisonOperatorKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Vergleichsoperator."/>
+      <details key="documentation.en" value="Comparison operator."/>
+    </eAnnotations>
+    <eLiterals name="EQUALS" literal="EQUALS"/>
+    <eLiterals name="NOT_EQUALS" value="1" literal="NOT_EQUALS"/>
+    <eLiterals name="LESS_THAN" value="2" literal="LESS_THAN"/>
+    <eLiterals name="LESS_THAN_OR_EQUALS" value="3" literal="LESS_THAN_OR_EQUALS"/>
+    <eLiterals name="GREATER_THAN" value="4" literal="GREATER_THAN"/>
+    <eLiterals name="GREATER_THAN_OR_EQUALS" value="5" literal="GREATER_THAN_OR_EQUALS"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="LogicalOperatorKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Logischer Operator (AND/OR)."/>
+      <details key="documentation.en" value="Logical operator (AND/OR)."/>
+    </eAnnotations>
+    <eLiterals name="AND" literal="AND"/>
+    <eLiterals name="OR" value="1" literal="OR"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="TruthValueKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Wahrheitswert nach SQL-Dreiwertelogik."/>
+      <details key="documentation.en" value="Truth value per SQL three-valued logic."/>
+    </eAnnotations>
+    <eLiterals name="TRUE" literal="TRUE"/>
+    <eLiterals name="FALSE" value="1" literal="FALSE"/>
+    <eLiterals name="UNKNOWN" value="2" literal="UNKNOWN"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="SortDirectionKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Sortierrichtung."/>
+      <details key="documentation.en" value="Sort direction."/>
+    </eAnnotations>
+    <eLiterals name="UNSPECIFIED" literal="UNSPECIFIED"/>
+    <eLiterals name="ASC" value="1" literal="ASC"/>
+    <eLiterals name="DESC" value="2" literal="DESC"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="NullOrderingKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="NULL-Sortierung (NULLS FIRST/LAST)."/>
+      <details key="documentation.en" value="Null ordering (NULLS FIRST/LAST)."/>
+    </eAnnotations>
+    <eLiterals name="UNSPECIFIED" literal="UNSPECIFIED"/>
+    <eLiterals name="NULLS_FIRST" value="1" literal="NULLS_FIRST"/>
+    <eLiterals name="NULLS_LAST" value="2" literal="NULLS_LAST"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="RowKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="ROW/ROWS-Schluesselwort."/>
+      <details key="documentation.en" value="ROW/ROWS keyword."/>
+    </eAnnotations>
+    <eLiterals name="ROW" literal="ROW"/>
+    <eLiterals name="ROWS" value="1" literal="ROWS"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ArithmeticOperatorKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Binaerer arithmetischer Operator (inkl. Konkatenation ||)."/>
+      <details key="documentation.en" value="Binary arithmetic operator (incl. concatenation ||)."/>
+    </eAnnotations>
+    <eLiterals name="PLUS" literal="PLUS"/>
+    <eLiterals name="MINUS" value="1" literal="MINUS"/>
+    <eLiterals name="MULTIPLY" value="2" literal="MULTIPLY"/>
+    <eLiterals name="DIVIDE" value="3" literal="DIVIDE"/>
+    <eLiterals name="CONCAT" value="4" literal="CONCAT"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="UnaryArithmeticOperatorKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Unaerer arithmetischer Operator."/>
+      <details key="documentation.en" value="Unary arithmetic operator."/>
+    </eAnnotations>
+    <eLiterals name="PLUS" literal="PLUS"/>
+    <eLiterals name="NEGATE" value="1" literal="NEGATE"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="QuantifierKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Quantifizierter Vergleich (ALL/SOME/ANY)."/>
+      <details key="documentation.en" value="Quantified comparison (ALL/SOME/ANY)."/>
+    </eAnnotations>
+    <eLiterals name="ALL" literal="ALL"/>
+    <eLiterals name="SOME" value="1" literal="SOME"/>
+    <eLiterals name="ANY" value="2" literal="ANY"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ExtractFieldKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Feld fuer EXTRACT."/>
+      <details key="documentation.en" value="Field for EXTRACT."/>
+    </eAnnotations>
+    <eLiterals name="YEAR" literal="YEAR"/>
+    <eLiterals name="MONTH" value="1" literal="MONTH"/>
+    <eLiterals name="DAY" value="2" literal="DAY"/>
+    <eLiterals name="HOUR" value="3" literal="HOUR"/>
+    <eLiterals name="MINUTE" value="4" literal="MINUTE"/>
+    <eLiterals name="SECOND" value="5" literal="SECOND"/>
+    <eLiterals name="TIMEZONE_HOUR" value="6" literal="TIMEZONE_HOUR"/>
+    <eLiterals name="TIMEZONE_MINUTE" value="7" literal="TIMEZONE_MINUTE"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FrameUnitsKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Fensterrahmen-Einheit."/>
+      <details key="documentation.en" value="Window frame units."/>
+    </eAnnotations>
+    <eLiterals name="ROWS" literal="ROWS"/>
+    <eLiterals name="RANGE" value="1" literal="RANGE"/>
+    <eLiterals name="GROUPS" value="2" literal="GROUPS"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FrameBoundKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Fensterrahmen-Grenze."/>
+      <details key="documentation.en" value="Window frame bound."/>
+    </eAnnotations>
+    <eLiterals name="UNBOUNDED_PRECEDING" literal="UNBOUNDED_PRECEDING"/>
+    <eLiterals name="PRECEDING" value="1" literal="PRECEDING"/>
+    <eLiterals name="CURRENT_ROW" value="2" literal="CURRENT_ROW"/>
+    <eLiterals name="FOLLOWING" value="3" literal="FOLLOWING"/>
+    <eLiterals name="UNBOUNDED_FOLLOWING" value="4" literal="UNBOUNDED_FOLLOWING"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FrameExclusionKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Fensterrahmen-Ausschluss."/>
+      <details key="documentation.en" value="Window frame exclusion."/>
+    </eAnnotations>
+    <eLiterals name="EXCLUDE_NO_OTHERS" literal="EXCLUDE_NO_OTHERS"/>
+    <eLiterals name="EXCLUDE_CURRENT_ROW" value="1" literal="EXCLUDE_CURRENT_ROW"/>
+    <eLiterals name="EXCLUDE_GROUP" value="2" literal="EXCLUDE_GROUP"/>
+    <eLiterals name="EXCLUDE_TIES" value="3" literal="EXCLUDE_TIES"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="DatetimeTypeKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Datums-/Zeit-Literaltyp."/>
+      <details key="documentation.en" value="Datetime literal type."/>
+    </eAnnotations>
+    <eLiterals name="DATE" literal="DATE"/>
+    <eLiterals name="TIME" value="1" literal="TIME"/>
+    <eLiterals name="TIME_WITH_TIMEZONE" value="2" literal="TIME_WITH_TIMEZONE"/>
+    <eLiterals name="TIMESTAMP" value="3" literal="TIMESTAMP"/>
+    <eLiterals name="TIMESTAMP_WITH_TIMEZONE" value="4" literal="TIMESTAMP_WITH_TIMEZONE"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="MatchTypeKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="MATCH-Art."/>
+      <details key="documentation.en" value="MATCH type."/>
+    </eAnnotations>
+    <eLiterals name="SIMPLE" literal="SIMPLE"/>
+    <eLiterals name="PARTIAL" value="1" literal="PARTIAL"/>
+    <eLiterals name="FULL" value="2" literal="FULL"/>
+    <eLiterals name="UNSPECIFIED" value="3" literal="UNSPECIFIED"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="NormalFormKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Unicode-Normalform."/>
+      <details key="documentation.en" value="Unicode normal form."/>
+    </eAnnotations>
+    <eLiterals name="NFC" literal="NFC"/>
+    <eLiterals name="NFD" value="1" literal="NFD"/>
+    <eLiterals name="NFKC" value="2" literal="NFKC"/>
+    <eLiterals name="NFKD" value="3" literal="NFKD"/>
+    <eLiterals name="UNSPECIFIED" value="4" literal="UNSPECIFIED"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="TrimSpecificationKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="TRIM-Seite."/>
+      <details key="documentation.en" value="TRIM side."/>
+    </eAnnotations>
+    <eLiterals name="BOTH" literal="BOTH"/>
+    <eLiterals name="LEADING" value="1" literal="LEADING"/>
+    <eLiterals name="TRAILING" value="2" literal="TRAILING"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="CurrentDatetimeKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Aktuelle Datums-/Zeitfunktion."/>
+      <details key="documentation.en" value="Current datetime function."/>
+    </eAnnotations>
+    <eLiterals name="CURRENT_DATE" literal="CURRENT_DATE"/>
+    <eLiterals name="CURRENT_TIME" value="1" literal="CURRENT_TIME"/>
+    <eLiterals name="CURRENT_TIMESTAMP" value="2" literal="CURRENT_TIMESTAMP"/>
+    <eLiterals name="LOCALTIME" value="3" literal="LOCALTIME"/>
+    <eLiterals name="LOCALTIMESTAMP" value="4" literal="LOCALTIMESTAMP"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="DataTypeKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Kanonischer ANSI-Datentyp; der Dialekt bildet ihn auf den nativen Typnamen ab."/>
+      <details key="documentation.en" value="Canonical ANSI data type; the dialect maps it to the native type name."/>
+    </eAnnotations>
+    <eLiterals name="CHARACTER" literal="CHARACTER"/>
+    <eLiterals name="CHARACTER_VARYING" value="1" literal="CHARACTER_VARYING"/>
+    <eLiterals name="CHARACTER_LARGE_OBJECT" value="2" literal="CHARACTER_LARGE_OBJECT"/>
+    <eLiterals name="BINARY" value="3" literal="BINARY"/>
+    <eLiterals name="BINARY_VARYING" value="4" literal="BINARY_VARYING"/>
+    <eLiterals name="BINARY_LARGE_OBJECT" value="5" literal="BINARY_LARGE_OBJECT"/>
+    <eLiterals name="NUMERIC" value="6" literal="NUMERIC"/>
+    <eLiterals name="DECIMAL" value="7" literal="DECIMAL"/>
+    <eLiterals name="SMALLINT" value="8" literal="SMALLINT"/>
+    <eLiterals name="INTEGER" value="9" literal="INTEGER"/>
+    <eLiterals name="BIGINT" value="10" literal="BIGINT"/>
+    <eLiterals name="REAL" value="11" literal="REAL"/>
+    <eLiterals name="DOUBLE_PRECISION" value="12" literal="DOUBLE_PRECISION"/>
+    <eLiterals name="FLOAT" value="13" literal="FLOAT"/>
+    <eLiterals name="BOOLEAN" value="14" literal="BOOLEAN"/>
+    <eLiterals name="DATE" value="15" literal="DATE"/>
+    <eLiterals name="TIME" value="16" literal="TIME"/>
+    <eLiterals name="TIME_WITH_TIMEZONE" value="17" literal="TIME_WITH_TIMEZONE"/>
+    <eLiterals name="TIMESTAMP" value="18" literal="TIMESTAMP"/>
+    <eLiterals name="TIMESTAMP_WITH_TIMEZONE" value="19" literal="TIMESTAMP_WITH_TIMEZONE"/>
+    <eLiterals name="INTERVAL" value="20" literal="INTERVAL"/>
+    <eLiterals name="UUID" value="21" literal="UUID"/>
+    <eLiterals name="JSON" value="22" literal="JSON"/>
+    <eLiterals name="XML" value="23" literal="XML"/>
+    <eLiterals name="ARRAY" value="24" literal="ARRAY"/>
+    <eLiterals name="ROW" value="25" literal="ROW"/>
+    <eLiterals name="OTHER" value="26" literal="OTHER"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="AggregateKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Kanonische Aggregatfunktion; der Dialekt rendert die Schreibweise (z.B. STRING_AGG vs GROUP_CONCAT)."/>
+      <details key="documentation.en" value="Canonical aggregate function; the dialect renders the spelling (e.g. STRING_AGG vs GROUP_CONCAT)."/>
+    </eAnnotations>
+    <eLiterals name="COUNT" literal="COUNT"/>
+    <eLiterals name="COUNT_STAR" value="1" literal="COUNT_STAR"/>
+    <eLiterals name="SUM" value="2" literal="SUM"/>
+    <eLiterals name="AVG" value="3" literal="AVG"/>
+    <eLiterals name="MIN" value="4" literal="MIN"/>
+    <eLiterals name="MAX" value="5" literal="MAX"/>
+    <eLiterals name="EVERY" value="6" literal="EVERY"/>
+    <eLiterals name="SOME" value="7" literal="SOME"/>
+    <eLiterals name="STDDEV_POP" value="8" literal="STDDEV_POP"/>
+    <eLiterals name="STDDEV_SAMP" value="9" literal="STDDEV_SAMP"/>
+    <eLiterals name="VAR_POP" value="10" literal="VAR_POP"/>
+    <eLiterals name="VAR_SAMP" value="11" literal="VAR_SAMP"/>
+    <eLiterals name="STRING_AGG" value="12" literal="STRING_AGG"/>
+    <eLiterals name="ARRAY_AGG" value="13" literal="ARRAY_AGG"/>
+    <eLiterals name="PERCENTILE_CONT" value="14" literal="PERCENTILE_CONT"/>
+    <eLiterals name="PERCENTILE_DISC" value="15" literal="PERCENTILE_DISC"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="WindowFunctionKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Kanonische Fensterfunktion."/>
+      <details key="documentation.en" value="Canonical window function."/>
+    </eAnnotations>
+    <eLiterals name="ROW_NUMBER" literal="ROW_NUMBER"/>
+    <eLiterals name="RANK" value="1" literal="RANK"/>
+    <eLiterals name="DENSE_RANK" value="2" literal="DENSE_RANK"/>
+    <eLiterals name="PERCENT_RANK" value="3" literal="PERCENT_RANK"/>
+    <eLiterals name="CUME_DIST" value="4" literal="CUME_DIST"/>
+    <eLiterals name="NTILE" value="5" literal="NTILE"/>
+    <eLiterals name="LEAD" value="6" literal="LEAD"/>
+    <eLiterals name="LAG" value="7" literal="LAG"/>
+    <eLiterals name="FIRST_VALUE" value="8" literal="FIRST_VALUE"/>
+    <eLiterals name="LAST_VALUE" value="9" literal="LAST_VALUE"/>
+    <eLiterals name="NTH_VALUE" value="10" literal="NTH_VALUE"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SqlElement" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Lokale Wurzel aller SQL-Modellknoten. Phase 1 traegt name/description lokal; in einer spaeteren Phase erbt SqlElement von CWM ModelElement."/>
+      <details key="documentation.en" value="Local root of all SQL model nodes. Phase 1 carries name/description locally; in a later phase SqlElement inherits from CWM ModelElement."/>
+      <details key="caption.de" value="SQL-Element"/>
+      <details key="caption.en" value="SQL Element"/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Statement" abstract="true" eSuperTypes="//SqlElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Abstrakte Wurzel einer SQL-Anweisung (Anker fuer kuenftige INSERT/UPDATE/DELETE)."/>
+      <details key="documentation.en" value="Abstract root of a SQL statement (anchor for future INSERT/UPDATE/DELETE)."/>
+      <details key="caption.de" value="Anweisung"/>
+      <details key="caption.en" value="Statement"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Expression" abstract="true" eSuperTypes="//SqlElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Vereinheitlichte Wurzel aller Werte- und Wahrheitswert-Ausdruecke. Nach ANSI-SQL ist eine search condition eine boolean value expression und damit eine value expression; daher sind AND/OR/NOT und alle Praedikate Subtypen von Expression."/>
+      <details key="documentation.en" value="Unified root of all value and boolean expressions. Per ANSI-SQL a search condition is a boolean value expression and thus a value expression; hence AND/OR/NOT and all predicates are subtypes of Expression."/>
+      <details key="caption.de" value="Ausdruck"/>
+      <details key="caption.en" value="Expression"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="QualifiedName" eSuperTypes="//SqlElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Mehrteiliger Name (catalog.schema.table.column) als geordnete Teilliste."/>
+      <details key="documentation.en" value="Multi-part name (catalog.schema.table.column) as an ordered list of parts."/>
+      <details key="caption.de" value="Qualifizierter Name"/>
+      <details key="caption.en" value="Qualified Name"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="parts" lowerBound="1" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Geordnete Namensbestandteile."/>
+        <details key="documentation.en" value="Ordered name parts."/>
+        <details key="caption.de" value="Teile"/>
+        <details key="caption.en" value="Parts"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AliasDefinition" eSuperTypes="//SqlElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Anonyme Identitaet eines Alias (Spalten-Alias, Korrelationsname, CTE-Name, Fenstername). Es genuegt, dass etwas ein Alias IST; ein Name ist optional. Fehlt er, erzeugt ihn der Serializer (Dialekt-Modul). Referenziert wird ausschliesslich per Objekt."/>
+      <details key="documentation.en" value="Anonymous identity of an alias (column alias, correlation name, CTE name, window name). It is enough that something IS an alias; a name is optional. If absent the serializer (dialect module) generates it. Referenced exclusively by object."/>
+      <details key="caption.de" value="Alias-Definition"/>
+      <details key="caption.en" value="Alias Definition"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optionaler expliziter Alias-Name; leer bedeutet: beim Serialisieren erzeugen."/>
+        <details key="documentation.en" value="Optional explicit alias name; empty means: generate at serialization."/>
+        <details key="caption.de" value="Alias"/>
+        <details key="caption.en" value="Alias"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataTypeReference" eSuperTypes="//SqlElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Ziel-Datentyp (z.B. fuer CAST). Aufgeloest auf einen CWM DataType oder namensbasiert."/>
+      <details key="documentation.en" value="Target data type (e.g. for CAST). Resolved to a CWM DataType or name-based."/>
+      <details key="caption.de" value="Datentyp-Referenz"/>
+      <details key="caption.en" value="Data Type Reference"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" eType="//DataTypeKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Kanonischer Datentyp; der Dialekt rendert den nativen Namen."/>
+        <details key="documentation.en" value="Canonical data type; the dialect renders the native name."/>
+        <details key="caption.de" value="Art"/>
+        <details key="caption.en" value="Kind"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Aufgeloeste Referenz auf einen CWM DataType (optional)."/>
+        <details key="documentation.en" value="Resolved reference to a CWM DataType (optional)."/>
+        <details key="caption.de" value="Datentyp"/>
+        <details key="caption.en" value="Data Type"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//DataType"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeName">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Namensbasierter Typname (Fallback/UDT)."/>
+        <details key="documentation.en" value="Name-based type name (fallback/UDT)."/>
+        <details key="caption.de" value="Typname"/>
+        <details key="caption.en" value="Type Name"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="precision">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Genauigkeit."/>
+        <details key="documentation.en" value="Precision."/>
+        <details key="caption.de" value="Genauigkeit"/>
+        <details key="caption.en" value="Precision"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="scale">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Nachkommastellen."/>
+        <details key="documentation.en" value="Scale."/>
+        <details key="caption.de" value="Skala"/>
+        <details key="caption.en" value="Scale"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="length">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Laenge."/>
+        <details key="documentation.en" value="Length."/>
+        <details key="caption.de" value="Laenge"/>
+        <details key="caption.en" value="Length"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ColumnReference" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Bezug auf eine Basisspalte. Entweder aufgeloest auf eine CWM Column oder namensbasiert (qualifiedName) - klar verschieden von AliasReference."/>
+      <details key="documentation.en" value="Reference to a base column. Either resolved to a CWM Column or name-based (qualifiedName) - clearly distinct from AliasReference."/>
+      <details key="caption.de" value="Spaltenreferenz"/>
+      <details key="caption.en" value="Column Reference"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="columnOrName"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot">
+      <details key="columnOrName" value="(self.column &lt;> null) &lt;> (self.qualifiedName &lt;> null)"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="column">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Aufgeloeste Referenz auf eine CWM Column."/>
+        <details key="documentation.en" value="Resolved reference to a CWM Column."/>
+        <details key="caption.de" value="Spalte"/>
+        <details key="caption.en" value="Column"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//Column"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="qualifiedName" eType="//QualifiedName"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Namensbasierter Spaltenname (Fallback, unaufgeloest)."/>
+        <details key="documentation.en" value="Name-based column name (fallback, unresolved)."/>
+        <details key="caption.de" value="Qualifizierter Name"/>
+        <details key="caption.en" value="Qualified Name"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="tableQualifier" eType="//AliasReference"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optionaler Tabellen-Qualifier (z.B. t.col), der auf einen FROM-Alias zeigt."/>
+        <details key="documentation.en" value="Optional table qualifier (e.g. t.col) pointing at a FROM-item alias."/>
+        <details key="caption.de" value="Tabellen-Qualifier"/>
+        <details key="caption.en" value="Table Qualifier"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AliasReference" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Verwendung eines Alias - strukturell verschieden von ColumnReference. Verweist ausschliesslich per Objekt auf die AliasDefinition (kein Name noetig)."/>
+      <details key="documentation.en" value="Use of an alias - structurally distinct from ColumnReference. References the AliasDefinition exclusively by object (no name needed)."/>
+      <details key="caption.de" value="Alias-Referenz"/>
+      <details key="caption.en" value="Alias Reference"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1" eType="//AliasDefinition">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Objektreferenz auf die AliasDefinition."/>
+        <details key="documentation.en" value="Object reference to the AliasDefinition."/>
+        <details key="caption.de" value="Ziel"/>
+        <details key="caption.en" value="Target"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RoutineInvocation" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Funktions-/Routinenaufruf. Deckt skalare Funktionen, Aggregate (mit FILTER und WITHIN GROUP) sowie Fensterfunktionen (OVER) ab."/>
+      <details key="documentation.en" value="Function/routine invocation. Covers scalar functions, aggregates (with FILTER and WITHIN GROUP) and window functions (OVER)."/>
+      <details key="caption.de" value="Routinenaufruf"/>
+      <details key="caption.en" value="Routine Invocation"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="functionName" lowerBound="1" eType="//QualifiedName"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Qualifizierter Funktionsname."/>
+        <details key="documentation.en" value="Qualified function name."/>
+        <details key="caption.de" value="Funktionsname"/>
+        <details key="caption.en" value="Function Name"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="arguments" upperBound="-1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Argument-Ausdruecke."/>
+        <details key="documentation.en" value="Argument expressions."/>
+        <details key="caption.de" value="Argumente"/>
+        <details key="caption.en" value="Arguments"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="setQuantifier" eType="//SetQuantifierKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optionaler Mengen-Quantifizierer (z.B. COUNT(DISTINCT ...))."/>
+        <details key="documentation.en" value="Optional set quantifier (e.g. COUNT(DISTINCT ...))."/>
+        <details key="caption.de" value="Mengen-Quantifizierer"/>
+        <details key="caption.en" value="Set Quantifier"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Literal" abstract="true" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Abstrakte Wurzel der Literale."/>
+      <details key="documentation.en" value="Abstract root of literals."/>
+      <details key="caption.de" value="Literal"/>
+      <details key="caption.en" value="Literal"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataType" eType="//DataTypeKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optionaler kanonischer Typ-Hinweis fuer Quoting/Bind-Entscheidung beim Serialisieren."/>
+        <details key="documentation.en" value="Optional canonical type hint for quoting/bind decision at serialization."/>
+        <details key="caption.de" value="Datentyp"/>
+        <details key="caption.en" value="Data Type"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NullLiteral" eSuperTypes="//Literal">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="NULL-Literal."/>
+      <details key="documentation.en" value="NULL literal."/>
+      <details key="caption.de" value="NULL-Literal"/>
+      <details key="caption.en" value="Null Literal"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CharacterStringLiteral" eSuperTypes="//Literal">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Zeichenketten-Literal."/>
+      <details key="documentation.en" value="Character string literal."/>
+      <details key="caption.de" value="Zeichenketten-Literal"/>
+      <details key="caption.en" value="Character String Literal"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Der Zeichenkettenwert."/>
+        <details key="documentation.en" value="The string value."/>
+        <details key="caption.de" value="Wert"/>
+        <details key="caption.en" value="Value"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="charSet">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optionaler Zeichensatzname."/>
+        <details key="documentation.en" value="Optional character set name."/>
+        <details key="caption.de" value="Zeichensatz"/>
+        <details key="caption.en" value="Character Set"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NumericLiteral" eSuperTypes="//Literal">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Numerisches Literal (verlustfrei als Dezimalzahl)."/>
+      <details key="documentation.en" value="Numeric literal (lossless as decimal)."/>
+      <details key="caption.de" value="Numerisches Literal"/>
+      <details key="caption.en" value="Numeric Literal"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Der numerische Wert."/>
+        <details key="documentation.en" value="The numeric value."/>
+        <details key="caption.de" value="Wert"/>
+        <details key="caption.en" value="Value"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BooleanLiteral" eSuperTypes="//Literal">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Boolesches Literal (TRUE/FALSE/UNKNOWN)."/>
+      <details key="documentation.en" value="Boolean literal (TRUE/FALSE/UNKNOWN)."/>
+      <details key="caption.de" value="Boolesches Literal"/>
+      <details key="caption.en" value="Boolean Literal"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="//TruthValueKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Der Wahrheitswert."/>
+        <details key="documentation.en" value="The truth value."/>
+        <details key="caption.de" value="Wert"/>
+        <details key="caption.en" value="Value"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BinaryLiteral" eSuperTypes="//Literal">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Binaerliteral (Dialekt rendert z.B. X'…')."/>
+      <details key="documentation.en" value="Binary literal (dialect renders e.g. X'…')."/>
+      <details key="caption.de" value="Binaerliteral"/>
+      <details key="caption.en" value="Binary Literal"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hexValue">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Hexadezimal kodierter Binaerwert."/>
+        <details key="documentation.en" value="Hex-encoded binary value."/>
+        <details key="caption.de" value="Hex-Wert"/>
+        <details key="caption.en" value="Hex Value"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BinaryLogicalExpression" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Binaere logische Verknuepfung (AND/OR)."/>
+      <details key="documentation.en" value="Binary logical connective (AND/OR)."/>
+      <details key="caption.de" value="Logische Verknuepfung"/>
+      <details key="caption.en" value="Logical Connective"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1" eType="//LogicalOperatorKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="AND oder OR."/>
+        <details key="documentation.en" value="AND or OR."/>
+        <details key="caption.de" value="Operator"/>
+        <details key="caption.en" value="Operator"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Linker Operand."/>
+        <details key="documentation.en" value="Left operand."/>
+        <details key="caption.de" value="Links"/>
+        <details key="caption.en" value="Left"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Rechter Operand."/>
+        <details key="documentation.en" value="Right operand."/>
+        <details key="caption.de" value="Rechts"/>
+        <details key="caption.en" value="Right"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NotExpression" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Logische Negation (NOT)."/>
+      <details key="documentation.en" value="Logical negation (NOT)."/>
+      <details key="caption.de" value="Negation"/>
+      <details key="caption.en" value="Not"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operand" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Negierter Ausdruck."/>
+        <details key="documentation.en" value="Negated expression."/>
+        <details key="caption.de" value="Operand"/>
+        <details key="caption.en" value="Operand"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ComparisonPredicate" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Vergleichspraedikat; optional quantifiziert (ALL/SOME/ANY)."/>
+      <details key="documentation.en" value="Comparison predicate; optionally quantified (ALL/SOME/ANY)."/>
+      <details key="caption.de" value="Vergleichspraedikat"/>
+      <details key="caption.en" value="Comparison Predicate"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1" eType="//ComparisonOperatorKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Vergleichsoperator."/>
+        <details key="documentation.en" value="Comparison operator."/>
+        <details key="caption.de" value="Operator"/>
+        <details key="caption.en" value="Operator"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Linker Operand."/>
+        <details key="documentation.en" value="Left operand."/>
+        <details key="caption.de" value="Links"/>
+        <details key="caption.en" value="Left"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Rechter Operand."/>
+        <details key="documentation.en" value="Right operand."/>
+        <details key="caption.de" value="Rechts"/>
+        <details key="caption.en" value="Right"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="quantifier" eType="//QuantifierKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optionaler Quantifizierer fuer quantifizierte Vergleiche."/>
+        <details key="documentation.en" value="Optional quantifier for quantified comparisons."/>
+        <details key="caption.de" value="Quantifizierer"/>
+        <details key="caption.en" value="Quantifier"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NullPredicate" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="IS [NOT] NULL."/>
+      <details key="documentation.en" value="IS [NOT] NULL."/>
+      <details key="caption.de" value="NULL-Praedikat"/>
+      <details key="caption.en" value="Null Predicate"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="negated">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Negiert (IS NOT NULL)."/>
+        <details key="documentation.en" value="Negated (IS NOT NULL)."/>
+        <details key="caption.de" value="Negiert"/>
+        <details key="caption.en" value="Negated"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Gepruefter Ausdruck."/>
+        <details key="documentation.en" value="Tested expression."/>
+        <details key="caption.de" value="Wert"/>
+        <details key="caption.en" value="Value"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InPredicate" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="IN-Praedikat: Werteliste oder Subquery."/>
+      <details key="documentation.en" value="IN predicate: value list or subquery."/>
+      <details key="caption.de" value="IN-Praedikat"/>
+      <details key="caption.en" value="In Predicate"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="listOrSubquery"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot">
+      <details key="listOrSubquery" value="self.subquery &lt;> null implies self.list->isEmpty()"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="negated">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Negiert (NOT IN)."/>
+        <details key="documentation.en" value="Negated (NOT IN)."/>
+        <details key="caption.de" value="Negiert"/>
+        <details key="caption.en" value="Negated"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Linker Ausdruck."/>
+        <details key="documentation.en" value="Left expression."/>
+        <details key="caption.de" value="Wert"/>
+        <details key="caption.en" value="Value"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="list" upperBound="-1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Werteliste (Alternative zur Subquery)."/>
+        <details key="documentation.en" value="Value list (alternative to subquery)."/>
+        <details key="caption.de" value="Liste"/>
+        <details key="caption.en" value="List"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subquery" eType="//select/QueryExpression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Subquery (Alternative zur Werteliste)."/>
+        <details key="documentation.en" value="Subquery (alternative to value list)."/>
+        <details key="caption.de" value="Subquery"/>
+        <details key="caption.en" value="Subquery"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BetweenPredicate" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="BETWEEN-Praedikat (optional SYMMETRIC)."/>
+      <details key="documentation.en" value="BETWEEN predicate (optionally SYMMETRIC)."/>
+      <details key="caption.de" value="BETWEEN-Praedikat"/>
+      <details key="caption.en" value="Between Predicate"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="negated">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Negiert (NOT BETWEEN)."/>
+        <details key="documentation.en" value="Negated (NOT BETWEEN)."/>
+        <details key="caption.de" value="Negiert"/>
+        <details key="caption.en" value="Negated"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="symmetric">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="SYMMETRIC statt ASYMMETRIC."/>
+        <details key="documentation.en" value="SYMMETRIC instead of ASYMMETRIC."/>
+        <details key="caption.de" value="Symmetrisch"/>
+        <details key="caption.en" value="Symmetric"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Gepruefter Ausdruck."/>
+        <details key="documentation.en" value="Tested expression."/>
+        <details key="caption.de" value="Wert"/>
+        <details key="caption.en" value="Value"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lowerBound" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Untere Grenze."/>
+        <details key="documentation.en" value="Lower bound."/>
+        <details key="caption.de" value="Untergrenze"/>
+        <details key="caption.en" value="Lower Bound"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="upperBound" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Obere Grenze."/>
+        <details key="documentation.en" value="Upper bound."/>
+        <details key="caption.de" value="Obergrenze"/>
+        <details key="caption.en" value="Upper Bound"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LikePredicate" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="LIKE-Praedikat mit optionalem ESCAPE."/>
+      <details key="documentation.en" value="LIKE predicate with optional ESCAPE."/>
+      <details key="caption.de" value="LIKE-Praedikat"/>
+      <details key="caption.en" value="Like Predicate"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="negated">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Negiert (NOT LIKE)."/>
+        <details key="documentation.en" value="Negated (NOT LIKE)."/>
+        <details key="caption.de" value="Negiert"/>
+        <details key="caption.en" value="Negated"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Gepruefter Ausdruck."/>
+        <details key="documentation.en" value="Tested expression."/>
+        <details key="caption.de" value="Wert"/>
+        <details key="caption.en" value="Value"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pattern" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Suchmuster."/>
+        <details key="documentation.en" value="Search pattern."/>
+        <details key="caption.de" value="Muster"/>
+        <details key="caption.en" value="Pattern"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="escape" eType="//Expression" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optionales ESCAPE-Zeichen."/>
+        <details key="documentation.en" value="Optional ESCAPE character."/>
+        <details key="caption.de" value="Escape"/>
+        <details key="caption.en" value="Escape"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BinaryArithmeticExpression" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Binaere arithmetische Operation (+, -, *, /, ||)."/>
+      <details key="documentation.en" value="Binary arithmetic operation (+, -, *, /, ||)."/>
+      <details key="caption.de" value="Arithmetische Operation"/>
+      <details key="caption.en" value="Binary Arithmetic Expression"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1" eType="//ArithmeticOperatorKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Operator."/>
+        <details key="documentation.en" value="Operator."/>
+        <details key="caption.de" value="Operator"/>
+        <details key="caption.en" value="Operator"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Linker Operand."/>
+        <details key="documentation.en" value="Left operand."/>
+        <details key="caption.de" value="Links"/>
+        <details key="caption.en" value="Left"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Rechter Operand."/>
+        <details key="documentation.en" value="Right operand."/>
+        <details key="caption.de" value="Rechts"/>
+        <details key="caption.en" value="Right"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UnaryArithmeticExpression" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Unaere arithmetische Operation (+, -)."/>
+      <details key="documentation.en" value="Unary arithmetic operation (+, -)."/>
+      <details key="caption.de" value="Unaere Operation"/>
+      <details key="caption.en" value="Unary Arithmetic Expression"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1" eType="//UnaryArithmeticOperatorKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Operator."/>
+        <details key="documentation.en" value="Operator."/>
+        <details key="caption.de" value="Operator"/>
+        <details key="caption.en" value="Operator"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operand" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Operand."/>
+        <details key="documentation.en" value="Operand."/>
+        <details key="caption.de" value="Operand"/>
+        <details key="caption.en" value="Operand"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WhenClause" eSuperTypes="//SqlElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="WHEN-Zweig eines CASE-Ausdrucks."/>
+      <details key="documentation.en" value="WHEN branch of a CASE expression."/>
+      <details key="caption.de" value="WHEN-Zweig"/>
+      <details key="caption.en" value="When Clause"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Bedingung: bei searched CASE eine Suchbedingung, bei simple CASE der Vergleichswert."/>
+        <details key="documentation.en" value="Condition: a search condition for searched CASE, the compared value for simple CASE."/>
+        <details key="caption.de" value="Bedingung"/>
+        <details key="caption.en" value="Condition"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="result" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Ergebnis."/>
+        <details key="documentation.en" value="Result."/>
+        <details key="caption.de" value="Ergebnis"/>
+        <details key="caption.en" value="Result"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CaseExpression" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="CASE-Ausdruck (simple oder searched)."/>
+      <details key="documentation.en" value="CASE expression (simple or searched)."/>
+      <details key="caption.de" value="CASE-Ausdruck"/>
+      <details key="caption.en" value="Case Expression"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operand" eType="//Expression" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Operand des simple CASE (fehlt beim searched CASE)."/>
+        <details key="documentation.en" value="Operand of the simple CASE (absent for searched CASE)."/>
+        <details key="caption.de" value="Operand"/>
+        <details key="caption.en" value="Operand"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="whenClauses" lowerBound="1" upperBound="-1"
+        eType="//WhenClause" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="WHEN-Zweige."/>
+        <details key="documentation.en" value="WHEN branches."/>
+        <details key="caption.de" value="WHEN-Zweige"/>
+        <details key="caption.en" value="When Clauses"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elseResult" eType="//Expression" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="ELSE-Ergebnis."/>
+        <details key="documentation.en" value="ELSE result."/>
+        <details key="caption.de" value="ELSE"/>
+        <details key="caption.en" value="Else Result"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CoalesceExpression" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="COALESCE (CASE-Kurzform)."/>
+      <details key="documentation.en" value="COALESCE (case abbreviation)."/>
+      <details key="caption.de" value="COALESCE"/>
+      <details key="caption.en" value="Coalesce Expression"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="arguments" lowerBound="1" upperBound="-1"
+        eType="//Expression" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Argumente."/>
+        <details key="documentation.en" value="Arguments."/>
+        <details key="caption.de" value="Argumente"/>
+        <details key="caption.en" value="Arguments"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NullIfExpression" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="NULLIF (CASE-Kurzform)."/>
+      <details key="documentation.en" value="NULLIF (case abbreviation)."/>
+      <details key="caption.de" value="NULLIF"/>
+      <details key="caption.en" value="Null If Expression"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value1" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Erster Wert."/>
+        <details key="documentation.en" value="First value."/>
+        <details key="caption.de" value="Wert 1"/>
+        <details key="caption.en" value="Value 1"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value2" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Zweiter Wert."/>
+        <details key="documentation.en" value="Second value."/>
+        <details key="caption.de" value="Wert 2"/>
+        <details key="caption.en" value="Value 2"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CastSpecification" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="CAST (&lt;Ausdruck> AS &lt;Typ>)."/>
+      <details key="documentation.en" value="CAST (&lt;expression> AS &lt;type>)."/>
+      <details key="caption.de" value="CAST"/>
+      <details key="caption.en" value="Cast Specification"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operand" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Quellausdruck."/>
+        <details key="documentation.en" value="Source expression."/>
+        <details key="caption.de" value="Operand"/>
+        <details key="caption.en" value="Operand"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetType" lowerBound="1" eType="//DataTypeReference"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Zieltyp."/>
+        <details key="documentation.en" value="Target type."/>
+        <details key="caption.de" value="Zieltyp"/>
+        <details key="caption.en" value="Target Type"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ExtractExpression" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="EXTRACT (&lt;Feld> FROM &lt;Ausdruck>)."/>
+      <details key="documentation.en" value="EXTRACT (&lt;field> FROM &lt;expression>)."/>
+      <details key="caption.de" value="EXTRACT"/>
+      <details key="caption.en" value="Extract Expression"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="field" lowerBound="1" eType="//ExtractFieldKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Zu extrahierendes Feld."/>
+        <details key="documentation.en" value="Field to extract."/>
+        <details key="caption.de" value="Feld"/>
+        <details key="caption.en" value="Field"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Quellausdruck."/>
+        <details key="documentation.en" value="Source expression."/>
+        <details key="caption.de" value="Quelle"/>
+        <details key="caption.en" value="Source"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BooleanTest" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="IS [NOT] TRUE/FALSE/UNKNOWN."/>
+      <details key="documentation.en" value="IS [NOT] TRUE/FALSE/UNKNOWN."/>
+      <details key="caption.de" value="Wahrheitstest"/>
+      <details key="caption.en" value="Boolean Test"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="negated">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Negiert."/>
+        <details key="documentation.en" value="Negated."/>
+        <details key="caption.de" value="Negiert"/>
+        <details key="caption.en" value="Negated"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="truthValue" lowerBound="1" eType="//TruthValueKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Erwarteter Wahrheitswert."/>
+        <details key="documentation.en" value="Expected truth value."/>
+        <details key="caption.de" value="Wahrheitswert"/>
+        <details key="caption.en" value="Truth Value"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operand" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Gepruefter Ausdruck."/>
+        <details key="documentation.en" value="Tested expression."/>
+        <details key="caption.de" value="Operand"/>
+        <details key="caption.en" value="Operand"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DistinctPredicate" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="IS [NOT] DISTINCT FROM."/>
+      <details key="documentation.en" value="IS [NOT] DISTINCT FROM."/>
+      <details key="caption.de" value="DISTINCT-Praedikat"/>
+      <details key="caption.en" value="Distinct Predicate"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="negated">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Negiert."/>
+        <details key="documentation.en" value="Negated."/>
+        <details key="caption.de" value="Negiert"/>
+        <details key="caption.en" value="Negated"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Linker Operand."/>
+        <details key="documentation.en" value="Left operand."/>
+        <details key="caption.de" value="Links"/>
+        <details key="caption.en" value="Left"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Rechter Operand."/>
+        <details key="documentation.en" value="Right operand."/>
+        <details key="caption.de" value="Rechts"/>
+        <details key="caption.en" value="Right"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ExistsPredicate" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="EXISTS (&lt;Subquery>)."/>
+      <details key="documentation.en" value="EXISTS (&lt;subquery>)."/>
+      <details key="caption.de" value="EXISTS-Praedikat"/>
+      <details key="caption.en" value="Exists Predicate"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="negated">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Negiert (NOT EXISTS)."/>
+        <details key="documentation.en" value="Negated (NOT EXISTS)."/>
+        <details key="caption.de" value="Negiert"/>
+        <details key="caption.en" value="Negated"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subquery" lowerBound="1" eType="//select/QueryExpression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Die EXISTS-Subquery."/>
+        <details key="documentation.en" value="The EXISTS subquery."/>
+        <details key="caption.de" value="Subquery"/>
+        <details key="caption.en" value="Subquery"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DatetimeLiteral" eSuperTypes="//Literal">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Datums-/Zeit-Literal (ISO-Text)."/>
+      <details key="documentation.en" value="Datetime literal (ISO text)."/>
+      <details key="caption.de" value="Datums-/Zeit-Literal"/>
+      <details key="caption.en" value="Datetime Literal"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="ISO-Wert."/>
+        <details key="documentation.en" value="ISO value."/>
+        <details key="caption.de" value="Wert"/>
+        <details key="caption.en" value="Value"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="//DatetimeTypeKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="DATE/TIME/TIMESTAMP (+TZ)."/>
+        <details key="documentation.en" value="DATE/TIME/TIMESTAMP (+TZ)."/>
+        <details key="caption.de" value="Typ"/>
+        <details key="caption.en" value="Type"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IntervalLiteral" eSuperTypes="//Literal">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="INTERVAL-Literal."/>
+      <details key="documentation.en" value="INTERVAL literal."/>
+      <details key="caption.de" value="INTERVAL-Literal"/>
+      <details key="caption.en" value="Interval Literal"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Wert."/>
+        <details key="documentation.en" value="Value."/>
+        <details key="caption.de" value="Wert"/>
+        <details key="caption.en" value="Value"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="qualifier">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Qualifizierer (z.B. YEAR TO MONTH)."/>
+        <details key="documentation.en" value="Qualifier (e.g. YEAR TO MONTH)."/>
+        <details key="caption.de" value="Qualifizierer"/>
+        <details key="caption.en" value="Qualifier"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ParameterSpecification" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Dynamischer Parameter (? oder benannt)."/>
+      <details key="documentation.en" value="Dynamic parameter (? or named)."/>
+      <details key="caption.de" value="Parameter"/>
+      <details key="caption.en" value="Parameter Specification"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="position">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Positionsindex (?)."/>
+        <details key="documentation.en" value="Positional index (?)."/>
+        <details key="caption.de" value="Position"/>
+        <details key="caption.en" value="Position"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="parameterName">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Benannter Parameter (eigenes Feld, kollidiert nicht mit geerbtem name)."/>
+        <details key="documentation.en" value="Named parameter (own field, does not clash with inherited name)."/>
+        <details key="caption.de" value="Parametername"/>
+        <details key="caption.en" value="Parameter Name"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SortSpecification" eSuperTypes="//SqlElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="ANSI 'sort specification' inkl. NULL-Sortierung. Genutzt in ORDER BY, WITHIN GROUP und Fenstern."/>
+      <details key="documentation.en" value="ANSI 'sort specification' incl. null ordering. Used in ORDER BY, WITHIN GROUP and windows."/>
+      <details key="caption.de" value="Sortier-Spezifikation"/>
+      <details key="caption.en" value="Sort Specification"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sortKey" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Sortierschluessel."/>
+        <details key="documentation.en" value="Sort key."/>
+        <details key="caption.de" value="Sortierschluessel"/>
+        <details key="caption.en" value="Sort Key"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ordering" eType="//SortDirectionKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="ASC/DESC."/>
+        <details key="documentation.en" value="ASC/DESC."/>
+        <details key="caption.de" value="Richtung"/>
+        <details key="caption.en" value="Ordering"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nullOrdering" eType="//NullOrderingKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="NULLS FIRST/LAST."/>
+        <details key="documentation.en" value="NULLS FIRST/LAST."/>
+        <details key="caption.de" value="NULL-Sortierung"/>
+        <details key="caption.en" value="Null Ordering"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WindowFrameBound" eSuperTypes="//SqlElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Fensterrahmen-Grenze."/>
+      <details key="documentation.en" value="Window frame bound."/>
+      <details key="caption.de" value="Rahmengrenze"/>
+      <details key="caption.en" value="Window Frame Bound"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="boundType" lowerBound="1" eType="//FrameBoundKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Art der Grenze."/>
+        <details key="documentation.en" value="Bound type."/>
+        <details key="caption.de" value="Grenzart"/>
+        <details key="caption.en" value="Bound Type"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="offset" eType="//Expression" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Offset bei n PRECEDING/FOLLOWING."/>
+        <details key="documentation.en" value="Offset for n PRECEDING/FOLLOWING."/>
+        <details key="caption.de" value="Offset"/>
+        <details key="caption.en" value="Offset"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WindowFrame" eSuperTypes="//SqlElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Fensterrahmen (ROWS/RANGE/GROUPS)."/>
+      <details key="documentation.en" value="Window frame (ROWS/RANGE/GROUPS)."/>
+      <details key="caption.de" value="Fensterrahmen"/>
+      <details key="caption.en" value="Window Frame"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="units" lowerBound="1" eType="//FrameUnitsKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Rahmeneinheit."/>
+        <details key="documentation.en" value="Frame units."/>
+        <details key="caption.de" value="Einheit"/>
+        <details key="caption.en" value="Units"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="start" lowerBound="1" eType="//WindowFrameBound"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Startgrenze."/>
+        <details key="documentation.en" value="Start bound."/>
+        <details key="caption.de" value="Start"/>
+        <details key="caption.en" value="Start"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="end" eType="//WindowFrameBound" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Endgrenze."/>
+        <details key="documentation.en" value="End bound."/>
+        <details key="caption.de" value="Ende"/>
+        <details key="caption.en" value="End"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exclusion" eType="//FrameExclusionKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Ausschluss."/>
+        <details key="documentation.en" value="Exclusion."/>
+        <details key="caption.de" value="Ausschluss"/>
+        <details key="caption.en" value="Exclusion"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WindowSpecification" eSuperTypes="//SqlElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Fensterspezifikation (Inhalt der OVER-Klausel bzw. eines benannten Fensters)."/>
+      <details key="documentation.en" value="Window specification (content of the OVER clause or a named window)."/>
+      <details key="caption.de" value="Fensterspezifikation"/>
+      <details key="caption.en" value="Window Specification"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="existingName" eType="//AliasReference"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Bezug auf ein vorhandenes benanntes Fenster."/>
+        <details key="documentation.en" value="Reference to an existing named window."/>
+        <details key="caption.de" value="Vorhandenes Fenster"/>
+        <details key="caption.en" value="Existing Window"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="partitionBy" upperBound="-1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="PARTITION BY-Ausdruecke."/>
+        <details key="documentation.en" value="PARTITION BY expressions."/>
+        <details key="caption.de" value="Partitionierung"/>
+        <details key="caption.en" value="Partition By"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="orderBy" upperBound="-1" eType="//SortSpecification"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Fenster-Sortierung."/>
+        <details key="documentation.en" value="Window ordering."/>
+        <details key="caption.de" value="Sortierung"/>
+        <details key="caption.en" value="Order By"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="frame" eType="//WindowFrame" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Fensterrahmen."/>
+        <details key="documentation.en" value="Window frame."/>
+        <details key="caption.de" value="Rahmen"/>
+        <details key="caption.en" value="Frame"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UniquePredicate" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="UNIQUE (&lt;Subquery>) - keine Duplikate in der Ergebnismenge."/>
+      <details key="documentation.en" value="UNIQUE (&lt;subquery>) - no duplicates in the result set."/>
+      <details key="caption.de" value="UNIQUE-Praedikat"/>
+      <details key="caption.en" value="Unique Predicate"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="hasSubquery"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot">
+      <details key="hasSubquery" value="self.subquery &lt;> null"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subquery" lowerBound="1" eType="//select/QueryExpression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Die UNIQUE-Subquery."/>
+        <details key="documentation.en" value="The UNIQUE subquery."/>
+        <details key="caption.de" value="Subquery"/>
+        <details key="caption.en" value="Subquery"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SimilarPredicate" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="[NOT] SIMILAR TO &lt;Muster> [ESCAPE c]."/>
+      <details key="documentation.en" value="[NOT] SIMILAR TO &lt;pattern> [ESCAPE c]."/>
+      <details key="caption.de" value="SIMILAR-Praedikat"/>
+      <details key="caption.en" value="Similar Predicate"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="negated">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Negiert."/>
+        <details key="documentation.en" value="Negated."/>
+        <details key="caption.de" value="Negiert"/>
+        <details key="caption.en" value="Negated"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Gepruefter Ausdruck."/>
+        <details key="documentation.en" value="Tested expression."/>
+        <details key="caption.de" value="Wert"/>
+        <details key="caption.en" value="Value"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pattern" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Suchmuster."/>
+        <details key="documentation.en" value="Search pattern."/>
+        <details key="caption.de" value="Muster"/>
+        <details key="caption.en" value="Pattern"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="escape" eType="//Expression" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optionales ESCAPE-Zeichen."/>
+        <details key="documentation.en" value="Optional ESCAPE character."/>
+        <details key="caption.de" value="Escape"/>
+        <details key="caption.en" value="Escape"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OverlapsPredicate" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="&lt;Zeile> OVERLAPS &lt;Zeile> (Zeitintervall-Ueberlappung)."/>
+      <details key="documentation.en" value="&lt;row> OVERLAPS &lt;row> (datetime interval overlap)."/>
+      <details key="caption.de" value="OVERLAPS-Praedikat"/>
+      <details key="caption.en" value="Overlaps Predicate"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Linkes Intervall (Zeile)."/>
+        <details key="documentation.en" value="Left interval (row)."/>
+        <details key="caption.de" value="Links"/>
+        <details key="caption.en" value="Left"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Rechtes Intervall (Zeile)."/>
+        <details key="documentation.en" value="Right interval (row)."/>
+        <details key="caption.de" value="Rechts"/>
+        <details key="caption.en" value="Right"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MatchPredicate" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="MATCH [UNIQUE] [SIMPLE|PARTIAL|FULL] (&lt;Subquery>)."/>
+      <details key="documentation.en" value="MATCH [UNIQUE] [SIMPLE|PARTIAL|FULL] (&lt;subquery>)."/>
+      <details key="caption.de" value="MATCH-Praedikat"/>
+      <details key="caption.en" value="Match Predicate"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="hasSubquery"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot">
+      <details key="hasSubquery" value="self.subquery &lt;> null"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Linker Ausdruck (Zeile)."/>
+        <details key="documentation.en" value="Left expression (row)."/>
+        <details key="caption.de" value="Wert"/>
+        <details key="caption.en" value="Value"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unique">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="MATCH UNIQUE."/>
+        <details key="documentation.en" value="MATCH UNIQUE."/>
+        <details key="caption.de" value="Eindeutig"/>
+        <details key="caption.en" value="Unique"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="matchType" eType="//MatchTypeKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="SIMPLE/PARTIAL/FULL."/>
+        <details key="documentation.en" value="SIMPLE/PARTIAL/FULL."/>
+        <details key="caption.de" value="MATCH-Art"/>
+        <details key="caption.en" value="Match Type"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subquery" lowerBound="1" eType="//select/QueryExpression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Die MATCH-Subquery."/>
+        <details key="documentation.en" value="The MATCH subquery."/>
+        <details key="caption.de" value="Subquery"/>
+        <details key="caption.en" value="Subquery"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TypePredicate" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="IS [NOT] OF (&lt;Typliste>)."/>
+      <details key="documentation.en" value="IS [NOT] OF (&lt;type list>)."/>
+      <details key="caption.de" value="Typ-Praedikat"/>
+      <details key="caption.en" value="Type Predicate"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="negated">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Negiert."/>
+        <details key="documentation.en" value="Negated."/>
+        <details key="caption.de" value="Negiert"/>
+        <details key="caption.en" value="Negated"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operand" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Gepruefter Ausdruck."/>
+        <details key="documentation.en" value="Tested expression."/>
+        <details key="caption.de" value="Operand"/>
+        <details key="caption.en" value="Operand"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="types" lowerBound="1" upperBound="-1" eType="//DataTypeReference"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Typliste."/>
+        <details key="documentation.en" value="Type list."/>
+        <details key="caption.de" value="Typen"/>
+        <details key="caption.en" value="Types"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NormalizedPredicate" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="IS [NOT] NORMALIZED [in Normalform]."/>
+      <details key="documentation.en" value="IS [NOT] NORMALIZED [in normal form]."/>
+      <details key="caption.de" value="Normalisiert-Praedikat"/>
+      <details key="caption.en" value="Normalized Predicate"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="negated">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Negiert."/>
+        <details key="documentation.en" value="Negated."/>
+        <details key="caption.de" value="Negiert"/>
+        <details key="caption.en" value="Negated"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operand" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Gepruefter Ausdruck."/>
+        <details key="documentation.en" value="Tested expression."/>
+        <details key="caption.de" value="Operand"/>
+        <details key="caption.en" value="Operand"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="normalForm" eType="//NormalFormKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Unicode-Normalform."/>
+        <details key="documentation.en" value="Unicode normal form."/>
+        <details key="caption.de" value="Normalform"/>
+        <details key="caption.en" value="Normal Form"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SubstringExpression" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="SUBSTRING(x FROM s [FOR l])."/>
+      <details key="documentation.en" value="SUBSTRING(x FROM s [FOR l])."/>
+      <details key="caption.de" value="SUBSTRING"/>
+      <details key="caption.en" value="Substring Expression"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Quellzeichenkette."/>
+        <details key="documentation.en" value="Source string."/>
+        <details key="caption.de" value="Quelle"/>
+        <details key="caption.en" value="Source"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="startPosition" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Startposition."/>
+        <details key="documentation.en" value="Start position."/>
+        <details key="caption.de" value="Start"/>
+        <details key="caption.en" value="Start Position"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stringLength" eType="//Expression" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optionale Laenge."/>
+        <details key="documentation.en" value="Optional length."/>
+        <details key="caption.de" value="Laenge"/>
+        <details key="caption.en" value="String Length"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PositionExpression" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="POSITION(x IN y)."/>
+      <details key="documentation.en" value="POSITION(x IN y)."/>
+      <details key="caption.de" value="POSITION"/>
+      <details key="caption.en" value="Position Expression"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pattern" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Gesuchter Teilstring."/>
+        <details key="documentation.en" value="Searched substring."/>
+        <details key="caption.de" value="Muster"/>
+        <details key="caption.en" value="Pattern"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Quellzeichenkette."/>
+        <details key="documentation.en" value="Source string."/>
+        <details key="caption.de" value="Quelle"/>
+        <details key="caption.en" value="Source"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TrimFunction" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="TRIM([LEADING|TRAILING|BOTH] [c] FROM x)."/>
+      <details key="documentation.en" value="TRIM([LEADING|TRAILING|BOTH] [c] FROM x)."/>
+      <details key="caption.de" value="TRIM"/>
+      <details key="caption.en" value="Trim Function"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="specification" eType="//TrimSpecificationKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="BOTH/LEADING/TRAILING."/>
+        <details key="documentation.en" value="BOTH/LEADING/TRAILING."/>
+        <details key="caption.de" value="Seite"/>
+        <details key="caption.en" value="Specification"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="trimCharacter" eType="//Expression" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optionales Trimm-Zeichen."/>
+        <details key="documentation.en" value="Optional trim character."/>
+        <details key="caption.de" value="Zeichen"/>
+        <details key="caption.en" value="Trim Character"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Quellzeichenkette."/>
+        <details key="documentation.en" value="Source string."/>
+        <details key="caption.de" value="Quelle"/>
+        <details key="caption.en" value="Source"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OverlayFunction" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="OVERLAY(x PLACING y FROM s [FOR l])."/>
+      <details key="documentation.en" value="OVERLAY(x PLACING y FROM s [FOR l])."/>
+      <details key="caption.de" value="OVERLAY"/>
+      <details key="caption.en" value="Overlay Function"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Quellzeichenkette."/>
+        <details key="documentation.en" value="Source string."/>
+        <details key="caption.de" value="Quelle"/>
+        <details key="caption.en" value="Source"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="placing" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Einzufuegende Zeichenkette."/>
+        <details key="documentation.en" value="String to place."/>
+        <details key="caption.de" value="Einfuegung"/>
+        <details key="caption.en" value="Placing"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="startPosition" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Startposition."/>
+        <details key="documentation.en" value="Start position."/>
+        <details key="caption.de" value="Start"/>
+        <details key="caption.en" value="Start Position"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="forLength" eType="//Expression" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optionale Laenge."/>
+        <details key="documentation.en" value="Optional length."/>
+        <details key="caption.de" value="Laenge"/>
+        <details key="caption.en" value="For Length"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CollateExpression" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="x COLLATE &lt;Sortierfolge>."/>
+      <details key="documentation.en" value="x COLLATE &lt;collation>."/>
+      <details key="caption.de" value="COLLATE"/>
+      <details key="caption.en" value="Collate Expression"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operand" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Operand."/>
+        <details key="documentation.en" value="Operand."/>
+        <details key="caption.de" value="Operand"/>
+        <details key="caption.en" value="Operand"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="collation" lowerBound="1" eType="//QualifiedName"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Sortierfolge."/>
+        <details key="documentation.en" value="Collation name."/>
+        <details key="caption.de" value="Sortierfolge"/>
+        <details key="caption.en" value="Collation"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CurrentDatetimeFunction" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="CURRENT_DATE/CURRENT_TIME/CURRENT_TIMESTAMP/LOCALTIME(STAMP)."/>
+      <details key="documentation.en" value="CURRENT_DATE/CURRENT_TIME/CURRENT_TIMESTAMP/LOCALTIME(STAMP)."/>
+      <details key="caption.de" value="Aktuelle Datums-/Zeitfunktion"/>
+      <details key="caption.en" value="Current Datetime Function"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="function" lowerBound="1" eType="//CurrentDatetimeKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Funktion."/>
+        <details key="documentation.en" value="Function."/>
+        <details key="caption.de" value="Funktion"/>
+        <details key="caption.en" value="Function"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="precision">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optionale Genauigkeit."/>
+        <details key="documentation.en" value="Optional precision."/>
+        <details key="caption.de" value="Genauigkeit"/>
+        <details key="caption.en" value="Precision"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RegexMatchPredicate" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Kanonischer Regex-Abgleich; der Dialekt rendert REGEXP/RLIKE/~/SIMILAR TO."/>
+      <details key="documentation.en" value="Canonical regex match; the dialect renders REGEXP/RLIKE/~/SIMILAR TO."/>
+      <details key="caption.de" value="Regex-Praedikat"/>
+      <details key="caption.en" value="Regex Match Predicate"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="negated">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Negiert."/>
+        <details key="documentation.en" value="Negated."/>
+        <details key="caption.de" value="Negiert"/>
+        <details key="caption.en" value="Negated"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Gepruefter Ausdruck."/>
+        <details key="documentation.en" value="Tested expression."/>
+        <details key="caption.de" value="Wert"/>
+        <details key="caption.en" value="Value"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pattern" lowerBound="1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Regex-Muster."/>
+        <details key="documentation.en" value="Regex pattern."/>
+        <details key="caption.de" value="Muster"/>
+        <details key="caption.en" value="Pattern"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="flags">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optionale Flags (z.B. 'i' fuer case-insensitive)."/>
+        <details key="documentation.en" value="Optional flags (e.g. 'i' for case-insensitive)."/>
+        <details key="caption.de" value="Flags"/>
+        <details key="caption.en" value="Flags"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AggregateFunction" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Kanonische Aggregatfunktion (inkl. FILTER, WITHIN GROUP und optional OVER als Fensteraggregat)."/>
+      <details key="documentation.en" value="Canonical aggregate function (incl. FILTER, WITHIN GROUP and optional OVER as a window aggregate)."/>
+      <details key="caption.de" value="Aggregatfunktion"/>
+      <details key="caption.en" value="Aggregate Function"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1" eType="//AggregateKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Art des Aggregats."/>
+        <details key="documentation.en" value="Aggregate kind."/>
+        <details key="caption.de" value="Art"/>
+        <details key="caption.en" value="Kind"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="setQuantifier" eType="//SetQuantifierKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="ALL/DISTINCT (z.B. COUNT(DISTINCT ...))."/>
+        <details key="documentation.en" value="ALL/DISTINCT (e.g. COUNT(DISTINCT ...))."/>
+        <details key="caption.de" value="Mengen-Quantifizierer"/>
+        <details key="caption.en" value="Set Quantifier"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="arguments" upperBound="-1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Argumente."/>
+        <details key="documentation.en" value="Arguments."/>
+        <details key="caption.de" value="Argumente"/>
+        <details key="caption.en" value="Arguments"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="separator" eType="//Expression" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Trennzeichen fuer String-Aggregation."/>
+        <details key="documentation.en" value="Separator for string aggregation."/>
+        <details key="caption.de" value="Trenner"/>
+        <details key="caption.en" value="Separator"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="filter" eType="//Expression" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="FILTER (WHERE &lt;Suchbedingung>)."/>
+        <details key="documentation.en" value="FILTER (WHERE &lt;search condition>)."/>
+        <details key="caption.de" value="Filter"/>
+        <details key="caption.en" value="Filter"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="withinGroupOrderBy" upperBound="-1" eType="//SortSpecification"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="WITHIN GROUP (ORDER BY ...) fuer ordered-set-Aggregate."/>
+        <details key="documentation.en" value="WITHIN GROUP (ORDER BY ...) for ordered-set aggregates."/>
+        <details key="caption.de" value="Within Group"/>
+        <details key="caption.en" value="Within Group Order By"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="window" eType="//WindowSpecification" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="OVER (&lt;Fensterspezifikation>), wenn das Aggregat als Fensterfunktion verwendet wird."/>
+        <details key="documentation.en" value="OVER (&lt;window specification>) when the aggregate is used as a window function."/>
+        <details key="caption.de" value="Fenster"/>
+        <details key="caption.en" value="Window"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WindowFunction" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Kanonische Fensterfunktion (ROW_NUMBER, RANK, LEAD, NTH_VALUE, ...)."/>
+      <details key="documentation.en" value="Canonical window function (ROW_NUMBER, RANK, LEAD, NTH_VALUE, ...)."/>
+      <details key="caption.de" value="Fensterfunktion"/>
+      <details key="caption.en" value="Window Function"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1" eType="//WindowFunctionKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Art der Fensterfunktion."/>
+        <details key="documentation.en" value="Window function kind."/>
+        <details key="caption.de" value="Art"/>
+        <details key="caption.en" value="Kind"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="arguments" upperBound="-1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Argumente."/>
+        <details key="documentation.en" value="Arguments."/>
+        <details key="caption.de" value="Argumente"/>
+        <details key="caption.en" value="Arguments"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="window" lowerBound="1" eType="//WindowSpecification"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="OVER (&lt;Fensterspezifikation>)."/>
+        <details key="documentation.en" value="OVER (&lt;window specification>)."/>
+        <details key="caption.de" value="Fenster"/>
+        <details key="caption.en" value="Window"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GroupingOperation" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="GROUPING(&lt;Ausdruecke>) - Super-Aggregat-Indikator."/>
+      <details key="documentation.en" value="GROUPING(&lt;expressions>) super-aggregate indicator."/>
+      <details key="caption.de" value="GROUPING"/>
+      <details key="caption.en" value="Grouping Operation"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="arguments" lowerBound="1" upperBound="-1"
+        eType="//Expression" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Argumente."/>
+        <details key="documentation.en" value="Arguments."/>
+        <details key="caption.de" value="Argumente"/>
+        <details key="caption.en" value="Arguments"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RowValueConstructor" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Zeilenwert-Konstruktor (a, b, c) bzw. ROW(...)."/>
+      <details key="documentation.en" value="Row value constructor (a, b, c) / ROW(...)."/>
+      <details key="caption.de" value="Zeilenkonstruktor"/>
+      <details key="caption.en" value="Row Value Constructor"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1" eType="//Expression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Zeilenelemente."/>
+        <details key="documentation.en" value="Row elements."/>
+        <details key="caption.de" value="Elemente"/>
+        <details key="caption.en" value="Elements"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ScalarSubquery" eSuperTypes="//Expression">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Skalare Subquery als Ausdruck."/>
+      <details key="documentation.en" value="Scalar subquery as an expression."/>
+      <details key="caption.de" value="Skalare Subquery"/>
+      <details key="caption.en" value="Scalar Subquery"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="query" lowerBound="1" eType="//select/QueryExpression"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Die Subquery."/>
+        <details key="documentation.en" value="The subquery."/>
+        <details key="caption.de" value="Query"/>
+        <details key="caption.en" value="Query"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eSubpackages name="select" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.sql/select"
+      nsPrefix="sqlselect">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="SELECT-spezifische Strukturen nach ANSI-SQL: query expression, query expression body, query specification, set operation, common table expression, FROM/JOIN, GROUP BY, ORDER BY und Fensterdefinitionen."/>
+      <details key="documentation.en" value="SELECT-specific structures following ANSI-SQL: query expression, query expression body, query specification, set operation, common table expression, FROM/JOIN, GROUP BY, ORDER BY and window definitions."/>
+      <details key="caption.de" value="SELECT"/>
+      <details key="caption.en" value="SELECT"/>
+      <details key="prefix" value="Select"/>
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EClass" name="QueryExpression" eSuperTypes="//Statement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="ANSI 'query expression': optionale WITH-Klausel, der Body und ORDER BY/OFFSET/FETCH, die an die gesamte Anweisung (nach Mengenoperationen) binden."/>
+        <details key="documentation.en" value="ANSI 'query expression': optional WITH clause, the body and ORDER BY/OFFSET/FETCH which bind to the whole statement (after set operations)."/>
+        <details key="caption.de" value="Query-Ausdruck"/>
+        <details key="caption.en" value="Query Expression"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="withClause" eType="//select/WithClause"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Optionale WITH-Klausel."/>
+          <details key="documentation.en" value="Optional WITH clause."/>
+          <details key="caption.de" value="WITH"/>
+          <details key="caption.en" value="With"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="body" lowerBound="1" eType="//select/QueryExpressionBody"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Der Query-Body."/>
+          <details key="documentation.en" value="The query body."/>
+          <details key="caption.de" value="Body"/>
+          <details key="caption.en" value="Body"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="orderBy" eType="//select/OrderByClause"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Optionales ORDER BY (gesamt)."/>
+          <details key="documentation.en" value="Optional ORDER BY (overall)."/>
+          <details key="caption.de" value="ORDER BY"/>
+          <details key="caption.en" value="Order By"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="QueryExpressionBody" abstract="true" eSuperTypes="//SqlElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="ANSI 'query expression body': abstrakte Wurzel von QuerySpecification, SetOperation, TableValueConstructor und ExplicitTable."/>
+        <details key="documentation.en" value="ANSI 'query expression body': abstract root of QuerySpecification, SetOperation, TableValueConstructor and ExplicitTable."/>
+        <details key="caption.de" value="Query-Body"/>
+        <details key="caption.en" value="Query Expression Body"/>
+      </eAnnotations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SetOperation" eSuperTypes="//select/QueryExpressionBody">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Mengenoperation (UNION/INTERSECT/EXCEPT). setQuantifier kodiert UNION vs UNION ALL. INTERSECT bindet staerker - durch Baum-Verschachtelung abgebildet. CORRESPONDING wird unterstuetzt."/>
+        <details key="documentation.en" value="Set operation (UNION/INTERSECT/EXCEPT). setQuantifier encodes UNION vs UNION ALL. INTERSECT binds tighter - modeled by tree nesting. CORRESPONDING is supported."/>
+        <details key="caption.de" value="Mengenoperation"/>
+        <details key="caption.en" value="Set Operation"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+        <details key="constraints" value="operandsPresent"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot">
+        <details key="operandsPresent" value="self.left &lt;> null and self.right &lt;> null"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1" eType="//SetOperatorKind">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="UNION/INTERSECT/EXCEPT."/>
+          <details key="documentation.en" value="UNION/INTERSECT/EXCEPT."/>
+          <details key="caption.de" value="Operator"/>
+          <details key="caption.en" value="Operator"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="setQuantifier" eType="//SetQuantifierKind">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="ALL/DISTINCT (z.B. UNION ALL)."/>
+          <details key="documentation.en" value="ALL/DISTINCT (e.g. UNION ALL)."/>
+          <details key="caption.de" value="Mengen-Quantifizierer"/>
+          <details key="caption.en" value="Set Quantifier"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="corresponding">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="CORRESPONDING gesetzt."/>
+          <details key="documentation.en" value="CORRESPONDING set."/>
+          <details key="caption.de" value="Corresponding"/>
+          <details key="caption.en" value="Corresponding"/>
+        </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="correspondingColumns" upperBound="-1"
+          eType="//QualifiedName" containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Optionale CORRESPONDING BY-Spaltenliste."/>
+          <details key="documentation.en" value="Optional CORRESPONDING BY column list."/>
+          <details key="caption.de" value="Corresponding-Spalten"/>
+          <details key="caption.en" value="Corresponding Columns"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="//select/QueryExpressionBody"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Linker Operand."/>
+          <details key="documentation.en" value="Left operand."/>
+          <details key="caption.de" value="Links"/>
+          <details key="caption.en" value="Left"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="//select/QueryExpressionBody"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Rechter Operand."/>
+          <details key="documentation.en" value="Right operand."/>
+          <details key="caption.de" value="Rechts"/>
+          <details key="caption.en" value="Right"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="QuerySpecification">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="ANSI 'query specification' - die SELECT-Anweisung. In Phase 2 erbt sie zusaetzlich von CWM ColumnSet; in Phase 1 verweist columnSet referenziell auf den Ergebnis-ColumnSet."/>
+        <details key="documentation.en" value="ANSI 'query specification' - the SELECT statement. In phase 2 it additionally inherits from CWM ColumnSet; in phase 1 columnSet references the result ColumnSet."/>
+        <details key="caption.de" value="Query-Spezifikation"/>
+        <details key="caption.en" value="Query Specification"/>
+      </eAnnotations>
+      <eSuperTypes href="#//select/QueryExpressionBody"/>
+      <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/resource/relational#//ColumnSet"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="setQuantifier" eType="//SetQuantifierKind">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="ALL/DISTINCT."/>
+          <details key="documentation.en" value="ALL/DISTINCT."/>
+          <details key="caption.de" value="Mengen-Quantifizierer"/>
+          <details key="caption.en" value="Set Quantifier"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="selectList" lowerBound="1" upperBound="-1"
+          eType="//select/SelectSublist" containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Die Projektionsliste (select list)."/>
+          <details key="documentation.en" value="The projection list (select list)."/>
+          <details key="caption.de" value="Select-Liste"/>
+          <details key="caption.en" value="Select List"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="from" eType="//select/FromClause" containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="FROM-Klausel."/>
+          <details key="documentation.en" value="FROM clause."/>
+          <details key="caption.de" value="FROM"/>
+          <details key="caption.en" value="From"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="where" eType="//Expression" containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="WHERE-Suchbedingung."/>
+          <details key="documentation.en" value="WHERE search condition."/>
+          <details key="caption.de" value="WHERE"/>
+          <details key="caption.en" value="Where"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="groupBy" eType="//select/GroupByClause"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="GROUP BY-Klausel."/>
+          <details key="documentation.en" value="GROUP BY clause."/>
+          <details key="caption.de" value="GROUP BY"/>
+          <details key="caption.en" value="Group By"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="having" eType="//Expression" containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="HAVING-Suchbedingung."/>
+          <details key="documentation.en" value="HAVING search condition."/>
+          <details key="caption.de" value="HAVING"/>
+          <details key="caption.en" value="Having"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="window" upperBound="-1" eType="//select/WindowDefinition"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Benannte Fensterdefinitionen (WINDOW-Klausel)."/>
+          <details key="documentation.en" value="Named window definitions (WINDOW clause)."/>
+          <details key="caption.de" value="WINDOW"/>
+          <details key="caption.en" value="Window"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SelectSublist" abstract="true" eSuperTypes="//SqlElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="ANSI 'select sublist'."/>
+        <details key="documentation.en" value="ANSI 'select sublist'."/>
+        <details key="caption.de" value="Select-Teilliste"/>
+        <details key="caption.en" value="Select Sublist"/>
+      </eAnnotations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DerivedColumn" eSuperTypes="//select/SelectSublist">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Projektierter Wertausdruck mit optionalem Alias (AS)."/>
+        <details key="documentation.en" value="Projected value expression with optional alias (AS)."/>
+        <details key="caption.de" value="Abgeleitete Spalte"/>
+        <details key="caption.en" value="Derived Column"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1" eType="//Expression"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Der projektierte Ausdruck."/>
+          <details key="documentation.en" value="The projected expression."/>
+          <details key="caption.de" value="Ausdruck"/>
+          <details key="caption.en" value="Expression"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="aliasDefinition" eType="//AliasDefinition"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Optionaler Spalten-Alias."/>
+          <details key="documentation.en" value="Optional column alias."/>
+          <details key="caption.de" value="Alias"/>
+          <details key="caption.en" value="Alias"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ProjectionReference" eSuperTypes="//Expression">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Verweis auf eine projektierte Spalte (Objekt-Handle) statt auf eine Oberflaechenform - fuer ORDER BY/GROUP BY. Der Serializer waehlt Alias/Ordinalzahl/Ausdruck."/>
+        <details key="documentation.en" value="Reference to a projected column (object handle) instead of a surface form - for ORDER BY/GROUP BY. The serializer chooses alias/ordinal/expression."/>
+        <details key="caption.de" value="Projektions-Referenz"/>
+        <details key="caption.en" value="Projection Reference"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="projection" lowerBound="1" eType="//select/DerivedColumn">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Die referenzierte projektierte Spalte."/>
+          <details key="documentation.en" value="The referenced projected column."/>
+          <details key="caption.de" value="Projektion"/>
+          <details key="caption.en" value="Projection"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Asterisk" eSuperTypes="//select/SelectSublist">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Stern '*' (alle Spalten)."/>
+        <details key="documentation.en" value="Asterisk '*' (all columns)."/>
+        <details key="caption.de" value="Stern"/>
+        <details key="caption.en" value="Asterisk"/>
+      </eAnnotations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="QualifiedAsterisk" eSuperTypes="//select/SelectSublist">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Qualifizierter Stern 't.*'."/>
+        <details key="documentation.en" value="Qualified asterisk 't.*'."/>
+        <details key="caption.de" value="Qualifizierter Stern"/>
+        <details key="caption.en" value="Qualified Asterisk"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="qualifier" lowerBound="1" eType="//AliasReference"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Tabellen-/Alias-Qualifier."/>
+          <details key="documentation.en" value="Table/alias qualifier."/>
+          <details key="caption.de" value="Qualifier"/>
+          <details key="caption.en" value="Qualifier"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TableReference" abstract="true" eSuperTypes="//SqlElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="ANSI 'table reference' - Element der FROM-Klausel."/>
+        <details key="documentation.en" value="ANSI 'table reference' - element of the FROM clause."/>
+        <details key="caption.de" value="Tabellenreferenz"/>
+        <details key="caption.en" value="Table Reference"/>
+      </eAnnotations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="FromClause" eSuperTypes="//SqlElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="FROM-Klausel: Liste von Tabellenreferenzen."/>
+        <details key="documentation.en" value="FROM clause: list of table references."/>
+        <details key="caption.de" value="FROM-Klausel"/>
+        <details key="caption.en" value="From Clause"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="tableReferences" lowerBound="1" upperBound="-1"
+          eType="//select/TableReference" containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Tabellenreferenzen (Komma = implizites Kreuzprodukt)."/>
+          <details key="documentation.en" value="Table references (comma = implicit cross product)."/>
+          <details key="caption.de" value="Tabellenreferenzen"/>
+          <details key="caption.en" value="Table References"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="NamedTableReference" eSuperTypes="//select/TableReference">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Bezug auf eine reale CWM-Tabelle/Sicht (aufgeloest)."/>
+        <details key="documentation.en" value="Reference to a real CWM table/view (resolved)."/>
+        <details key="caption.de" value="Benannte Tabellenreferenz"/>
+        <details key="caption.en" value="Named Table Reference"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Aufgeloeste Referenz auf einen CWM NamedColumnSet (Table/View)."/>
+          <details key="documentation.en" value="Resolved reference to a CWM NamedColumnSet (table/view)."/>
+          <details key="caption.de" value="Tabelle"/>
+          <details key="caption.en" value="Table"/>
+        </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//NamedColumnSet"/>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="aliasDefinition" eType="//AliasDefinition"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Optionaler Korrelationsname."/>
+          <details key="documentation.en" value="Optional correlation name."/>
+          <details key="caption.de" value="Alias"/>
+          <details key="caption.en" value="Alias"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="UnresolvedTableReference" eSuperTypes="//select/TableReference">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Namensbasierte Tabellenreferenz (unaufgeloest) - verschieden von der aufgeloesten Variante."/>
+        <details key="documentation.en" value="Name-based table reference (unresolved) - distinct from the resolved variant."/>
+        <details key="caption.de" value="Unaufgeloeste Tabellenreferenz"/>
+        <details key="caption.en" value="Unresolved Table Reference"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="qualifiedName" lowerBound="1" eType="//QualifiedName"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Namensbasierter Tabellenname."/>
+          <details key="documentation.en" value="Name-based table name."/>
+          <details key="caption.de" value="Qualifizierter Name"/>
+          <details key="caption.en" value="Qualified Name"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="aliasDefinition" eType="//AliasDefinition"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Optionaler Korrelationsname."/>
+          <details key="documentation.en" value="Optional correlation name."/>
+          <details key="caption.de" value="Alias"/>
+          <details key="caption.en" value="Alias"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DerivedTable" eSuperTypes="//select/TableReference">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Abgeleitete Tabelle (Subquery in FROM), optional LATERAL."/>
+        <details key="documentation.en" value="Derived table (subquery in FROM), optionally LATERAL."/>
+        <details key="caption.de" value="Abgeleitete Tabelle"/>
+        <details key="caption.en" value="Derived Table"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="lateral">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="LATERAL."/>
+          <details key="documentation.en" value="LATERAL."/>
+          <details key="caption.de" value="Lateral"/>
+          <details key="caption.en" value="Lateral"/>
+        </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="query" lowerBound="1" eType="//select/QueryExpression"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Die Subquery."/>
+          <details key="documentation.en" value="The subquery."/>
+          <details key="caption.de" value="Query"/>
+          <details key="caption.en" value="Query"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="aliasDefinition" lowerBound="1" eType="//AliasDefinition"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Pflicht-Korrelationsname."/>
+          <details key="documentation.en" value="Mandatory correlation name."/>
+          <details key="caption.de" value="Alias"/>
+          <details key="caption.en" value="Alias"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="columnNames" upperBound="-1" eType="//AliasDefinition"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Optionale explizite Spaltennamen."/>
+          <details key="documentation.en" value="Optional explicit column names."/>
+          <details key="caption.de" value="Spaltennamen"/>
+          <details key="caption.en" value="Column Names"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Join" eSuperTypes="//select/TableReference">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Semantischer Verbund zweier Quellen: Join-Typ (was er tut) + allgemeine Bedingung. Entkoppelt von der SQL-Schreibweise; der Serializer waehlt FROM-JOIN oder WHERE. Erbt - wie alle Knoten - die Moeglichkeit, eine Beschreibung zu tragen."/>
+        <details key="documentation.en" value="Semantic join of two sources: join type (what it does) + a general condition. Decoupled from SQL syntax; the serializer chooses FROM-JOIN or WHERE. Like all nodes it can carry a description."/>
+        <details key="caption.de" value="Verbund"/>
+        <details key="caption.en" value="Join"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+        <details key="constraints" value="crossHasNoCondition"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot">
+        <details key="crossHasNoCondition" value="self.condition &lt;> null implies self.joinType &lt;> JoinTypeKind::CROSS"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="joinType" lowerBound="1" eType="//JoinTypeKind">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Semantische Verbund-Art (INNER/LEFT/RIGHT/FULL/CROSS)."/>
+          <details key="documentation.en" value="Semantic join type (INNER/LEFT/RIGHT/FULL/CROSS)."/>
+          <details key="caption.de" value="Verbund-Art"/>
+          <details key="caption.en" value="Join Type"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1" eType="//select/TableReference"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Linke Quelle."/>
+          <details key="documentation.en" value="Left source."/>
+          <details key="caption.de" value="Links"/>
+          <details key="caption.en" value="Left"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1" eType="//select/TableReference"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Rechte Quelle."/>
+          <details key="documentation.en" value="Right source."/>
+          <details key="caption.de" value="Rechts"/>
+          <details key="caption.en" value="Right"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="//Expression" containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Allgemeine Verbund-Bedingung (Suchbedingung); leer bei CROSS."/>
+          <details key="documentation.en" value="General join condition (search condition); empty for CROSS."/>
+          <details key="caption.de" value="Bedingung"/>
+          <details key="caption.en" value="Condition"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TableValueConstructor" eSuperTypes="//select/QueryExpressionBody">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="VALUES (...),(...)."/>
+        <details key="documentation.en" value="VALUES (...),(...)."/>
+        <details key="caption.de" value="Tabellenwert-Konstruktor"/>
+        <details key="caption.en" value="Table Value Constructor"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="rows" lowerBound="1" upperBound="-1"
+          eType="//RowValueConstructor" containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Zeilen."/>
+          <details key="documentation.en" value="Rows."/>
+          <details key="caption.de" value="Zeilen"/>
+          <details key="caption.en" value="Rows"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="WithClause" eSuperTypes="//SqlElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="WITH-Klausel (optional RECURSIVE)."/>
+        <details key="documentation.en" value="WITH clause (optionally RECURSIVE)."/>
+        <details key="caption.de" value="WITH-Klausel"/>
+        <details key="caption.en" value="With Clause"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="recursive">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="WITH RECURSIVE."/>
+          <details key="documentation.en" value="WITH RECURSIVE."/>
+          <details key="caption.de" value="Rekursiv"/>
+          <details key="caption.en" value="Recursive"/>
+        </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="elements" lowerBound="1" upperBound="-1"
+          eType="//select/WithListElement" containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="CTE-Elemente."/>
+          <details key="documentation.en" value="CTE elements."/>
+          <details key="caption.de" value="Elemente"/>
+          <details key="caption.en" value="Elements"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="WithListElement" eSuperTypes="//SqlElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Ein CTE-Element: Name, optionale Spaltenliste und die Subquery."/>
+        <details key="documentation.en" value="A CTE element: name, optional column list and the subquery."/>
+        <details key="caption.de" value="WITH-Element"/>
+        <details key="caption.en" value="With List Element"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="queryName" lowerBound="1" eType="//AliasDefinition"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="CTE-Name."/>
+          <details key="documentation.en" value="CTE name."/>
+          <details key="caption.de" value="Query-Name"/>
+          <details key="caption.en" value="Query Name"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="columnNames" upperBound="-1" eType="//AliasDefinition"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Optionale Spaltennamen."/>
+          <details key="documentation.en" value="Optional column names."/>
+          <details key="caption.de" value="Spaltennamen"/>
+          <details key="caption.en" value="Column Names"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="query" lowerBound="1" eType="//select/QueryExpression"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Die CTE-Subquery."/>
+          <details key="documentation.en" value="The CTE subquery."/>
+          <details key="caption.de" value="Query"/>
+          <details key="caption.en" value="Query"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="GroupingElement" abstract="true" eSuperTypes="//SqlElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="ANSI 'grouping element'. Bewusst rein relational: nur OrdinaryGroupingSet. Die erweiterte Gruppierung (ROLLUP/CUBE/GROUPING SETS, ANSI T431) gilt als OLAP/multidimensional und wird hier absichtlich weggelassen - spaeter ggf. in einem separaten Paket."/>
+        <details key="documentation.en" value="ANSI 'grouping element'. Deliberately purely relational: only OrdinaryGroupingSet. Extended grouping (ROLLUP/CUBE/GROUPING SETS, ANSI T431) is considered OLAP/multidimensional and is intentionally omitted here - possibly added later in a separate package."/>
+        <details key="caption.de" value="Gruppierungselement"/>
+        <details key="caption.en" value="Grouping Element"/>
+      </eAnnotations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="OrdinaryGroupingSet" eSuperTypes="//select/GroupingElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Gewoehnliche Gruppierungsmenge (ein oder mehrere Ausdruecke)."/>
+        <details key="documentation.en" value="Ordinary grouping set (one or more expressions)."/>
+        <details key="caption.de" value="Gewoehnliche Gruppierung"/>
+        <details key="caption.en" value="Ordinary Grouping Set"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="elements" lowerBound="1" upperBound="-1"
+          eType="//Expression" containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Gruppierungsausdruecke."/>
+          <details key="documentation.en" value="Grouping expressions."/>
+          <details key="caption.de" value="Elemente"/>
+          <details key="caption.en" value="Elements"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="GroupByClause" eSuperTypes="//SqlElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="GROUP BY-Klausel."/>
+        <details key="documentation.en" value="GROUP BY clause."/>
+        <details key="caption.de" value="GROUP-BY-Klausel"/>
+        <details key="caption.en" value="Group By Clause"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="setQuantifier" eType="//SetQuantifierKind">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Optionaler Mengen-Quantifizierer."/>
+          <details key="documentation.en" value="Optional set quantifier."/>
+          <details key="caption.de" value="Mengen-Quantifizierer"/>
+          <details key="caption.en" value="Set Quantifier"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="elements" lowerBound="1" upperBound="-1"
+          eType="//select/GroupingElement" containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Gruppierungselemente."/>
+          <details key="documentation.en" value="Grouping elements."/>
+          <details key="caption.de" value="Elemente"/>
+          <details key="caption.en" value="Elements"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="OrderByClause" eSuperTypes="//SqlElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="ORDER BY-Klausel mit optionalem OFFSET/FETCH."/>
+        <details key="documentation.en" value="ORDER BY clause with optional OFFSET/FETCH."/>
+        <details key="caption.de" value="ORDER-BY-Klausel"/>
+        <details key="caption.en" value="Order By Clause"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sortSpecifications" lowerBound="1" upperBound="-1"
+          eType="//SortSpecification" containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Sortier-Spezifikationen."/>
+          <details key="documentation.en" value="Sort specifications."/>
+          <details key="caption.de" value="Sortierungen"/>
+          <details key="caption.en" value="Sort Specifications"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="offsetFetch" eType="//select/ResultOffsetFetch"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Optionales OFFSET/FETCH."/>
+          <details key="documentation.en" value="Optional OFFSET/FETCH."/>
+          <details key="caption.de" value="Offset/Fetch"/>
+          <details key="caption.en" value="Offset Fetch"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ResultOffsetFetch" eSuperTypes="//SqlElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="ANSI OFFSET ... ROWS / FETCH FIRST ... ROWS (ONLY|WITH TIES)."/>
+        <details key="documentation.en" value="ANSI OFFSET ... ROWS / FETCH FIRST ... ROWS (ONLY|WITH TIES)."/>
+        <details key="caption.de" value="Offset/Fetch"/>
+        <details key="caption.en" value="Result Offset Fetch"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="offset" eType="//Expression" containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="OFFSET-Zeilenzahl."/>
+          <details key="documentation.en" value="OFFSET row count."/>
+          <details key="caption.de" value="Offset"/>
+          <details key="caption.en" value="Offset"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="offsetRows" eType="//RowKind">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="ROW/ROWS bei OFFSET."/>
+          <details key="documentation.en" value="ROW/ROWS for OFFSET."/>
+          <details key="caption.de" value="Offset-Zeilen"/>
+          <details key="caption.en" value="Offset Rows"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="fetchFirst" eType="//Expression" containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="FETCH-FIRST-Zeilenzahl."/>
+          <details key="documentation.en" value="FETCH FIRST row count."/>
+          <details key="caption.de" value="Fetch First"/>
+          <details key="caption.en" value="Fetch First"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="fetchPercent">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="FETCH ... PERCENT."/>
+          <details key="documentation.en" value="FETCH ... PERCENT."/>
+          <details key="caption.de" value="Prozent"/>
+          <details key="caption.en" value="Percent"/>
+        </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="withTies">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="WITH TIES statt ONLY."/>
+          <details key="documentation.en" value="WITH TIES instead of ONLY."/>
+          <details key="caption.de" value="Mit Gleichstand"/>
+          <details key="caption.en" value="With Ties"/>
+        </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="WindowDefinition" eSuperTypes="//SqlElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Benannte Fensterdefinition der WINDOW-Klausel."/>
+        <details key="documentation.en" value="Named window definition of the WINDOW clause."/>
+        <details key="caption.de" value="Fensterdefinition"/>
+        <details key="caption.en" value="Window Definition"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="newName" lowerBound="1" eType="//AliasDefinition"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Fenstername."/>
+          <details key="documentation.en" value="Window name."/>
+          <details key="caption.de" value="Name"/>
+          <details key="caption.en" value="Name"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="specification" lowerBound="1" eType="//WindowSpecification"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Fensterspezifikation."/>
+          <details key="documentation.en" value="Window specification."/>
+          <details key="caption.de" value="Spezifikation"/>
+          <details key="caption.en" value="Specification"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ExplicitTable" eSuperTypes="//select/QueryExpressionBody">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="ANSI 'explicit table' (TABLE &lt;name>)."/>
+        <details key="documentation.en" value="ANSI 'explicit table' (TABLE &lt;name>)."/>
+        <details key="caption.de" value="Explizite Tabelle"/>
+        <details key="caption.en" value="Explicit Table"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="table" lowerBound="1" eType="//select/TableReference"
+          containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Die referenzierte Tabelle."/>
+          <details key="documentation.en" value="The referenced table."/>
+          <details key="caption.de" value="Tabelle"/>
+          <details key="caption.en" value="Table"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>

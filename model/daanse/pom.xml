@@ -23,12 +23,16 @@
 
   <modules>
     <module>orm</module>
+    <module>sql</module>
+    <!--module>sql.render</module-->
   <!--
     <module>resource.r</module>
     <module>resource.json</module>
     <module>resource.calc</module>
   -->
+    <!--module>dcat</module -->
     <module>governance</module>
     <module>resource.relational.privilege</module>
+    <!--module>etl</module-->
   </modules>
 </project>
