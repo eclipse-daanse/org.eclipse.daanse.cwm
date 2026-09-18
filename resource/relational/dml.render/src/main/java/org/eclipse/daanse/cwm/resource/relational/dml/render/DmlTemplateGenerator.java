@@ -13,7 +13,6 @@ import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
@@ -21,21 +20,18 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.sql.dialect.api.Dialect;
-import org.eclipse.daanse.sql.dialect.api.generator.MergeGenerator.UpsertSpec;
-import org.eclipse.daanse.sql.model.schema.SchemaReference;
-import org.eclipse.daanse.sql.model.schema.TableReference;
 
 /**
  * Generates prepared DML statement templates from a CWM relational
  * {@link Table} for one SQL dialect: SELECT (by pk / all / paged), INSERT,
- * UPDATE by pk, DELETE by pk and UPSERT (via the dialect's
- * {@code MergeGenerator}). Kinds that don't apply (no primary key, pk-only
- * table) are simply absent from the result.
+ * UPDATE by pk and DELETE by pk. Kinds that don't apply (no primary key,
+ * pk-only table) are simply absent from the result.
  *
  * <p>All statements are built as text directly over the dialect API
- * ({@code IdentifierQuoter}, {@code ParameterPlaceholderGenerator},
- * {@code MergeGenerator}) — deliberately self-contained, no query-model
- * dependency. Offline-instantiable like {@code CwmDdlRenderer}.</p>
+ * ({@code IdentifierQuoter}, {@code ParameterPlaceholderGenerator}) —
+ * deliberately self-contained, no query-model dependency, and only
+ * dialect-portable statement shapes. Offline-instantiable like
+ * {@code CwmDdlRenderer}.</p>
  */
 public final class DmlTemplateGenerator {
 
@@ -72,7 +68,6 @@ public final class DmlTemplateGenerator {
         }
         if (!pk.isEmpty()) {
             out.add(delete(table, pk, settings));
-            upsert(table, all, pk, nonPk, settings).ifPresent(out::add);
         }
         return new DmlTemplates(table, out);
     }
@@ -146,27 +141,6 @@ public final class DmlTemplateGenerator {
         List<ParameterSpec> params = new ArrayList<>();
         appendPkWhere(sql, params, pk, settings);
         return new DmlTemplate(TemplateKind.DELETE_BY_PK, sql.toString(), params);
-    }
-
-    private Optional<DmlTemplate> upsert(Table table, List<Column> all, List<Column> pk,
-            List<Column> nonPk, DmlSettings settings) {
-        String schema = schemaName(table);
-        TableReference target = new TableReference(
-                settings.includeSchema() && schema != null
-                        ? Optional.of(new SchemaReference(schema))
-                        : Optional.empty(),
-                table.getName(), TableReference.TYPE_TABLE);
-        UpsertSpec spec = new UpsertSpec(target,
-                pk.stream().map(Column::getName).toList(),
-                all.stream().map(Column::getName).toList(),
-                nonPk.stream().map(Column::getName).toList());
-        List<ParameterSpec> params = new ArrayList<>();
-        List<String> placeholders = new ArrayList<>();
-        for (Column c : all) {
-            placeholders.add(placeholder(params, c, settings));
-        }
-        return dialect.mergeGenerator().upsert(spec, placeholders)
-                .map(sql -> new DmlTemplate(TemplateKind.UPSERT, sql, params));
     }
 
     // ------------------------------------------------------------------ parts
