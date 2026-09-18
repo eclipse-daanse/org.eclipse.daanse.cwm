@@ -110,6 +110,10 @@ public sealed interface ChangeOp {
     record DropView(View view) implements ChangeOp {
     }
 
+    /**
+     * The same view with a new body, keeping its columns: {@code CREATE OR
+     * REPLACE VIEW} where the dialect has it, drop + create where not.
+     */
     record ReplaceView(View oldView, View newView) implements ChangeOp {
     }
 

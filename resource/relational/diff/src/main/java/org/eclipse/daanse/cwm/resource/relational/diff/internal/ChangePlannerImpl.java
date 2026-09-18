@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.CheckConstraint;
@@ -38,6 +39,7 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangePlanner;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ColumnChange;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.SchemaDiff;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableDiff;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.ViewBodyChange;
 
 /**
  * Orders a {@link SchemaDiff} into an executable {@link ChangeOp} list. The
@@ -80,7 +82,15 @@ public final class ChangePlannerImpl implements ChangePlanner {
 
         // drop views (removed ones and old bodies of changed ones)
         diff.viewsDropped().forEach(v -> p.dropView.add(new ChangeOp.DropView(v)));
-        diff.viewsChanged().forEach(vc -> p.dropView.add(new ChangeOp.DropView(vc.oldView())));
+        boolean tablesLoseColumns = losesColumns(diff);
+        List<ViewBodyChange> replaced = new ArrayList<>();
+        for (ViewBodyChange vc : diff.viewsChanged()) {
+            if (!tablesLoseColumns && replaceable(vc)) {
+                replaced.add(vc);
+            } else {
+                p.dropView.add(new ChangeOp.DropView(vc.oldView()));
+            }
+        }
 
         // drop triggers, indexes / unique constraints / checks
         for (TableDiff td : diff.tablesChanged()) {
@@ -186,7 +196,10 @@ public final class ChangePlannerImpl implements ChangePlanner {
         }
 
         // views, then triggers (their bodies may use anything created above)
-        diff.viewsChanged().forEach(vc -> p.createView.add(new ChangeOp.CreateView(vc.newView())));
+        for (ViewBodyChange vc : diff.viewsChanged()) {
+            p.createView.add(replaced.contains(vc) ? new ChangeOp.ReplaceView(vc.oldView(), vc.newView())
+                    : new ChangeOp.CreateView(vc.newView()));
+        }
         diff.viewsAdded().forEach(v -> p.createView.add(new ChangeOp.CreateView(v)));
         for (TableDiff td : diff.tablesChanged()) {
             td.triggersAdded().forEach(t -> p.createView.add(new ChangeOp.CreateTrigger(td.newTable(), t)));
@@ -223,6 +236,45 @@ public final class ChangePlannerImpl implements ChangePlanner {
     }
 
     // helpers
+
+    /**
+     * A view blocks dropping or retyping the columns it reads, so any such
+     * change in the plan keeps views on drop + create around it.
+     */
+    private static boolean losesColumns(SchemaDiff diff) {
+        return !diff.tablesDropped().isEmpty() || diff.tablesChanged().stream()
+                .anyMatch(td -> !td.columnsDropped().isEmpty() || td.columnsChanged().stream()
+                        .anyMatch(cc -> cc.aspects().contains(ColumnChange.Aspect.TYPE)));
+    }
+
+    /**
+     * {@code CREATE OR REPLACE VIEW} keeps grants and dependent views, but
+     * PostgreSQL only accepts it when the old columns stay, same name, same
+     * type, same position; new columns may only be appended. A view without
+     * modelled columns cannot be checked and is not replaced.
+     */
+    private static boolean replaceable(ViewBodyChange vc) {
+        if (!Objects.equals(vc.oldView().getName(), vc.newView().getName())) {
+            return false;
+        }
+        List<Column> oldCols = ColumnSets.columns(vc.oldView());
+        List<Column> newCols = ColumnSets.columns(vc.newView());
+        if (oldCols.isEmpty() || newCols.size() < oldCols.size()) {
+            return false;
+        }
+        for (int i = 0; i < oldCols.size(); i++) {
+            Column o = oldCols.get(i);
+            Column n = newCols.get(i);
+            if (!Objects.equals(o.getName(), n.getName()) || !Objects.equals(typeName(o), typeName(n))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static String typeName(Column c) {
+        return c.getType() == null ? null : c.getType().getName();
+    }
 
     /** All FKs in {@code schema} whose referenced unique key is {@code pk} (identity). */
     private static List<ForeignKey> inboundForeignKeys(Schema schema, PrimaryKey pk) {
