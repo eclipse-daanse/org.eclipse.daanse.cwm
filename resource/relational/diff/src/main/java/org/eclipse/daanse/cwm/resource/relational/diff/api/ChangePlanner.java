@@ -23,8 +23,16 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
  */
 public interface ChangePlanner {
 
-    /** Plans the ordered operations for a full diff. */
+    /** Plans the ordered operations for a full diff; logs its {@link #warnings}. */
     List<ChangeOp> plan(SchemaDiff diff);
+
+    /**
+     * Changes that are valid DDL but fail on a table that already holds rows:
+     * a NOT NULL column added without a default, and an existing column made
+     * NOT NULL (fails while it holds NULLs). One message per column, empty
+     * when there is nothing to warn about.
+     */
+    List<String> warnings(SchemaDiff diff);
 
     /**
      * Artifact case: derives rename ops from {@link ChangeMarkers} on the new

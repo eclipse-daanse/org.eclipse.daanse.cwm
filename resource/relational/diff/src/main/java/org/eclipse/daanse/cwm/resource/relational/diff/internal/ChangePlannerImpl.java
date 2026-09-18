@@ -51,8 +51,11 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.ViewBodyChange;
  */
 public final class ChangePlannerImpl implements ChangePlanner {
 
+    private static final System.Logger LOG = System.getLogger(ChangePlannerImpl.class.getName());
+
     @Override
     public List<ChangeOp> plan(SchemaDiff diff) {
+        warnings(diff).forEach(w -> LOG.log(System.Logger.Level.WARNING, w));
         Phases p = new Phases();
 
         Set<ForeignKey> droppedFks = Collections.newSetFromMap(new IdentityHashMap<>());
@@ -287,6 +290,39 @@ public final class ChangePlannerImpl implements ChangePlanner {
             }
         }
         return out;
+    }
+
+    @Override
+    public List<String> warnings(SchemaDiff diff) {
+        List<String> out = new ArrayList<>();
+        for (TableDiff td : diff.tablesChanged()) {
+            for (Column c : td.columnsAdded()) {
+                if (notNull(c) && isBlank(defaultBody(c))) {
+                    out.add(qualified(td.newTable(), c)
+                            + ": NOT NULL column added without a default — fails if the table has rows");
+                }
+            }
+            for (ColumnChange cc : td.columnsChanged()) {
+                if (cc.aspects().contains(ColumnChange.Aspect.NULLABILITY) && notNull(cc.newColumn())) {
+                    out.add(qualified(td.newTable(), cc.newColumn())
+                            + ": column made NOT NULL — fails while it holds NULLs");
+                }
+            }
+        }
+        return out;
+    }
+
+    private static boolean notNull(Column c) {
+        return c.getIsNullable() == NullableType.COLUMN_NO_NULLS;
+    }
+
+    private static boolean isBlank(String s) {
+        return s == null || s.isBlank();
+    }
+
+    private static String qualified(Table t, Column c) {
+        String schema = t.getNamespace() == null ? null : t.getNamespace().getName();
+        return (schema == null ? "" : schema + ".") + t.getName() + "." + c.getName();
     }
 
     private static Table tableOf(ForeignKey fk) {
