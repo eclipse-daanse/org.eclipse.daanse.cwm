@@ -17,7 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.StructuralFeature;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.CheckConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
@@ -25,6 +27,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.NamedColumnSets;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.UniqueConstraints;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
@@ -113,8 +116,27 @@ public final class MigrationEmitterImpl implements MigrationEmitter {
                     ref(o.table()), o.oldName(), o.column().getName()));
             case ChangeOp.RenameIndex o -> {
                 Table t = (Table) o.index().getSpannedClass();
-                addIfPresent(out, dialect.ddlGenerator().renameIndex(
-                        o.oldName(), o.index().getName(), ref(t)));
+                String renamed = dialect.ddlGenerator().renameIndex(o.oldName(), o.index().getName(), ref(t));
+                if (renamed != null) {
+                    out.add(renamed);
+                } else {
+                    // no rename in this dialect: re-create under the new name
+                    out.add(dialect.ddlGenerator().dropIndex(o.oldName(), ref(t), true));
+                    createIndex(out, dialect, o.index());
+                }
+            }
+            case ChangeOp.RenameConstraint o -> {
+                String renamed = dialect.ddlGenerator().renameConstraint(ref(o.table()), o.oldName(),
+                        o.constraint().getName());
+                if (renamed != null) {
+                    out.add(renamed);
+                } else if (!(o.constraint() instanceof PrimaryKey)) {
+                    // no rename in this dialect: re-create under the new name. A primary
+                    // key is skipped — dialects without RENAME CONSTRAINT (MySQL/MariaDB)
+                    // do not name primary keys at all.
+                    out.add(dialect.ddlGenerator().dropConstraint(ref(o.table()), o.oldName(), true));
+                    addConstraint(out, dialect, o.table(), o.constraint());
+                }
             }
 
             //  alters
@@ -151,35 +173,9 @@ public final class MigrationEmitterImpl implements MigrationEmitter {
                             nameOrDefault(o.primaryKey().getName(), "pk_" + o.table().getName()), cols));
                 }
             }
-            case ChangeOp.AddUniqueConstraint o -> {
-                List<String> cols = UniqueConstraints.columns(o.constraint()).stream()
-                        .map(Column::getName).toList();
-                if (!cols.isEmpty()) {
-                    out.add(dialect.ddlGenerator().addUniqueConstraint(ref(o.table()),
-                            nameOrDefault(o.constraint().getName(), "uc_" + o.table().getName()), cols));
-                }
-            }
-            case ChangeOp.AddCheckConstraint o -> {
-                String body = o.constraint().getBody() == null ? null : o.constraint().getBody().getBody();
-                if (body != null && !body.isBlank()) {
-                    out.add(dialect.ddlGenerator().addCheckConstraint(ref(o.table()),
-                            nameOrDefault(o.constraint().getName(), "ck_" + o.table().getName()), body));
-                }
-            }
-            case ChangeOp.CreateIndex o -> {
-                Table t = (Table) o.index().getSpannedClass();
-                List<String> cols = new ArrayList<>();
-                for (var ifc : o.index().getIndexedFeature()) {
-                    if (ifc.getFeature() instanceof Column c && c.getName() != null) {
-                        cols.add(c.getName());
-                    }
-                }
-                if (!cols.isEmpty()) {
-                    out.add(dialect.ddlGenerator().createIndex(
-                            nameOrDefault(o.index().getName(), "idx_" + t.getName()),
-                            ref(t), cols, o.index().isIsUnique(), true));
-                }
-            }
+            case ChangeOp.AddUniqueConstraint o -> addUnique(out, dialect, o.table(), o.constraint());
+            case ChangeOp.AddCheckConstraint o -> addCheck(out, dialect, o.table(), o.constraint());
+            case ChangeOp.CreateIndex o -> createIndex(out, dialect, o.index());
             case ChangeOp.AddForeignKey o -> addForeignKey(out, dialect, o.table(), o.foreignKey());
 
             //  views
@@ -205,6 +201,45 @@ public final class MigrationEmitterImpl implements MigrationEmitter {
     }
 
     // helpers
+
+    private static void addUnique(List<String> out, Dialect dialect, Table table, UniqueConstraint uc) {
+        List<String> cols = UniqueConstraints.columns(uc).stream().map(Column::getName).toList();
+        if (!cols.isEmpty()) {
+            out.add(dialect.ddlGenerator().addUniqueConstraint(ref(table),
+                    nameOrDefault(uc.getName(), "uc_" + table.getName()), cols));
+        }
+    }
+
+    private static void addCheck(List<String> out, Dialect dialect, Table table, CheckConstraint ck) {
+        String body = ck.getBody() == null ? null : ck.getBody().getBody();
+        if (body != null && !body.isBlank()) {
+            out.add(dialect.ddlGenerator().addCheckConstraint(ref(table),
+                    nameOrDefault(ck.getName(), "ck_" + table.getName()), body));
+        }
+    }
+
+    private static void createIndex(List<String> out, Dialect dialect, SQLIndex index) {
+        Table t = (Table) index.getSpannedClass();
+        List<String> cols = new ArrayList<>();
+        for (var ifc : index.getIndexedFeature()) {
+            if (ifc.getFeature() instanceof Column c && c.getName() != null) {
+                cols.add(c.getName());
+            }
+        }
+        if (!cols.isEmpty()) {
+            out.add(dialect.ddlGenerator().createIndex(nameOrDefault(index.getName(), "idx_" + t.getName()),
+                    ref(t), cols, index.isIsUnique(), true));
+        }
+    }
+
+    private static void addConstraint(List<String> out, Dialect dialect, Table table, ModelElement constraint) {
+        switch (constraint) {
+            case UniqueConstraint uc -> addUnique(out, dialect, table, uc);
+            case CheckConstraint ck -> addCheck(out, dialect, table, ck);
+            case ForeignKey fk -> addForeignKey(out, dialect, table, fk);
+            default -> throw new IllegalArgumentException("not a constraint: " + constraint.eClass().getName());
+        }
+    }
 
     private static void addForeignKey(List<String> out, Dialect dialect, Table table, ForeignKey fk) {
         Optional<Table> target = org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ForeignKeys.targetTable(fk);

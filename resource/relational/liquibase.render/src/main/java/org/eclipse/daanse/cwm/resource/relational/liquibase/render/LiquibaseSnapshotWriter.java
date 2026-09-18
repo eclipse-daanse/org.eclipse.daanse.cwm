@@ -21,6 +21,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Tables;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.MigrationEmitter;
 
 /**
  * Snapshot writer: serializes the STATE of a CWM Schema as a Liquibase
@@ -30,6 +31,12 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
  * change mapping the delta writer uses, so both outputs stay consistent.
  */
 public final class LiquibaseSnapshotWriter {
+
+    private final MigrationEmitter emitter;
+
+    public LiquibaseSnapshotWriter(MigrationEmitter emitter) {
+        this.emitter = Objects.requireNonNull(emitter, "emitter");
+    }
 
     public String write(Schema schema) {
         return write(schema, ChangelogSettings.defaults().withAuthor("cwm-snapshot"));
@@ -51,6 +58,6 @@ public final class LiquibaseSnapshotWriter {
         for (View v : Schemas.views(schema)) {
             ops.add(new ChangeOp.CreateView(v));
         }
-        return new LiquibaseChangelogWriter().write(ops, settings);
+        return new LiquibaseChangelogWriter(emitter).write(ops, settings);
     }
 }

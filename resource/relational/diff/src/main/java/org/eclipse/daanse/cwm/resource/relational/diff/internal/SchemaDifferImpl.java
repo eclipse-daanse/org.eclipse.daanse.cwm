@@ -16,7 +16,9 @@ package org.eclipse.daanse.cwm.resource.relational.diff.internal;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeMarkers;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ColumnChange;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ColumnRename;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.ConstraintRename;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.DiffSettings;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.IndexRename;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.PredecessorLinks;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.PrimaryKeyChange;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.SchemaDiff;
@@ -27,6 +29,7 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.SchemaDiffer;
 import org.osgi.service.component.annotations.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
@@ -35,6 +38,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.Collections;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
@@ -52,7 +56,9 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.Nullabl
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Namespaces;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ForeignKeys;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Tables;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.UniqueConstraints;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
 
 /**
@@ -70,7 +76,9 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
  * <ul>
  *   <li>Columns: type name, length/precision/scale, nullability, default value.</li>
  *   <li>Primary key: column-name list (order-sensitive).</li>
- *   <li>Unique/Check/Foreign keys, indexes: matched by name.</li>
+ *   <li>Unique/check/foreign keys, indexes: paired like tables and columns;
+ *       same shape and a new name is a rename, a changed shape is drop + add.
+ *       A primary key whose columns stay and whose name changes is a rename.</li>
  *   <li>Views: same-named views with different bodies are surfaced as
  *       {@link ViewBodyChange}.</li>
  * </ul>
@@ -272,28 +280,39 @@ public final class SchemaDifferImpl implements SchemaDiffer {
             }
         }
 
-        PrimaryKeyChange pkChange = comparePk(oldTable, newTable);
+        List<ConstraintRename> constraintsRenamed = new ArrayList<>();
+        PrimaryKeyChange pkChange = comparePk(oldTable, newTable, constraintsRenamed);
 
         List<UniqueConstraint> ucsAdded = new ArrayList<>();
         List<UniqueConstraint> ucsDropped = new ArrayList<>();
-        diffNamed(filterNonPk(Tables.uniqueConstraints(oldTable)),
+        List<Pair<UniqueConstraint>> ucsRenamed = new ArrayList<>();
+        diffKeyed(filterNonPk(Tables.uniqueConstraints(oldTable)),
                 filterNonPk(Tables.uniqueConstraints(newTable)),
-                ucsAdded, ucsDropped);
+                settings, SchemaDifferImpl::uniqueShape, ucsAdded, ucsDropped, ucsRenamed);
 
         List<CheckConstraint> checksAdded = new ArrayList<>();
         List<CheckConstraint> checksDropped = new ArrayList<>();
-        diffNamed(checkConstraintsOf(oldTable), checkConstraintsOf(newTable),
-                checksAdded, checksDropped);
+        List<Pair<CheckConstraint>> checksRenamed = new ArrayList<>();
+        diffKeyed(checkConstraintsOf(oldTable), checkConstraintsOf(newTable),
+                settings, SchemaDifferImpl::checkShape, checksAdded, checksDropped, checksRenamed);
 
         List<ForeignKey> fksAdded = new ArrayList<>();
         List<ForeignKey> fksDropped = new ArrayList<>();
-        diffNamed(Tables.foreignKeys(oldTable), Tables.foreignKeys(newTable),
-                fksAdded, fksDropped);
+        List<Pair<ForeignKey>> fksRenamed = new ArrayList<>();
+        diffKeyed(Tables.foreignKeys(oldTable), Tables.foreignKeys(newTable),
+                settings, SchemaDifferImpl::foreignKeyShape, fksAdded, fksDropped, fksRenamed);
 
         List<SQLIndex> indexesAdded = new ArrayList<>();
         List<SQLIndex> indexesDropped = new ArrayList<>();
-        diffNamed(indexesOf(oldSchema, oldTable), indexesOf(newSchema, newTable),
-                indexesAdded, indexesDropped);
+        List<Pair<SQLIndex>> indexPairs = new ArrayList<>();
+        diffKeyed(indexesOf(oldSchema, oldTable), indexesOf(newSchema, newTable),
+                settings, SchemaDifferImpl::indexShape, indexesAdded, indexesDropped, indexPairs);
+
+        ucsRenamed.forEach(r -> constraintsRenamed.add(new ConstraintRename(r.oldE(), r.newE())));
+        checksRenamed.forEach(r -> constraintsRenamed.add(new ConstraintRename(r.oldE(), r.newE())));
+        fksRenamed.forEach(r -> constraintsRenamed.add(new ConstraintRename(r.oldE(), r.newE())));
+        List<IndexRename> indexesRenamed = new ArrayList<>();
+        indexPairs.forEach(r -> indexesRenamed.add(new IndexRename(r.oldE(), r.newE())));
 
         return new TableDiff(oldTable, newTable,
                 columnsAdded, columnsDropped, columnsChanged, columnsRenamed,
@@ -301,7 +320,8 @@ public final class SchemaDifferImpl implements SchemaDiffer {
                 ucsAdded, ucsDropped,
                 checksAdded, checksDropped,
                 fksAdded, fksDropped,
-                indexesAdded, indexesDropped);
+                indexesAdded, indexesDropped,
+                indexesRenamed, constraintsRenamed);
     }
 
     // field comparisons
@@ -368,15 +388,21 @@ public final class SchemaDifferImpl implements SchemaDiffer {
         return Optional.ofNullable(c.getInitialValue()).map(e -> e.getBody()).orElse(null);
     }
 
-    private static PrimaryKeyChange comparePk(Table oldT, Table newT) {
+    /**
+     * A primary key whose columns stayed but whose name changed is a rename
+     * (collected into {@code renamed}); a changed column list is a rebuild.
+     */
+    private static PrimaryKeyChange comparePk(Table oldT, Table newT, List<ConstraintRename> renamed) {
         PrimaryKey oldPk = Tables.findPrimaryKey(oldT).orElse(null);
         PrimaryKey newPk = Tables.findPrimaryKey(newT).orElse(null);
         if (oldPk == null && newPk == null) return null;
         if (oldPk == null || newPk == null) return new PrimaryKeyChange(oldPk, newPk);
-        List<String> oldCols = pkColumnNames(oldPk);
-        List<String> newCols = pkColumnNames(newPk);
-        if (!oldCols.equals(newCols) || !Objects.equals(oldPk.getName(), newPk.getName())) {
+        if (!pkColumnNames(oldPk).equals(pkColumnNames(newPk))) {
             return new PrimaryKeyChange(oldPk, newPk);
+        }
+        if (!isBlank(oldPk.getName()) && !isBlank(newPk.getName())
+                && !Objects.equals(oldPk.getName(), newPk.getName())) {
+            renamed.add(new ConstraintRename(oldPk, newPk));
         }
         return null;
     }
@@ -389,18 +415,67 @@ public final class SchemaDifferImpl implements SchemaDiffer {
         return out;
     }
 
-    // by-name diff helpers
+    // keyed (index / constraint) diff
 
-    private static <E extends ModelElement>
-            void diffNamed(List<E> oldList, List<E> newList, List<E> added, List<E> dropped) {
-        Map<String, E> oldMap = byName(oldList);
-        Map<String, E> newMap = byName(newList);
-        for (Map.Entry<String, E> e : newMap.entrySet()) {
-            if (!oldMap.containsKey(e.getKey())) added.add(e.getValue());
+    /**
+     * Pairs indexes or constraints through the same identity sources as tables
+     * and columns (Dependency, marker, name). A pair whose {@code shape} differs
+     * cannot be renamed and becomes drop + add; a pair with the same shape and
+     * a different name is a rename. With the heuristic on, a leftover dropped
+     * and added element of identical, unambiguous shape are folded into a
+     * rename as well.
+     */
+    private static <E extends ModelElement> void diffKeyed(List<E> olds, List<E> news, DiffSettings settings,
+            Function<E, Object> shape, List<E> added, List<E> dropped, List<Pair<E>> renamed) {
+        Pairing<E> pairing = pair(olds, news, settings);
+        List<E> adds = new ArrayList<>(pairing.added);
+        List<E> drops = new ArrayList<>(pairing.dropped);
+        for (Pair<E> p : pairing.paired) {
+            if (!Objects.equals(shape.apply(p.oldE()), shape.apply(p.newE()))) {
+                drops.add(p.oldE());
+                adds.add(p.newE());
+            } else if (!Objects.equals(p.oldE().getName(), p.newE().getName())) {
+                renamed.add(p);
+            }
         }
-        for (Map.Entry<String, E> e : oldMap.entrySet()) {
-            if (!newMap.containsKey(e.getKey())) dropped.add(e.getValue());
+        if (settings.useRenameHeuristic()) {
+            for (E d : List.copyOf(drops)) {
+                Object s = shape.apply(d);
+                List<E> sameShapeAdds = adds.stream().filter(a -> Objects.equals(shape.apply(a), s)).toList();
+                long sameShapeDrops = drops.stream().filter(o -> Objects.equals(shape.apply(o), s)).count();
+                if (sameShapeAdds.size() == 1 && sameShapeDrops == 1) {
+                    renamed.add(new Pair<>(d, sameShapeAdds.get(0)));
+                    drops.remove(d);
+                    adds.remove(sameShapeAdds.get(0));
+                }
+            }
         }
+        added.addAll(adds);
+        dropped.addAll(drops);
+    }
+
+    private static Object indexShape(SQLIndex i) {
+        List<String> cols = new ArrayList<>();
+        for (var ifc : i.getIndexedFeature()) {
+            cols.add(ifc.getFeature() == null ? null : ifc.getFeature().getName());
+        }
+        return List.of(cols, i.isIsUnique());
+    }
+
+    private static Object uniqueShape(UniqueConstraint uc) {
+        return UniqueConstraints.columns(uc).stream().map(Column::getName).toList();
+    }
+
+    private static Object checkShape(CheckConstraint ck) {
+        String body = ck.getBody() == null ? null : ck.getBody().getBody();
+        return body == null ? "" : normalize(body);
+    }
+
+    private static Object foreignKeyShape(ForeignKey fk) {
+        String target = ForeignKeys.targetTable(fk).map(Table::getName).orElse(null);
+        List<String> refCols = fk.getUniqueKey() == null ? List.of()
+                : fk.getUniqueKey().getFeature().stream().map(f -> f.getName()).toList();
+        return Arrays.asList(ForeignKeys.columns(fk).stream().map(Column::getName).toList(), target, refCols);
     }
 
     private static <E extends ModelElement> Map<String, E> byName(List<E> list) {

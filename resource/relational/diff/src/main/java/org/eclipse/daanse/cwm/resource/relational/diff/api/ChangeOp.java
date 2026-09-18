@@ -9,6 +9,7 @@
 **********************************************************************/
 package org.eclipse.daanse.cwm.resource.relational.diff.api;
 
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.CheckConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
@@ -95,6 +96,11 @@ public sealed interface ChangeOp {
     }
 
     record RenameIndex(SQLIndex index, String oldName) implements ChangeOp {
+    }
+
+    // constraint renames
+    /** Primary key, unique, check or foreign key {@code constraint} (new side) renamed from {@code oldName}. */
+    record RenameConstraint(Table table, ModelElement constraint, String oldName) implements ChangeOp {
     }
 
     //  views

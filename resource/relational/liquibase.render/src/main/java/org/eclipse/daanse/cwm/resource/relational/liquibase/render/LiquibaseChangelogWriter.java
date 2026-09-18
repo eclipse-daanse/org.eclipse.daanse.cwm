@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.StructuralFeature;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
@@ -29,6 +30,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.UniqueConstrain
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
 import org.eclipse.daanse.cwm.resource.relational.ddl.render.Dialects;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.MigrationEmitter;
 import org.eclipse.daanse.sql.model.schema.SchemaReference;
 import org.eclipse.daanse.sql.model.schema.TableReference;
 
@@ -41,11 +43,20 @@ import org.eclipse.daanse.sql.model.schema.TableReference;
  * no liquibase classes involved.
  *
  * <p>The changelog is dialect-neutral (Liquibase translates the generic
- * types itself). Only CHECK constraints — which Liquibase OSS has no change
- * type for — fall back to {@code <sql dbms="…">} per dialect, with the text
- * coming from the jdbc.db DdlGenerator.</p>
+ * types itself). Operations Liquibase OSS has no change type for fall back to
+ * {@code <sql dbms="…">} per dialect: CHECK constraints with the text from
+ * the jdbc.db DdlGenerator, index and constraint renames with the
+ * {@link MigrationEmitter}'s statements, so the changelog and the plain SQL
+ * migration agree, including where a dialect re-creates instead of
+ * renaming.</p>
  */
 public final class LiquibaseChangelogWriter {
+
+    private final MigrationEmitter emitter;
+
+    public LiquibaseChangelogWriter(MigrationEmitter emitter) {
+        this.emitter = Objects.requireNonNull(emitter, "emitter");
+    }
 
     public String write(List<ChangeOp> ops) {
         return write(ops, ChangelogSettings.defaults());
@@ -301,14 +312,27 @@ public final class LiquibaseChangelogWriter {
                 x.closeChangeSet();
             }
             case ChangeOp.RenameIndex o -> {
-                Table t = (Table) o.index().getSpannedClass();
                 x.openChangeSet(settings.author(), "RenameIndex|" + o.oldName()
                         + "->" + o.index().getName());
-                // no OSS change type — raw SQL both ways
-                x.textElement("sql", "ALTER INDEX " + o.oldName() + " RENAME TO " + o.index().getName());
+                dbmsSql(x, o);
                 if (settings.includeRollback()) {
                     x.startElement("rollback");
-                    x.textElement("sql", "ALTER INDEX " + o.index().getName() + " RENAME TO " + o.oldName());
+                    String newName = o.index().getName();
+                    renamedBack(o.index(), o.oldName(),
+                            () -> dbmsSql(x, new ChangeOp.RenameIndex(o.index(), newName)));
+                    x.endElement("rollback");
+                }
+                x.closeChangeSet();
+            }
+            case ChangeOp.RenameConstraint o -> {
+                x.openChangeSet(settings.author(), "RenameConstraint|" + qualified(o.table())
+                        + "|" + o.oldName() + "->" + o.constraint().getName());
+                dbmsSql(x, o);
+                if (settings.includeRollback()) {
+                    x.startElement("rollback");
+                    String newName = o.constraint().getName();
+                    renamedBack(o.constraint(), o.oldName(), () -> dbmsSql(x,
+                            new ChangeOp.RenameConstraint(o.table(), o.constraint(), newName)));
                     x.endElement("rollback");
                 }
                 x.closeChangeSet();
@@ -469,6 +493,44 @@ public final class LiquibaseChangelogWriter {
             }
         }
         x.closeChangeSet();
+    }
+
+    /**
+     * The emitter's statements for {@code op} per dialect, one {@code <sql>}
+     * element per statement, dialects with identical statements folded.
+     * Statements are not split further: a trigger function body has
+     * semicolons of its own.
+     */
+    private void dbmsSql(LiquibaseXml x, ChangeOp op) {
+        Map<List<String>, List<String>> byStatements = new LinkedHashMap<>();
+        for (Dialects.NamedDialect nd : Dialects.defaults()) {
+            String dbms = dbmsOf(nd.name());
+            if (dbms == null) {
+                continue;
+            }
+            List<String> statements = emitter.emit(List.of(op), nd.dialect());
+            if (!statements.isEmpty()) {
+                byStatements.computeIfAbsent(statements, k -> new ArrayList<>()).add(dbms);
+            }
+        }
+        byStatements.forEach((statements, dbms) -> statements.forEach(sql -> x.textElement("sql", sql,
+                "dbms", String.join(",", dbms), "splitStatements", "false")));
+    }
+
+    /**
+     * Runs {@code writeInverse} while {@code element} carries {@code oldName}
+     * again, so the inverse rename can be rendered from the same element —
+     * a copy would lose opposite references such as a foreign key's unique
+     * key, which the re-create fallback needs.
+     */
+    private static void renamedBack(ModelElement element, String oldName, Runnable writeInverse) {
+        String newName = element.getName();
+        element.setName(oldName);
+        try {
+            writeInverse.run();
+        } finally {
+            element.setName(newName);
+        }
     }
 
     // misc
