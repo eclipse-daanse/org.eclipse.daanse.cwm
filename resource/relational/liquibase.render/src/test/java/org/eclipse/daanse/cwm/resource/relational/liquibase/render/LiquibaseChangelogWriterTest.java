@@ -14,6 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.sql.Types;
 import java.util.List;
 
+import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.BusinessinformationFactory;
+import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Description;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CoreFactory;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ProcedureExpression;
@@ -29,6 +31,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ActionO
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ConditionTimingType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.EventManipulationType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.MigrationEmitter;
@@ -161,6 +164,34 @@ class LiquibaseChangelogWriterTest {
 
         String snapshot = new LiquibaseSnapshotWriter(EMITTER).write((Schema) customer.getNamespace());
         assertThat(snapshot.indexOf("CREATE TRIGGER")).isGreaterThan(snapshot.indexOf("<createTable"));
+    }
+
+    @Test
+    void commentsBecomeRemarks() {
+        Table customer = customerTable();
+        Column email = (Column) customer.getFeature().get(1);
+
+        String xml = writer.write(List.of(new ChangeOp.SetComment(customer, customer, "customers"),
+                new ChangeOp.SetComment(customer, email, null)));
+
+        assertThat(xml)
+                .contains("<setTableRemarks schemaName=\"sales\" tableName=\"customer\" remarks=\"customers\"/>")
+                .contains("<setColumnRemarks schemaName=\"sales\" tableName=\"customer\" columnName=\"email\"")
+                .contains("remarks=\"\"/>");
+    }
+
+    @Test
+    void snapshotCarriesComments() {
+        Table customer = customerTable();
+        Schema schema = (Schema) customer.getNamespace();
+        Description d = BusinessinformationFactory.eINSTANCE.createDescription();
+        d.setType(DdlSettings.COMMENT_TYPE_JDBC_REMARKS);
+        d.setBody("customers");
+        d.getModelElement().add(customer);
+        schema.getOwnedElement().add(d);
+
+        assertThat(new LiquibaseSnapshotWriter(EMITTER).write(schema))
+                .contains("<setTableRemarks schemaName=\"sales\" tableName=\"customer\" remarks=\"customers\"/>");
     }
 
     // fixture

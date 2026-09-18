@@ -119,4 +119,9 @@ public sealed interface ChangeOp {
 
     record DropTrigger(Table table, Trigger trigger) implements ChangeOp {
     }
+
+    // comments
+    /** Sets the comment of {@code element} ({@code table} or one of its columns); {@code null} removes it. */
+    record SetComment(Table table, ModelElement element, String comment) implements ChangeOp {
+    }
 }

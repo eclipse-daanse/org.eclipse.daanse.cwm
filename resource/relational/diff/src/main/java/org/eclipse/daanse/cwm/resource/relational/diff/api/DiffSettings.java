@@ -9,6 +9,8 @@
 **********************************************************************/
 package org.eclipse.daanse.cwm.resource.relational.diff.api;
 
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
+
 /**
  * Switches for how the differ matches elements between old and new schema.
  * The three identity sources are independent and individually switchable;
@@ -24,9 +26,13 @@ package org.eclipse.daanse.cwm.resource.relational.diff.api;
  * @param scope              {@link Scope#FULL} compares everything;
  *                           {@link Scope#PARTIAL} treats the old schema as a
  *                           stub and only compares elements present in it
+ * @param commentType        the {@code Description} type that holds the
+ *                           database comment of tables and columns (default
+ *                           {@link DdlSettings#COMMENT_TYPE_JDBC_REMARKS});
+ *                           {@code null} leaves comments out of the diff
  */
 public record DiffSettings(boolean useTagMarkers, boolean useDependencyLinks,
-        boolean useRenameHeuristic, Scope scope) {
+        boolean useRenameHeuristic, Scope scope, String commentType) {
 
     public enum Scope {
         /** Both schemas are complete; anything missing counts as added/dropped. */
@@ -39,22 +45,26 @@ public record DiffSettings(boolean useTagMarkers, boolean useDependencyLinks,
     }
 
     public static DiffSettings defaults() {
-        return new DiffSettings(true, true, true, Scope.FULL);
+        return new DiffSettings(true, true, true, Scope.FULL, DdlSettings.COMMENT_TYPE_JDBC_REMARKS);
     }
 
     public DiffSettings withTagMarkers(boolean on) {
-        return new DiffSettings(on, useDependencyLinks, useRenameHeuristic, scope);
+        return new DiffSettings(on, useDependencyLinks, useRenameHeuristic, scope, commentType);
     }
 
     public DiffSettings withDependencyLinks(boolean on) {
-        return new DiffSettings(useTagMarkers, on, useRenameHeuristic, scope);
+        return new DiffSettings(useTagMarkers, on, useRenameHeuristic, scope, commentType);
     }
 
     public DiffSettings withRenameHeuristic(boolean on) {
-        return new DiffSettings(useTagMarkers, useDependencyLinks, on, scope);
+        return new DiffSettings(useTagMarkers, useDependencyLinks, on, scope, commentType);
     }
 
     public DiffSettings withScope(Scope s) {
-        return new DiffSettings(useTagMarkers, useDependencyLinks, useRenameHeuristic, s);
+        return new DiffSettings(useTagMarkers, useDependencyLinks, useRenameHeuristic, s, commentType);
+    }
+
+    public DiffSettings withCommentType(String type) {
+        return new DiffSettings(useTagMarkers, useDependencyLinks, useRenameHeuristic, scope, type);
     }
 }

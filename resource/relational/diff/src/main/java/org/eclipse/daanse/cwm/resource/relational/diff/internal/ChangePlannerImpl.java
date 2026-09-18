@@ -42,8 +42,8 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.TableDiff;
 /**
  * Orders a {@link SchemaDiff} into an executable {@link ChangeOp} list. The
  * phase topology: drops before adds, renames (tables, columns, indexes,
- * constraints) before structural alters, FKs
- * around PK rebuilds, tables before FKs, views last. A PK change on a table
+ * constraints) before structural alters, FKs around PK rebuilds, tables
+ * before FKs, then views and triggers, comments last. A PK change on a table
  * with inbound foreign keys drops and re-adds the referencing FKs around the
  * rebuild.
  */
@@ -195,6 +195,10 @@ public final class ChangePlannerImpl implements ChangePlanner {
             t.getTrigger().forEach(trg -> p.createView.add(new ChangeOp.CreateTrigger(t, trg)));
         }
 
+        // comments once every table and column exists under its final name
+        diff.commentsChanged().forEach(c -> p.comment.add(
+                new ChangeOp.SetComment(c.table(), c.element(), c.newComment())));
+
         return p.flatten();
     }
 
@@ -255,6 +259,7 @@ public final class ChangePlannerImpl implements ChangePlanner {
         final List<ChangeOp> addMinor = new ArrayList<>();
         final List<ChangeOp> addFk = new ArrayList<>();
         final List<ChangeOp> createView = new ArrayList<>();
+        final List<ChangeOp> comment = new ArrayList<>();
 
         List<ChangeOp> flatten() {
             List<ChangeOp> out = new ArrayList<>();
@@ -271,6 +276,7 @@ public final class ChangePlannerImpl implements ChangePlanner {
             out.addAll(addMinor);
             out.addAll(addFk);
             out.addAll(createView);
+            out.addAll(comment);
             return out;
         }
     }
