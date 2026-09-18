@@ -22,14 +22,10 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
 import org.eclipse.daanse.sql.dialect.db.common.AnsiDialect;
-import org.eclipse.daanse.sql.dialect.db.mysql.MySqlDialect;
-import org.eclipse.daanse.sql.dialect.db.oracle.OracleDialect;
-import org.eclipse.daanse.sql.dialect.db.postgresql.PostgreSqlDialect;
-import org.eclipse.daanse.sql.dialect.api.DialectInitData;
 import org.junit.jupiter.api.Test;
 
 /**
- * DML-Templates ueber alle Kinds; Fixture-Idiom wie CwmDdlRendererTest:
+ * DML templates across all kinds; fixture idiom as in CwmDdlRendererTest:
  * sales.customer(id PK, name, email).
  */
 class DmlTemplateGeneratorTest {
@@ -37,10 +33,6 @@ class DmlTemplateGeneratorTest {
     private static final RelationalFactory R = RelationalFactory.eINSTANCE;
 
     private final DmlTemplateGenerator ansi = new DmlTemplateGenerator(new AnsiDialect());
-    private final DmlTemplateGenerator postgres = new DmlTemplateGenerator(new PostgreSqlDialect());
-    private final DmlTemplateGenerator mysql = new DmlTemplateGenerator(
-            new MySqlDialect(DialectInitData.ansiDefaults().withQuoteIdentifierString("`")));
-    private final DmlTemplateGenerator oracle = new DmlTemplateGenerator(new OracleDialect());
 
     @Test
     void selectByPkCarriesOnePkParameter() {
@@ -83,17 +75,6 @@ class DmlTemplateGeneratorTest {
     }
 
     @Test
-    void upsertPerDialectFamily() {
-        Table table = customerTable();
-        assertThat(postgres.templates(table).find(TemplateKind.UPSERT).orElseThrow().sql())
-                .containsIgnoringCase("on conflict");
-        assertThat(mysql.templates(table).find(TemplateKind.UPSERT).orElseThrow().sql())
-                .containsIgnoringCase("on duplicate key update");
-        assertThat(oracle.templates(table).find(TemplateKind.UPSERT).orElseThrow().sql())
-                .containsIgnoringCase("merge into");
-    }
-
-    @Test
     void withoutPrimaryKeyOnlySelectAllPageAndInsertRemain() {
         Table noPk = customerTable();
         noPk.getOwnedElement().removeIf(PrimaryKey.class::isInstance);
@@ -102,13 +83,12 @@ class DmlTemplateGeneratorTest {
         assertThat(t.find(TemplateKind.SELECT_BY_PK)).isEmpty();
         assertThat(t.find(TemplateKind.UPDATE_BY_PK)).isEmpty();
         assertThat(t.find(TemplateKind.DELETE_BY_PK)).isEmpty();
-        assertThat(t.find(TemplateKind.UPSERT)).isEmpty();
         assertThat(t.find(TemplateKind.SELECT_ALL)).isPresent();
         assertThat(t.find(TemplateKind.INSERT)).isPresent();
     }
 
     @Test
-    void pkOnlyTableHasNoUpdateAndInsertIgnoreSemantics() {
+    void pkOnlyTableHasNoUpdate() {
         Schema s = R.createSchema();
         s.setName("sales");
         SQLSimpleType tInt = type(s, "INTEGER", Types.INTEGER, 0);
@@ -123,10 +103,12 @@ class DmlTemplateGeneratorTest {
         pk.getFeature().add(c2);
         link.getOwnedElement().add(pk);
 
-        DmlTemplates t = postgres.templates(link);
+        DmlTemplates t = ansi.templates(link);
         assertThat(t.find(TemplateKind.UPDATE_BY_PK)).isEmpty();
-        // UPSERT degeneriert zu insert-or-ignore (leere updateColumns im UpsertSpec)
-        assertThat(t.find(TemplateKind.UPSERT).orElseThrow().sql()).containsIgnoringCase("do nothing");
+        // composite pk: by-pk templates chain all key columns
+        assertThat(t.find(TemplateKind.DELETE_BY_PK).orElseThrow().sql())
+                .isEqualTo("DELETE FROM \"sales\".\"customer_tag\""
+                        + " WHERE \"customer_id\" = ? AND \"tag_id\" = ?");
     }
 
     // ------------------------------------------------------------------ fixture

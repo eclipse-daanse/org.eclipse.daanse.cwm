@@ -22,7 +22,5 @@ public enum TemplateKind {
     /** {@code UPDATE t SET nonPk = ? … WHERE pk = ?} — absent without pk or for pk-only tables. */
     UPDATE_BY_PK,
     /** {@code DELETE FROM t WHERE pk = ?} — absent if the table has no primary key. */
-    DELETE_BY_PK,
-    /** Insert-or-update via the dialect's MERGE/ON CONFLICT/ON DUPLICATE KEY form. */
-    UPSERT
+    DELETE_BY_PK
 }

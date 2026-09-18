@@ -23,9 +23,9 @@
   <artifactId>org.eclipse.daanse.cwm.resource.relational.dml.render</artifactId>
   <name>Daanse CWM Relational DML Rendering</name>
   <description>Generates prepared DML statement templates (SELECT by pk/all/paged, INSERT,
-    UPDATE by pk, DELETE by pk, MERGE/UPSERT) from a CWM relational Table per SQL dialect,
-    built as text directly over the dialect API. Self-contained and offline-instantiable;
-    no query-model dependency.</description>
+    UPDATE by pk, DELETE by pk) from a CWM relational Table per SQL dialect,
+    built as text directly over the dialect API. Only dialect-portable statement
+    shapes; self-contained and offline-instantiable; no query-model dependency.</description>
   <dependencies>
     <!-- brings the CWM relational model and the sql dialect API transitively -->
     <dependency>
@@ -33,28 +33,10 @@
       <artifactId>org.eclipse.daanse.cwm.resource.relational.ddl</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <!-- offline-instantiable dialects for tests -->
+    <!-- offline-instantiable dialect for tests; common carries AnsiDialect -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.sql.dialect.db.common</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.sql.dialect.db.postgresql</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.sql.dialect.db.mysql</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.sql.dialect.db.oracle</artifactId>
       <version>0.0.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
