@@ -23,14 +23,15 @@ class DdlSettingsTest {
         assertThat(d.includeSchema()).isTrue();
         assertThat(d.ifNotExists()).isTrue();
         assertThat(d.cascade()).isFalse();
+        assertThat(d.commentType()).isEqualTo("JDBC-REMARKS");
     }
 
     @Test
     void withers_change_one_field_and_leave_the_rest() {
         DdlSettings d = DdlSettings.defaults();
-        assertThat(d.withIncludeSchema(false)).isEqualTo(new DdlSettings(false, true, false));
-        assertThat(d.withIfNotExists(false)).isEqualTo(new DdlSettings(true, false, false));
-        assertThat(d.withCascade(true)).isEqualTo(new DdlSettings(true, true, true));
+        assertThat(d.withIncludeSchema(false)).isEqualTo(new DdlSettings(false, true, false, DdlSettings.COMMENT_TYPE_JDBC_REMARKS));
+        assertThat(d.withIfNotExists(false)).isEqualTo(new DdlSettings(true, false, false, DdlSettings.COMMENT_TYPE_JDBC_REMARKS));
+        assertThat(d.withCascade(true)).isEqualTo(new DdlSettings(true, true, true, DdlSettings.COMMENT_TYPE_JDBC_REMARKS));
         // original is untouched (immutable)
         assertThat(d).isEqualTo(DdlSettings.defaults());
     }
@@ -38,6 +39,6 @@ class DdlSettingsTest {
     @Test
     void withers_chain() {
         DdlSettings d = DdlSettings.defaults().withIncludeSchema(false).withCascade(true);
-        assertThat(d).isEqualTo(new DdlSettings(false, true, true));
+        assertThat(d).isEqualTo(new DdlSettings(false, true, true, DdlSettings.COMMENT_TYPE_JDBC_REMARKS));
     }
 }
