@@ -48,6 +48,11 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
  * @param foreignKeysDropped       foreign keys present only in the old table
  * @param indexesAdded             indexes present only in the new table
  * @param indexesDropped           indexes present only in the old table
+ * @param indexesRenamed           matched indexes of the same shape whose
+ *                                 name changed
+ * @param constraintsRenamed       matched primary key, unique, check or
+ *                                 foreign key constraints of the same shape
+ *                                 whose name changed
  */
 public record TableDiff(Table oldTable, Table newTable,
         List<Column> columnsAdded, List<Column> columnsDropped,
@@ -56,7 +61,8 @@ public record TableDiff(Table oldTable, Table newTable,
         List<UniqueConstraint> uniqueConstraintsAdded, List<UniqueConstraint> uniqueConstraintsDropped,
         List<CheckConstraint> checksAdded, List<CheckConstraint> checksDropped,
         List<ForeignKey> foreignKeysAdded, List<ForeignKey> foreignKeysDropped,
-        List<SQLIndex> indexesAdded, List<SQLIndex> indexesDropped) {
+        List<SQLIndex> indexesAdded, List<SQLIndex> indexesDropped,
+        List<IndexRename> indexesRenamed, List<ConstraintRename> constraintsRenamed) {
 
     public TableDiff {
         columnsAdded = List.copyOf(columnsAdded);
@@ -71,6 +77,8 @@ public record TableDiff(Table oldTable, Table newTable,
         foreignKeysDropped = List.copyOf(foreignKeysDropped);
         indexesAdded = List.copyOf(indexesAdded);
         indexesDropped = List.copyOf(indexesDropped);
+        indexesRenamed = List.copyOf(indexesRenamed);
+        constraintsRenamed = List.copyOf(constraintsRenamed);
     }
 
     /** {@code true} iff nothing about this table changed. */
@@ -80,6 +88,7 @@ public record TableDiff(Table oldTable, Table newTable,
                 && uniqueConstraintsAdded.isEmpty() && uniqueConstraintsDropped.isEmpty()
                 && checksAdded.isEmpty() && checksDropped.isEmpty()
                 && foreignKeysAdded.isEmpty() && foreignKeysDropped.isEmpty()
-                && indexesAdded.isEmpty() && indexesDropped.isEmpty();
+                && indexesAdded.isEmpty() && indexesDropped.isEmpty()
+                && indexesRenamed.isEmpty() && constraintsRenamed.isEmpty();
     }
 }

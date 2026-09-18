@@ -41,7 +41,8 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.TableDiff;
 
 /**
  * Orders a {@link SchemaDiff} into an executable {@link ChangeOp} list. The
- * phase topology: drops before adds, renames before structural alters, FKs
+ * phase topology: drops before adds, renames (tables, columns, indexes,
+ * constraints) before structural alters, FKs
  * around PK rebuilds, tables before FKs, views last. A PK change on a table
  * with inbound foreign keys drops and re-adds the referencing FKs around the
  * rebuild.
@@ -109,6 +110,10 @@ public final class ChangePlannerImpl implements ChangePlanner {
         for (TableDiff td : diff.tablesChanged()) {
             td.columnsRenamed().forEach(r -> p.rename.add(
                     new ChangeOp.RenameColumn(td.newTable(), r.newColumn(), r.oldColumn().getName())));
+            td.indexesRenamed().forEach(r -> p.rename.add(
+                    new ChangeOp.RenameIndex(r.newIndex(), r.oldIndex().getName())));
+            td.constraintsRenamed().forEach(r -> p.rename.add(
+                    new ChangeOp.RenameConstraint(td.newTable(), r.newConstraint(), r.oldConstraint().getName())));
         }
 
         // column alterations, split per aspect

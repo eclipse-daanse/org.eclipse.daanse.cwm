@@ -17,11 +17,16 @@ import java.util.List;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
+import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.MigrationEmitter;
+import org.eclipse.daanse.cwm.resource.relational.diff.internal.MigrationEmitterImpl;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -32,7 +37,9 @@ class LiquibaseChangelogWriterTest {
 
     private static final RelationalFactory R = RelationalFactory.eINSTANCE;
 
-    private final LiquibaseChangelogWriter writer = new LiquibaseChangelogWriter();
+    private static final MigrationEmitter EMITTER = new MigrationEmitterImpl(new DdlGeneratorFactoryImpl());
+
+    private final LiquibaseChangelogWriter writer = new LiquibaseChangelogWriter(EMITTER);
 
     @Test
     void renameColumnBecomesOneChangeSetWithRollback() {
@@ -76,7 +83,7 @@ class LiquibaseChangelogWriterTest {
         Table customer = customerTable();
         Schema schema = (Schema) customer.getNamespace();
 
-        String xml = new LiquibaseSnapshotWriter().write(schema);
+        String xml = new LiquibaseSnapshotWriter(EMITTER).write(schema);
 
         assertThat(xml)
                 .contains("author=\"cwm-snapshot\"")
@@ -84,6 +91,44 @@ class LiquibaseChangelogWriterTest {
                 .contains("tableName=\"customer\"")
                 .contains("<column name=\"id\"")
                 .contains("<column name=\"email\"");
+    }
+
+    @Test
+    void renameIndexUsesEachDialectsStatementAndRendersTheRollbackFromTheSameIndex() {
+        Table customer = customerTable();
+        SQLIndex ix = R.createSQLIndex();
+        ix.setName("ix_email_v2");
+        ix.setSpannedClass(customer);
+        customer.getNamespace().getOwnedElement().add(ix);
+
+        String xml = writer.write(List.of(new ChangeOp.RenameIndex(ix, "ix_email")));
+
+        assertThat(xml)
+                .contains("<sql dbms=\"postgresql,oracle\" splitStatements=\"false\">ALTER INDEX "
+                        + "&quot;sales&quot;.&quot;ix_email&quot; RENAME TO &quot;ix_email_v2&quot;</sql>")
+                .contains("<sql dbms=\"mysql,mariadb\" splitStatements=\"false\">ALTER TABLE `sales`.`customer`"
+                        + " RENAME INDEX `ix_email_v2` TO `ix_email`</sql>")
+                .contains("<sql dbms=\"mssql\"");
+        assertThat(ix.getName()).isEqualTo("ix_email_v2");
+    }
+
+    @Test
+    void renameConstraintFallsBackWhereTheDialectCannotRename() {
+        Table customer = customerTable();
+        UniqueConstraint uq = R.createUniqueConstraint();
+        uq.setName("uq_email_v2");
+        uq.getFeature().add((Column) customer.getFeature().get(1));
+        customer.getOwnedElement().add(uq);
+
+        String xml = writer.write(List.of(new ChangeOp.RenameConstraint(customer, uq, "uq_email")));
+
+        String rollback = xml.substring(xml.indexOf("<rollback>"));
+        assertThat(xml).contains("RENAME CONSTRAINT &quot;uq_email&quot; TO &quot;uq_email_v2&quot;")
+                .contains("<sql dbms=\"mysql\" splitStatements=\"false\">ALTER TABLE `sales`.`customer`"
+                        + " DROP CONSTRAINT `uq_email`</sql>");
+        assertThat(rollback).contains("RENAME CONSTRAINT &quot;uq_email_v2&quot; TO &quot;uq_email&quot;")
+                .contains("ADD CONSTRAINT `uq_email` UNIQUE (`email`)");
+        assertThat(uq.getName()).isEqualTo("uq_email_v2");
     }
 
     // fixture
