@@ -20,6 +20,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
 
 /**
@@ -53,6 +54,12 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
  * @param constraintsRenamed       matched primary key, unique, check or
  *                                 foreign key constraints of the same shape
  *                                 whose name changed
+ * @param triggersAdded            triggers present only in the new table
+ * @param triggersDropped          triggers present only in the old table;
+ *                                 a trigger whose name, timing, event,
+ *                                 orientation, condition or body changed is
+ *                                 reported as dropped and added, since
+ *                                 triggers cannot be renamed portably
  */
 public record TableDiff(Table oldTable, Table newTable,
         List<Column> columnsAdded, List<Column> columnsDropped,
@@ -62,7 +69,8 @@ public record TableDiff(Table oldTable, Table newTable,
         List<CheckConstraint> checksAdded, List<CheckConstraint> checksDropped,
         List<ForeignKey> foreignKeysAdded, List<ForeignKey> foreignKeysDropped,
         List<SQLIndex> indexesAdded, List<SQLIndex> indexesDropped,
-        List<IndexRename> indexesRenamed, List<ConstraintRename> constraintsRenamed) {
+        List<IndexRename> indexesRenamed, List<ConstraintRename> constraintsRenamed,
+        List<Trigger> triggersAdded, List<Trigger> triggersDropped) {
 
     public TableDiff {
         columnsAdded = List.copyOf(columnsAdded);
@@ -79,6 +87,8 @@ public record TableDiff(Table oldTable, Table newTable,
         indexesDropped = List.copyOf(indexesDropped);
         indexesRenamed = List.copyOf(indexesRenamed);
         constraintsRenamed = List.copyOf(constraintsRenamed);
+        triggersAdded = List.copyOf(triggersAdded);
+        triggersDropped = List.copyOf(triggersDropped);
     }
 
     /** {@code true} iff nothing about this table changed. */
@@ -89,6 +99,7 @@ public record TableDiff(Table oldTable, Table newTable,
                 && checksAdded.isEmpty() && checksDropped.isEmpty()
                 && foreignKeysAdded.isEmpty() && foreignKeysDropped.isEmpty()
                 && indexesAdded.isEmpty() && indexesDropped.isEmpty()
-                && indexesRenamed.isEmpty() && constraintsRenamed.isEmpty();
+                && indexesRenamed.isEmpty() && constraintsRenamed.isEmpty()
+                && triggersAdded.isEmpty() && triggersDropped.isEmpty();
     }
 }

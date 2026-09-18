@@ -193,10 +193,10 @@ public final class MigrationEmitterImpl implements MigrationEmitter {
             }
 
             //  triggers
-            case ChangeOp.CreateTrigger o -> throw new UnsupportedOperationException(
-                    "trigger ops are not implemented in the SQL emitter yet");
-            case ChangeOp.DropTrigger o -> throw new UnsupportedOperationException(
-                    "trigger ops are not implemented in the SQL emitter yet");
+            case ChangeOp.CreateTrigger o -> out.addAll(CwmSchemaMapper.createTrigger(dialect, ref(o.table()),
+                    o.trigger()));
+            case ChangeOp.DropTrigger o -> out.addAll(CwmSchemaMapper.dropTrigger(dialect, ref(o.table()),
+                    o.trigger()));
         }
     }
 

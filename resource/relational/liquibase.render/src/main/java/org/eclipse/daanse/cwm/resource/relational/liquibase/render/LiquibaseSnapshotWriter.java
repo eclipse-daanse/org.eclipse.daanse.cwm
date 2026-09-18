@@ -27,8 +27,9 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.MigrationEmitter;
  * Snapshot writer: serializes the STATE of a CWM Schema as a Liquibase
  * create-changelog — createTable (PK/NOT NULL/default inline) per table,
  * then indexes, then all foreign keys collected after every table exists
- * (FK cycles), then views. Delegates the per-element rendering to the same
- * change mapping the delta writer uses, so both outputs stay consistent.
+ * (FK cycles), then views, then triggers. Delegates the per-element
+ * rendering to the same change mapping the delta writer uses, so both
+ * outputs stay consistent.
  */
 public final class LiquibaseSnapshotWriter {
 
@@ -57,6 +58,9 @@ public final class LiquibaseSnapshotWriter {
         }
         for (View v : Schemas.views(schema)) {
             ops.add(new ChangeOp.CreateView(v));
+        }
+        for (Table t : Schemas.tables(schema)) {
+            t.getTrigger().forEach(trg -> ops.add(new ChangeOp.CreateTrigger(t, trg)));
         }
         return new LiquibaseChangelogWriter(emitter).write(ops, settings);
     }

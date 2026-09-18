@@ -45,8 +45,8 @@ import org.eclipse.daanse.sql.model.schema.TableReference;
  * <p>The changelog is dialect-neutral (Liquibase translates the generic
  * types itself). Operations Liquibase OSS has no change type for fall back to
  * {@code <sql dbms="…">} per dialect: CHECK constraints with the text from
- * the jdbc.db DdlGenerator, index and constraint renames with the
- * {@link MigrationEmitter}'s statements, so the changelog and the plain SQL
+ * the jdbc.db DdlGenerator, index and constraint renames and triggers with
+ * the {@link MigrationEmitter}'s statements, so the changelog and the plain SQL
  * migration agree, including where a dialect re-creates instead of
  * renaming.</p>
  */
@@ -373,10 +373,28 @@ public final class LiquibaseChangelogWriter {
                 }
                 x.closeChangeSet();
             }
-            case ChangeOp.CreateTrigger o -> throw new UnsupportedOperationException(
-                    "trigger ops are not implemented in the changelog writer yet");
-            case ChangeOp.DropTrigger o -> throw new UnsupportedOperationException(
-                    "trigger ops are not implemented in the changelog writer yet");
+            case ChangeOp.CreateTrigger o -> {
+                x.openChangeSet(settings.author(), "CreateTrigger|" + qualified(o.table())
+                        + "|" + o.trigger().getName());
+                dbmsSql(x, o);
+                if (settings.includeRollback()) {
+                    x.startElement("rollback");
+                    dbmsSql(x, new ChangeOp.DropTrigger(o.table(), o.trigger()));
+                    x.endElement("rollback");
+                }
+                x.closeChangeSet();
+            }
+            case ChangeOp.DropTrigger o -> {
+                x.openChangeSet(settings.author(), "DropTrigger|" + qualified(o.table())
+                        + "|" + o.trigger().getName());
+                dbmsSql(x, o);
+                if (settings.includeRollback()) {
+                    x.startElement("rollback");
+                    dbmsSql(x, new ChangeOp.CreateTrigger(o.table(), o.trigger()));
+                    x.endElement("rollback");
+                }
+                x.closeChangeSet();
+            }
         }
     }
 

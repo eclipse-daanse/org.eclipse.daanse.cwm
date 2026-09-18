@@ -113,10 +113,10 @@ public sealed interface ChangeOp {
     record ReplaceView(View oldView, View newView) implements ChangeOp {
     }
 
-
-    record CreateTrigger(Trigger trigger) implements ChangeOp {
+    // triggers
+    record CreateTrigger(Table table, Trigger trigger) implements ChangeOp {
     }
 
-    record DropTrigger(Trigger trigger) implements ChangeOp {
+    record DropTrigger(Table table, Trigger trigger) implements ChangeOp {
     }
 }

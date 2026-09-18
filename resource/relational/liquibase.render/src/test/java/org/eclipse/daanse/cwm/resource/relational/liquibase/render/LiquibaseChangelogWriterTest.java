@@ -15,13 +15,19 @@ import java.sql.Types;
 import java.util.List;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CoreFactory;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ProcedureExpression;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ActionOrientationType;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ConditionTimingType;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.EventManipulationType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
@@ -129,6 +135,32 @@ class LiquibaseChangelogWriterTest {
         assertThat(rollback).contains("RENAME CONSTRAINT &quot;uq_email_v2&quot; TO &quot;uq_email&quot;")
                 .contains("ADD CONSTRAINT `uq_email` UNIQUE (`email`)");
         assertThat(uq.getName()).isEqualTo("uq_email_v2");
+    }
+
+    @Test
+    void triggerIsWrittenPerDialectWithoutSplittingItsBody() {
+        Table customer = customerTable();
+        Trigger trg = R.createTrigger();
+        trg.setName("trg_audit");
+        trg.setConditionTiming(ConditionTimingType.BEFORE);
+        trg.setEventManipulation(EventManipulationType.INSERT);
+        trg.setActionOrientation(ActionOrientationType.ROW);
+        ProcedureExpression body = CoreFactory.eINSTANCE.createProcedureExpression();
+        body.setBody("BEGIN RETURN NEW; END;");
+        trg.setActionStatement(body);
+        customer.getTrigger().add(trg);
+        customer.getNamespace().getOwnedElement().add(trg);
+
+        String xml = writer.write(List.of(new ChangeOp.CreateTrigger(customer, trg)));
+        String forward = xml.substring(0, xml.indexOf("<rollback>"));
+        String rollback = xml.substring(xml.indexOf("<rollback>"));
+
+        assertThat(forward).contains("<sql dbms=\"postgresql\" splitStatements=\"false\">CREATE")
+                .contains("trg_audit_fn").contains("BEGIN RETURN NEW; END;").contains("CREATE TRIGGER");
+        assertThat(rollback).contains("DROP TRIGGER").contains("DROP FUNCTION");
+
+        String snapshot = new LiquibaseSnapshotWriter(EMITTER).write((Schema) customer.getNamespace());
+        assertThat(snapshot.indexOf("CREATE TRIGGER")).isGreaterThan(snapshot.indexOf("<createTable"));
     }
 
     // fixture

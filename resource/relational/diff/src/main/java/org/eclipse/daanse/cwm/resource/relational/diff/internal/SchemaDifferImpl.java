@@ -50,6 +50,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
@@ -79,6 +80,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
  *   <li>Unique/check/foreign keys, indexes: paired like tables and columns;
  *       same shape and a new name is a rename, a changed shape is drop + add.
  *       A primary key whose columns stay and whose name changes is a rename.</li>
+ *   <li>Triggers: paired likewise; any change (including the name) is drop + add.</li>
  *   <li>Views: same-named views with different bodies are surfaced as
  *       {@link ViewBodyChange}.</li>
  * </ul>
@@ -308,6 +310,17 @@ public final class SchemaDifferImpl implements SchemaDiffer {
         diffKeyed(indexesOf(oldSchema, oldTable), indexesOf(newSchema, newTable),
                 settings, SchemaDifferImpl::indexShape, indexesAdded, indexesDropped, indexPairs);
 
+        List<Trigger> triggersAdded = new ArrayList<>();
+        List<Trigger> triggersDropped = new ArrayList<>();
+        List<Pair<Trigger>> triggerPairs = new ArrayList<>();
+        diffKeyed(oldTable.getTrigger(), newTable.getTrigger(), settings, SchemaDifferImpl::triggerShape,
+                triggersAdded, triggersDropped, triggerPairs);
+        // no portable trigger rename: re-create under the new name
+        triggerPairs.forEach(r -> {
+            triggersDropped.add(r.oldE());
+            triggersAdded.add(r.newE());
+        });
+
         ucsRenamed.forEach(r -> constraintsRenamed.add(new ConstraintRename(r.oldE(), r.newE())));
         checksRenamed.forEach(r -> constraintsRenamed.add(new ConstraintRename(r.oldE(), r.newE())));
         fksRenamed.forEach(r -> constraintsRenamed.add(new ConstraintRename(r.oldE(), r.newE())));
@@ -321,7 +334,8 @@ public final class SchemaDifferImpl implements SchemaDiffer {
                 checksAdded, checksDropped,
                 fksAdded, fksDropped,
                 indexesAdded, indexesDropped,
-                indexesRenamed, constraintsRenamed);
+                indexesRenamed, constraintsRenamed,
+                triggersAdded, triggersDropped);
     }
 
     // field comparisons
@@ -469,6 +483,15 @@ public final class SchemaDifferImpl implements SchemaDiffer {
     private static Object checkShape(CheckConstraint ck) {
         String body = ck.getBody() == null ? null : ck.getBody().getBody();
         return body == null ? "" : normalize(body);
+    }
+
+    private static Object triggerShape(Trigger t) {
+        return Arrays.asList(
+                t.getConditionTiming() == null ? null : t.getConditionTiming().getName(),
+                t.getEventManipulation() == null ? null : t.getEventManipulation().getName(),
+                t.getActionOrientation() == null ? null : t.getActionOrientation().getName(),
+                t.getActionCondition() == null ? null : t.getActionCondition().getBody(),
+                t.getActionStatement() == null ? null : t.getActionStatement().getBody());
     }
 
     private static Object foreignKeyShape(ForeignKey fk) {
