@@ -16,6 +16,7 @@ package org.eclipse.daanse.cwm.resource.relational.diff.internal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.StructuralFeature;
@@ -162,9 +163,24 @@ public final class MigrationEmitterImpl implements MigrationEmitter {
                         .findFirst().orElseThrow();
                 out.add(dialect.ddlGenerator().alterTableAddColumn(ref(o.table()), cd));
             }
-            case ChangeOp.CreateTable o -> {
-                Schema schema = NamedColumnSets.findSchema(o.table()).orElse(null);
-                out.add(schema != null ? ddl.createTable(schema, o.table()) : ddl.createTable(o.table()));
+            case ChangeOp.CreateTable o -> createTable(out, ddl, o.table());
+
+            //  split / merge — structure only, row data is not moved
+            case ChangeOp.SplitTable o -> {
+                out.add("-- " + o.oldTable().getName() + " split into " + names(o.newTables())
+                        + " — row data is not migrated automatically");
+                out.add(dialect.ddlGenerator().dropTable(ref(o.oldTable()), true, cascadeOnDrop));
+                for (Table nt : o.newTables()) {
+                    createTable(out, ddl, nt);
+                }
+            }
+            case ChangeOp.MergeTables o -> {
+                out.add("-- " + names(o.oldTables()) + " merged into " + o.newTable().getName()
+                        + " — row data is not migrated automatically");
+                for (Table ot : o.oldTables()) {
+                    out.add(dialect.ddlGenerator().dropTable(ref(ot), true, cascadeOnDrop));
+                }
+                createTable(out, ddl, o.newTable());
             }
             case ChangeOp.AddPrimaryKey o -> {
                 List<String> cols = featureNames(o.primaryKey().getFeature());
@@ -214,6 +230,15 @@ public final class MigrationEmitterImpl implements MigrationEmitter {
     }
 
     // helpers
+
+    private static void createTable(List<String> out, DdlGenerator ddl, Table table) {
+        Schema schema = NamedColumnSets.findSchema(table).orElse(null);
+        out.add(schema != null ? ddl.createTable(schema, table) : ddl.createTable(table));
+    }
+
+    private static String names(List<Table> tables) {
+        return tables.stream().map(Table::getName).collect(Collectors.joining(", "));
+    }
 
     private static void addUnique(List<String> out, Dialect dialect, Table table, UniqueConstraint uc) {
         List<String> cols = UniqueConstraints.columns(uc).stream().map(Column::getName).toList();

@@ -60,6 +60,30 @@ class PartialDiffTest {
         assertThat(diff.tablesChanged().get(0).columnsChanged()).hasSize(1);
     }
 
+    @Test
+    void unresolvableRenamedFromMarkerIsSuppressedNotAddedInPartialScope() {
+        //New: "customer" carries `renamed From="custommer"` (typo) — the old stub does not contain this name.
+        Schema newS = R.createSchema();
+        newS.setName("sales");
+        SQLSimpleType tVar = varchar(newS, 100);
+        Table customer = table(newS, "customer");
+        column(customer, "name", tVar);
+        ChangeMarkers.markRenamedFrom(customer, "custommer");
+
+        Schema oldStub = R.createSchema();
+        oldStub.setName("sales");
+
+        SchemaDiff diff = new SchemaDifferImpl().diff(oldStub, newS,
+                DiffSettings.defaults().withScope(DiffSettings.Scope.PARTIAL));
+
+        // Neither Rename nor Add — the marker points to nothing; PARTIAL
+        // suppresses the element, just like any other element outside the stub.
+        // To avoid this, use ChangePlanner.planMarkersOnly.
+        assertThat(diff.tablesRenamed()).isEmpty();
+        assertThat(diff.tablesAdded()).isEmpty();
+        assertThat(diff.tablesChanged()).isEmpty();
+    }
+
     //  fixture
 
     private static SQLSimpleType varchar(Schema s, int len) {

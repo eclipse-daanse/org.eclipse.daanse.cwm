@@ -27,9 +27,11 @@ public interface ChangePlanner {
     List<ChangeOp> plan(SchemaDiff diff);
 
     /**
-     * Changes that are valid DDL but fail on a table that already holds rows:
-     * a NOT NULL column added without a default, and an existing column made
-     * NOT NULL (fails while it holds NULLs). One message per column, empty
+     * Changes that are valid DDL but need attention beyond the generated
+     * statements: a NOT NULL column added without a default or an existing
+     * column made NOT NULL (both fail on a table that already holds rows —
+     * one message per column), and a detected table split or merge (row data
+     * is not migrated automatically — one message per split/merge). Empty
      * when there is nothing to warn about.
      */
     List<String> warnings(SchemaDiff diff);

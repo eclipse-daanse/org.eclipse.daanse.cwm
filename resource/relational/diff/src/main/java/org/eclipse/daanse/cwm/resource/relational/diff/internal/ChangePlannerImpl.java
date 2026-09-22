@@ -19,6 +19,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.CheckConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
@@ -39,6 +40,8 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangePlanner;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ColumnChange;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.SchemaDiff;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableDiff;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.TableMerge;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.TableSplit;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ViewBodyChange;
 
 /**
@@ -123,6 +126,10 @@ public final class ChangePlannerImpl implements ChangePlanner {
             td.columnsDropped().forEach(c -> p.dropColumn.add(new ChangeOp.DropColumn(td.oldTable(), c)));
         }
         diff.tablesDropped().forEach(t -> p.dropTable.add(new ChangeOp.DropTable(t)));
+
+        // splits and merges: structural only, no row data moved (see warnings)
+        diff.tablesSplit().forEach(s -> p.splitMerge.add(new ChangeOp.SplitTable(s.oldTable(), s.newTables())));
+        diff.tablesMerged().forEach(m -> p.splitMerge.add(new ChangeOp.MergeTables(m.oldTables(), m.newTable())));
 
         // renames before structural alters
         diff.tablesRenamed().forEach(r -> p.rename.add(
@@ -309,6 +316,16 @@ public final class ChangePlannerImpl implements ChangePlanner {
                 }
             }
         }
+        for (TableSplit s : diff.tablesSplit()) {
+            out.add(s.oldTable().getName() + " split into "
+                    + s.newTables().stream().map(Table::getName).collect(Collectors.joining(", "))
+                    + " — row data is not migrated automatically");
+        }
+        for (TableMerge m : diff.tablesMerged()) {
+            out.add(m.oldTables().stream().map(Table::getName).collect(Collectors.joining(", "))
+                    + " merged into " + m.newTable().getName()
+                    + " — row data is not migrated automatically");
+        }
         return out;
     }
 
@@ -340,6 +357,7 @@ public final class ChangePlannerImpl implements ChangePlanner {
         final List<ChangeOp> dropPk = new ArrayList<>();
         final List<ChangeOp> dropColumn = new ArrayList<>();
         final List<ChangeOp> dropTable = new ArrayList<>();
+        final List<ChangeOp> splitMerge = new ArrayList<>();
         final List<ChangeOp> rename = new ArrayList<>();
         final List<ChangeOp> alter = new ArrayList<>();
         final List<ChangeOp> addColumn = new ArrayList<>();
@@ -357,6 +375,7 @@ public final class ChangePlannerImpl implements ChangePlanner {
             out.addAll(dropPk);
             out.addAll(dropColumn);
             out.addAll(dropTable);
+            out.addAll(splitMerge);
             out.addAll(rename);
             out.addAll(alter);
             out.addAll(addColumn);

@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.StructuralFeature;
@@ -95,6 +96,37 @@ public final class LiquibaseChangelogWriter {
                     x.emptyElement("renameTable", "schemaName", schema,
                             "oldTableName", o.table().getName(), "newTableName", o.oldName());
                     x.endElement("rollback");
+                }
+                x.closeChangeSet();
+            }
+            case ChangeOp.SplitTable o -> {
+                Table old = o.oldTable();
+                x.openChangeSet(settings.author(), "SplitTable|" + qualified(old) + "->"
+                        + o.newTables().stream().map(Table::getName).collect(Collectors.joining(",")));
+                x.textElement("comment", old.getName() + " split into "
+                        + o.newTables().stream().map(Table::getName).collect(Collectors.joining(", "))
+                        + " — row data is not migrated automatically");
+                x.emptyElement("dropTable", "schemaName", schemaNameOf(old), "tableName", old.getName());
+                o.newTables().forEach(nt -> createTableBody(x, nt));
+                if (settings.includeRollback()) {
+                    x.emptyRollback();
+                }
+                x.closeChangeSet();
+            }
+            case ChangeOp.MergeTables o -> {
+                Table target = o.newTable();
+                x.openChangeSet(settings.author(), "MergeTables|"
+                        + o.oldTables().stream().map(Table::getName).collect(Collectors.joining(","))
+                        + "->" + qualified(target));
+                x.textElement("comment",
+                        o.oldTables().stream().map(Table::getName).collect(Collectors.joining(", "))
+                        + " merged into " + target.getName()
+                        + " — row data is not migrated automatically");
+                o.oldTables().forEach(ot -> x.emptyElement("dropTable",
+                        "schemaName", schemaNameOf(ot), "tableName", ot.getName()));
+                createTableBody(x, target);
+                if (settings.includeRollback()) {
+                    x.emptyRollback();
                 }
                 x.closeChangeSet();
             }
@@ -421,6 +453,17 @@ public final class LiquibaseChangelogWriter {
     private void createTable(LiquibaseXml x, ChangeOp.CreateTable o, ChangelogSettings settings) {
         Table t = o.table();
         x.openChangeSet(settings.author(), "CreateTable|" + qualified(t));
+        createTableBody(x, t);
+        if (settings.includeRollback()) {
+            x.startElement("rollback");
+            x.emptyElement("dropTable", "schemaName", schemaNameOf(t), "tableName", t.getName());
+            x.endElement("rollback");
+        }
+        x.closeChangeSet();
+    }
+
+    /** The {@code <createTable>}(+{@code addPrimaryKey}) body, without a changeSet around it. */
+    private void createTableBody(LiquibaseXml x, Table t) {
         x.startElement("createTable", "schemaName", schemaNameOf(t), "tableName", t.getName());
         List<Column> pkCols = pkColumns(t);
         boolean singlePk = pkCols.size() == 1;
@@ -436,12 +479,6 @@ public final class LiquibaseChangelogWriter {
                     "columnNames", String.join(", ", pkCols.stream().map(Column::getName).toList()),
                     "constraintName", pkName(t));
         }
-        if (settings.includeRollback()) {
-            x.startElement("rollback");
-            x.emptyElement("dropTable", "schemaName", schemaNameOf(t), "tableName", t.getName());
-            x.endElement("rollback");
-        }
-        x.closeChangeSet();
     }
 
     private void column(LiquibaseXml x, Column c, boolean inlinePk) {

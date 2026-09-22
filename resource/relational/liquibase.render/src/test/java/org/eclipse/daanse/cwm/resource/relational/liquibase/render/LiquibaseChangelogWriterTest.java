@@ -88,6 +88,38 @@ class LiquibaseChangelogWriterTest {
     }
 
     @Test
+    void splitTableWritesAWarningCommentThenDropsTheOldAndCreatesTheNewTables() {
+        Table oldTable = simpleTable("customer");
+        Table names = simpleTable("customer_name");
+        Table mails = simpleTable("customer_mail");
+
+        String xml = writer.write(List.of(new ChangeOp.SplitTable(oldTable, List.of(names, mails))));
+
+        assertThat(xml)
+                .contains("<comment>").contains("split into").contains("not migrated automatically")
+                .contains("<dropTable").contains("tableName=\"customer\"")
+                .contains("<createTable").contains("tableName=\"customer_name\"")
+                .contains("tableName=\"customer_mail\"")
+                .contains("<rollback/>");
+    }
+
+    @Test
+    void mergeTablesWritesAWarningCommentThenDropsTheOldsAndCreatesTheNewTable() {
+        Table names = simpleTable("customer_name");
+        Table mails = simpleTable("customer_mail");
+        Table merged = simpleTable("customer");
+
+        String xml = writer.write(List.of(new ChangeOp.MergeTables(List.of(names, mails), merged)));
+
+        assertThat(xml)
+                .contains("<comment>").contains("merged into").contains("not migrated automatically")
+                .contains("<dropTable").contains("tableName=\"customer_name\"")
+                .contains("tableName=\"customer_mail\"")
+                .contains("<createTable").contains("tableName=\"customer\"")
+                .contains("<rollback/>");
+    }
+
+    @Test
     void snapshotWritesCreateChangelog() {
         Table customer = customerTable();
         Schema schema = (Schema) customer.getNamespace();
@@ -210,6 +242,20 @@ class LiquibaseChangelogWriterTest {
         column(customer, "id", tVar);
         column(customer, "email", tVar);
         return customer;
+    }
+
+    private static Table simpleTable(String name) {
+        Schema s = R.createSchema();
+        s.setName("sales");
+        SQLSimpleType tInt = R.createSQLSimpleType();
+        tInt.setName("INTEGER");
+        tInt.setTypeNumber(Types.INTEGER);
+        s.getOwnedElement().add(tInt);
+        Table t = R.createTable();
+        t.setName(name);
+        s.getOwnedElement().add(t);
+        column(t, "id", tInt);
+        return t;
     }
 
     private static Column column(Table table, String name, SQLSimpleType type) {
