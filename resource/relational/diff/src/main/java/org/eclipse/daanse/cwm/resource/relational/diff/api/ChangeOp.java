@@ -9,6 +9,8 @@
 **********************************************************************/
 package org.eclipse.daanse.cwm.resource.relational.diff.api;
 
+import java.util.List;
+
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.CheckConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
@@ -40,6 +42,22 @@ public sealed interface ChangeOp {
     }
 
     record RenameTable(Table table, String oldName) implements ChangeOp {
+    }
+
+    /**
+     * {@code oldTable} decomposed into {@code newTables} (n &ge; 2): each of
+     * {@code newTables} is created and {@code oldTable} is dropped. Structure
+     * only — row data is not moved; see {@link ChangePlanner#warnings}.
+     */
+    record SplitTable(Table oldTable, List<Table> newTables) implements ChangeOp {
+    }
+
+    /**
+     * {@code oldTables} (n &ge; 2) consolidated into {@code newTable}:
+     * {@code newTable} is created and each of {@code oldTables} is dropped.
+     * Structure only — row data is not moved; see {@link ChangePlanner#warnings}.
+     */
+    record MergeTables(List<Table> oldTables, Table newTable) implements ChangeOp {
     }
 
     // columns

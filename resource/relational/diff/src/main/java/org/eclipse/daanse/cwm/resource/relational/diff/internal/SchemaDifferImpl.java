@@ -24,7 +24,9 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.PredecessorLinks;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.PrimaryKeyChange;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.SchemaDiff;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableDiff;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.TableMerge;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableRename;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.TableSplit;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ViewBodyChange;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.SchemaDiffer;
 import org.osgi.service.component.annotations.Component;
@@ -76,6 +78,12 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
  * the old schema is a stub: added elements outside the stub set are
  * suppressed.</p>
  *
+ * <p>Tables only: a clean split (one old table claimed by several new ones)
+ * or merge (several old tables claimed by one new one) is detected from
+ * predecessor Dependency links ahead of the ordinary pairing and surfaced as
+ * {@link TableSplit}/{@link TableMerge} instead of an unrelated add and drop.
+ * Structure only — no row data is moved; see {@code ChangePlanner#warnings}.</p>
+ *
  * <p>Structural comparisons:
  * <ul>
  *   <li>Columns: type name, length/precision/scale, nullability, default value.</li>
@@ -108,7 +116,15 @@ public final class SchemaDifferImpl implements SchemaDiffer {
         }
         Objects.requireNonNull(settings, "settings");
 
-        Pairing<Table> tables = pair(Schemas.tables(oldSchema), Schemas.tables(newSchema), settings);
+        List<Table> allOldTables = Schemas.tables(oldSchema);
+        List<Table> allNewTables = Schemas.tables(newSchema);
+        SplitMergeResult splitMerge = detectSplitsAndMerges(allOldTables, allNewTables, settings);
+        List<Table> oldsForPairing = allOldTables.stream()
+                .filter(t -> !splitMerge.consumedOld().contains(t)).toList();
+        List<Table> newsForPairing = allNewTables.stream()
+                .filter(t -> !splitMerge.consumedNew().contains(t)).toList();
+
+        Pairing<Table> tables = pair(oldsForPairing, newsForPairing, settings);
         if (settings.useRenameHeuristic()) {
             foldTableRenameHeuristic(tables);
         }
@@ -151,10 +167,21 @@ public final class SchemaDifferImpl implements SchemaDiffer {
             compareComment(t, null, t, settings, comments);
             ColumnSets.columns(t).forEach(c -> compareComment(t, null, c, settings, comments));
         }
+        for (TableSplit s : splitMerge.splits()) {
+            for (Table t : s.newTables()) {
+                compareComment(t, null, t, settings, comments);
+                ColumnSets.columns(t).forEach(c -> compareComment(t, null, c, settings, comments));
+            }
+        }
+        for (TableMerge m : splitMerge.merges()) {
+            compareComment(m.newTable(), null, m.newTable(), settings, comments);
+            ColumnSets.columns(m.newTable()).forEach(c -> compareComment(m.newTable(), null, c, settings, comments));
+        }
 
         return new SchemaDiff(oldSchema, newSchema,
                 tablesAdded, tablesDropped, viewsAdded, viewsDropped,
-                tablesChanged, viewsChanged, tablesRenamed, comments);
+                tablesChanged, viewsChanged, tablesRenamed,
+                splitMerge.splits(), splitMerge.merges(), comments);
     }
 
     // pairing
@@ -166,6 +193,73 @@ public final class SchemaDifferImpl implements SchemaDiffer {
         final List<Pair<E>> paired = new ArrayList<>();
         final List<E> added = new ArrayList<>();
         final List<E> dropped = new ArrayList<>();
+    }
+
+    private record SplitMergeResult(List<TableSplit> splits, List<TableMerge> merges,
+            Set<Table> consumedOld, Set<Table> consumedNew) {
+    }
+
+    /**
+     * Detects clean table splits and merges from predecessor Dependency links
+     * only (name equality and the {@code renamedFrom} marker cannot express
+     * n:1/1:n, so they are not consulted here). A merge is a new table
+     * claiming two or more old tables, none of which any other new table also
+     * claims; a split is an old table claimed by two or more new tables, each
+     * of which claims no other predecessor. Anything more tangled (e.g. a new
+     * table's predecessor is itself split among others) is left for the
+     * ordinary {@link #pair} claim logic to fall back on.
+     */
+    private static SplitMergeResult detectSplitsAndMerges(List<Table> olds, List<Table> news,
+            DiffSettings settings) {
+        List<TableSplit> splits = new ArrayList<>();
+        List<TableMerge> merges = new ArrayList<>();
+        Set<Table> consumedOld = Collections.newSetFromMap(new IdentityHashMap<>());
+        Set<Table> consumedNew = Collections.newSetFromMap(new IdentityHashMap<>());
+        if (!settings.useDependencyLinks()) {
+            return new SplitMergeResult(splits, merges, consumedOld, consumedNew);
+        }
+
+        Set<Table> oldSet = Collections.newSetFromMap(new IdentityHashMap<>());
+        oldSet.addAll(olds);
+
+        Map<Table, List<Table>> predsByNew = new LinkedHashMap<>();
+        for (Table n : news) {
+            List<Table> preds = new ArrayList<>();
+            for (ModelElement pred : PredecessorLinks.predecessors(n)) {
+                if (pred instanceof Table t && oldSet.contains(t) && !preds.contains(t)) {
+                    preds.add(t);
+                }
+            }
+            if (!preds.isEmpty()) {
+                predsByNew.put(n, preds);
+            }
+        }
+        Map<Table, List<Table>> newsByOld = new LinkedHashMap<>();
+        predsByNew.forEach((n, preds) -> preds.forEach(
+                o -> newsByOld.computeIfAbsent(o, k -> new ArrayList<>()).add(n)));
+
+        for (Map.Entry<Table, List<Table>> e : predsByNew.entrySet()) {
+            Table n = e.getKey();
+            List<Table> preds = e.getValue();
+            if (preds.size() > 1 && preds.stream().allMatch(o -> newsByOld.get(o).size() == 1)) {
+                merges.add(new TableMerge(preds, n));
+                consumedNew.add(n);
+                consumedOld.addAll(preds);
+            }
+        }
+        for (Map.Entry<Table, List<Table>> e : newsByOld.entrySet()) {
+            Table o = e.getKey();
+            if (consumedOld.contains(o)) {
+                continue;
+            }
+            List<Table> claimants = e.getValue();
+            if (claimants.size() > 1 && claimants.stream().allMatch(n -> predsByNew.get(n).size() == 1)) {
+                splits.add(new TableSplit(o, claimants));
+                consumedOld.add(o);
+                consumedNew.addAll(claimants);
+            }
+        }
+        return new SplitMergeResult(splits, merges, consumedOld, consumedNew);
     }
 
     /**

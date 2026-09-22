@@ -33,6 +33,10 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
  * @param tablesChanged matched tables with at least one structural change
  * @param viewsChanged  matched views whose query body changed
  * @param tablesRenamed matched tables whose name changed
+ * @param tablesSplit   old tables decomposed into two or more new tables
+ *                      (predecessor Dependency links only)
+ * @param tablesMerged  two or more old tables consolidated into one new
+ *                      table (predecessor Dependency links only)
  * @param commentsChanged table and column comments to set or remove, on
  *                      matched tables and on added tables and columns
  */
@@ -40,7 +44,8 @@ public record SchemaDiff(Schema oldSchema, Schema newSchema,
         List<Table> tablesAdded, List<Table> tablesDropped,
         List<View> viewsAdded, List<View> viewsDropped,
         List<TableDiff> tablesChanged, List<ViewBodyChange> viewsChanged,
-        List<TableRename> tablesRenamed, List<CommentChange> commentsChanged) {
+        List<TableRename> tablesRenamed, List<TableSplit> tablesSplit,
+        List<TableMerge> tablesMerged, List<CommentChange> commentsChanged) {
 
     public SchemaDiff {
         tablesAdded = List.copyOf(tablesAdded);
@@ -50,6 +55,8 @@ public record SchemaDiff(Schema oldSchema, Schema newSchema,
         tablesChanged = List.copyOf(tablesChanged);
         viewsChanged = List.copyOf(viewsChanged);
         tablesRenamed = List.copyOf(tablesRenamed);
+        tablesSplit = List.copyOf(tablesSplit);
+        tablesMerged = List.copyOf(tablesMerged);
         commentsChanged = List.copyOf(commentsChanged);
     }
 
@@ -58,6 +65,7 @@ public record SchemaDiff(Schema oldSchema, Schema newSchema,
         return tablesAdded.isEmpty() && tablesDropped.isEmpty()
                 && viewsAdded.isEmpty() && viewsDropped.isEmpty()
                 && tablesChanged.isEmpty() && viewsChanged.isEmpty()
-                && tablesRenamed.isEmpty() && commentsChanged.isEmpty();
+                && tablesRenamed.isEmpty() && tablesSplit.isEmpty()
+                && tablesMerged.isEmpty() && commentsChanged.isEmpty();
     }
 }
