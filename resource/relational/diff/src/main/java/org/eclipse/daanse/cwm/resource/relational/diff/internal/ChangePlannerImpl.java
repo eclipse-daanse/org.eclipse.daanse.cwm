@@ -15,6 +15,7 @@ package org.eclipse.daanse.cwm.resource.relational.diff.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Objects;
@@ -34,11 +35,14 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.Nullabl
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Tables;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.Synonym;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.CwmSchemaMapper;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeMarkers;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangePlanner;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ColumnChange;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.SchemaDiff;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.SynonymRetarget;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableDiff;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableMerge;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableSplit;
@@ -48,9 +52,12 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.ViewBodyChange;
  * Orders a {@link SchemaDiff} into an executable {@link ChangeOp} list. The
  * phase topology: drops before adds, renames (tables, columns, indexes,
  * constraints) before structural alters, FKs around PK rebuilds, tables
- * before FKs, then views and triggers, comments last. A PK change on a table
+ * before FKs, then views and triggers, then comments. A PK change on a table
  * with inbound foreign keys drops and re-adds the referencing FKs around the
- * rebuild.
+ * rebuild. Synonyms are dropped before everything else and created after it,
+ * a synonym after the synonym it points to; a retargeted synonym is dropped
+ * and re-created, since not every dialect has {@code CREATE OR REPLACE
+ * SYNONYM}.
  */
 public final class ChangePlannerImpl implements ChangePlanner {
 
@@ -67,6 +74,10 @@ public final class ChangePlannerImpl implements ChangePlanner {
             td.foreignKeysDropped().forEach(droppedFks::add);
             td.foreignKeysAdded().forEach(addedFks::add);
         }
+
+        // drop synonyms first — removed ones and the old side of retargeted ones
+        diff.synonymsDropped().forEach(s -> p.dropSynonym.add(new ChangeOp.DropSynonym(s)));
+        diff.synonymsRetargeted().forEach(r -> p.dropSynonym.add(new ChangeOp.DropSynonym(r.oldSynonym())));
 
         // drop FKs — explicitly dropped ones, plus inbound FKs of PK rebuilds
         for (TableDiff td : diff.tablesChanged()) {
@@ -222,6 +233,12 @@ public final class ChangePlannerImpl implements ChangePlanner {
         diff.commentsChanged().forEach(c -> p.comment.add(
                 new ChangeOp.SetComment(c.table(), c.element(), c.newComment())));
 
+        // synonyms last: their targets exist by now, chains in link order
+        List<Synonym> created = new ArrayList<>(diff.synonymsAdded());
+        diff.synonymsRetargeted().stream().map(SynonymRetarget::newSynonym).forEach(created::add);
+        created.sort(Comparator.comparingInt(CwmSchemaMapper::synonymChainDepth));
+        created.forEach(s -> p.createSynonym.add(new ChangeOp.CreateSynonym(s)));
+
         return p.flatten();
     }
 
@@ -351,6 +368,7 @@ public final class ChangePlannerImpl implements ChangePlanner {
     }
 
     private static final class Phases {
+        final List<ChangeOp> dropSynonym = new ArrayList<>();
         final List<ChangeOp> dropFk = new ArrayList<>();
         final List<ChangeOp> dropView = new ArrayList<>();
         final List<ChangeOp> dropMinor = new ArrayList<>();
@@ -366,9 +384,11 @@ public final class ChangePlannerImpl implements ChangePlanner {
         final List<ChangeOp> addFk = new ArrayList<>();
         final List<ChangeOp> createView = new ArrayList<>();
         final List<ChangeOp> comment = new ArrayList<>();
+        final List<ChangeOp> createSynonym = new ArrayList<>();
 
         List<ChangeOp> flatten() {
             List<ChangeOp> out = new ArrayList<>();
+            out.addAll(dropSynonym);
             out.addAll(dropFk);
             out.addAll(dropView);
             out.addAll(dropMinor);
@@ -384,6 +404,7 @@ public final class ChangePlannerImpl implements ChangePlanner {
             out.addAll(addFk);
             out.addAll(createView);
             out.addAll(comment);
+            out.addAll(createSynonym);
             return out;
         }
     }

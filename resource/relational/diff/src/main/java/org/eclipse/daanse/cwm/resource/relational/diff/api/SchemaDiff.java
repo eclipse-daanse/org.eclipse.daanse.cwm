@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.Synonym;
 
 /**
  * The complete structural diff between two CWM relational schemas — what
@@ -39,13 +40,18 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
  *                      table (predecessor Dependency links only)
  * @param commentsChanged table and column comments to set or remove, on
  *                      matched tables and on added tables and columns
+ * @param synonymsAdded  synonyms present only in the new schema
+ * @param synonymsDropped synonyms present only in the old schema
+ * @param synonymsRetargeted same-named synonyms whose target changed
  */
 public record SchemaDiff(Schema oldSchema, Schema newSchema,
         List<Table> tablesAdded, List<Table> tablesDropped,
         List<View> viewsAdded, List<View> viewsDropped,
         List<TableDiff> tablesChanged, List<ViewBodyChange> viewsChanged,
         List<TableRename> tablesRenamed, List<TableSplit> tablesSplit,
-        List<TableMerge> tablesMerged, List<CommentChange> commentsChanged) {
+        List<TableMerge> tablesMerged, List<CommentChange> commentsChanged,
+        List<Synonym> synonymsAdded, List<Synonym> synonymsDropped,
+        List<SynonymRetarget> synonymsRetargeted) {
 
     public SchemaDiff {
         tablesAdded = List.copyOf(tablesAdded);
@@ -58,6 +64,9 @@ public record SchemaDiff(Schema oldSchema, Schema newSchema,
         tablesSplit = List.copyOf(tablesSplit);
         tablesMerged = List.copyOf(tablesMerged);
         commentsChanged = List.copyOf(commentsChanged);
+        synonymsAdded = List.copyOf(synonymsAdded);
+        synonymsDropped = List.copyOf(synonymsDropped);
+        synonymsRetargeted = List.copyOf(synonymsRetargeted);
     }
 
     /** {@code true} iff the two schemas are structurally identical. */
@@ -66,6 +75,8 @@ public record SchemaDiff(Schema oldSchema, Schema newSchema,
                 && viewsAdded.isEmpty() && viewsDropped.isEmpty()
                 && tablesChanged.isEmpty() && viewsChanged.isEmpty()
                 && tablesRenamed.isEmpty() && tablesSplit.isEmpty()
-                && tablesMerged.isEmpty() && commentsChanged.isEmpty();
+                && tablesMerged.isEmpty() && commentsChanged.isEmpty()
+                && synonymsAdded.isEmpty() && synonymsDropped.isEmpty()
+                && synonymsRetargeted.isEmpty();
     }
 }

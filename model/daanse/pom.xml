@@ -30,5 +30,6 @@
   -->
     <module>governance</module>
     <module>resource.relational.privilege</module>
+    <module>resource.relational.synonym</module>
   </modules>
 </project>

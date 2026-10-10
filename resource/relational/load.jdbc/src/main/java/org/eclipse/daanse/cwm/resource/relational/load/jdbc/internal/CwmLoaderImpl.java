@@ -63,6 +63,9 @@ import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Desc
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SQLIndexes;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SQLSimpleTypes;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Tables;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Namespaces;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.Synonym;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.SynonymFactory;
 import org.eclipse.daanse.sql.jdbc.api.meta.IndexInfo;
 import org.eclipse.daanse.sql.jdbc.api.meta.IndexInfoItem;
 import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
@@ -75,6 +78,7 @@ import org.eclipse.daanse.sql.jdbc.api.schema.TableDefinition;
 import org.eclipse.daanse.sql.jdbc.api.schema.ViewDefinition;
 import org.eclipse.daanse.sql.model.schema.ColumnDefinition;
 import org.eclipse.daanse.sql.model.schema.ColumnMetaData;
+import org.eclipse.daanse.sql.model.schema.CatalogReference;
 import org.eclipse.daanse.sql.model.schema.ColumnReference;
 import org.eclipse.daanse.sql.model.schema.SchemaReference;
 import org.eclipse.daanse.sql.model.schema.TableReference;
@@ -140,6 +144,10 @@ public final class CwmLoaderImpl implements CwmLoader {
         if (config.includeProcedures()) {
             attachProcedures(si, config, schemasByName);
         }
+        if (config.includeSynonyms()) {
+            // Last: every possible target (table, view, MV, procedure) exists by now.
+            attachSynonyms(si, config, catalog, schemasByName, tableByFqn);
+        }
 
         return catalog;
     }
@@ -192,6 +200,9 @@ public final class CwmLoaderImpl implements CwmLoader {
             TableReference tr = td.table();
             // Some MetadataProviders (PostgreSQL) report indexes and constraints
             // alongside actual relations — filter to the table/view kinds we map.
+            // Drivers that also list synonyms as TableReference.TYPE_SYNONYM rows
+            // (H2) are skipped too: synonyms come from StructureInfo.synonyms() as
+            // Synonym elements, see attachSynonyms.
             String type = tr.type();
             boolean isView = TableReference.TYPE_VIEW.equals(type);
             boolean isSystem = TableReference.TYPE_SYSTEM_TABLE.equals(type);
@@ -699,6 +710,72 @@ public final class CwmLoaderImpl implements CwmLoader {
             }
             cwmSchema.getOwnedElement().add(cwmProc);
             fn.remarks().filter(r -> !r.isBlank()).ifPresent(r -> attachJdbcRemarks(cwmSchema, cwmProc, r));
+        }
+    }
+
+    /**
+     * Synonyms become {@link Synonym} elements of their schema. The target is kept raw
+     * as the database reports it; {@link Synonym#getTarget()} is set when the target
+     * is part of this catalog — a table, view, materialized view, procedure/function or
+     * another synonym. Targets behind a DB link or in another database stay unresolved.
+     * <p>
+     * Oracle PUBLIC synonyms go into a {@code PUBLIC} schema, created on demand, and
+     * are kept only when their target's schema passes the schema filter.
+     */
+    private static void attachSynonyms(StructureInfo si, JdbcToCwmConfig config, Catalog catalog,
+            Map<String, Schema> schemasByName, Map<String, NamedColumnSet> tableByFqn) {
+        Map<String, Synonym> synonymByFqn = new LinkedHashMap<>();
+        Map<Synonym, org.eclipse.daanse.sql.jdbc.api.schema.Synonym> sources = new LinkedHashMap<>();
+        for (org.eclipse.daanse.sql.jdbc.api.schema.Synonym syn : si.synonyms()) {
+            String sname = syn.schema().map(SchemaReference::name).orElse(null);
+            String targetSchema = syn.targetSchema().map(SchemaReference::name).orElse(null);
+            Schema cwmSchema;
+            if (syn.isPublic()) {
+                if (sname == null || targetSchema == null || !isSchemaAccepted(targetSchema, config))
+                    continue;
+                cwmSchema = schemasByName.computeIfAbsent(sname, n -> ownedSchema(catalog, n));
+            } else {
+                cwmSchema = schemasByName.get(sname);
+            }
+            if (cwmSchema == null)
+                continue;
+            if (!config.tableFilter().test(sname, syn.name()))
+                continue;
+
+            Synonym cwmSyn = SynonymFactory.eINSTANCE.createSynonym();
+            cwmSyn.setName(syn.name());
+            cwmSyn.setTargetCatalogName(
+                    syn.targetSchema().flatMap(SchemaReference::catalog).map(CatalogReference::name).orElse(null));
+            cwmSyn.setTargetSchemaName(targetSchema);
+            cwmSyn.setTargetName(syn.targetName());
+            cwmSyn.setTargetObjectType(syn.targetObjectType().orElse(null));
+            cwmSyn.setDbLink(syn.dbLink().orElse(null));
+            cwmSyn.setIsPublic(syn.isPublic());
+            cwmSchema.getOwnedElement().add(cwmSyn);
+            synonymByFqn.put(fqn(sname, syn.name()), cwmSyn);
+            sources.put(cwmSyn, syn);
+        }
+
+        // Second pass, once every synonym exists, so chains resolve regardless of order.
+        for (Map.Entry<Synonym, org.eclipse.daanse.sql.jdbc.api.schema.Synonym> e : sources.entrySet()) {
+            org.eclipse.daanse.sql.jdbc.api.schema.Synonym syn = e.getValue();
+            boolean local = syn.dbLink().isEmpty()
+                    && syn.targetSchema().flatMap(SchemaReference::catalog).isEmpty();
+            if (!local)
+                continue;
+            String targetSchema = syn.targetSchema().map(SchemaReference::name).orElse(null);
+            String key = fqn(targetSchema, syn.targetName());
+            ModelElement target = tableByFqn.get(key);
+            if (target == null)
+                target = synonymByFqn.get(key);
+            if (target == null) {
+                Schema cwmTargetSchema = schemasByName.get(targetSchema);
+                if (cwmTargetSchema != null) {
+                    target = Namespaces.findOwnedByName(cwmTargetSchema, Procedure.class, syn.targetName())
+                            .orElse(null);
+                }
+            }
+            e.getKey().setTarget(target);
         }
     }
 

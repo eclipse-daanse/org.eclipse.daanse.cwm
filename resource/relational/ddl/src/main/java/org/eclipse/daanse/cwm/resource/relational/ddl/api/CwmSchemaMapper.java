@@ -15,21 +15,27 @@ package org.eclipse.daanse.cwm.resource.relational.ddl.api;
 
 import java.sql.JDBCType;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.Set;
 
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SQLSimpleTypes;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Feature;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.StructuralFeature;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLDataType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.Synonym;
 import org.eclipse.daanse.sql.model.schema.ColumnDefinition;
 import org.eclipse.daanse.sql.model.schema.ColumnMetaData;
 import org.eclipse.daanse.sql.model.schema.ColumnReference;
@@ -38,6 +44,7 @@ import org.eclipse.daanse.sql.model.schema.Trigger.TriggerTiming;
 import org.eclipse.daanse.sql.model.schema.Trigger.TriggerScope;
 import org.eclipse.daanse.sql.model.schema.Trigger.TriggerEvent;
 import org.eclipse.daanse.sql.dialect.api.Dialect;
+import org.eclipse.daanse.sql.dialect.api.generator.DdlGenerator.SynonymDefinition;
 import org.eclipse.daanse.sql.jdbc.record.schema.ColumnDefinitionRecord;
 import org.eclipse.daanse.sql.jdbc.record.schema.ColumnMetaDataRecord;
 import org.eclipse.daanse.sql.jdbc.record.schema.PrimaryKeyRecord;
@@ -253,5 +260,37 @@ public final class CwmSchemaMapper {
         }
         int us = literal.lastIndexOf('_');
         return us >= 0 ? literal.substring(us + 1) : literal;
+    }
+    /**
+     * The dialect definition of {@code synonym}, owned by its schema. A target resolved in the
+     * model gives the target schema and name, so a rename in the model reaches the DDL;
+     * otherwise the raw target fields are used.
+     */
+    public static SynonymDefinition synonymDefinition(Synonym synonym) {
+        String schemaName = synonym.getNamespace() instanceof Schema owner ? owner.getName() : null;
+        String targetSchema = synonym.getTargetSchemaName();
+        String targetName = synonym.getTargetName();
+        ModelElement target = synonym.getTarget();
+        if (target != null && target.getName() != null && target.getNamespace() instanceof Schema owner) {
+            targetSchema = owner.getName();
+            targetName = target.getName();
+        }
+        return new SynonymDefinition(schemaName, synonym.getName(), synonym.getTargetCatalogName(), targetSchema,
+                targetName, synonym.getDbLink(), synonym.isIsPublic());
+    }
+
+    /**
+     * Number of synonym links before a non-synonym; a cycle counts as its length. Sorting by it
+     * creates a synonym after the synonym it points to.
+     */
+    public static int synonymChainDepth(Synonym synonym) {
+        Set<Synonym> seen = Collections.newSetFromMap(new IdentityHashMap<>());
+        int depth = 0;
+        ModelElement current = synonym.getTarget();
+        while (current instanceof Synonym next && seen.add(next)) {
+            depth++;
+            current = next.getTarget();
+        }
+        return depth;
     }
 }

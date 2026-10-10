@@ -21,6 +21,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.Synonym;
 
 /**
  * The complete catalog of schema change operations — the single intermediate
@@ -145,5 +146,14 @@ public sealed interface ChangeOp {
     // comments
     /** Sets the comment of {@code element} ({@code table} or one of its columns); {@code null} removes it. */
     record SetComment(Table table, ModelElement element, String comment) implements ChangeOp {
+    }
+
+    // synonyms
+    /** {@code synonym} of the new schema; a retarget is a drop of the old synonym plus this create. */
+    record CreateSynonym(Synonym synonym) implements ChangeOp {
+    }
+
+    /** {@code synonym} of the old schema. */
+    record DropSynonym(Synonym synonym) implements ChangeOp {
     }
 }

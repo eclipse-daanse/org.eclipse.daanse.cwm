@@ -32,6 +32,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.NamedColumnSets;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.UniqueConstraints;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.Synonym;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.CwmSchemaMapper;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlGenerator;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlGeneratorFactory;
@@ -56,6 +57,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = MigrationEmitter.class)
 public final class MigrationEmitterImpl implements MigrationEmitter {
+
+    private static final System.Logger LOG = System.getLogger(MigrationEmitterImpl.class.getName());
 
     private final DdlGeneratorFactory ddlFactory;
 
@@ -217,6 +220,20 @@ public final class MigrationEmitterImpl implements MigrationEmitter {
             case ChangeOp.DropTrigger o -> out.addAll(CwmSchemaMapper.dropTrigger(dialect, ref(o.table()),
                     o.trigger()));
 
+            //  synonyms — nothing where the dialect has no synonyms or cannot spell this one
+            case ChangeOp.CreateSynonym o -> {
+                Optional<String> sql = dialect.ddlGenerator()
+                        .createSynonym(CwmSchemaMapper.synonymDefinition(o.synonym()), false);
+                if (sql.isPresent()) {
+                    out.add(sql.get());
+                } else {
+                    LOG.log(System.Logger.Level.WARNING, "synonym {0} skipped: {1} cannot express it",
+                            qualified(o.synonym()), dialect.name());
+                }
+            }
+            case ChangeOp.DropSynonym o -> dialect.ddlGenerator().dropSynonym(schemaName(o.synonym()),
+                    o.synonym().getName(), o.synonym().isIsPublic(), true).ifPresent(out::add);
+
             //  comments
             case ChangeOp.SetComment o -> {
                 if (o.element() instanceof Column c) {
@@ -234,6 +251,15 @@ public final class MigrationEmitterImpl implements MigrationEmitter {
     private static void createTable(List<String> out, DdlGenerator ddl, Table table) {
         Schema schema = NamedColumnSets.findSchema(table).orElse(null);
         out.add(schema != null ? ddl.createTable(schema, table) : ddl.createTable(table));
+    }
+
+    private static String schemaName(Synonym synonym) {
+        return synonym.getNamespace() instanceof Schema s ? s.getName() : null;
+    }
+
+    private static String qualified(Synonym synonym) {
+        String schema = schemaName(synonym);
+        return schema == null ? synonym.getName() : schema + "." + synonym.getName();
     }
 
     private static String names(List<Table> tables) {

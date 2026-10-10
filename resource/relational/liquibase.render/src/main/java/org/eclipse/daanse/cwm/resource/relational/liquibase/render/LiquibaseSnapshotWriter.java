@@ -10,6 +10,7 @@
 package org.eclipse.daanse.cwm.resource.relational.liquibase.render;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,6 +24,8 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Tables;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.util.Synonyms;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.CwmSchemaMapper;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.MigrationEmitter;
@@ -32,7 +35,8 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.MigrationEmitter;
  * create-changelog — createTable (PK/NOT NULL/default inline) per table,
  * then indexes, then all foreign keys collected after every table exists
  * (FK cycles), then views, then triggers, then the table and column
- * comments ({@link DdlSettings#COMMENT_TYPE_JDBC_REMARKS} Descriptions).
+ * comments ({@link DdlSettings#COMMENT_TYPE_JDBC_REMARKS} Descriptions),
+ * then synonyms, a synonym after the synonym it points to.
  * Delegates the per-element rendering to the same change mapping the delta
  * writer uses, so both outputs stay consistent.
  */
@@ -71,6 +75,9 @@ public final class LiquibaseSnapshotWriter {
             comment(t, t, ops);
             ColumnSets.columns(t).forEach(c -> comment(t, c, ops));
         }
+        Synonyms.synonymStream(schema)
+                .sorted(Comparator.comparingInt(CwmSchemaMapper::synonymChainDepth))
+                .forEach(syn -> ops.add(new ChangeOp.CreateSynonym(syn)));
         return new LiquibaseChangelogWriter(emitter).write(ops, settings);
     }
 

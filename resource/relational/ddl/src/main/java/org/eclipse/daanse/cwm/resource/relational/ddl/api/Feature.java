@@ -20,7 +20,9 @@ import java.util.Set;
 public enum Feature {
     SCHEMA, TABLE, PRIMARY_KEY, UNIQUE, CHECK, INDEX, FOREIGN_KEY, VIEW, TRIGGER,
     /** Table and column comments, from the {@link DdlSettings#commentType()} Descriptions. */
-    COMMENT;
+    COMMENT,
+    /** Synonyms of the schema — created after every other entity, dropped before them. */
+    SYNONYM;
 
     /** All features. */
     public static final Set<Feature> ALL = EnumSet.allOf(Feature.class);
