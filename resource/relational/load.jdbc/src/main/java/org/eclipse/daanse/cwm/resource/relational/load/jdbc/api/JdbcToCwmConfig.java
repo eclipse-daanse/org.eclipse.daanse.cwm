@@ -33,6 +33,7 @@ public final class JdbcToCwmConfig {
     private final boolean includeTriggers;
     private final boolean includeProcedures;
     private final boolean includeMaterializedViews;
+    private final boolean includeSynonyms;
 
     private JdbcToCwmConfig(Builder b) {
         this.catalogName = b.catalogName;
@@ -46,6 +47,7 @@ public final class JdbcToCwmConfig {
         this.includeTriggers = b.includeTriggers;
         this.includeProcedures = b.includeProcedures;
         this.includeMaterializedViews = b.includeMaterializedViews;
+        this.includeSynonyms = b.includeSynonyms;
     }
 
     /** {@code null} (default) lets the loader pick the database name. */
@@ -95,6 +97,10 @@ public final class JdbcToCwmConfig {
         return includeMaterializedViews;
     }
 
+    public boolean includeSynonyms() {
+        return includeSynonyms;
+    }
+
     /** Import everything. */
     public static JdbcToCwmConfig all() {
         return new Builder().build();
@@ -116,6 +122,7 @@ public final class JdbcToCwmConfig {
         private boolean includeTriggers = true;
         private boolean includeProcedures = true;
         private boolean includeMaterializedViews = true;
+        private boolean includeSynonyms = true;
 
         private Builder() {
         }
@@ -177,6 +184,11 @@ public final class JdbcToCwmConfig {
 
         public Builder includeMaterializedViews(boolean include) {
             this.includeMaterializedViews = include;
+            return this;
+        }
+
+        public Builder includeSynonyms(boolean include) {
+            this.includeSynonyms = include;
             return this;
         }
 

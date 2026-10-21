@@ -31,6 +31,8 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ActionO
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ConditionTimingType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.EventManipulationType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.Synonym;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.SynonymFactory;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
@@ -226,7 +228,57 @@ class LiquibaseChangelogWriterTest {
                 .contains("<setTableRemarks schemaName=\"sales\" tableName=\"customer\" remarks=\"customers\"/>");
     }
 
+    @Test
+    void createSynonymIsDialectSqlWithADropRollback() {
+        Synonym cust = synonym(customerTable(), "cust");
+
+        String xml = writer.write(List.of(new ChangeOp.CreateSynonym(cust)));
+        String forward = xml.substring(0, xml.indexOf("<rollback>"));
+        String rollback = xml.substring(xml.indexOf("<rollback>"));
+
+        assertThat(forward).contains("CREATE SYNONYM &quot;sales&quot;.&quot;cust&quot; FOR "
+                + "&quot;sales&quot;.&quot;customer&quot;</sql>")
+                .contains("<sql dbms=\"oracle,mssql\"")
+                .doesNotContain("postgresql").doesNotContain("mysql");
+        assertThat(rollback).contains("DROP SYNONYM");
+    }
+
+    @Test
+    void dropSynonymRollsBackToTheOldTarget() {
+        Synonym cust = synonym(customerTable(), "cust");
+
+        String xml = writer.write(List.of(new ChangeOp.DropSynonym(cust)));
+        String forward = xml.substring(0, xml.indexOf("<rollback>"));
+        String rollback = xml.substring(xml.indexOf("<rollback>"));
+
+        assertThat(forward).contains("<sql dbms=\"oracle\" splitStatements=\"false\">DROP SYNONYM "
+                + "&quot;sales&quot;.&quot;cust&quot;</sql>");
+        assertThat(rollback).contains("CREATE SYNONYM &quot;sales&quot;.&quot;cust&quot; FOR "
+                + "&quot;sales&quot;.&quot;customer&quot;");
+    }
+
+    @Test
+    void snapshotCreatesSynonymsAfterTables() {
+        Table customer = customerTable();
+        synonym(customer, "cust");
+
+        String snapshot = new LiquibaseSnapshotWriter(EMITTER).write((Schema) customer.getNamespace());
+
+        assertThat(snapshot.indexOf("CREATE SYNONYM")).isGreaterThan(snapshot.indexOf("<createTable"));
+    }
+
     // fixture
+
+    private static Synonym synonym(Table target, String name) {
+        Synonym s = SynonymFactory.eINSTANCE.createSynonym();
+        s.setName(name);
+        s.setTarget(target);
+        s.setTargetSchemaName(target.getNamespace().getName());
+        s.setTargetName(target.getName());
+        target.getNamespace().getOwnedElement().add(s);
+        return s;
+    }
+
 
     private static Table customerTable() {
         Schema s = R.createSchema();

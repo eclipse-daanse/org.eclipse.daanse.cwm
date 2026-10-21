@@ -15,17 +15,22 @@ package org.eclipse.daanse.cwm.resource.relational.sql.resolve.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Catalog;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Catalogs;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.Synonym;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.util.Synonyms;
 import ai.starlake.transpiler.schema.JdbcColumn;
 import ai.starlake.transpiler.schema.JdbcMetaData;
 
@@ -39,6 +44,15 @@ import ai.starlake.transpiler.schema.JdbcMetaData;
  * <p>
  * Tables, views and query column sets are all registered as plain tables — for
  * v1 we don't recurse into derived-query expansion.
+ * </p>
+ * <p>
+ * A {@link Synonym} whose chain ends at a {@link NamedColumnSet} is registered
+ * under its own name with the target's columns, and its lookup keys map to the
+ * target's real {@link Column}s — so lineage leads to the table, not to the
+ * synonym. PUBLIC synonyms of the schemas' catalogs are also visible unqualified
+ * in the current schema, unless an object of that name exists there (Oracle name
+ * resolution: own schema first, then PUBLIC). Synonyms whose target is not in the
+ * model (DB link, other database, procedure) are not registered.
  * </p>
  */
 final class CwmJdbcMetaData {
@@ -80,21 +94,60 @@ final class CwmJdbcMetaData {
             // owned by the schema is registered as a queryable relation with
             // its declared columns.
             for (NamedColumnSet ncs : Schemas.columnSets(schema)) {
-                String tableName = ncs.getName();
-                if (tableName == null)
-                    continue;
-                List<Column> cols = ColumnSets.columns(ncs);
-                List<JdbcColumn> jdbcCols = new ArrayList<>(cols.size());
-                for (Column c : cols) {
-                    if (c.getName() == null)
-                        continue;
-                    jdbcCols.add(new JdbcColumn(c.getName()));
-                    columnsByKey.put(new ColumnKey(catalogName, schemaName, tableName, c.getName()), c);
-                }
-                jdbcMetaData.addTable(catalogName, schemaName, tableName, jdbcCols);
-                tablesByKey.put(new TableKey(catalogName, schemaName, tableName), ncs);
+                register(catalogName, schemaName, ncs.getName(), ncs);
             }
         }
+        // Synonyms after all relations: a relation of the same name wins.
+        for (Schema schema : schemas) {
+            String catalogName = catalogNameOf(schema).orElse(this.currentCatalog);
+            String schemaName = schema.getName() == null ? "" : schema.getName();
+            for (Synonym synonym : Synonyms.synonyms(schema)) {
+                finalColumnSet(synonym).ifPresent(ncs -> register(catalogName, schemaName, synonym.getName(), ncs));
+            }
+        }
+        Set<Catalog> catalogs = new LinkedHashSet<>();
+        for (Schema schema : schemas) {
+            Schemas.findCatalog(schema).ifPresent(catalogs::add);
+        }
+        for (Catalog catalog : catalogs) {
+            for (Schema schema : Catalogs.schemas(catalog)) {
+                for (Synonym synonym : Synonyms.synonyms(schema)) {
+                    if (synonym.isIsPublic()) {
+                        finalColumnSet(synonym).ifPresent(
+                                ncs -> register(this.currentCatalog, this.currentSchema, synonym.getName(), ncs));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Registers {@code ncs}'s columns as the relation {@code catalog.schema.name}.
+     * {@code name} differs from {@code ncs}'s own name for a synonym; the lookup
+     * keys still map to {@code ncs} and its columns. An already registered name is
+     * left alone.
+     */
+    private void register(String catalogName, String schemaName, String name, NamedColumnSet ncs) {
+        if (name == null)
+            return;
+        TableKey tableKey = new TableKey(catalogName, schemaName, name);
+        if (tablesByKey.containsKey(tableKey))
+            return;
+        List<Column> cols = ColumnSets.columns(ncs);
+        List<JdbcColumn> jdbcCols = new ArrayList<>(cols.size());
+        for (Column c : cols) {
+            if (c.getName() == null)
+                continue;
+            jdbcCols.add(new JdbcColumn(c.getName()));
+            columnsByKey.put(new ColumnKey(catalogName, schemaName, name, c.getName()), c);
+        }
+        jdbcMetaData.addTable(catalogName, schemaName, name, jdbcCols);
+        tablesByKey.put(tableKey, ncs);
+    }
+
+    private static Optional<NamedColumnSet> finalColumnSet(Synonym synonym) {
+        return Synonyms.resolveFinal(synonym).filter(NamedColumnSet.class::isInstance)
+                .map(NamedColumnSet.class::cast);
     }
 
     /** Pick the catalog name for a schema; empty string if no catalog. */

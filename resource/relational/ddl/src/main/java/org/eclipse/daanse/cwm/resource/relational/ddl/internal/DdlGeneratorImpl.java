@@ -14,6 +14,7 @@
 package org.eclipse.daanse.cwm.resource.relational.ddl.internal;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,8 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Tables;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.UniqueConstraints;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.Synonym;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.util.Synonyms;
 import org.eclipse.daanse.sql.model.schema.ColumnDefinition;
 import org.eclipse.daanse.sql.model.schema.SchemaReference;
 import org.eclipse.daanse.sql.model.schema.TableReference;
@@ -101,6 +104,34 @@ public final class DdlGeneratorImpl implements DdlGenerator {
         }
         this.dialect = dialect;
         this.settings = settings == null ? DdlSettings.defaults() : settings;
+    }
+
+    /**
+     * {@code CREATE SYNONYM} for every synonym of {@code schema}, a synonym after the
+     * synonym it points to. A target resolved in the model gives the target name, so
+     * a rename in the model reaches the DDL; otherwise the raw target is used.
+     */
+    private void createSynonyms(Schema schema, List<String> out) {
+        List<Synonym> synonyms = Synonyms.synonyms(schema);
+        if (synonyms.isEmpty()) {
+            return;
+        }
+        if (!dialect.ddlGenerator().supportsSynonyms()) {
+            skipped("synonyms", "this dialect has no CREATE SYNONYM");
+            return;
+        }
+        List<Synonym> ordered = new ArrayList<>(synonyms);
+        ordered.sort(Comparator.comparingInt(CwmSchemaMapper::synonymChainDepth));
+        for (Synonym synonym : ordered) {
+            Optional<String> sql = dialect.ddlGenerator()
+                    .createSynonym(CwmSchemaMapper.synonymDefinition(synonym), false);
+            if (sql.isPresent()) {
+                out.add(sql.get());
+            } else {
+                skipped("synonym " + schema.getName() + "." + synonym.getName(),
+                        "this dialect cannot express its target");
+            }
+        }
     }
 
     public DdlSettings settings() {
@@ -306,6 +337,10 @@ public final class DdlGeneratorImpl implements DdlGenerator {
                 }
             }
         }
+        if (features.contains(Feature.SYNONYM)) {
+            createSynonyms(schema, out);
+        }
+
         return out;
     }
 
@@ -330,6 +365,14 @@ public final class DdlGeneratorImpl implements DdlGenerator {
         List<String> out = new ArrayList<>();
         List<Table> tables = Schemas.tables(schema);
         List<View> views = Schemas.views(schema);
+
+        if (features.contains(Feature.SYNONYM)) {
+            // First: a synonym may point at anything dropped below.
+            for (Synonym synonym : Synonyms.synonyms(schema)) {
+                dialect.ddlGenerator().dropSynonym(schema.getName(), synonym.getName(), synonym.isIsPublic(), true)
+                        .ifPresent(out::add);
+            }
+        }
 
         if (features.contains(Feature.TRIGGER)) {
             Map<String, String> bodyToProc = new LinkedHashMap<>();

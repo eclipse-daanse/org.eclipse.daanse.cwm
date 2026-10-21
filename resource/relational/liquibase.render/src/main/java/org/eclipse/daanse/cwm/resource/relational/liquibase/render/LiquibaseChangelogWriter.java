@@ -29,6 +29,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ForeignKeys;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.UniqueConstraints;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.Synonym;
 import org.eclipse.daanse.cwm.resource.relational.ddl.render.Dialects;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.MigrationEmitter;
@@ -49,7 +50,8 @@ import org.eclipse.daanse.sql.model.schema.TableReference;
  * the jdbc.db DdlGenerator, index and constraint renames and triggers with
  * the {@link MigrationEmitter}'s statements, so the changelog and the plain SQL
  * migration agree, including where a dialect re-creates instead of
- * renaming.</p>
+ * renaming. Synonyms likewise: Liquibase core has no synonym change type, so
+ * they are the emitter's statements for the dialects that have synonyms.</p>
  */
 public final class LiquibaseChangelogWriter {
 
@@ -427,6 +429,26 @@ public final class LiquibaseChangelogWriter {
                 }
                 x.closeChangeSet();
             }
+            case ChangeOp.CreateSynonym o -> {
+                x.openChangeSet(settings.author(), "CreateSynonym|" + qualified(o.synonym()));
+                dbmsSql(x, o);
+                if (settings.includeRollback()) {
+                    x.startElement("rollback");
+                    dbmsSql(x, new ChangeOp.DropSynonym(o.synonym()));
+                    x.endElement("rollback");
+                }
+                x.closeChangeSet();
+            }
+            case ChangeOp.DropSynonym o -> {
+                x.openChangeSet(settings.author(), "DropSynonym|" + qualified(o.synonym()));
+                dbmsSql(x, o);
+                if (settings.includeRollback()) {
+                    x.startElement("rollback");
+                    dbmsSql(x, new ChangeOp.CreateSynonym(o.synonym()));
+                    x.endElement("rollback");
+                }
+                x.closeChangeSet();
+            }
             case ChangeOp.SetComment o -> {
                 String remarks = o.comment() == null ? "" : o.comment();
                 if (o.element() instanceof Column c) {
@@ -644,6 +666,11 @@ public final class LiquibaseChangelogWriter {
     private static String qualified(org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet ncs) {
         String schema = schemaNameOf(ncs);
         return schema == null ? ncs.getName() : schema + "." + ncs.getName();
+    }
+
+    private static String qualified(Synonym synonym) {
+        String schema = synonym.getNamespace() == null ? null : synonym.getNamespace().getName();
+        return schema == null ? synonym.getName() : schema + "." + synonym.getName();
     }
 
     private static List<Column> pkColumns(Table t) {

@@ -23,6 +23,7 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.IndexRename;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.PredecessorLinks;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.PrimaryKeyChange;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.SchemaDiff;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.SynonymRetarget;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableDiff;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableMerge;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableRename;
@@ -34,6 +35,7 @@ import org.osgi.service.component.annotations.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -66,6 +68,10 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ForeignKeys;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Tables;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.UniqueConstraints;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.Synonym;
+import org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym.util.Synonyms;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.CwmSchemaMapper;
+import org.eclipse.daanse.sql.dialect.api.generator.DdlGenerator.SynonymDefinition;
 
 /**
  * Compares two CWM relational schemas and produces a {@link SchemaDiff}.
@@ -97,6 +103,8 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
  *   <li>Comments: the body of the {@link DiffSettings#commentType()}
  *       Description on tables and columns, including those of added tables
  *       and columns.</li>
+ *   <li>Synonyms: matched by name only (no rename detection); a changed
+ *       target is surfaced as {@link SynonymRetarget}.</li>
  * </ul>
  */
 @Component(service = SchemaDiffer.class)
@@ -163,6 +171,14 @@ public final class SchemaDifferImpl implements SchemaDiffer {
             }
         }
 
+        List<Synonym> synonymsAdded = new ArrayList<>();
+        List<Synonym> synonymsDropped = new ArrayList<>();
+        List<SynonymRetarget> synonymsRetargeted = new ArrayList<>();
+        diffSynonyms(oldSchema, newSchema, synonymsAdded, synonymsDropped, synonymsRetargeted);
+        if (settings.scope() == DiffSettings.Scope.PARTIAL) {
+            synonymsAdded.clear();
+        }
+
         for (Table t : tablesAdded) {
             compareComment(t, null, t, settings, comments);
             ColumnSets.columns(t).forEach(c -> compareComment(t, null, c, settings, comments));
@@ -181,7 +197,44 @@ public final class SchemaDifferImpl implements SchemaDiffer {
         return new SchemaDiff(oldSchema, newSchema,
                 tablesAdded, tablesDropped, viewsAdded, viewsDropped,
                 tablesChanged, viewsChanged, tablesRenamed,
-                splitMerge.splits(), splitMerge.merges(), comments);
+                splitMerge.splits(), splitMerge.merges(), comments,
+                synonymsAdded, synonymsDropped, synonymsRetargeted);
+    }
+
+    // synonyms
+
+    /**
+     * Pairs synonyms by name within the schema. A pair is retargeted when the
+     * target differs as the DDL generator spells it — the resolved target's
+     * schema and name where the model resolves it, the raw target fields
+     * otherwise — or its target catalog, DB link or {@code PUBLIC} flag
+     * differs. The database's target object type is descriptive only and is
+     * not compared.
+     */
+    private static void diffSynonyms(Schema oldSchema, Schema newSchema, List<Synonym> added,
+            List<Synonym> dropped, List<SynonymRetarget> retargeted) {
+        Map<String, Synonym> oldByName = byName(Synonyms.synonyms(oldSchema));
+        Set<String> newNames = new HashSet<>();
+        for (Synonym n : Synonyms.synonyms(newSchema)) {
+            if (isBlank(n.getName()) || !newNames.add(n.getName())) {
+                continue;
+            }
+            Synonym o = oldByName.get(n.getName());
+            if (o == null) {
+                added.add(n);
+            } else if (!sameTarget(CwmSchemaMapper.synonymDefinition(o), CwmSchemaMapper.synonymDefinition(n))) {
+                retargeted.add(new SynonymRetarget(o, n));
+            }
+        }
+        oldByName.values().stream().filter(o -> !newNames.contains(o.getName())).forEach(dropped::add);
+    }
+
+    private static boolean sameTarget(SynonymDefinition a, SynonymDefinition b) {
+        return Objects.equals(a.targetCatalogName(), b.targetCatalogName())
+                && Objects.equals(a.targetSchemaName(), b.targetSchemaName())
+                && Objects.equals(a.targetName(), b.targetName())
+                && Objects.equals(a.dbLink(), b.dbLink())
+                && a.isPublic() == b.isPublic();
     }
 
     // pairing

@@ -58,6 +58,12 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.relational</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
@@ -97,7 +103,7 @@
     </dependency>
 
     <!-- Test: round-trip the same CWM fixture against H2 (in-process),
-         PostgreSQL, MariaDB, SQL Server and Oracle via Testcontainers. -->
+        PostgreSQL, MariaDB, SQL Server and Oracle via Testcontainers. -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.sql.jdbc.impl</artifactId>
@@ -248,7 +254,7 @@
   <build>
     <plugins>
       <!-- Publish a test-jar so the diff module can reuse the shared
-           cross-dialect test support (DialectProfile, SqlGenAssertions). -->
+            cross-dialect test support (DialectProfile, SqlGenAssertions). -->
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>

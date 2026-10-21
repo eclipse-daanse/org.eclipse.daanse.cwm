@@ -70,6 +70,12 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.daanse.resource.relational.synonym</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.sql.jdbc.api</artifactId>
       <version>${jdbc-db.version}</version>
       <scope>compile</scope>
@@ -86,7 +92,7 @@
     </dependency>
 
     <!-- Test: generate DDL (ddl module), apply it, then load it back and
-         compare — against PostgreSQL and Oracle via Testcontainers. -->
+        compare — against PostgreSQL and Oracle via Testcontainers. -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.cwm.resource.relational.ddl</artifactId>
