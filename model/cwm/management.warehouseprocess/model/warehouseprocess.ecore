@@ -250,15 +250,15 @@
         <details key="constraints" value="MonthRequiredForEveryYear MonthValidRange DayOfMonthRequired DayOfMonthValidRange DayOfWeekRequiredForEveryWeek HourRequired HourValidRange MinuteRequired MinuteValidRange SecondValidRange" />
       </eAnnotations>
       <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
-        <details key="MonthRequiredForEveryYear" value="self.recurringType=datatype::RecurringType::everyYear implies self.month-&gt;notEmpty()" />
-        <details key="MonthValidRange" value="self.month-&gt;notEmpty() implies 1 &lt;= self.month and self.month &lt;= 12" />
-        <details key="DayOfMonthRequired" value="self.recurringType=datatype::RecurringType::everyYear or self.recurringType=datatype::RecurringType::everyMonth&#10;implies self.dayOfMonth-&gt;notEmpty()" />
-        <details key="DayOfMonthValidRange" value="self.dayOfMonth-&gt;notEmpty() implies 1 &lt;= self.dayOfMonth and self.dayOfMonth &lt;= 31" />
+        <details key="MonthRequiredForEveryYear" value="self.recurringType=datatype::RecurringType::everyYear implies self.month &lt;&gt; 0" />
+        <details key="MonthValidRange" value="self.month &lt;&gt; 0 implies 1 &lt;= self.month and self.month &lt;= 12" />
+        <details key="DayOfMonthRequired" value="self.recurringType=datatype::RecurringType::everyYear or self.recurringType=datatype::RecurringType::everyMonth&#10;implies self.dayOfMonth &lt;&gt; 0" />
+        <details key="DayOfMonthValidRange" value="self.dayOfMonth &lt;&gt; 0 implies 1 &lt;= self.dayOfMonth and self.dayOfMonth &lt;= 31" />
         <details key="DayOfWeekRequiredForEveryWeek" value="self.recurringType=datatype::RecurringType::everyWeek implies self.dayOfWeek-&gt;notEmpty()" />
         <details key="HourRequired" value="self.recurringType=datatype::RecurringType::everyYear or self.recurringType=datatype::RecurringType::everyMonth or&#10;self.recurringType=datatype::RecurringType::everyWeek or self.recurringType=datatype::RecurringType::everyDay&#10;implies self.hour-&gt;notEmpty()" />
-        <details key="HourValidRange" value="self.hour-&gt;notEmpty() implies 0 &lt;= self.hour and self.hour &lt;= 23" />
+        <details key="HourValidRange" value="0 &lt;= self.hour and self.hour &lt;= 23" />
         <details key="MinuteRequired" value="self.recurringType&lt;&gt;datatype::RecurringType::everyMinute implies self.minute-&gt;notEmpty()" />
-        <details key="MinuteValidRange" value="self.minute-&gt;notEmpty() implies 0 &lt;= self.minute and self.minute &lt;= 59" />
+        <details key="MinuteValidRange" value="0 &lt;= self.minute and self.minute &lt;= 59" />
         <details key="SecondValidRange" value="0 &lt;= self.second and self.second &lt;= 59" />
       </eAnnotations>
       <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
@@ -267,21 +267,25 @@
         <details key="MonthRequiredForEveryYear.description" value="month must be specified when recurringType is everyYear." />
         <details key="MonthRequiredForEveryYear.level" value="error" />
         <details key="MonthRequiredForEveryYear.specSource" value="self.recurringType=everyYear implies self.month-&gt;notEmpty" />
+        <details key="MonthRequiredForEveryYear.postDescription" value="Executable. The specification asks whether the optional (0..1) Integer attribute is specified (-&gt;notEmpty / -&gt;isEmpty). The Ecore maps Integer to the primitive long without unsettable, so an attribute that was never specified reads 0, -&gt;notEmpty() is always true and EMF never writes 0 to XMI; 0 therefore stands for &quot;not specified&quot; and the body compares with 0. Exact here: 0 is no month." />
         <details key="MonthValidRange.shortName" value="C-2" />
         <details key="MonthValidRange.name" value="Month Valid Range" />
         <details key="MonthValidRange.description" value="month must be between 1 and 12 (inclusive) when specified." />
         <details key="MonthValidRange.level" value="error" />
         <details key="MonthValidRange.specSource" value="self.month-&gt;notEmpty implies 1 &lt;= self.month &lt;= 12" />
+        <details key="MonthValidRange.postDescription" value="Executable. The specification asks whether the optional (0..1) Integer attribute is specified (-&gt;notEmpty / -&gt;isEmpty). The Ecore maps Integer to the primitive long without unsettable, so an attribute that was never specified reads 0, -&gt;notEmpty() is always true and EMF never writes 0 to XMI; 0 therefore stands for &quot;not specified&quot; and the body compares with 0. Exact here: 0 is no month." />
         <details key="DayOfMonthRequired.shortName" value="C-3" />
         <details key="DayOfMonthRequired.name" value="DayOfMonth Required" />
         <details key="DayOfMonthRequired.description" value="dayOfMonth must be specified when recurringType is everyYear or everyMonth." />
         <details key="DayOfMonthRequired.level" value="error" />
         <details key="DayOfMonthRequired.specSource" value="self.recurringType=everyYear or self.recurringType=everyMonth&#10;implies self.dayOfMonth-&gt;notEmpty" />
+        <details key="DayOfMonthRequired.postDescription" value="Executable. The specification asks whether the optional (0..1) Integer attribute is specified (-&gt;notEmpty / -&gt;isEmpty). The Ecore maps Integer to the primitive long without unsettable, so an attribute that was never specified reads 0, -&gt;notEmpty() is always true and EMF never writes 0 to XMI; 0 therefore stands for &quot;not specified&quot; and the body compares with 0. Exact here: 0 is no day of the month." />
         <details key="DayOfMonthValidRange.shortName" value="C-4" />
         <details key="DayOfMonthValidRange.name" value="DayOfMonth Valid Range" />
         <details key="DayOfMonthValidRange.description" value="dayOfMonth must be between 1 and 31 (inclusive) when specified." />
         <details key="DayOfMonthValidRange.level" value="error" />
         <details key="DayOfMonthValidRange.specSource" value="self.dayOfMonth-&gt;notEmpty implies 1 &lt;= self.dayOfMonth &lt;= 31" />
+        <details key="DayOfMonthValidRange.postDescription" value="Executable. The specification asks whether the optional (0..1) Integer attribute is specified (-&gt;notEmpty / -&gt;isEmpty). The Ecore maps Integer to the primitive long without unsettable, so an attribute that was never specified reads 0, -&gt;notEmpty() is always true and EMF never writes 0 to XMI; 0 therefore stands for &quot;not specified&quot; and the body compares with 0. Exact here: 0 is no day of the month." />
         <details key="DayOfWeekRequiredForEveryWeek.shortName" value="C-5" />
         <details key="DayOfWeekRequiredForEveryWeek.name" value="DayOfWeek Required For EveryWeek" />
         <details key="DayOfWeekRequiredForEveryWeek.description" value="dayOfWeek must be specified when recurringType is everyWeek." />
@@ -292,21 +296,25 @@
         <details key="HourRequired.description" value="hour must be specified when recurringType is everyYear or everyMonth or everyWeek or everyDay." />
         <details key="HourRequired.level" value="error" />
         <details key="HourRequired.specSource" value="self.recurringType=everyYear or self.recurringType=everyMonth or&#10;self.recurringType=everyWeek or self.recurringType=everyDay&#10;implies self.hour-&gt;notEmpty" />
+        <details key="HourRequired.postDescription" value="Not exact: the Ecore maps Integer to the primitive long without unsettable, so the attribute always has a value and -&gt;notEmpty() is always true; 0 is a valid hour, so comparing with 0 would reject it. The rule cannot fail until the attribute becomes unsettable with a nullable type." />
         <details key="HourValidRange.shortName" value="C-7" />
         <details key="HourValidRange.name" value="Hour Valid Range" />
         <details key="HourValidRange.description" value="hour must be between 0 and 23 (inclusive) when specified." />
         <details key="HourValidRange.level" value="error" />
         <details key="HourValidRange.specSource" value="self.hour-&gt;notEmpty implies 0 &lt;= hour &lt;= 23" />
+        <details key="HourValidRange.postDescription" value="Executable. The specification guards the range with -&gt;notEmpty. The Ecore maps Integer to the primitive long without unsettable, so the attribute always has a value (0 when never specified) and the guard is always true; it is dropped and the range is checked on the value, which is exact because 0 lies in the range. " />
         <details key="MinuteRequired.shortName" value="C-8" />
         <details key="MinuteRequired.name" value="Minute Required" />
         <details key="MinuteRequired.description" value="minute must be specified when recurringType is not everyMinute." />
         <details key="MinuteRequired.level" value="error" />
         <details key="MinuteRequired.specSource" value="self.recurringType&lt;&gt;everyMinute implies self.minute-&gt;notEmpty" />
+        <details key="MinuteRequired.postDescription" value="Not exact: the Ecore maps Integer to the primitive long without unsettable, so the attribute always has a value and -&gt;notEmpty() is always true; 0 is a valid minute, so comparing with 0 would reject it. The rule cannot fail until the attribute becomes unsettable with a nullable type." />
         <details key="MinuteValidRange.shortName" value="C-9" />
         <details key="MinuteValidRange.name" value="Minute Valid Range" />
         <details key="MinuteValidRange.description" value="minute must be between 0 and 59 (inclusive) when specified." />
         <details key="MinuteValidRange.level" value="error" />
         <details key="MinuteValidRange.specSource" value="self.minute-&gt;notEmpty implies 0 &lt;= self.minute &lt;= 59" />
+        <details key="MinuteValidRange.postDescription" value="Executable. The specification guards the range with -&gt;notEmpty. The Ecore maps Integer to the primitive long without unsettable, so the attribute always has a value (0 when never specified) and the guard is always true; it is dropped and the range is checked on the value, which is exact because 0 lies in the range. " />
         <details key="SecondValidRange.shortName" value="C-10" />
         <details key="SecondValidRange.name" value="Second Valid Range" />
         <details key="SecondValidRange.description" value="second must be between 0 and 59 (inclusive)." />
