@@ -250,15 +250,15 @@
       <details key="constraints" value="ScaleRequiresPrecision" />
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
-      <details key="ScaleRequiresPrecision" value="self.scale-&gt;notEmpty() implies self.precision-&gt;notEmpty()" />
+      <details key="ScaleRequiresPrecision" value="self.scale &lt;&gt; 0 implies self.precision &lt;&gt; 0" />
     </eAnnotations>
     <eAnnotations source="http://www.omg.org/spec/CWM/1.1/constraints">
       <details key="ScaleRequiresPrecision.shortName" value="C-3" />
       <details key="ScaleRequiresPrecision.name" value="Scale Requires Precision" />
       <details key="ScaleRequiresPrecision.description" value="scale is valid only if precision is specified." />
       <details key="ScaleRequiresPrecision.level" value="error" />
-      <details key="ScaleRequiresPrecision.specSource" value="self.scale-&gt;notEmpty implies self.precision-&gt;notEmpty" />
       <details key="ScaleRequiresPrecision.specSource" value="self.scale.nonEmpty implies self.precision.notEmpty" />
+      <details key="ScaleRequiresPrecision.postDescription" value="Executable. The specification asks whether the optional (0..1) Integer attribute is specified (-&gt;notEmpty / -&gt;isEmpty). The Ecore maps Integer to the primitive long without unsettable, so an attribute that was never specified reads 0, -&gt;notEmpty() is always true and EMF never writes 0 to XMI; 0 therefore stands for &quot;not specified&quot; and the body compares with 0. A scale of 0 is meaningful (no decimal digits) but leaves nothing for this rule to require." />
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A column in a result set, a view, a table, or an SQLStructuredType." />

@@ -23,6 +23,54 @@
   <packaging>pom</packaging>
   <name>Daanse CWM Model EMF</name>
 
+  <!-- Classic Eclipse OCL as EMF validation delegate, so a module's tests can evaluate the OCL
+      constraints of its ecore. The 2013-era poms declare version ranges against coordinates that
+      no longer exist, so all transitive dependencies are excluded and supplied explicitly. -->
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.ocl</groupId>
+      <artifactId>ecore</artifactId>
+      <version>3.3.0-v20130520-1222</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>ocl</artifactId>
+      <version>3.4.0-v20140524-1358</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.ocl</groupId>
+      <artifactId>common</artifactId>
+      <version>1.2.0-v20140528-1458</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>lpg.runtime</groupId>
+      <artifactId>java</artifactId>
+      <version>2.0.17-v201004271640</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
   <modules>
     <module>objectmodel.core</module>
     <module>analysis.businessnomenclature</module>
