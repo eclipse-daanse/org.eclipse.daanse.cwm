@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.BehavioralPackage;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Attribute;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CoreFactory;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CorePackage;
@@ -25,6 +26,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Catalog;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalPackage;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
+import org.eclipse.daanse.cwm.model.daanse.orm.util.OrmBindings;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
@@ -45,7 +47,8 @@ import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Structural checks for the plain CWM ORM mapping model: the cwm* references are the
- * single truth, no XML heritage, no derivation OCL, ModelElement anchoring.
+ * single truth, nothing that follows from them is a feature, every topic has one place, no
+ * XML heritage, no derivation OCL, ModelElement anchoring.
  */
 class OrmModelTest {
 
@@ -192,8 +195,111 @@ class OrmModelTest {
                 .isEqualTo(CorePackage.eINSTANCE.getAttribute());
         assertThat(CWMORMPackage.eINSTANCE.getEntity_CwmTable().getEReferenceType())
                 .isEqualTo(RelationalPackage.eINSTANCE.getNamedColumnSet());
-        assertThat(CWMORMPackage.eINSTANCE.getColumn_CwmColumn().getEReferenceType())
+        assertThat(CWMORMPackage.eINSTANCE.getColumnRef_CwmColumn().getEReferenceType())
                 .isEqualTo(RelationalPackage.eINSTANCE.getColumn());
+    }
+
+    @Test
+    void newAnchorsAreTyped() {
+        assertThat(CWMORMPackage.eINSTANCE.getJoin_CwmForeignKey().getEReferenceType())
+                .isEqualTo(RelationalPackage.eINSTANCE.getForeignKey());
+        assertThat(CWMORMPackage.eINSTANCE.getTransient_CwmFeature().getEReferenceType())
+                .isEqualTo(CorePackage.eINSTANCE.getStructuralFeature());
+        assertThat(CWMORMPackage.eINSTANCE.getLifecycleCallback_CwmOperation().getEReferenceType())
+                .isEqualTo(BehavioralPackage.eINSTANCE.getOperation());
+        assertThat(CWMORMPackage.eINSTANCE.getNamedNativeQuery_CwmQuery().getEReferenceType())
+                .isEqualTo(RelationalPackage.eINSTANCE.getQueryColumnSet());
+        assertThat(CWMORMPackage.eINSTANCE.getNamedStoredProcedureQuery_CwmProcedure().getLowerBound())
+                .isEqualTo(1);
+        assertThat(CWMORMPackage.eINSTANCE.getAttributeOverride_CwmPath().isOrdered()).isTrue();
+        assertThat(CWMORMPackage.eINSTANCE.getConverter_CwmClass().getEReferenceType())
+                .isEqualTo(CorePackage.eINSTANCE.getClass_());
+        assertThat(CWMORMPackage.eINSTANCE.getEntity_CwmDiscriminatorColumn().getEReferenceType())
+                .isEqualTo(RelationalPackage.eINSTANCE.getColumn());
+    }
+
+    // ---- one fact, one place -------------------------------------------
+
+    @Test
+    void featuresThatFollowFromAnAnchorAreGone() {
+        List<String> removed = List.of("cwmObjectPackage", "cwmCatalog", "cwmPrimaryKey", "discriminatorType",
+                "optional", "constraintMode", "temporal", "lob", "metadataComplete", "xmlMappingMetadataComplete",
+                "attributeName", "methodName", "entityClass", "resultClass", "targetClass", "class");
+        for (EClass eClass : classes()) {
+            for (EStructuralFeature f : eClass.getEStructuralFeatures()) {
+                assertThat(f.getName()).as("%s.%s", eClass.getName(), f.getName()).isNotIn(removed);
+            }
+        }
+        EClass entityMappings = CWMORMPackage.eINSTANCE.getEntityMappings();
+        assertThat(entityMappings.getEAllStructuralFeatures()).extracting(EStructuralFeature::getName)
+                .doesNotContain("cwmSchema");
+        assertThat(CWMORMPackage.eINSTANCE.getNamedNativeQuery().getEAllStructuralFeatures())
+                .extracting(EStructuralFeature::getName).doesNotContain("query");
+        for (EClass eClass : classes()) {
+            for (EAttribute a : eClass.getEAttributes()) {
+                if (List.of("converter", "mapsId").contains(a.getName())) {
+                    assertThat(a.getEAttributeType()).as("%s.%s", eClass.getName(), a.getName())
+                            .isNotEqualTo(CorePackage.eINSTANCE.getString());
+                }
+            }
+        }
+        assertThat(CWMORMPackage.eINSTANCE.getManyToOne_MapsId().getEAttributeType().getInstanceClass())
+                .isEqualTo(boolean.class);
+    }
+
+    @Test
+    void joinsHaveExactlyOnePlace() {
+        assertThat(classes()).filteredOn(c -> c.getName().equals("Join")).hasSize(1);
+        assertThat(classes()).extracting(EClass::getName).doesNotContain("ForeignKey", "DiscriminatorColumn",
+                "StoredProcedureParameter");
+        EClass joinColumn = CWMORMPackage.eINSTANCE.getJoinColumn();
+        assertThat(joinColumn.getEAllStructuralFeatures())
+                .filteredOn(f -> f.getEContainingClass().getEPackage() == CWMORMPackage.eINSTANCE
+                        && f.getEContainingClass() != CWMORMPackage.eINSTANCE.getOrmElement())
+                .extracting(EStructuralFeature::getName)
+                .containsExactlyInAnyOrder("cwmColumn", "cwmReferencedColumn");
+        for (EClass eClass : classes()) {
+            for (EReference r : eClass.getEReferences()) {
+                if (r.isContainment() && r.getEReferenceType() == joinColumn) {
+                    assertThat(eClass).as("only a Join holds join columns: %s.%s", eClass.getName(), r.getName())
+                            .isEqualTo(CWMORMPackage.eINSTANCE.getJoin());
+                }
+            }
+        }
+    }
+
+    @Test
+    void unitWideDefinitionsLiveOnlyAtTheRoot() {
+        EClass generator = CWMORMPackage.eINSTANCE.getGenerator();
+        EClass query = CWMORMPackage.eINSTANCE.getQuery();
+        EClass rsm = CWMORMPackage.eINSTANCE.getSqlResultSetMapping();
+        EClass listener = CWMORMPackage.eINSTANCE.getEntityListener();
+        for (EClass eClass : classes()) {
+            for (EReference r : eClass.getEAllReferences()) {
+                if (!r.isContainment()) {
+                    continue;
+                }
+                EClass type = r.getEReferenceType();
+                boolean unitWide = generator.isSuperTypeOf(type) || query.isSuperTypeOf(type)
+                        || rsm == type || listener == type;
+                if (unitWide) {
+                    assertThat(r.getEContainingClass()).as("%s.%s", eClass.getName(), r.getName())
+                            .isEqualTo(CWMORMPackage.eINSTANCE.getEntityMappings());
+                }
+            }
+        }
+    }
+
+    /** Checklist 3: strings only where no model element can stand in. */
+    @Test
+    void stringAttributesOnlyWhereNoModelElementExists() {
+        List<String> allowed = List.of("Entity.discriminatorValue", "TableGenerator.pkColumnValue",
+                "SequenceGenerator.sequenceName", "NamedQuery.query", "QueryHint.value",
+                "OrmElement.description");
+        List<String> strings = classes().stream().flatMap(c -> c.getEAttributes().stream()
+                .filter(a -> a.getEAttributeType().getInstanceClass() == String.class)
+                .map(a -> c.getName() + "." + a.getName())).toList();
+        assertThat(strings).containsExactlyInAnyOrderElementsOf(allowed);
     }
 
     @Test
@@ -252,9 +358,7 @@ class OrmModelTest {
 
         // mapping: no wrappers, no name strings — the cwm references are the truth
         EntityMappings mappings = CWMORMFactory.eINSTANCE.createEntityMappings();
-        mappings.setCwmObjectPackage(pkgExample);
-        mappings.setCwmCatalog(catalog);
-        mappings.setCwmSchema(schema);
+        mappings.setName("example");
         Entity entity = CWMORMFactory.eINSTANCE.createEntity();
         entity.setCwmClass(employee);
         entity.setCwmTable(empTable);
@@ -296,16 +400,26 @@ class OrmModelTest {
         AssociationEnd loadedEnd = loadedManyToOne.getCwmAssociationEnd();
         assertThat(loadedEnd.getType().getName()).isEqualTo("Department");
 
+        // the former root anchors follow from the anchors of the types
+        assertThat(OrmBindings.objectPackage(loadedMappings).getName()).isEqualTo("example");
+        assertThat(OrmBindings.schema(loadedEntity)).isEqualTo("HR");
+        assertThat(OrmBindings.catalog(loadedEntity)).isEqualTo("DB");
+
         // hidden opposite: silent-empty without adapter, found with adapter
         org.eclipse.daanse.cwm.model.cwm.resource.relational.Column loadedCol = loadedBasic.getColumn().getCwmColumn();
         assertThat(InverseReferences.isIndexed(loadedCol)).isFalse();
         InverseReferences.install(fresh);
         List<Column> users = InverseReferences.referencingList(loadedCol,
-                CWMORMPackage.eINSTANCE.getColumn_CwmColumn(), Column.class);
+                CWMORMPackage.eINSTANCE.getColumnRef_CwmColumn(), Column.class);
         assertThat(users).hasSize(1).first().isSameAs(loadedBasic.getColumn());
     }
 
     // ---- helpers -------------------------------------------------------
+
+    private static List<EClass> classes() {
+        return CWMORMPackage.eINSTANCE.getEClassifiers().stream().filter(EClass.class::isInstance)
+                .map(EClass.class::cast).toList();
+    }
 
     private static void assertNoAnnotation(EPackage pkg, String source) {
         for (var it = pkg.eAllContents(); it.hasNext();) {
@@ -326,6 +440,7 @@ class OrmModelTest {
         set.getPackageRegistry().put(CorePackage.eNS_URI, CorePackage.eINSTANCE);
         set.getPackageRegistry().put(RelationalPackage.eNS_URI, RelationalPackage.eINSTANCE);
         set.getPackageRegistry().put(RelationshipsPackage.eNS_URI, RelationshipsPackage.eINSTANCE);
+        set.getPackageRegistry().put(BehavioralPackage.eNS_URI, BehavioralPackage.eINSTANCE);
         return set;
     }
 }
