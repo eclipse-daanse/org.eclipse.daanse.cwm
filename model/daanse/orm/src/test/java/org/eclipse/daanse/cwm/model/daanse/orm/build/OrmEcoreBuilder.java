@@ -31,25 +31,32 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 /**
- * Programmatischer Builder fuer das {@code orm}-Metamodell — das plane
- * CWM-Objekt/Relational-Mapping-Modell der Daanse-Welt.
+ * Programmatic builder for the {@code orm} metamodel — the plain
+ * CWM object/relational mapping model of the Daanse world.
  *
- * <p>Das Modell traegt den vollen funktionalen Umfang der Jakarta-Persistence-3.1-Mappings
- * (orm.xml), verzichtet aber bewusst darauf, das XML selbst schreiben zu wollen: keine
- * ExtendedMetaData, kein DocumentRoot, keine abgeleiteten JPA-Namensstrings und keine
- * Ableitungs-OCL. Die einzige Wahrheit sind die {@code cwm*}-Referenzen — Klassenseite
- * {@code core::Class}/{@code core::Attribute}/{@code relationships::AssociationEnd},
- * Tabellenseite {@code relational::NamedColumnSet}/{@code Column}/{@code PrimaryKey}/
- * {@code ForeignKey}/{@code Procedure}. Die Namensmaterialisierung (FQCN, Schema/Catalog,
- * columnList, ...) lebt im fennec-eorm-Konverter, nicht im Modell.</p>
+ * <p>The model carries the functional scope of the Jakarta Persistence 3.1 mappings
+ * (orm.xml), but deliberately does not set out to write the XML itself: no
+ * ExtendedMetaData, no DocumentRoot, no derived JPA name strings and no
+ * derivation OCL. The {@code cwm*} references are the single truth — class side
+ * {@code core::Class}/{@code core::Attribute}/{@code relationships::AssociationEnd}/
+ * {@code behavioral::Operation}, table side {@code relational::NamedColumnSet}/{@code Column}/
+ * {@code ForeignKey}/{@code QueryColumnSet}/{@code Procedure}. What follows from an anchor
+ * (schema, catalog, primary key, table of a join form, SQL type, nullability) has no
+ * feature of its own; the derivations live in {@code OrmBindings}.</p>
  *
- * <p>Alle konkreten Klassen erben von {@code OrmElement ⊂ core::ModelElement} (Name,
- * Sichtbarkeit, TaggedValues geerbt); {@code EntityMappings} und {@code ManagedType} sind
- * zusaetzlich {@code core::Namespace} (Praezedenz {@code core::Subsystem}). Nicht-Containment-
- * Referenzen sind versteckte Assoziationsenden mit {@code Property.oppositeRoleName}-Paaren
- * (Praefix {@code orm}); Rueckwaertsnavigation via InverseReferences.</p>
+ * <p>Every topic has exactly one place: join columns and foreign keys in {@code Join},
+ * tables with a join in {@code JoinedTable}, overrides and conversions in
+ * {@code OverrideHost}, the map key in {@code MapKey}, generators, queries,
+ * result-set mappings, converters and listeners only in {@code EntityMappings}. Paths and
+ * class references are typed references, never strings.</p>
  *
- * <p>Aufbau und Serialisierung nach dem Vorbild {@code model/daanse/dcat/.../DcatEcoreBuilder}.</p>
+ * <p>All concrete classes extend {@code OrmElement ⊂ core::ModelElement} (name,
+ * visibility and tagged values inherited); {@code EntityMappings} and {@code ManagedType} are
+ * also {@code core::Namespace}. Non-containment references are hidden
+ * association ends with {@code Property.oppositeRoleName} pairs (prefix {@code orm});
+ * backward navigation via InverseReferences.</p>
+ *
+ * <p>Construction and serialization follow {@code model/daanse/dcat/.../DcatEcoreBuilder}.</p>
  */
 public final class OrmEcoreBuilder {
 
@@ -71,45 +78,41 @@ public final class OrmEcoreBuilder {
     private final EcoreFactory ef = EcoreFactory.eINSTANCE;
     private final CwmRefs cwm;
 
-    /** Haelt die in den CWM-Ecores aufgeloesten Ziel-Klassifizierer fuer Cross-Resource-Bezuege. */
+    /** Holds the target classifiers resolved in the CWM Ecores for cross-resource references. */
     public static final class CwmRefs {
         final EClass modelElement;
         final EClass namespace;
         final EClass cwmClass;
         final EClass classifier;
-        final EClass cwmPackage;
         final EClass attribute;
         final EClass structuralFeature;
         final EClass associationEnd;
+        final EClass operation;
         final EClass column;
         final EClass namedColumnSet;
-        final EClass catalog;
+        final EClass queryColumnSet;
         final EClass schema;
-        final EClass primaryKey;
         final EClass foreignKey;
         final EClass procedure;
-        final EClass sqlParameter;
         final EDataType stringType;
         final EDataType booleanType;
         final EDataType integerType;
 
-        CwmRefs(EPackage core, EPackage relationships, EPackage relational) {
+        CwmRefs(EPackage core, EPackage behavioral, EPackage relationships, EPackage relational) {
             this.modelElement = eClass(core, "ModelElement");
             this.namespace = eClass(core, "Namespace");
             this.cwmClass = eClass(core, "Class");
             this.classifier = eClass(core, "Classifier");
-            this.cwmPackage = eClass(core, "Package");
             this.attribute = eClass(core, "Attribute");
             this.structuralFeature = eClass(core, "StructuralFeature");
             this.associationEnd = eClass(relationships, "AssociationEnd");
+            this.operation = eClass(behavioral, "Operation");
             this.column = eClass(relational, "Column");
             this.namedColumnSet = eClass(relational, "NamedColumnSet");
-            this.catalog = eClass(relational, "Catalog");
+            this.queryColumnSet = eClass(relational, "QueryColumnSet");
             this.schema = eClass(relational, "Schema");
-            this.primaryKey = eClass(relational, "PrimaryKey");
             this.foreignKey = eClass(relational, "ForeignKey");
             this.procedure = eClass(relational, "Procedure");
-            this.sqlParameter = eClass(relational, "SQLParameter");
             this.stringType = eDataType(core, "String");
             this.booleanType = eDataType(core, "Boolean");
             this.integerType = eDataType(core, "Integer");
@@ -120,21 +123,18 @@ public final class OrmEcoreBuilder {
         this.cwm = cwm;
     }
 
-    // ---------------------------------------------------------------------
-    // CWM laden
-    // ---------------------------------------------------------------------
-
     /**
-     * Laedt die benoetigten CWM-Einheiten und loest die Ziel-Klassifizierer auf. Die
-     * Resource-URI wird auf die nsURI gesetzt, damit Cross-Refs als
-     * {@code <nsURI>#//Klasse} serialisieren.
+     * Loads the required CWM units and resolves the target classifiers. The
+     * resource URI is set to the nsURI so that cross-references serialize as
+     * {@code <nsURI>#//Class}.
      */
-    public static CwmRefs loadCwmRefs(ResourceSet rs, URI coreEcoreUri, URI relationshipsEcoreUri,
-            URI relationalEcoreUri) {
+    public static CwmRefs loadCwmRefs(ResourceSet rs, URI coreEcoreUri, URI behavioralEcoreUri,
+            URI relationshipsEcoreUri, URI relationalEcoreUri) {
         EPackage core = loadPackage(rs, coreEcoreUri);
+        EPackage behavioral = loadPackage(rs, behavioralEcoreUri);
         EPackage relationships = loadPackage(rs, relationshipsEcoreUri);
         EPackage relational = loadPackage(rs, relationalEcoreUri);
-        return new CwmRefs(core, relationships, relational);
+        return new CwmRefs(core, behavioral, relationships, relational);
     }
 
     private static EPackage loadPackage(ResourceSet rs, URI ecoreUri) {
@@ -168,10 +168,6 @@ public final class OrmEcoreBuilder {
         return (EDataType) c;
     }
 
-    // ---------------------------------------------------------------------
-    // Serialisierung
-    // ---------------------------------------------------------------------
-
     public static void save(EPackage pkg, ResourceSet rs, URI outUri) throws IOException {
         Resource out = rs.createResource(outUri);
         out.getContents().add(pkg);
@@ -182,7 +178,7 @@ public final class OrmEcoreBuilder {
         injectLicenseHeader(outUri);
     }
 
-    /** Fuegt den EPL-2.0-XML-Kommentarheader nach der XML-Deklaration ein. */
+    /** Inserts the EPL-2.0 XML comment header after the XML declaration. */
     private static void injectLicenseHeader(URI outUri) throws IOException {
         String path = outUri.toFileString();
         if (path == null) {
@@ -212,17 +208,37 @@ public final class OrmEcoreBuilder {
         java.nio.file.Files.writeString(file, result, java.nio.charset.StandardCharsets.UTF_8);
     }
 
+    /**
+     * Builds the metamodel from the CWM Ecores next to {@code moduleDir} (module directory
+     * {@code model/daanse/orm}) and writes it to {@code outFile}.
+     */
+    public static void generate(java.io.File moduleDir, java.io.File outFile) throws IOException {
+        java.io.File cwmDir = new java.io.File(moduleDir, "../../cwm").getCanonicalFile();
+        ResourceSet rs = newResourceSet();
+        CwmRefs refs = loadCwmRefs(rs,
+                ecoreUri(cwmDir, "objectmodel.core/model/core.ecore"),
+                ecoreUri(cwmDir, "objectmodel.behavioral/model/behavioral.ecore"),
+                ecoreUri(cwmDir, "objectmodel.relationships/model/relationships.ecore"),
+                ecoreUri(cwmDir, "resource.relational/model/relational.ecore"));
+        outFile.getParentFile().mkdirs();
+        save(new OrmEcoreBuilder(refs).build(), rs, URI.createFileURI(outFile.getAbsolutePath()));
+    }
+
+    private static URI ecoreUri(java.io.File cwmDir, String path) {
+        java.io.File f = new java.io.File(cwmDir, path);
+        if (!f.isFile()) {
+            throw new IllegalStateException("CWM ecore not found: " + f);
+        }
+        return URI.createFileURI(f.getAbsolutePath());
+    }
+
     public static ResourceSet newResourceSet() {
         ResourceSet rs = new org.eclipse.emf.ecore.resource.impl.ResourceSetImpl();
         rs.getResourceFactoryRegistry().getExtensionToFactoryMap().put("ecore", new XMIResourceFactoryImpl());
         return rs;
     }
 
-    // ---------------------------------------------------------------------
-    // Modellaufbau
-    // ---------------------------------------------------------------------
-
-    /** Erzeugt das EPackage {@code orm}: 57 Klassen (9 abstrakt), 12 Enums, keine Subpakete. */
+    /** Creates the EPackage {@code orm}: 61 classes (15 abstract), 8 enums, no subpackages. */
     public EPackage build() {
         EPackage p = ef.createEPackage();
         p.setName("orm");
@@ -233,13 +249,20 @@ public final class OrmEcoreBuilder {
                         + "Persistence 3.1 mappings (orm.xml). It deliberately does not model the XML "
                         + "itself: no ExtendedMetaData, no DocumentRoot, no derived JPA name strings "
                         + "and no derivation OCL. The cwm* references are the single truth — object "
-                        + "side core::Class / core::Attribute / relationships::AssociationEnd, table "
-                        + "side relational::NamedColumnSet / Column / PrimaryKey / ForeignKey / "
-                        + "Procedure. Name materialization (FQCN, schema/catalog, column lists, ...) "
-                        + "lives in the fennec eorm converter, not in the model. All concrete classes "
-                        + "extend OrmElement (core::ModelElement); non-containment references are "
-                        + "hidden association ends (Property.oppositeRoleName, prefix orm) — backward "
-                        + "navigation via InverseReferences.");
+                        + "side core::Class / core::Attribute / relationships::AssociationEnd / "
+                        + "behavioral::Operation, table side relational::NamedColumnSet / Column / "
+                        + "ForeignKey / QueryColumnSet / Procedure. What follows from an anchor (schema, "
+                        + "catalog, primary key, the table of a join form, SQL type, nullability) has no "
+                        + "feature of its own. Every topic has exactly one place: join columns and "
+                        + "foreign key in Join, tables with a join in JoinedTable, overrides and "
+                        + "conversions in OverrideHost, the map key in MapKey; generators, queries, "
+                        + "result-set mappings, converters and listeners only in EntityMappings. Nothing "
+                        + "is implicit: what JPA would default (persistent attributes, column and join "
+                        + "names, inheritance strategy) is stated in the model and checked by "
+                        + "OrmModelValidator. All concrete classes extend OrmElement "
+                        + "(core::ModelElement); non-containment references are hidden association "
+                        + "ends (Property.oppositeRoleName, prefix orm) — backward navigation via "
+                        + "InverseReferences.");
         pa.getDetails().put("modelName", "CWMORM");
         pa.getDetails().put("copyrightText", EPL_HEADER);
         pa.getDetails().put("oSGiCompatible", "true");
@@ -248,24 +271,15 @@ public final class OrmEcoreBuilder {
         pa.getDetails().put("resource", "XMI");
         pa.getDetails().put("prefix", "CWMORM");
 
-        // Nicht-Containment-Referenzen sind versteckte Assoziationsenden (Konvention wie dcat).
+        // Non-containment references are hidden association ends (same convention as dcat).
         EAnnotation ho = ef.createEAnnotation();
         ho.setSource(ECORE_OCL);
         ho.getDetails().put("hiddenOpposites", "true");
         p.getEAnnotations().add(ho);
 
-        // -- Enums --------------------------------------------------------
-
         EEnum accessType = enm(p, "AccessType",
                 "How the persistence provider accesses the state of an entity or embedded object.",
                 lit("PROPERTY"), lit("FIELD"));
-        EEnum constraintMode = enm(p, "ConstraintMode",
-                "Whether a physical foreign-key constraint is generated for a join.",
-                lit("CONSTRAINT"), lit("NOCONSTRAINT", "NO_CONSTRAINT"),
-                lit("PROVIDERDEFAULT", "PROVIDER_DEFAULT"));
-        EEnum discriminatorType = enm(p, "DiscriminatorType",
-                "Value type of the discriminator column.",
-                lit("STRING"), lit("CHAR"), lit("INTEGER"));
         EEnum enumType = enm(p, "EnumType",
                 "How a Java enum value maps to its column: by ordinal or by name.",
                 lit("ORDINAL"), lit("STRING"));
@@ -273,7 +287,8 @@ public final class OrmEcoreBuilder {
                 "Whether the value is fetched lazily or eagerly.",
                 lit("LAZY"), lit("EAGER"));
         EEnum generationType = enm(p, "GenerationType",
-                "Primary-key generation strategy.",
+                "Primary-key generation strategy. SEQUENCE and TABLE name their generator, "
+                        + "IDENTITY, UUID and AUTO have none.",
                 lit("TABLE"), lit("SEQUENCE"), lit("IDENTITY"), lit("UUID"), lit("AUTO"));
         EEnum inheritanceType = enm(p, "InheritanceType",
                 "Inheritance mapping strategy of an entity hierarchy.",
@@ -287,49 +302,45 @@ public final class OrmEcoreBuilder {
                 lit("PESSIMISTICWRITE", "PESSIMISTIC_WRITE"),
                 lit("PESSIMISTICFORCEINCREMENT", "PESSIMISTIC_FORCE_INCREMENT"),
                 lit("NONE"));
-        EEnum parameterMode = enm(p, "ParameterMode",
-                "Direction of a stored-procedure parameter.",
-                lit("IN"), lit("INOUT"), lit("OUT"), lit("REFCURSOR", "REF_CURSOR"));
-        EEnum temporalType = enm(p, "TemporalType",
-                "SQL temporal precision of a java.util.Date/Calendar value.",
-                lit("DATE"), lit("TIME"), lit("TIMESTAMP"));
         EEnum cascadeKind = enm(p, "CascadeKind",
-                "Cascadable operation of a relationship; replaces the former CascadeType wrapper "
-                        + "with its EmptyType children (XML artifact).",
+                "Cascadable operation of a relationship.",
                 lit("ALL"), lit("PERSIST"), lit("MERGE"), lit("REMOVE"), lit("REFRESH"),
                 lit("DETACH"));
         EEnum callbackKind = enm(p, "CallbackKind",
-                "Lifecycle event of a callback method; replaces the seven former one-per-event "
-                        + "classes (PrePersist ... PostLoad).",
+                "Lifecycle event of a callback method (pre/post persist, remove, update; post load).",
                 lit("PREPERSIST", "PRE_PERSIST"), lit("POSTPERSIST", "POST_PERSIST"),
                 lit("PREREMOVE", "PRE_REMOVE"), lit("POSTREMOVE", "POST_REMOVE"),
                 lit("PREUPDATE", "PRE_UPDATE"), lit("POSTUPDATE", "POST_UPDATE"),
                 lit("POSTLOAD", "POST_LOAD"));
 
-        // -- Klassenruempfe (wegen zyklischer Bezuege zuerst anlegen) ------
-
         EClass ormElement = cls(p, "OrmElement", true,
                 "Abstract local root of the mapping world: every concrete mapping class is a "
-                        + "core::ModelElement (inherited name, visibility, taggedValue). The "
-                        + "inherited name is informative where a cwm reference names the element "
-                        + "authoritatively.");
+                        + "core::ModelElement (inherited name, visibility, taggedValue). Where an "
+                        + "element is anchored, its name equals the name of the anchor (the class, "
+                        + "attribute, end, column, foreign key, operation or path); an own meaning has "
+                        + "the name only for the entity (JPA entity name), the mapping set, generators, "
+                        + "queries, hints, result-set mappings, column-result aliases and entity "
+                        + "graphs.");
         ormElement.getESuperTypes().add(cwm.modelElement);
 
         EClass managedType = cls(p, "ManagedType", true,
                 "A persistently managed Java type (entity, mapped superclass or embeddable): the "
-                        + "cwmClass anchor plus the attribute mappings, held in typed containments "
-                        + "(no Attributes wrapper).");
+                        + "cwmClass anchor plus the attribute mappings, held in typed containments. "
+                        + "The mapping is complete: every own attribute and every navigable "
+                        + "association end of the class has exactly one mapping, a Transient one if "
+                        + "it is not persistent.");
         managedType.getESuperTypes().add(ormElement);
         managedType.getESuperTypes().add(cwm.namespace);
 
         EClass identifiableType = cls(p, "IdentifiableType", true,
                 "A managed type with identity: id/embeddedId/version mappings, an optional id "
-                        + "class, entity listeners and lifecycle callbacks.");
+                        + "class, the entity listeners it uses and its own lifecycle callbacks.");
         identifiableType.getESuperTypes().add(managedType);
 
         EClass attributeMapping = cls(p, "AttributeMapping", true,
-                "One mapped attribute of a managed type. Two branches: ValueMapping (a "
-                        + "core::Attribute) and RelationshipMapping (a relationships::AssociationEnd).");
+                "One mapped feature of a managed type. Three branches: ValueMapping (a "
+                        + "core::Attribute), RelationshipMapping (a relationships::AssociationEnd) and "
+                        + "Transient (either, explicitly not persistent).");
         attributeMapping.getESuperTypes().add(ormElement);
 
         EClass valueMapping = cls(p, "ValueMapping", true,
@@ -345,133 +356,174 @@ public final class OrmEcoreBuilder {
 
         EClass ownableRelationship = cls(p, "OwnableRelationship", true,
                 "Bidirectionally mappable relationship (one-to-one, one-to-many, many-to-many): "
-                        + "owningSide replaces the former mappedBy string — the opposite end is "
-                        + "computable from the association, only the choice of owner is mapping "
-                        + "information.");
+                        + "the opposite end follows from the association, so the only mapping "
+                        + "information is which side owns it (owningSide).");
         ownableRelationship.getESuperTypes().add(relationshipMapping);
 
         EClass collectionSupport = cls(p, "CollectionSupport", true,
                 "Mixin for collection-valued mappings (element collection, one-to-many, "
-                        + "many-to-many): ordering, map key and map-key column details.");
+                        + "many-to-many): ordering, order column and map key.");
+
+        EClass overrideHost = cls(p, "OverrideHost", true,
+                "Mixin for the places that re-map features of another type: an entity (inherited "
+                        + "features of mapped superclasses), an embedded or embedded-id attribute and "
+                        + "an element collection (features of the embeddable) and a map key. Each "
+                        + "override and conversion names its feature path as typed references.");
 
         EClass generator = cls(p, "Generator", true,
-                "A primary-key value generator; referenced by GeneratedValue.generator (typed "
-                        + "reference instead of a name lookup).");
+                "A primary-key value generator, defined once per mapping set and referenced by "
+                        + "GeneratedValue.generator.");
         generator.getESuperTypes().add(ormElement);
 
+        EClass query = cls(p, "Query", true,
+                "A named query of the persistence unit (JPQL, native SQL or stored procedure) with "
+                        + "its provider hints; the query name is the inherited name.");
+        query.getESuperTypes().add(ormElement);
+
+        EClass columnRef = cls(p, "ColumnRef", true,
+                "A reference to one catalog column; cwmColumn is the single truth for name, type, "
+                        + "length, precision, scale and nullability.");
+        columnRef.getESuperTypes().add(ormElement);
+
         EClass column = cls(p, "Column", false,
-                "The universal column wrapper: cwmColumn is the catalog column (name, type, "
-                        + "length, precision, nullability live there); insertable/updatable are the "
-                        + "only genuine mapping flags. Also used for order and map-key columns — the "
-                        + "role follows from the containing reference.");
-        column.getESuperTypes().add(ormElement);
+                "A mapped column: the catalog column plus the insert/update flags, the only genuine "
+                        + "mapping information. Also used for order and map-key columns — the role "
+                        + "follows from the containing reference.");
+        column.getESuperTypes().add(columnRef);
 
         EClass joinColumn = cls(p, "JoinColumn", false,
-                "A join column as a pair of catalog columns: cwmColumn is the foreign-key column, "
-                        + "cwmReferencedColumn the referenced (usually primary-key) column. Also used "
-                        + "for primary-key join columns, where insertable/updatable are meaningless.");
-        joinColumn.getESuperTypes().add(ormElement);
+                "One column pair of a join: cwmColumn is the foreign-key column, "
+                        + "cwmReferencedColumn the referenced (usually primary-key) column. Insert/"
+                        + "update flags belong to the whole Join.");
+        joinColumn.getESuperTypes().add(columnRef);
 
-        EClass foreignKey = cls(p, "ForeignKey", false,
-                "Mapping policy for a physical foreign key: whether a constraint is generated "
-                        + "(constraintMode) and, if materialized, the catalog relational::ForeignKey.");
-        foreignKey.getESuperTypes().add(ormElement);
+        EClass join = cls(p, "Join", false,
+                "How two tables are joined, the one place for join columns and foreign-key policy: "
+                        + "either the catalog foreign key (its feature and uniqueKey.feature columns "
+                        + "are the join columns) or explicit column pairs when no constraint exists. "
+                        + "Used by to-one and one-to-many relationships, the JOINED primary-key join, "
+                        + "association overrides, map keys and every JoinedTable.");
+        join.getESuperTypes().add(ormElement);
 
-        EClass discriminatorColumn = cls(p, "DiscriminatorColumn", false,
-                "The discriminator column of a SINGLE_TABLE/JOINED hierarchy: catalog column plus "
-                        + "value type.");
-        discriminatorColumn.getESuperTypes().add(ormElement);
+        EClass joinedTable = cls(p, "JoinedTable", true,
+                "A further table reached over a join (secondary, collection or join table). The "
+                        + "table itself is not repeated: it is the owner of the join columns (or the "
+                        + "table owning the foreign key).");
+        joinedTable.getESuperTypes().add(ormElement);
 
         EClass secondaryTable = cls(p, "SecondaryTable", false,
-                "An additional table of an entity, joined by primary-key join columns.");
-        secondaryTable.getESuperTypes().add(ormElement);
+                "An additional table of an entity; its join is the primary-key join to the primary "
+                        + "table.");
+        secondaryTable.getESuperTypes().add(joinedTable);
 
         EClass collectionTable = cls(p, "CollectionTable", false,
-                "The table holding an element collection, joined to the owner by join columns.");
-        collectionTable.getESuperTypes().add(ormElement);
+                "The table holding an element collection; its join leads to the owner's table.");
+        collectionTable.getESuperTypes().add(joinedTable);
 
         EClass joinTable = cls(p, "JoinTable", false,
-                "An intersection table mapping a relationship: join columns towards the owning "
-                        + "side, inverse join columns towards the target side.");
-        joinTable.getESuperTypes().add(ormElement);
+                "An intersection table mapping a relationship: the join towards the owning side, "
+                        + "the inverse join towards the target side.");
+        joinTable.getESuperTypes().add(joinedTable);
+
+        EClass mapKey = cls(p, "MapKey", false,
+                "The key of a map-valued collection, in one place: an attribute of the target type "
+                        + "(cwmAttribute) or, when no attribute is the key, the key type "
+                        + "(cwmClassifier) with its column, join, enum mapping, overrides and "
+                        + "conversions.");
+        mapKey.getESuperTypes().add(ormElement);
+        mapKey.getESuperTypes().add(overrideHost);
+
+        EClass ordering = cls(p, "Ordering", false,
+                "One ordering criterion of a collection: a feature path into the target type, "
+                        + "ascending or descending; the name is the path with dots.");
+        ordering.getESuperTypes().add(ormElement);
 
         EClass attributeOverride = cls(p, "AttributeOverride", false,
-                "Overrides the column of an inherited or embedded value mapping; the attribute "
-                        + "path (e.g. address.street) is the inherited name.");
+                "Overrides the column of an inherited or embedded value mapping. cwmPath is the "
+                        + "feature path from the host (e.g. address, street); the name is the path "
+                        + "names joined with a dot.");
         attributeOverride.getESuperTypes().add(ormElement);
 
         EClass associationOverride = cls(p, "AssociationOverride", false,
-                "Overrides the join columns or join table of an inherited or embedded "
-                        + "relationship mapping; the attribute path is the inherited name.");
+                "Overrides the join or join table of an inherited or embedded relationship "
+                        + "mapping. cwmPath is the feature path from the host; the name is the path "
+                        + "names joined with a dot.");
         associationOverride.getESuperTypes().add(ormElement);
 
         EClass convert = cls(p, "Convert", false,
-                "Applies or disables an attribute converter for an attribute (path in "
-                        + "attributeName); converter is the Java class name — a runtime artifact, "
-                        + "deliberately without CWM anchor.");
+                "Applies a converter to an attribute or disables conversion for it. An empty "
+                        + "cwmPath means the attribute of the mapping itself; on an override host the "
+                        + "path leads into the embedded or inherited features.");
         convert.getESuperTypes().add(ormElement);
 
         EClass converter = cls(p, "Converter", false,
-                "Registers an attribute converter class (Java runtime artifact, no CWM anchor).");
+                "Registers an attribute converter: cwmClass is the converter class in the object "
+                        + "model, its name the class name.");
         converter.getESuperTypes().add(ormElement);
 
         EClass entityListener = cls(p, "EntityListener", false,
-                "A listener class receiving lifecycle callbacks for an entity (Java runtime "
-                        + "artifact, no CWM anchor).");
+                "A listener class receiving lifecycle callbacks: cwmClass is the listener class in "
+                        + "the object model, its operations are the callback methods.");
         entityListener.getESuperTypes().add(ormElement);
 
         EClass lifecycleCallback = cls(p, "LifecycleCallback", false,
-                "One lifecycle callback method: which event (kind) invokes which method "
-                        + "(methodName). Replaces the seven former one-per-event classes.");
+                "One lifecycle callback: which event (kind) invokes which operation "
+                        + "(cwmOperation, owned by the listener or the entity class).");
         lifecycleCallback.getESuperTypes().add(ormElement);
 
         EClass persistenceUnitMetadata = cls(p, "PersistenceUnitMetadata", false,
-                "Metadata that applies to the whole persistence unit.");
+                "Metadata that applies to the whole persistence unit. The mapping is always "
+                        + "complete; a converter to orm.xml writes metadata-complete.");
         persistenceUnitMetadata.getESuperTypes().add(ormElement);
 
         EClass persistenceUnitDefaults = cls(p, "PersistenceUnitDefaults", false,
-                "Defaults for the persistence unit. Default schema and catalog are the "
-                        + "EntityMappings cwmSchema/cwmCatalog references — not repeated as strings.");
+                "Defaults for the persistence unit. Schema and catalog follow from the tables, the "
+                        + "access type is EntityMappings.access.");
         persistenceUnitDefaults.getESuperTypes().add(ormElement);
 
         EClass entityMappings = cls(p, "EntityMappings", false,
-                "Root of an object/relational mapping set: the managed types, generators, queries "
-                        + "and result-set mappings, anchored to the object package "
-                        + "(cwmObjectPackage) and the default relational catalog/schema.");
+                "Root of an object/relational mapping set and the only place of unit-wide "
+                        + "definitions: managed types, generators, queries, result-set mappings, "
+                        + "converters and entity listeners. The object package and the relational "
+                        + "schema follow from the anchors of the managed types.");
         entityMappings.getESuperTypes().add(ormElement);
         entityMappings.getESuperTypes().add(cwm.namespace);
 
         EClass entity = cls(p, "Entity", false,
                 "An entity: cwmClass (inherited) is the Java class, cwmTable its primary table. "
                         + "The JPA entity name is the inherited name; the fully qualified class name "
-                        + "is materialized by the converter from the core package chain.");
+                        + "follows from the core package chain.");
         entity.getESuperTypes().add(identifiableType);
+        entity.getESuperTypes().add(overrideHost);
 
         EClass mappedSuperclass = cls(p, "MappedSuperclass", false,
-                "A mapped superclass: contributes mappings to subclasses, has no table of its own.");
+                "A mapped superclass: contributes mappings to subclasses, has no table of its own; "
+                        + "columns it leaves open are set by every inheriting entity.");
         mappedSuperclass.getESuperTypes().add(identifiableType);
 
         EClass embeddable = cls(p, "Embeddable", false,
                 "An embeddable type: its attribute mappings apply within the owning entity's "
-                        + "table(s).");
+                        + "table(s); columns it leaves open are set by every embedding mapping.");
         embeddable.getESuperTypes().add(managedType);
 
         EClass base = cls(p, "Base", true,
-                "Value mapping with a column: the optional Column wrapper carries the catalog "
-                        + "column and the insert/update flags.");
+                "Value mapping with a column: the Column carries the catalog column and the "
+                        + "insert/update flags.");
         base.getESuperTypes().add(valueMapping);
 
         EClass simpleBase = cls(p, "SimpleBase", true,
-                "Value mapping with fetch, conversion and LOB/enum/temporal options.");
+                "Value mapping with fetch and enum options. Temporal precision and large-object "
+                        + "storage follow from the SQL type of the column.");
         simpleBase.getESuperTypes().add(base);
 
         EClass basic = cls(p, "Basic", false,
-                "A basic value mapping.");
+                "A basic value mapping. Whether the value may be null follows from the "
+                        + "multiplicity of the attribute and the nullability of the column.");
         basic.getESuperTypes().add(simpleBase);
 
         EClass id = cls(p, "Id", false,
-                "An id attribute mapping; cwmPrimaryKey anchors the catalog primary key the id "
-                        + "column belongs to.");
+                "An id attribute mapping; its column belongs to the primary key of the entity "
+                        + "table.");
         id.getESuperTypes().add(base);
 
         EClass version = cls(p, "Version", false,
@@ -479,35 +531,39 @@ public final class OrmEcoreBuilder {
         version.getESuperTypes().add(base);
 
         EClass embedded = cls(p, "Embedded", false,
-                "Maps an attribute whose type is an embeddable; columns may be overridden per "
-                        + "path.");
+                "Maps an attribute whose type is an embeddable; columns and joins may be "
+                        + "overridden per path.");
         embedded.getESuperTypes().add(valueMapping);
+        embedded.getESuperTypes().add(overrideHost);
 
         EClass embeddedId = cls(p, "EmbeddedId", false,
-                "A composite id held in an embeddable; cwmPrimaryKey anchors the catalog primary "
-                        + "key.");
+                "A composite id held in an embeddable; its columns form the primary key of the "
+                        + "entity table.");
         embeddedId.getESuperTypes().add(valueMapping);
+        embeddedId.getESuperTypes().add(overrideHost);
 
         EClass transientCls = cls(p, "Transient", false,
-                "Marks an attribute as not persistent.");
-        transientCls.getESuperTypes().add(valueMapping);
+                "Marks an attribute or a navigable association end as not persistent — "
+                        + "explicitly, because every feature of a mapped class needs a mapping.");
+        transientCls.getESuperTypes().add(attributeMapping);
 
         EClass elementCollection = cls(p, "ElementCollection", false,
                 "A collection of basic or embeddable values, stored in a collection table.");
         elementCollection.getESuperTypes().add(simpleBase);
         elementCollection.getESuperTypes().add(collectionSupport);
+        elementCollection.getESuperTypes().add(overrideHost);
 
         EClass manyToOne = cls(p, "ManyToOne", false,
-                "A many-to-one relationship mapping, joined by join columns.");
+                "A many-to-one relationship mapping, always the owning side.");
         manyToOne.getESuperTypes().add(relationshipMapping);
 
         EClass oneToOne = cls(p, "OneToOne", false,
-                "A one-to-one relationship mapping, joined by join columns or primary-key join "
-                        + "columns.");
+                "A one-to-one relationship mapping, joined by a join, a primary-key join, a join "
+                        + "table or a derived id.");
         oneToOne.getESuperTypes().add(ownableRelationship);
 
         EClass oneToMany = cls(p, "OneToMany", false,
-                "A one-to-many relationship mapping, joined by foreign-key columns on the target "
+                "A one-to-many relationship mapping, joined by a foreign key in the target table "
                         + "or a join table.");
         oneToMany.getESuperTypes().add(ownableRelationship);
         oneToMany.getESuperTypes().add(collectionSupport);
@@ -523,8 +579,9 @@ public final class OrmEcoreBuilder {
         sequenceGenerator.getESuperTypes().add(generator);
 
         EClass tableGenerator = cls(p, "TableGenerator", false,
-                "A table-based id generator: generator table, pk and value columns are catalog "
-                        + "references; pkColumnValue is the row selector (a real value, not a name).");
+                "A table-based id generator: pk and value columns are catalog references, the "
+                        + "generator table is their owner; pkColumnValue is the row selector (a real "
+                        + "value, not a name).");
         tableGenerator.getESuperTypes().add(generator);
 
         EClass generatedValue = cls(p, "GeneratedValue", false,
@@ -537,8 +594,9 @@ public final class OrmEcoreBuilder {
         queryHint.getESuperTypes().add(ormElement);
 
         EClass namedQuery = cls(p, "NamedQuery", false,
-                "A named JPQL query; the query name is the inherited name.");
-        namedQuery.getESuperTypes().add(ormElement);
+                "A named JPQL query; the JPQL text is the only query text of the model, because "
+                        + "JPQL has no CWM counterpart.");
+        namedQuery.getESuperTypes().add(query);
 
         EClass sqlResultSetMapping = cls(p, "SqlResultSetMapping", false,
                 "Maps a native query result set to entities, constructor calls and scalar "
@@ -546,39 +604,33 @@ public final class OrmEcoreBuilder {
         sqlResultSetMapping.getESuperTypes().add(ormElement);
 
         EClass namedNativeQuery = cls(p, "NamedNativeQuery", false,
-                "A named native SQL query; resultSetMapping is a typed reference (no name "
-                        + "lookup).");
-        namedNativeQuery.getESuperTypes().add(ormElement);
+                "A named native SQL query over a stored query of the catalog: cwmQuery is the "
+                        + "relational::QueryColumnSet whose expression is the SQL and whose columns "
+                        + "are the result columns.");
+        namedNativeQuery.getESuperTypes().add(query);
 
         EClass namedStoredProcedureQuery = cls(p, "NamedStoredProcedureQuery", false,
-                "A named stored-procedure query; cwmProcedure anchors the catalog procedure (the "
-                        + "procedure name is not repeated as a string).");
-        namedStoredProcedureQuery.getESuperTypes().add(ormElement);
-
-        EClass storedProcedureParameter = cls(p, "StoredProcedureParameter", false,
-                "A parameter of a named stored-procedure query: the Java-side class string plus "
-                        + "optional catalog anchors (cwmParameter, cwmType). Aliases may prevent "
-                        + "resolution, so the strings stay settable.");
-        storedProcedureParameter.getESuperTypes().add(ormElement);
+                "A named stored-procedure query; cwmProcedure anchors the catalog procedure, whose "
+                        + "parameters (order, direction, type) are the query parameters.");
+        namedStoredProcedureQuery.getESuperTypes().add(query);
 
         EClass entityResult = cls(p, "EntityResult", false,
-                "Maps result columns to an entity; entityClass stays settable (alias case), "
-                        + "cwmClass is the additive anchor and takes precedence when set.");
+                "Maps result columns to an entity class.");
         entityResult.getESuperTypes().add(ormElement);
 
         EClass fieldResult = cls(p, "FieldResult", false,
-                "Maps one result column to a field; the field name is the inherited name, "
-                        + "cwmFeature the additive anchor.");
+                "Maps one result column to a feature of the result entity; the name is the "
+                        + "feature name.");
         fieldResult.getESuperTypes().add(ormElement);
 
         EClass columnResult = cls(p, "ColumnResult", false,
-                "A scalar result column; the column alias is the inherited name, cwmColumn the "
-                        + "additive anchor (aliases may prevent resolution).");
+                "A scalar result column or constructor argument: cwmColumn is the column of the "
+                        + "stored query (its name is the alias); the name is the column name.");
         columnResult.getESuperTypes().add(ormElement);
 
         EClass constructorResult = cls(p, "ConstructorResult", false,
-                "Maps result columns to a constructor invocation of targetClass; column order is "
-                        + "the argument order.");
+                "Maps result columns to a constructor invocation of cwmClass; column order is the "
+                        + "argument order.");
         constructorResult.getESuperTypes().add(ormElement);
 
         EClass namedEntityGraph = cls(p, "NamedEntityGraph", false,
@@ -586,35 +638,30 @@ public final class OrmEcoreBuilder {
         namedEntityGraph.getESuperTypes().add(ormElement);
 
         EClass namedAttributeNode = cls(p, "NamedAttributeNode", false,
-                "A node of an entity graph; the attribute name is the inherited name, subgraph "
-                        + "and keySubgraph refer to subgraphs by their graph-local names.");
+                "A node of an entity graph: the fetched feature and the subgraphs for its value "
+                        + "and its map key.");
         namedAttributeNode.getESuperTypes().add(ormElement);
 
         EClass namedSubgraph = cls(p, "NamedSubgraph", false,
-                "A subgraph of an entity graph; the subgraph name is the inherited name.");
+                "A subgraph of an entity graph for the type cwmClass; the subgraph name is the "
+                        + "inherited, graph-local name.");
         namedSubgraph.getESuperTypes().add(ormElement);
-
-        // -- OrmElement ---------------------------------------------------
 
         attr(ormElement, "description", cwm.stringType, 0, 1,
                 "Free-text description of the mapping element.");
 
-        // -- ManagedType / IdentifiableType --------------------------------
-
         EReference mtClass = ref(managedType, "cwmClass", cwm.cwmClass, 1, 1,
-                "The mapped Java type as core::Class. The fully qualified class name is "
-                        + "materialized by the converter from the owning core::Package chain.");
+                "The mapped Java type as core::Class. The fully qualified class name follows "
+                        + "from the owning core::Package chain.");
         oppositeRole(mtClass, "ormManagedType");
         attrUnsettable(managedType, "access", accessType,
-                "Default access strategy for the attributes of this type.");
-        attrUnsettableBool(managedType, "metadataComplete",
-                "Whether this metadata is complete (annotations on the class are ignored).");
+                "Access strategy for the attributes of this type.");
         cont(managedType, "basic", basic, 0, -1, false,
                 "Basic value mappings.");
         cont(managedType, "embedded", embedded, 0, -1, false,
                 "Embedded value mappings.");
         cont(managedType, "transient", transientCls, 0, -1, false,
-                "Attributes excluded from persistence.");
+                "Attributes and association ends excluded from persistence.");
         cont(managedType, "elementCollection", elementCollection, 0, -1, false,
                 "Element-collection mappings.");
         cont(managedType, "manyToOne", manyToOne, 0, -1, false,
@@ -633,25 +680,25 @@ public final class OrmEcoreBuilder {
         cont(identifiableType, "version", version, 0, -1, false,
                 "Version attribute mappings.");
         EReference idClass = ref(identifiableType, "cwmIdClass", cwm.cwmClass, 0, 1,
-                "The composite id class (replaces the former IdClass wrapper).");
+                "The composite id class, set exactly when the type has more than one id mapping.");
         oppositeRole(idClass, "ormIdClassUser");
-        cont(identifiableType, "entityListener", entityListener, 0, -1, false,
-                "Entity listeners of this type.");
+        EReference itListener = ref(identifiableType, "listener", entityListener, 0, -1,
+                "The entity listeners of this type in invocation order (defined in EntityMappings).");
+        itListener.setOrdered(true);
+        oppositeRole(itListener, "ormListenerUser");
         attrUnsettableBool(identifiableType, "excludeDefaultListeners",
                 "Excludes the persistence unit's default listeners for this type.");
         attrUnsettableBool(identifiableType, "excludeSuperclassListeners",
                 "Excludes superclass listeners for this type.");
         cont(identifiableType, "lifecycleCallback", lifecycleCallback, 0, -1, false,
-                "Lifecycle callback methods declared on the type itself.");
-
-        // -- AttributeMapping-Hierarchie -----------------------------------
+                "Lifecycle callbacks implemented by operations of the type's own class.");
 
         attrUnsettable(attributeMapping, "access", accessType,
                 "Access strategy override for this attribute.");
 
         EReference vmAttr = ref(valueMapping, "cwmAttribute", cwm.attribute, 1, 1,
                 "The mapped object attribute (core::Attribute) — the single truth for the "
-                        + "attribute name and type.");
+                        + "attribute name, type and multiplicity.");
         oppositeRole(vmAttr, "ormValueMapping");
 
         EReference rmEnd = ref(relationshipMapping, "cwmAssociationEnd", cwm.associationEnd, 1, 1,
@@ -664,148 +711,132 @@ public final class OrmEcoreBuilder {
                 "Cascaded operations of the relationship.");
         cascade.setOrdered(false);
         cascade.setUnique(true);
-        cont(relationshipMapping, "foreignKey", foreignKey, 0, 1, true,
-                "Foreign-key policy for the join columns.");
         cont(relationshipMapping, "joinTable", joinTable, 0, 1, true,
                 "Maps the relationship over an intersection table.");
 
         EAttribute owningSide = attr(ownableRelationship, "owningSide", cwm.booleanType, 0, 1,
-                "Whether this side owns the mapping (the former mappedBy: the opposite end is "
-                        + "computable from the association; exactly one side of a bidirectional "
-                        + "relationship is the owner).");
+                "Whether this side owns the mapping; the opposite end follows from the association, "
+                        + "and exactly one side of a bidirectional relationship is the owner.");
         owningSide.setDefaultValueLiteral("true");
         owningSide.setUnsettable(true);
 
-        // -- CollectionSupport --------------------------------------------
+        EReference trFeature = ref(transientCls, "cwmFeature", cwm.structuralFeature, 1, 1,
+                "The attribute or association end that is not persistent.");
+        oppositeRole(trFeature, "ormTransient");
 
-        attr(collectionSupport, "orderBy", cwm.stringType, 0, 1,
-                "Ordering clause over attributes of the target type.");
+        cont(collectionSupport, "orderBy", ordering, 0, -1, true,
+                "Ordering criteria over attributes of the target type, most significant first.");
         cont(collectionSupport, "orderColumn", column, 0, 1, true,
                 "A dedicated order column maintaining the list order.");
-        EReference mapKeyAttr = ref(collectionSupport, "cwmMapKeyAttribute", cwm.structuralFeature, 0, 1,
-                "The attribute of the target type acting as map key (the former MapKey wrapper).");
-        oppositeRole(mapKeyAttr, "ormMapKeyUser");
-        EReference mapKeyClass = ref(collectionSupport, "cwmMapKeyClassifier", cwm.classifier, 0, 1,
-                "The type of the map key (the former MapKeyClass wrapper).");
-        oppositeRole(mapKeyClass, "ormMapKeyClassUser");
-        attrUnsettable(collectionSupport, "mapKeyTemporal", temporalType,
-                "Temporal precision of a temporal map key.");
-        attrUnsettable(collectionSupport, "mapKeyEnumerated", enumType,
-                "Enum mapping of an enum map key.");
-        cont(collectionSupport, "mapKeyAttributeOverride", attributeOverride, 0, -1, false,
-                "Column overrides for an embeddable map key.");
-        cont(collectionSupport, "mapKeyConvert", convert, 0, -1, false,
-                "Converter applications for the map key.");
-        cont(collectionSupport, "mapKeyColumn", column, 0, 1, true,
-                "The column holding a basic map key.");
-        cont(collectionSupport, "mapKeyJoinColumn", joinColumn, 0, -1, true,
-                "Join columns for an entity map key.");
-        cont(collectionSupport, "mapKeyForeignKey", foreignKey, 0, 1, true,
-                "Foreign-key policy for the map-key join columns.");
+        cont(collectionSupport, "mapKey", mapKey, 0, 1, true,
+                "The key of a map-valued collection.");
 
-        // -- Column / JoinColumn / ForeignKey / DiscriminatorColumn --------
+        cont(overrideHost, "attributeOverride", attributeOverride, 0, -1, false,
+                "Column overrides per feature path.");
+        cont(overrideHost, "associationOverride", associationOverride, 0, -1, false,
+                "Join overrides per feature path.");
+        cont(overrideHost, "convert", convert, 0, -1, false,
+                "Converter applications per feature path.");
 
-        EReference colRef = ref(column, "cwmColumn", cwm.column, 1, 1,
+        EReference mkAttr = ref(mapKey, "cwmAttribute", cwm.structuralFeature, 0, 1,
+                "The feature of the target type acting as key; its type is the key type.");
+        oppositeRole(mkAttr, "ormMapKey");
+        EReference mkClassifier = ref(mapKey, "cwmClassifier", cwm.classifier, 0, 1,
+                "The key type when no feature of the target is the key.");
+        oppositeRole(mkClassifier, "ormMapKeyClassifier");
+        attrUnsettable(mapKey, "enumerated", enumType,
+                "Enum mapping of an enum key.");
+        cont(mapKey, "column", column, 0, 1, true,
+                "The column holding a basic key.");
+        cont(mapKey, "join", join, 0, 1, true,
+                "The join to the key entity's table for an entity key.");
+
+        EReference orPath = ref(ordering, "cwmPath", cwm.structuralFeature, 1, -1,
+                "The feature path to order by: first element a feature of the target type (the "
+                        + "related entity or the element embeddable), each further element a feature "
+                        + "of the previous type, ending in an attribute.");
+        orPath.setOrdered(true);
+        oppositeRole(orPath, "ormOrdering");
+        attr(ordering, "descending", cwm.booleanType, 0, 1,
+                "Whether the order is descending (default ascending).");
+
+        EReference colRef = ref(columnRef, "cwmColumn", cwm.column, 1, 1,
                 "The catalog column (relational::Column) — the single truth for name, type, "
                         + "length, precision, scale and nullability.");
         oppositeRole(colRef, "ormColumn");
+
         attrUnsettableBool(column, "insertable",
                 "Whether the column appears in provider-generated INSERT statements.");
         attrUnsettableBool(column, "updatable",
                 "Whether the column appears in provider-generated UPDATE statements.");
 
-        EReference jcCol = ref(joinColumn, "cwmColumn", cwm.column, 1, 1,
-                "The foreign-key column.");
-        oppositeRole(jcCol, "ormJoinColumn");
-        EReference jcRef = ref(joinColumn, "cwmReferencedColumn", cwm.column, 0, 1,
-                "The referenced column (defaults to the primary-key column of the target table).");
+        EReference jcRef = ref(joinColumn, "cwmReferencedColumn", cwm.column, 1, 1,
+                "The referenced column in the target table.");
         oppositeRole(jcRef, "ormReferencingJoinColumn");
-        attrUnsettableBool(joinColumn, "insertable",
-                "Whether the column appears in provider-generated INSERT statements.");
-        attrUnsettableBool(joinColumn, "updatable",
-                "Whether the column appears in provider-generated UPDATE statements.");
 
-        EReference fkRef = ref(foreignKey, "cwmForeignKey", cwm.foreignKey, 0, 1,
-                "The materialized catalog constraint (relational::ForeignKey), when it exists.");
-        oppositeRole(fkRef, "ormForeignKey");
-        attrUnsettable(foreignKey, "constraintMode", constraintMode,
-                "Whether a physical constraint is generated.");
+        EReference joinFk = ref(join, "cwmForeignKey", cwm.foreignKey, 0, 1,
+                "The catalog constraint (relational::ForeignKey) the join follows; unset when no "
+                        + "constraint exists, then the join columns name the column pairs.");
+        oppositeRole(joinFk, "ormJoin");
+        cont(join, "joinColumn", joinColumn, 0, -1, true,
+                "Explicit column pairs, only when there is no foreign key.");
+        attrUnsettableBool(join, "insertable",
+                "Whether the join columns appear in provider-generated INSERT statements.");
+        attrUnsettableBool(join, "updatable",
+                "Whether the join columns appear in provider-generated UPDATE statements.");
 
-        EReference dcCol = ref(discriminatorColumn, "cwmColumn", cwm.column, 1, 1,
-                "The catalog discriminator column.");
-        oppositeRole(dcCol, "ormDiscriminatorColumn");
-        attrUnsettable(discriminatorColumn, "discriminatorType", discriminatorType,
-                "Value type of the discriminator column.");
+        cont(joinedTable, "join", join, 1, 1, true,
+                "The join from this table to the owner's table; its columns live in this table.");
 
-        // -- SecondaryTable / CollectionTable / JoinTable ------------------
+        cont(joinTable, "inverseJoin", join, 1, 1, true,
+                "The join from this table to the target's table.");
 
-        EReference stTable = ref(secondaryTable, "cwmTable", cwm.namedColumnSet, 1, 1,
-                "The secondary table (relational::NamedColumnSet).");
-        oppositeRole(stTable, "ormSecondaryTable");
-        cont(secondaryTable, "primaryKeyJoinColumn", joinColumn, 0, -1, true,
-                "Join columns to the primary table (insertable/updatable are meaningless here).");
-        cont(secondaryTable, "primaryKeyForeignKey", foreignKey, 0, 1, true,
-                "Foreign-key policy for the primary-key join.");
-
-        EReference ctTable = ref(collectionTable, "cwmTable", cwm.namedColumnSet, 1, 1,
-                "The collection table (relational::NamedColumnSet).");
-        oppositeRole(ctTable, "ormCollectionTable");
-        cont(collectionTable, "joinColumn", joinColumn, 0, -1, true,
-                "Join columns to the owning entity's table.");
-        cont(collectionTable, "foreignKey", foreignKey, 0, 1, true,
-                "Foreign-key policy for the join columns.");
-
-        EReference jtTable = ref(joinTable, "cwmTable", cwm.namedColumnSet, 1, 1,
-                "The intersection table (relational::NamedColumnSet).");
-        oppositeRole(jtTable, "ormJoinTable");
-        cont(joinTable, "joinColumn", joinColumn, 0, -1, true,
-                "Join columns towards the owning side.");
-        cont(joinTable, "foreignKey", foreignKey, 0, 1, true,
-                "Foreign-key policy for the owning-side join columns.");
-        cont(joinTable, "inverseJoinColumn", joinColumn, 0, -1, true,
-                "Join columns towards the target side.");
-        cont(joinTable, "inverseForeignKey", foreignKey, 0, 1, true,
-                "Foreign-key policy for the target-side join columns.");
-
-        // -- Overrides / Convert / Converter / Listener / Callback ---------
-
+        EReference aoPath = ref(attributeOverride, "cwmPath", cwm.structuralFeature, 1, -1,
+                "The overridden feature path, first element a feature of the host's class or of "
+                        + "the embeddable, each further element a feature of the previous type.");
+        aoPath.setOrdered(true);
+        oppositeRole(aoPath, "ormAttributeOverride");
         cont(attributeOverride, "column", column, 1, 1, true,
                 "The overriding column.");
 
-        cont(associationOverride, "joinColumn", joinColumn, 0, -1, true,
-                "The overriding join columns.");
-        cont(associationOverride, "foreignKey", foreignKey, 0, 1, true,
-                "Foreign-key policy for the overriding join columns.");
+        EReference asoPath = ref(associationOverride, "cwmPath", cwm.structuralFeature, 1, -1,
+                "The overridden feature path, ending in an association end.");
+        asoPath.setOrdered(true);
+        oppositeRole(asoPath, "ormAssociationOverride");
+        cont(associationOverride, "join", join, 0, 1, true,
+                "The overriding join.");
         cont(associationOverride, "joinTable", joinTable, 0, 1, true,
                 "The overriding join table.");
 
-        attr(convert, "attributeName", cwm.stringType, 0, 1,
-                "Path of the attribute the conversion applies to (empty for the annotated "
-                        + "attribute itself).");
-        attr(convert, "converter", cwm.stringType, 0, 1,
-                "Fully qualified Java class name of the converter (runtime artifact).");
+        EReference cvConverter = ref(convert, "converter", converter, 0, 1,
+                "The converter applied (exclusive with disableConversion).");
+        oppositeRole(cvConverter, "ormConvert");
         attrUnsettableBool(convert, "disableConversion",
                 "Disables an otherwise auto-applied converter.");
+        EReference cvPath = ref(convert, "cwmPath", cwm.structuralFeature, 0, -1,
+                "The feature path the conversion applies to; empty for the mapped attribute "
+                        + "itself.");
+        cvPath.setOrdered(true);
+        oppositeRole(cvPath, "ormConvertPath");
 
-        attr(converter, "class", cwm.stringType, 1, 1,
-                "Fully qualified Java class name of the converter (runtime artifact).");
+        EReference cnvClass = ref(converter, "cwmClass", cwm.cwmClass, 1, 1,
+                "The converter class in the object model.");
+        oppositeRole(cnvClass, "ormConverter");
         attrUnsettableBool(converter, "autoApply",
                 "Whether the converter applies automatically to all matching attributes.");
 
-        attr(entityListener, "class", cwm.stringType, 1, 1,
-                "Fully qualified Java class name of the listener (runtime artifact).");
+        EReference elClass = ref(entityListener, "cwmClass", cwm.cwmClass, 1, 1,
+                "The listener class in the object model.");
+        oppositeRole(elClass, "ormEntityListener");
         cont(entityListener, "lifecycleCallback", lifecycleCallback, 0, -1, false,
-                "Callback methods of the listener.");
+                "Callbacks implemented by operations of the listener class.");
 
         attr(lifecycleCallback, "kind", callbackKind, 1, 1,
-                "The lifecycle event invoking the method.");
-        attr(lifecycleCallback, "methodName", cwm.stringType, 1, 1,
-                "Name of the callback method.");
+                "The lifecycle event invoking the operation.");
+        EReference lcOp = ref(lifecycleCallback, "cwmOperation", cwm.operation, 1, 1,
+                "The callback operation (behavioral::Operation) of the listener or entity class.");
+        oppositeRole(lcOp, "ormLifecycleCallback");
 
-        // -- PersistenceUnit ----------------------------------------------
-
-        attrUnsettableBool(persistenceUnitMetadata, "xmlMappingMetadataComplete",
-                "Whether the XML mapping metadata is complete for the unit.");
         cont(persistenceUnitMetadata, "persistenceUnitDefaults", persistenceUnitDefaults, 0, 1, true,
                 "Defaults for the persistence unit.");
 
@@ -813,29 +844,26 @@ public final class OrmEcoreBuilder {
                 "Whether database identifiers are treated as delimited.");
         attrUnsettableBool(persistenceUnitDefaults, "cascadePersist",
                 "Adds cascade-persist to all relationships of the unit.");
-        attrUnsettable(persistenceUnitDefaults, "access", accessType,
-                "Default access strategy of the unit.");
-        cont(persistenceUnitDefaults, "entityListener", entityListener, 0, -1, false,
-                "Default entity listeners of the unit.");
-
-        // -- EntityMappings ------------------------------------------------
+        EReference pudListener = ref(persistenceUnitDefaults, "listener", entityListener, 0, -1,
+                "Default entity listeners of the unit in invocation order (defined in "
+                        + "EntityMappings).");
+        pudListener.setOrdered(true);
+        oppositeRole(pudListener, "ormDefaultListenerUser");
 
         cont(entityMappings, "persistenceUnitMetadata", persistenceUnitMetadata, 0, 1, true,
                 "Persistence-unit level metadata.");
         attrUnsettable(entityMappings, "access", accessType,
-                "Default access strategy of this mapping set.");
-        cont(entityMappings, "sequenceGenerator", sequenceGenerator, 0, -1, false,
-                "Globally defined sequence generators.");
-        cont(entityMappings, "tableGenerator", tableGenerator, 0, -1, false,
-                "Globally defined table generators.");
+                "Default access strategy of this mapping set and its persistence unit.");
+        cont(entityMappings, "generator", generator, 0, -1, false,
+                "The id generators of the unit (sequence and table generators).");
         cont(entityMappings, "namedQuery", namedQuery, 0, -1, false,
-                "Globally defined named queries.");
+                "Named JPQL queries of the unit.");
         cont(entityMappings, "namedNativeQuery", namedNativeQuery, 0, -1, false,
-                "Globally defined named native queries.");
+                "Named native queries of the unit.");
         cont(entityMappings, "namedStoredProcedureQuery", namedStoredProcedureQuery, 0, -1, false,
-                "Globally defined stored-procedure queries.");
+                "Named stored-procedure queries of the unit.");
         cont(entityMappings, "sqlResultSetMapping", sqlResultSetMapping, 0, -1, false,
-                "Globally defined result-set mappings.");
+                "Result-set mappings of the unit.");
         cont(entityMappings, "mappedSuperclass", mappedSuperclass, 0, -1, false,
                 "Mapped superclasses of this set.");
         cont(entityMappings, "entity", entity, 0, -1, false,
@@ -844,148 +872,81 @@ public final class OrmEcoreBuilder {
                 "Embeddables of this set.");
         cont(entityMappings, "converter", converter, 0, -1, false,
                 "Registered converters.");
-        EReference emPkg = ref(entityMappings, "cwmObjectPackage", cwm.cwmPackage, 0, 1,
-                "The core::Package holding the mapped classes; its package chain is the Java "
-                        + "package (converter convention: package names are the Java package "
-                        + "segments).");
-        oppositeRole(emPkg, "ormEntityMappings");
-        EReference emCat = ref(entityMappings, "cwmCatalog", cwm.catalog, 0, 1,
-                "The default relational::Catalog of this mapping set.");
-        oppositeRole(emCat, "ormEntityMappingsCatalog");
-        EReference emSchema = ref(entityMappings, "cwmSchema", cwm.schema, 0, 1,
-                "The default relational::Schema of this mapping set.");
-        oppositeRole(emSchema, "ormEntityMappingsSchema");
-
-        // -- Entity --------------------------------------------------------
+        cont(entityMappings, "entityListener", entityListener, 0, -1, false,
+                "Entity listeners, used by types and as unit defaults.");
 
         EReference entTable = ref(entity, "cwmTable", cwm.namedColumnSet, 0, 1,
                 "The primary table (relational::NamedColumnSet; a table or updatable view). "
-                        + "Replaces the former Table wrapper — schema and catalog follow from the "
-                        + "table's namespace chain.");
+                        + "Schema and catalog follow from the table's namespace chain. Unset only "
+                        + "for a SINGLE_TABLE subclass, which lives in the table of its root.");
         oppositeRole(entTable, "ormEntity");
         attrUnsettableBool(entity, "cacheable",
                 "Whether the entity is cacheable (shared-cache mode ENABLE_SELECTIVE/"
                         + "DISABLE_SELECTIVE).");
         attrUnsettable(entity, "inheritanceStrategy", inheritanceType,
-                "Inheritance strategy rooted at this entity (replaces the former Inheritance "
-                        + "wrapper).");
+                "Inheritance strategy rooted at this entity.");
         attr(entity, "discriminatorValue", cwm.stringType, 0, 1,
                 "Discriminator value of this entity in a SINGLE_TABLE/JOINED hierarchy.");
-        cont(entity, "discriminatorColumn", discriminatorColumn, 0, 1, true,
-                "The discriminator column of the hierarchy rooted here.");
+        EReference entDisc = ref(entity, "cwmDiscriminatorColumn", cwm.column, 0, 1,
+                "The discriminator column of the hierarchy rooted here; its SQL type is the "
+                        + "discriminator type.");
+        oppositeRole(entDisc, "ormDiscriminatorColumn");
         cont(entity, "secondaryTable", secondaryTable, 0, -1, false,
                 "Additional tables of the entity.");
-        cont(entity, "primaryKeyJoinColumn", joinColumn, 0, -1, true,
-                "Join columns to the superclass table in a JOINED hierarchy (insertable/"
-                        + "updatable are meaningless here).");
-        cont(entity, "primaryKeyForeignKey", foreignKey, 0, 1, true,
-                "Foreign-key policy for the JOINED primary-key join.");
-        cont(entity, "sequenceGenerator", sequenceGenerator, 0, 1, true,
-                "Entity-local sequence generator.");
-        cont(entity, "tableGenerator", tableGenerator, 0, 1, true,
-                "Entity-local table generator.");
-        cont(entity, "namedQuery", namedQuery, 0, -1, false,
-                "Entity-local named queries.");
-        cont(entity, "namedNativeQuery", namedNativeQuery, 0, -1, false,
-                "Entity-local named native queries.");
-        cont(entity, "namedStoredProcedureQuery", namedStoredProcedureQuery, 0, -1, false,
-                "Entity-local stored-procedure queries.");
-        cont(entity, "sqlResultSetMapping", sqlResultSetMapping, 0, -1, false,
-                "Entity-local result-set mappings.");
-        cont(entity, "attributeOverride", attributeOverride, 0, -1, false,
-                "Column overrides for inherited value mappings.");
-        cont(entity, "associationOverride", associationOverride, 0, -1, false,
-                "Join overrides for inherited relationship mappings.");
-        cont(entity, "convert", convert, 0, -1, false,
-                "Converter applications for inherited attributes.");
+        cont(entity, "primaryKeyJoin", join, 0, 1, true,
+                "The join to the superclass table in a JOINED hierarchy.");
         cont(entity, "namedEntityGraph", namedEntityGraph, 0, -1, false,
-                "Named entity graphs of the entity.");
-
-        // -- Base / SimpleBase / Basic / Id / Version ----------------------
+                "Named entity graphs rooted at the entity.");
 
         cont(base, "column", column, 0, 1, true,
-                "The mapped column with its insert/update flags.");
-        attrUnsettable(base, "temporal", temporalType,
-                "Temporal precision of a temporal value.");
+                "The mapped column with its insert/update flags; open only in a mapped superclass "
+                        + "or embeddable whose users override it.");
 
         attrUnsettable(simpleBase, "fetch", fetchType,
                 "Fetch strategy of the value.");
         attrUnsettable(simpleBase, "enumerated", enumType,
                 "Enum mapping of an enum value.");
-        attrUnsettableBool(simpleBase, "lob",
-                "Maps the value as a large object (replaces the former empty Lob marker class).");
-        cont(simpleBase, "convert", convert, 0, -1, false,
-                "Converter applications for the value (paths for embeddable elements).");
 
-        attrUnsettableBool(basic, "optional",
-                "Whether the value may be null.");
+        cont(basic, "convert", convert, 0, 1, true,
+                "The conversion of the value (without path).");
 
         cont(id, "generatedValue", generatedValue, 0, 1, true,
                 "Id generation for this id attribute.");
-        cont(id, "sequenceGenerator", sequenceGenerator, 0, 1, true,
-                "Id-local sequence generator.");
-        cont(id, "tableGenerator", tableGenerator, 0, 1, true,
-                "Id-local table generator.");
-        EReference idPk = ref(id, "cwmPrimaryKey", cwm.primaryKey, 0, 1,
-                "The catalog primary key the id column belongs to.");
-        oppositeRole(idPk, "ormIdMapping");
 
-        // -- Embedded / EmbeddedId / ElementCollection ---------------------
-
-        cont(embedded, "attributeOverride", attributeOverride, 0, -1, false,
-                "Column overrides per embeddable path.");
-        cont(embedded, "associationOverride", associationOverride, 0, -1, false,
-                "Join overrides per embeddable path.");
-        cont(embedded, "convert", convert, 0, -1, false,
-                "Converter applications per embeddable path.");
-
-        cont(embeddedId, "attributeOverride", attributeOverride, 0, -1, false,
-                "Column overrides per embeddable path.");
-        EReference eidPk = ref(embeddedId, "cwmPrimaryKey", cwm.primaryKey, 0, 1,
-                "The catalog primary key the composite id maps to.");
-        oppositeRole(eidPk, "ormEmbeddedIdMapping");
-
-        cont(elementCollection, "attributeOverride", attributeOverride, 0, -1, false,
-                "Column overrides for embeddable elements.");
-        cont(elementCollection, "associationOverride", associationOverride, 0, -1, false,
-                "Join overrides for embeddable elements.");
         cont(elementCollection, "collectionTable", collectionTable, 0, 1, true,
                 "The collection table.");
 
-        // -- Relationships -------------------------------------------------
-
-        cont(manyToOne, "joinColumn", joinColumn, 0, -1, true,
-                "Join columns of the relationship.");
+        cont(manyToOne, "join", join, 0, 1, true,
+                "The join from the owner's table to the target's table.");
         attrUnsettableBool(manyToOne, "id",
-                "Whether the relationship is part of the id (derived identity).");
-        attr(manyToOne, "mapsId", cwm.stringType, 0, 1,
-                "Maps the relationship onto an id attribute of an embedded id (derived "
-                        + "identity).");
-        attrUnsettableBool(manyToOne, "optional",
-                "Whether the reference may be null.");
+                "Whether the relationship is part of the id (derived identity with an id class).");
+        attrUnsettableBool(manyToOne, "mapsId",
+                "Whether the relationship provides the id (derived identity with an embedded id).");
+        EReference mtoMaps = ref(manyToOne, "cwmMapsIdAttribute", cwm.attribute, 0, 1,
+                "The attribute of the embedded-id class the relationship provides; unset when it "
+                        + "provides the whole id.");
+        oppositeRole(mtoMaps, "ormManyToOneMapsId");
 
-        cont(oneToOne, "primaryKeyJoinColumn", joinColumn, 0, -1, true,
-                "Primary-key join columns (shared primary key).");
-        cont(oneToOne, "primaryKeyForeignKey", foreignKey, 0, 1, true,
-                "Foreign-key policy for the primary-key join.");
-        cont(oneToOne, "joinColumn", joinColumn, 0, -1, true,
-                "Join columns of the relationship.");
+        cont(oneToOne, "join", join, 0, 1, true,
+                "The join from the owner's table to the target's table.");
+        cont(oneToOne, "primaryKeyJoin", join, 0, 1, true,
+                "The join over the shared primary key.");
         attrUnsettableBool(oneToOne, "id",
-                "Whether the relationship is part of the id (derived identity).");
-        attr(oneToOne, "mapsId", cwm.stringType, 0, 1,
-                "Maps the relationship onto an id attribute of an embedded id (derived "
-                        + "identity).");
-        attrUnsettableBool(oneToOne, "optional",
-                "Whether the reference may be null.");
+                "Whether the relationship is part of the id (derived identity with an id class).");
+        attrUnsettableBool(oneToOne, "mapsId",
+                "Whether the relationship provides the id (derived identity with an embedded id).");
+        EReference otoMaps = ref(oneToOne, "cwmMapsIdAttribute", cwm.attribute, 0, 1,
+                "The attribute of the embedded-id class the relationship provides; unset when it "
+                        + "provides the whole id.");
+        oppositeRole(otoMaps, "ormOneToOneMapsId");
         attrUnsettableBool(oneToOne, "orphanRemoval",
                 "Removes the target when it is dereferenced.");
 
-        cont(oneToMany, "joinColumn", joinColumn, 0, -1, true,
-                "Foreign-key columns on the target table (unidirectional without a join table).");
+        cont(oneToMany, "join", join, 0, 1, true,
+                "The join from the target's table to the owner's table (unidirectional without "
+                        + "a join table).");
         attrUnsettableBool(oneToMany, "orphanRemoval",
                 "Removes targets when they leave the collection.");
-
-        // -- Generatoren ---------------------------------------------------
 
         attrUnsettableInt(generator, "initialValue",
                 "Initial value of the generator.");
@@ -999,13 +960,10 @@ public final class OrmEcoreBuilder {
                 "Name of the database sequence (string, because CWM 1.1 cannot model "
                         + "sequences).");
 
-        EReference tgTable = ref(tableGenerator, "cwmTable", cwm.namedColumnSet, 0, 1,
-                "The generator table.");
-        oppositeRole(tgTable, "ormTableGenerator");
-        EReference tgPk = ref(tableGenerator, "cwmPkColumn", cwm.column, 0, 1,
-                "The column holding the generator names.");
+        EReference tgPk = ref(tableGenerator, "cwmPkColumn", cwm.column, 1, 1,
+                "The column holding the generator names; its owner is the generator table.");
         oppositeRole(tgPk, "ormTableGeneratorPk");
-        EReference tgVal = ref(tableGenerator, "cwmValueColumn", cwm.column, 0, 1,
+        EReference tgVal = ref(tableGenerator, "cwmValueColumn", cwm.column, 1, 1,
                 "The column holding the last allocated value.");
         oppositeRole(tgVal, "ormTableGeneratorValue");
         attr(tableGenerator, "pkColumnValue", cwm.stringType, 0, 1,
@@ -1015,11 +973,11 @@ public final class OrmEcoreBuilder {
         attrUnsettable(generatedValue, "strategy", generationType,
                 "Generation strategy.");
         EReference gvGen = ref(generatedValue, "generator", generator, 0, 1,
-                "The generator producing the values (typed reference instead of the former name "
-                        + "lookup).");
+                "The generator producing the values, set exactly for SEQUENCE and TABLE.");
         oppositeRole(gvGen, "ormGeneratedValue");
 
-        // -- Queries -------------------------------------------------------
+        cont(query, "hint", queryHint, 0, -1, false,
+                "Provider hints.");
 
         attr(queryHint, "value", cwm.stringType, 1, 1,
                 "Value of the hint.");
@@ -1028,45 +986,30 @@ public final class OrmEcoreBuilder {
                 "The JPQL query text.");
         attrUnsettable(namedQuery, "lockMode", lockModeType,
                 "Lock mode applied when the query executes.");
-        cont(namedQuery, "hint", queryHint, 0, -1, false,
-                "Provider hints.");
 
-        attr(namedNativeQuery, "query", cwm.stringType, 1, 1,
-                "The native SQL query text.");
-        attr(namedNativeQuery, "resultClass", cwm.stringType, 0, 1,
-                "Fully qualified Java class name of the result entity (runtime artifact).");
+        EReference nnqQuery = ref(namedNativeQuery, "cwmQuery", cwm.queryColumnSet, 1, 1,
+                "The stored query of the catalog: its query expression is the SQL, its columns "
+                        + "the result columns.");
+        oppositeRole(nnqQuery, "ormNativeQuery");
+        EReference nnqClass = ref(namedNativeQuery, "cwmResultClass", cwm.cwmClass, 0, 1,
+                "The result entity class (exclusive with resultSetMapping).");
+        oppositeRole(nnqClass, "ormNativeQueryResultClass");
         EReference nnqRsm = ref(namedNativeQuery, "resultSetMapping", sqlResultSetMapping, 0, 1,
-                "The result-set mapping shaping the result.");
+                "The result-set mapping shaping the result (exclusive with cwmResultClass).");
         oppositeRole(nnqRsm, "ormNativeQueryUser");
-        cont(namedNativeQuery, "hint", queryHint, 0, -1, false,
-                "Provider hints.");
 
-        EReference nspqProc = ref(namedStoredProcedureQuery, "cwmProcedure", cwm.procedure, 0, 1,
-                "The catalog procedure (relational::Procedure) — the procedure name is not "
-                        + "repeated as a string.");
+        EReference nspqProc = ref(namedStoredProcedureQuery, "cwmProcedure", cwm.procedure, 1, 1,
+                "The catalog procedure (relational::Procedure); its parameters are the query "
+                        + "parameters.");
         oppositeRole(nspqProc, "ormStoredProcedureQuery");
-        cont(namedStoredProcedureQuery, "parameter", storedProcedureParameter, 0, -1, true,
-                "Parameters in call order.");
-        EAttribute nspqRc = attr(namedStoredProcedureQuery, "resultClass", cwm.stringType, 0, -1,
-                "Result entity class names in result order (runtime artifacts).");
-        nspqRc.setOrdered(true);
+        EReference nspqClass = ref(namedStoredProcedureQuery, "cwmResultClass", cwm.cwmClass, 0, -1,
+                "Result entity classes in result order.");
+        nspqClass.setOrdered(true);
+        oppositeRole(nspqClass, "ormStoredProcedureQueryResultClass");
         EReference nspqRsm = ref(namedStoredProcedureQuery, "resultSetMapping", sqlResultSetMapping, 0, -1,
                 "Result-set mappings in result order.");
         nspqRsm.setOrdered(true);
         oppositeRole(nspqRsm, "ormStoredProcedureQueryUser");
-        cont(namedStoredProcedureQuery, "hint", queryHint, 0, -1, false,
-                "Provider hints.");
-
-        attr(storedProcedureParameter, "class", cwm.stringType, 0, 1,
-                "Java-side parameter class name (runtime artifact; stays settable).");
-        attrUnsettable(storedProcedureParameter, "mode", parameterMode,
-                "Parameter direction (stays settable; cwmParameter is additive).");
-        EReference sppParam = ref(storedProcedureParameter, "cwmParameter", cwm.sqlParameter, 0, 1,
-                "The catalog parameter (relational::SQLParameter), when resolvable.");
-        oppositeRole(sppParam, "ormParameter");
-        EReference sppType = ref(storedProcedureParameter, "cwmType", cwm.classifier, 0, 1,
-                "The catalog parameter type, when resolvable.");
-        oppositeRole(sppType, "ormParameterType");
 
         cont(sqlResultSetMapping, "entityResult", entityResult, 0, -1, false,
                 "Entity results.");
@@ -1075,38 +1018,36 @@ public final class OrmEcoreBuilder {
         cont(sqlResultSetMapping, "columnResult", columnResult, 0, -1, false,
                 "Scalar column results.");
 
-        attr(entityResult, "entityClass", cwm.stringType, 0, 1,
-                "Fully qualified Java class name of the result entity (stays settable; cwmClass "
-                        + "is additive and takes precedence when set).");
-        attr(entityResult, "discriminatorColumn", cwm.stringType, 0, 1,
-                "Alias of the discriminator column in the result set.");
-        EReference erClass = ref(entityResult, "cwmClass", cwm.cwmClass, 0, 1,
-                "The result entity class as core::Class (additive anchor).");
+        EReference erClass = ref(entityResult, "cwmClass", cwm.cwmClass, 1, 1,
+                "The result entity class.");
         oppositeRole(erClass, "ormEntityResult");
+        EReference erDisc = ref(entityResult, "cwmDiscriminatorColumn", cwm.column, 0, 1,
+                "The result column holding the discriminator.");
+        oppositeRole(erDisc, "ormEntityResultDiscriminator");
         cont(entityResult, "fieldResult", fieldResult, 0, -1, false,
                 "Field results of the entity.");
 
-        attr(fieldResult, "column", cwm.stringType, 1, 1,
-                "Alias of the column in the result set (aliases may prevent catalog "
-                        + "resolution).");
-        EReference frFeature = ref(fieldResult, "cwmFeature", cwm.structuralFeature, 0, 1,
-                "The mapped object feature (additive anchor).");
+        EReference frColumn = ref(fieldResult, "cwmColumn", cwm.column, 1, 1,
+                "The result column: a column of the stored query of the native query (its name is "
+                        + "the alias in the result set).");
+        oppositeRole(frColumn, "ormFieldResultColumn");
+        EReference frFeature = ref(fieldResult, "cwmFeature", cwm.structuralFeature, 1, 1,
+                "The feature of the result entity the column fills.");
         oppositeRole(frFeature, "ormFieldResult");
 
-        attr(columnResult, "class", cwm.stringType, 0, 1,
-                "Java type the scalar value converts to (runtime artifact).");
-        EReference crCol = ref(columnResult, "cwmColumn", cwm.column, 0, 1,
-                "The catalog column, when the alias is resolvable (additive anchor).");
+        EReference crType = ref(columnResult, "cwmType", cwm.classifier, 0, 1,
+                "The type the scalar value converts to.");
+        oppositeRole(crType, "ormColumnResultType");
+        EReference crCol = ref(columnResult, "cwmColumn", cwm.column, 1, 1,
+                "The result column: a column of the stored query of the native query (its name is "
+                        + "the alias in the result set).");
         oppositeRole(crCol, "ormColumnResult");
 
-        attr(constructorResult, "targetClass", cwm.stringType, 1, 1,
-                "Fully qualified Java class name whose constructor is invoked (runtime "
-                        + "artifact).");
-        EReference crCols = cont(constructorResult, "columnResult", columnResult, 0, -1, true,
+        EReference ctrClass = ref(constructorResult, "cwmClass", cwm.cwmClass, 1, 1,
+                "The class whose constructor is invoked.");
+        oppositeRole(ctrClass, "ormConstructorResult");
+        cont(constructorResult, "columnResult", columnResult, 0, -1, true,
                 "Constructor arguments in declaration order.");
-        crCols.setOrdered(true);
-
-        // -- Entity graphs -------------------------------------------------
 
         attrUnsettableBool(namedEntityGraph, "includeAllAttributes",
                 "Includes all attributes of the root entity.");
@@ -1117,22 +1058,26 @@ public final class OrmEcoreBuilder {
         cont(namedEntityGraph, "subclassSubgraph", namedSubgraph, 0, -1, false,
                 "Subgraphs for subclasses of the root entity.");
 
-        attr(namedAttributeNode, "subgraph", cwm.stringType, 0, 1,
-                "Graph-local name of the subgraph fetched for this attribute.");
-        attr(namedAttributeNode, "keySubgraph", cwm.stringType, 0, 1,
-                "Graph-local name of the subgraph fetched for the map key.");
+        EReference nanFeature = ref(namedAttributeNode, "cwmFeature", cwm.structuralFeature, 1, 1,
+                "The fetched attribute or association end.");
+        oppositeRole(nanFeature, "ormAttributeNode");
+        EReference nanSub = ref(namedAttributeNode, "subgraph", namedSubgraph, 0, 1,
+                "The subgraph fetched for the value of the feature.");
+        oppositeRole(nanSub, "ormAttributeNodeSubgraph");
+        EReference nanKeySub = ref(namedAttributeNode, "keySubgraph", namedSubgraph, 0, 1,
+                "The subgraph fetched for the map key of the feature.");
+        oppositeRole(nanKeySub, "ormAttributeNodeKeySubgraph");
 
-        attr(namedSubgraph, "class", cwm.stringType, 0, 1,
-                "Fully qualified Java class name the subgraph applies to (runtime artifact).");
+        EReference nsgClass = ref(namedSubgraph, "cwmClass", cwm.cwmClass, 1, 1,
+                "The type the subgraph applies to.");
+        oppositeRole(nsgClass, "ormSubgraph");
         cont(namedSubgraph, "namedAttributeNode", namedAttributeNode, 0, -1, false,
                 "Nodes of the subgraph.");
 
         return p;
     }
 
-    // -- Hilfsmethoden -----------------------------------------------------
-
-    /** {@code Property.oppositeRoleName}-Paar (Konvention fuer versteckte Assoziationsenden). */
+    /** {@code Property.oppositeRoleName} pair (convention for hidden association ends). */
     private void oppositeRole(EReference r, String roleName) {
         EAnnotation a1 = ef.createEAnnotation();
         a1.setSource(EMOF);
@@ -1167,21 +1112,21 @@ public final class OrmEcoreBuilder {
         return a;
     }
 
-    /** Optionales Enum-Attribut mit Tri-State (unset erkennbar). */
+    /** Optional enum attribute with tri-state semantics (unset is detectable). */
     private EAttribute attrUnsettable(EClass owner, String name, EEnum type, String doc) {
         EAttribute a = attr(owner, name, type, 0, 1, doc);
         a.setUnsettable(true);
         return a;
     }
 
-    /** Optionales Boolean-Attribut mit Tri-State (unset erkennbar). */
+    /** Optional boolean attribute with tri-state semantics (unset is detectable). */
     private EAttribute attrUnsettableBool(EClass owner, String name, String doc) {
         EAttribute a = attr(owner, name, cwm.booleanType, 0, 1, doc);
         a.setUnsettable(true);
         return a;
     }
 
-    /** Optionales Integer-Attribut mit Tri-State (unset erkennbar). */
+    /** Optional integer attribute with tri-state semantics (unset is detectable). */
     private EAttribute attrUnsettableInt(EClass owner, String name, String doc) {
         EAttribute a = attr(owner, name, cwm.integerType, 0, 1, doc);
         a.setUnsettable(true);
@@ -1205,8 +1150,8 @@ public final class OrmEcoreBuilder {
     }
 
     /**
-     * Containment-Referenz. {@code ordered} steuert die Listensemantik: true, wo die
-     * Reihenfolge Bedeutung traegt (JoinColumn-Listen, Parameter, Konstruktor-Argumente).
+     * Containment reference. {@code ordered} controls the list semantics: true where the
+     * order carries meaning (join-column lists, parameters, constructor arguments).
      */
     private EReference cont(EClass owner, String name, EClassifier type, int lower, int upper,
             boolean ordered, String doc) {
