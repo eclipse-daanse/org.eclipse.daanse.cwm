@@ -11,8 +11,10 @@ package org.eclipse.daanse.cwm.model.cwm.resource.relational.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.sql.JDBCType;
 import java.sql.Types;
 
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 import org.junit.jupiter.api.Test;
 
@@ -76,6 +78,40 @@ class SQLSimpleTypesTest {
                 .hasValueSatisfying(t -> assertThat(t.getTypeNumber()).isEqualTo(Types.BIGINT));
         assertThat(SQLSimpleTypes.byName("FROBNICATE")).isEmpty();
         assertThat(SQLSimpleTypes.byName(null)).isEmpty();
+    }
+
+    @Test
+    void toJdbcType_typeNumberFirst() {
+        assertThat(SQLSimpleTypes.toJdbcType(named("NUMBER", Types.NUMERIC))).isEqualTo(JDBCType.NUMERIC);
+        assertThat(SQLSimpleTypes.toJdbcType(null)).isEqualTo(JDBCType.OTHER);
+    }
+
+    @Test
+    void toJdbcType_byNameWithoutTypeNumber() {
+        assertThat(SQLSimpleTypes.toJdbcType(named("VARCHAR", 0))).isEqualTo(JDBCType.VARCHAR);
+        assertThat(SQLSimpleTypes.toJdbcType(named("NVARCHAR", 0))).isEqualTo(JDBCType.NVARCHAR);
+        assertThat(SQLSimpleTypes.toJdbcType(named("national  character varying", 0)))
+                .isEqualTo(JDBCType.NVARCHAR);
+        assertThat(SQLSimpleTypes.toJdbcType(named("NCHAR", 0))).isEqualTo(JDBCType.NCHAR);
+        assertThat(SQLSimpleTypes.toJdbcType(named("TIMESTAMP WITH TIMEZONE", 0)))
+                .isEqualTo(JDBCType.TIMESTAMP_WITH_TIMEZONE);
+        // the common spellings keep their meaning
+        assertThat(SQLSimpleTypes.toJdbcType(named("BIT", 0))).isEqualTo(JDBCType.BOOLEAN);
+        assertThat(SQLSimpleTypes.toJdbcType(named("FLOAT", 0))).isEqualTo(JDBCType.REAL);
+        assertThat(SQLSimpleTypes.toJdbcType(named("VARCHAR2", 0))).isEqualTo(JDBCType.OTHER);
+    }
+
+    @Test
+    void toJdbcType_vendorTypeNumberFallsBackToName() {
+        // Oracle reports BINARY_DOUBLE as 101, outside java.sql.Types
+        assertThat(SQLSimpleTypes.toJdbcType(named("NVARCHAR", 101))).isEqualTo(JDBCType.NVARCHAR);
+    }
+
+    private static SQLSimpleType named(String name, int typeNumber) {
+        SQLSimpleType t = RelationalFactory.eINSTANCE.createSQLSimpleType();
+        t.setName(name);
+        t.setTypeNumber(typeNumber);
+        return t;
     }
 
     @Test
