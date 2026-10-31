@@ -165,7 +165,8 @@ public final class SQLSimpleTypes {
 
     /**
      * Best-effort {@link JDBCType} for a CWM {@link SQLDataType}: prefers the
-     * explicit type-number, then falls back to a name match.
+     * explicit type-number, then falls back to a name match — the common
+     * spellings below first, then the SQL-99 names known to {@link #byName}.
      */
     public static JDBCType toJdbcType(SQLDataType sqlType) {
         if (sqlType == null) {
@@ -201,7 +202,8 @@ public final class SQLSimpleTypes {
         case "BLOB" -> JDBCType.BLOB;
         case "BINARY" -> JDBCType.BINARY;
         case "VARBINARY" -> JDBCType.VARBINARY;
-        default -> JDBCType.OTHER;
+        // NVARCHAR, NATIONAL CHARACTER VARYING, TIMESTAMP WITH TIMEZONE, ...
+        default -> byName(name).map(t -> JDBCType.valueOf((int) t.getTypeNumber())).orElse(JDBCType.OTHER);
         };
     }
 
