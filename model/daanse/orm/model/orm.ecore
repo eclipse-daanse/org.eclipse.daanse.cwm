@@ -14,7 +14,7 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="orm" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm"
     nsPrefix="orm">
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-    <details key="documentation" value="Plain CWM object/relational mapping model with the functional scope of the Jakarta Persistence 3.1 mappings (orm.xml). It deliberately does not model the XML itself: no ExtendedMetaData, no DocumentRoot, no derived JPA name strings and no derivation OCL. The cwm* references are the single truth — object side core::Class / core::Attribute / relationships::AssociationEnd, table side relational::NamedColumnSet / Column / PrimaryKey / ForeignKey / Procedure. Name materialization (FQCN, schema/catalog, column lists, ...) lives in the fennec eorm converter, not in the model. All concrete classes extend OrmElement (core::ModelElement); non-containment references are hidden association ends (Property.oppositeRoleName, prefix orm) — backward navigation via InverseReferences."/>
+    <details key="documentation" value="Plain CWM object/relational mapping model with the functional scope of the Jakarta Persistence 3.1 mappings (orm.xml). It deliberately does not model the XML itself: no ExtendedMetaData, no DocumentRoot, no derived JPA name strings and no derivation OCL. The cwm* references are the single truth — object side core::Class / core::Attribute / relationships::AssociationEnd / behavioral::Operation, table side relational::NamedColumnSet / Column / ForeignKey / QueryColumnSet / Procedure. What follows from an anchor (schema, catalog, primary key, the table of a join form, SQL type, nullability) has no feature of its own. Every topic has exactly one place: join columns and foreign key in Join, tables with a join in JoinedTable, overrides and conversions in OverrideHost, the map key in MapKey; generators, queries, result-set mappings, converters and listeners only in EntityMappings. Nothing is implicit: what JPA would default (persistent attributes, column and join names, inheritance strategy) is stated in the model and checked by OrmModelValidator. All concrete classes extend OrmElement (core::ModelElement); non-containment references are hidden association ends (Property.oppositeRoleName, prefix orm) — backward navigation via InverseReferences."/>
     <details key="modelName" value="CWMORM"/>
     <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
     <details key="oSGiCompatible" value="true"/>
@@ -33,22 +33,6 @@
     <eLiterals name="PROPERTY"/>
     <eLiterals name="FIELD" value="1"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="ConstraintMode">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Whether a physical foreign-key constraint is generated for a join."/>
-    </eAnnotations>
-    <eLiterals name="CONSTRAINT"/>
-    <eLiterals name="NOCONSTRAINT" value="1" literal="NO_CONSTRAINT"/>
-    <eLiterals name="PROVIDERDEFAULT" value="2" literal="PROVIDER_DEFAULT"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="DiscriminatorType">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Value type of the discriminator column."/>
-    </eAnnotations>
-    <eLiterals name="STRING"/>
-    <eLiterals name="CHAR" value="1"/>
-    <eLiterals name="INTEGER" value="2"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="EnumType">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="How a Java enum value maps to its column: by ordinal or by name."/>
@@ -65,7 +49,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="GenerationType">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Primary-key generation strategy."/>
+      <details key="documentation" value="Primary-key generation strategy. SEQUENCE and TABLE name their generator, IDENTITY, UUID and AUTO have none."/>
     </eAnnotations>
     <eLiterals name="TABLE"/>
     <eLiterals name="SEQUENCE" value="1"/>
@@ -94,23 +78,6 @@
     <eLiterals name="PESSIMISTICFORCEINCREMENT" value="6" literal="PESSIMISTIC_FORCE_INCREMENT"/>
     <eLiterals name="NONE" value="7"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="ParameterMode">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Direction of a stored-procedure parameter."/>
-    </eAnnotations>
-    <eLiterals name="IN"/>
-    <eLiterals name="INOUT" value="1"/>
-    <eLiterals name="OUT" value="2"/>
-    <eLiterals name="REFCURSOR" value="3" literal="REF_CURSOR"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="TemporalType">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="SQL temporal precision of a java.util.Date/Calendar value."/>
-    </eAnnotations>
-    <eLiterals name="DATE"/>
-    <eLiterals name="TIME" value="1"/>
-    <eLiterals name="TIMESTAMP" value="2"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="CascadeKind">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Cascadable operation of a relationship; replaces the former CascadeType wrapper with its EmptyType children (XML artifact)."/>
@@ -136,7 +103,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OrmElement" abstract="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Abstract local root of the mapping world: every concrete mapping class is a core::ModelElement (inherited name, visibility, taggedValue). The inherited name is informative where a cwm reference names the element authoritatively."/>
+      <details key="documentation" value="Abstract local root of the mapping world: every concrete mapping class is a core::ModelElement (inherited name, visibility, taggedValue). Where an element is anchored, its name equals the name of the anchor (the class, attribute, end, column, foreign key, operation or path); an own meaning has the name only for the entity (JPA entity name), the mapping set, generators, queries, hints, result-set mappings, column-result aliases and entity graphs."/>
     </eAnnotations>
     <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="description">
@@ -148,13 +115,13 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ManagedType" abstract="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A persistently managed Java type (entity, mapped superclass or embeddable): the cwmClass anchor plus the attribute mappings, held in typed containments (no Attributes wrapper)."/>
+      <details key="documentation" value="A persistently managed Java type (entity, mapped superclass or embeddable): the cwmClass anchor plus the attribute mappings, held in typed containments. The mapping is complete: every own attribute and every navigable association end of the class has exactly one mapping, a Transient one if it is not persistent."/>
     </eAnnotations>
     <eSuperTypes href="#//OrmElement"/>
     <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Namespace"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="cwmClass" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The mapped Java type as core::Class. The fully qualified class name is materialized by the converter from the owning core::Package chain."/>
+        <details key="documentation" value="The mapped Java type as core::Class. The fully qualified class name follows from the owning core::Package chain."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="ormManagedType"/>
@@ -166,14 +133,8 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="access" eType="//AccessType" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Default access strategy for the attributes of this type."/>
+        <details key="documentation" value="Access strategy for the attributes of this type."/>
       </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="metadataComplete" unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Whether this metadata is complete (annotations on the class are ignored)."/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="basic" ordered="false" upperBound="-1"
         eType="//Basic" containment="true">
@@ -190,7 +151,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="transient" ordered="false" upperBound="-1"
         eType="//Transient" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Attributes excluded from persistence."/>
+        <details key="documentation" value="Attributes and association ends excluded from persistence."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="elementCollection" ordered="false" upperBound="-1"
@@ -226,7 +187,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IdentifiableType" abstract="true" eSuperTypes="//ManagedType">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A managed type with identity: id/embeddedId/version mappings, an optional id class, entity listeners and lifecycle callbacks."/>
+      <details key="documentation" value="A managed type with identity: id/embeddedId/version mappings, an optional id class, the entity listeners it uses and its own lifecycle callbacks."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="id" ordered="false" upperBound="-1" eType="//Id"
         containment="true">
@@ -247,7 +208,7 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="cwmIdClass">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The composite id class (replaces the former IdClass wrapper)."/>
+        <details key="documentation" value="The composite id class, set exactly when the type has more than one id mapping."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="ormIdClassUser"/>
@@ -257,10 +218,15 @@
       </eAnnotations>
       <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="entityListener" ordered="false" upperBound="-1"
-        eType="//EntityListener" containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="listener" upperBound="-1" eType="//EntityListener">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Entity listeners of this type."/>
+        <details key="documentation" value="The entity listeners of this type in invocation order (defined in EntityMappings)."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormListenerUser"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormListenerUser"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="excludeDefaultListeners" unsettable="true">
@@ -278,13 +244,13 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="lifecycleCallback" ordered="false" upperBound="-1"
         eType="//LifecycleCallback" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Lifecycle callback methods declared on the type itself."/>
+        <details key="documentation" value="Lifecycle callbacks implemented by operations of the type's own class."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AttributeMapping" abstract="true" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="One mapped attribute of a managed type. Two branches: ValueMapping (a core::Attribute) and RelationshipMapping (a relationships::AssociationEnd)."/>
+      <details key="documentation" value="One mapped feature of a managed type. Three branches: ValueMapping (a core::Attribute), RelationshipMapping (a relationships::AssociationEnd) and Transient (either, explicitly not persistent)."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="access" eType="//AccessType" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -298,7 +264,7 @@
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="cwmAttribute" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The mapped object attribute (core::Attribute) — the single truth for the attribute name and type."/>
+        <details key="documentation" value="The mapped object attribute (core::Attribute) — the single truth for the attribute name, type and multiplicity."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="ormValueMapping"/>
@@ -336,11 +302,6 @@
         <details key="documentation" value="Cascaded operations of the relationship."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="foreignKey" eType="//ForeignKey" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Foreign-key policy for the join columns."/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="joinTable" eType="//JoinTable" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Maps the relationship over an intersection table."/>
@@ -361,87 +322,51 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="CollectionSupport" abstract="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Mixin for collection-valued mappings (element collection, one-to-many, many-to-many): ordering, map key and map-key column details."/>
+      <details key="documentation" value="Mixin for collection-valued mappings (element collection, one-to-many, many-to-many): ordering, order column and map key."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="orderBy">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="orderBy" upperBound="-1" eType="//Ordering"
+        containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Ordering clause over attributes of the target type."/>
+        <details key="documentation" value="Ordering criteria over attributes of the target type, most significant first."/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="orderColumn" eType="//Column" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="A dedicated order column maintaining the list order."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmMapKeyAttribute">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mapKey" eType="//MapKey" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The attribute of the target type acting as map key (the former MapKey wrapper)."/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormMapKeyUser"/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormMapKeyUser"/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmMapKeyClassifier">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The type of the map key (the former MapKeyClass wrapper)."/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormMapKeyClassUser"/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormMapKeyClassUser"/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mapKeyTemporal" eType="//TemporalType"
-        unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Temporal precision of a temporal map key."/>
+        <details key="documentation" value="The key of a map-valued collection."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mapKeyEnumerated" eType="//EnumType" unsettable="true">
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OverrideHost" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Mixin for the places that re-map features of another type: an entity (inherited features of mapped superclasses), an embedded or embedded-id attribute and an element collection (features of the embeddable) and a map key. Each override and conversion names its feature path as typed references."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributeOverride" ordered="false" upperBound="-1"
+        eType="//AttributeOverride" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Enum mapping of an enum map key."/>
+        <details key="documentation" value="Column overrides per feature path."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="mapKeyAttributeOverride" ordered="false"
-        upperBound="-1" eType="//AttributeOverride" containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="associationOverride" ordered="false" upperBound="-1"
+        eType="//AssociationOverride" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Column overrides for an embeddable map key."/>
+        <details key="documentation" value="Join overrides per feature path."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="mapKeyConvert" ordered="false" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="convert" ordered="false" upperBound="-1"
         eType="//Convert" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Converter applications for the map key."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="mapKeyColumn" eType="//Column" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The column holding a basic map key."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="mapKeyJoinColumn" upperBound="-1" eType="//JoinColumn"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Join columns for an entity map key."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="mapKeyForeignKey" eType="//ForeignKey"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Foreign-key policy for the map-key join columns."/>
+        <details key="documentation" value="Converter applications per feature path."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Generator" abstract="true" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A primary-key value generator; referenced by GeneratedValue.generator (typed reference instead of a name lookup)."/>
+      <details key="documentation" value="A primary-key value generator, defined once per mapping set and referenced by GeneratedValue.generator."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="initialValue" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -456,9 +381,20 @@
       <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Column" eSuperTypes="//OrmElement">
+  <eClassifiers xsi:type="ecore:EClass" name="Query" abstract="true" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="The universal column wrapper: cwmColumn is the catalog column (name, type, length, precision, nullability live there); insertable/updatable are the only genuine mapping flags. Also used for order and map-key columns — the role follows from the containing reference."/>
+      <details key="documentation" value="A named query of the persistence unit (JPQL, native SQL or stored procedure) with its provider hints; the query name is the inherited name."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hint" ordered="false" upperBound="-1" eType="//QueryHint"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Provider hints."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ColumnRef" abstract="true" eSuperTypes="//OrmElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A reference to one catalog column; cwmColumn is the single truth for name, type, length, precision, scale and nullability."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="cwmColumn" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -472,6 +408,11 @@
       </eAnnotations>
       <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//Column"/>
     </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Column" eSuperTypes="//ColumnRef">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A mapped column: the catalog column plus the insert/update flags, the only genuine mapping information. Also used for order and map-key columns — the role follows from the containing reference."/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="insertable" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Whether the column appears in provider-generated INSERT statements."/>
@@ -485,25 +426,13 @@
       <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="JoinColumn" eSuperTypes="//OrmElement">
+  <eClassifiers xsi:type="ecore:EClass" name="JoinColumn" eSuperTypes="//ColumnRef">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A join column as a pair of catalog columns: cwmColumn is the foreign-key column, cwmReferencedColumn the referenced (usually primary-key) column. Also used for primary-key join columns, where insertable/updatable are meaningless."/>
+      <details key="documentation" value="One column pair of a join: cwmColumn is the foreign-key column, cwmReferencedColumn the referenced (usually primary-key) column. Insert/update flags belong to the whole Join."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmColumn" lowerBound="1">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmReferencedColumn" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The foreign-key column."/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormJoinColumn"/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormJoinColumn"/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//Column"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmReferencedColumn">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The referenced column (defaults to the primary-key column of the target table)."/>
+        <details key="documentation" value="The referenced column in the target table."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="ormReferencingJoinColumn"/>
@@ -513,166 +442,156 @@
       </eAnnotations>
       <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//Column"/>
     </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Join" eSuperTypes="//OrmElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="How two tables are joined, the one place for join columns and foreign-key policy: either the catalog foreign key (its feature and uniqueKey.feature columns are the join columns) or explicit column pairs when no constraint exists. Used by to-one and one-to-many relationships, the JOINED primary-key join, association overrides, map keys and every JoinedTable."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmForeignKey">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The catalog constraint (relational::ForeignKey) the join follows; unset when no constraint exists, then the join columns name the column pairs."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormJoin"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormJoin"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//ForeignKey"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="joinColumn" upperBound="-1" eType="//JoinColumn"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Explicit column pairs, only when there is no foreign key."/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="insertable" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Whether the column appears in provider-generated INSERT statements."/>
+        <details key="documentation" value="Whether the join columns appear in provider-generated INSERT statements."/>
       </eAnnotations>
       <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="updatable" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Whether the column appears in provider-generated UPDATE statements."/>
+        <details key="documentation" value="Whether the join columns appear in provider-generated UPDATE statements."/>
       </eAnnotations>
       <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ForeignKey" eSuperTypes="//OrmElement">
+  <eClassifiers xsi:type="ecore:EClass" name="JoinedTable" abstract="true" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Mapping policy for a physical foreign key: whether a constraint is generated (constraintMode) and, if materialized, the catalog relational::ForeignKey."/>
+      <details key="documentation" value="A further table reached over a join (secondary, collection or join table). The table itself is not repeated: it is the owner of the join columns (or the table owning the foreign key)."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmForeignKey">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="join" lowerBound="1" eType="//Join" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The materialized catalog constraint (relational::ForeignKey), when it exists."/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormForeignKey"/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormForeignKey"/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//ForeignKey"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="constraintMode" eType="//ConstraintMode"
-        unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Whether a physical constraint is generated."/>
+        <details key="documentation" value="The join from this table to the owner's table; its columns live in this table."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DiscriminatorColumn" eSuperTypes="//OrmElement">
+  <eClassifiers xsi:type="ecore:EClass" name="SecondaryTable" eSuperTypes="//JoinedTable">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="The discriminator column of a SINGLE_TABLE/JOINED hierarchy: catalog column plus value type."/>
+      <details key="documentation" value="An additional table of an entity; its join is the primary-key join to the primary table."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmColumn" lowerBound="1">
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CollectionTable" eSuperTypes="//JoinedTable">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The table holding an element collection; its join leads to the owner's table."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="JoinTable" eSuperTypes="//JoinedTable">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An intersection table mapping a relationship: the join towards the owning side, the inverse join towards the target side."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inverseJoin" lowerBound="1" eType="//Join"
+        containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The catalog discriminator column."/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormDiscriminatorColumn"/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormDiscriminatorColumn"/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//Column"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="discriminatorType" eType="//DiscriminatorType"
-        unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Value type of the discriminator column."/>
+        <details key="documentation" value="The join from this table to the target's table."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SecondaryTable" eSuperTypes="//OrmElement">
+  <eClassifiers xsi:type="ecore:EClass" name="MapKey" eSuperTypes="//OrmElement //OverrideHost">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="An additional table of an entity, joined by primary-key join columns."/>
+      <details key="documentation" value="The key of a map-valued collection, in one place: an attribute of the target type (cwmAttribute) or, when no attribute is the key, the key type (cwmClassifier) with its column, join, enum mapping, overrides and conversions."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmTable" lowerBound="1">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmAttribute">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The secondary table (relational::NamedColumnSet)."/>
+        <details key="documentation" value="The feature of the target type acting as key; its type is the key type."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormSecondaryTable"/>
+        <details key="Property.oppositeRoleName" value="ormMapKey"/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormSecondaryTable"/>
+        <details key="body" value="ormMapKey"/>
       </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//NamedColumnSet"/>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKeyJoinColumn" upperBound="-1" eType="//JoinColumn"
-        containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmClassifier">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Join columns to the primary table (insertable/updatable are meaningless here)."/>
+        <details key="documentation" value="The key type when no feature of the target is the key."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormMapKeyClassifier"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormMapKeyClassifier"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="enumerated" eType="//EnumType" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Enum mapping of an enum key."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKeyForeignKey" eType="//ForeignKey"
-        containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="column" eType="//Column" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Foreign-key policy for the primary-key join."/>
+        <details key="documentation" value="The column holding a basic key."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="join" eType="//Join" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The join to the key entity's table for an entity key."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="CollectionTable" eSuperTypes="//OrmElement">
+  <eClassifiers xsi:type="ecore:EClass" name="Ordering" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="The table holding an element collection, joined to the owner by join columns."/>
+      <details key="documentation" value="One ordering criterion of a collection: a feature path into the target type, ascending or descending; the name is the path with dots. Replaces the former orderBy string."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmTable" lowerBound="1">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmPath" lowerBound="1" upperBound="-1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The collection table (relational::NamedColumnSet)."/>
+        <details key="documentation" value="The feature path to order by: first element a feature of the target type (the related entity or the element embeddable), each further element a feature of the previous type, ending in an attribute."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormCollectionTable"/>
+        <details key="Property.oppositeRoleName" value="ormOrdering"/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormCollectionTable"/>
+        <details key="body" value="ormOrdering"/>
       </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//NamedColumnSet"/>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="joinColumn" upperBound="-1" eType="//JoinColumn"
-        containment="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="descending">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Join columns to the owning entity's table."/>
+        <details key="documentation" value="Whether the order is descending (default ascending)."/>
       </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="foreignKey" eType="//ForeignKey" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Foreign-key policy for the join columns."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="JoinTable" eSuperTypes="//OrmElement">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="An intersection table mapping a relationship: join columns towards the owning side, inverse join columns towards the target side."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmTable" lowerBound="1">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The intersection table (relational::NamedColumnSet)."/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormJoinTable"/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormJoinTable"/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//NamedColumnSet"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="joinColumn" upperBound="-1" eType="//JoinColumn"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Join columns towards the owning side."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="foreignKey" eType="//ForeignKey" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Foreign-key policy for the owning-side join columns."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="inverseJoinColumn" upperBound="-1" eType="//JoinColumn"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Join columns towards the target side."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="inverseForeignKey" eType="//ForeignKey"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Foreign-key policy for the target-side join columns."/>
-      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AttributeOverride" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Overrides the column of an inherited or embedded value mapping; the attribute path (e.g. address.street) is the inherited name."/>
+      <details key="documentation" value="Overrides the column of an inherited or embedded value mapping. cwmPath is the feature path from the host (e.g. address, street); the name is the path names joined with a dot."/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmPath" lowerBound="1" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The overridden feature path, first element a feature of the host's class or of the embeddable, each further element a feature of the previous type."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormAttributeOverride"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormAttributeOverride"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="column" lowerBound="1" eType="//Column"
         containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -682,17 +601,23 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AssociationOverride" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Overrides the join columns or join table of an inherited or embedded relationship mapping; the attribute path is the inherited name."/>
+      <details key="documentation" value="Overrides the join or join table of an inherited or embedded relationship mapping. cwmPath is the feature path from the host; the name is the path names joined with a dot."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="joinColumn" upperBound="-1" eType="//JoinColumn"
-        containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmPath" lowerBound="1" upperBound="-1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The overriding join columns."/>
+        <details key="documentation" value="The overridden feature path, ending in an association end."/>
       </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormAssociationOverride"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormAssociationOverride"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="foreignKey" eType="//ForeignKey" containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="join" eType="//Join" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Foreign-key policy for the overriding join columns."/>
+        <details key="documentation" value="The overriding join."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="joinTable" eType="//JoinTable" containment="true">
@@ -703,19 +628,18 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Convert" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Applies or disables an attribute converter for an attribute (path in attributeName); converter is the Java class name — a runtime artifact, deliberately without CWM anchor."/>
+      <details key="documentation" value="Applies a converter to an attribute or disables conversion for it. An empty cwmPath means the attribute of the mapping itself; on an override host the path leads into the embedded or inherited features."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeName">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="converter" eType="//Converter">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Path of the attribute the conversion applies to (empty for the annotated attribute itself)."/>
+        <details key="documentation" value="The converter applied (exclusive with disableConversion)."/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="converter">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Fully qualified Java class name of the converter (runtime artifact)."/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormConvert"/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormConvert"/>
+      </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="disableConversion" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -723,16 +647,34 @@
       </eAnnotations>
       <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmPath" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The feature path the conversion applies to; empty for the mapped attribute itself."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormConvertPath"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormConvertPath"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Converter" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Registers an attribute converter class (Java runtime artifact, no CWM anchor)."/>
+      <details key="documentation" value="Registers an attribute converter: cwmClass is the converter class in the object model, its name the class name."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="class" lowerBound="1">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmClass" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Fully qualified Java class name of the converter (runtime artifact)."/>
+        <details key="documentation" value="The converter class in the object model."/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormConverter"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormConverter"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="autoApply" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -743,47 +685,53 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EntityListener" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A listener class receiving lifecycle callbacks for an entity (Java runtime artifact, no CWM anchor)."/>
+      <details key="documentation" value="A listener class receiving lifecycle callbacks: cwmClass is the listener class in the object model, its operations are the callback methods."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="class" lowerBound="1">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmClass" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Fully qualified Java class name of the listener (runtime artifact)."/>
+        <details key="documentation" value="The listener class in the object model."/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormEntityListener"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormEntityListener"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="lifecycleCallback" ordered="false" upperBound="-1"
         eType="//LifecycleCallback" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Callback methods of the listener."/>
+        <details key="documentation" value="Callbacks implemented by operations of the listener class."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="LifecycleCallback" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="One lifecycle callback method: which event (kind) invokes which method (methodName). Replaces the seven former one-per-event classes."/>
+      <details key="documentation" value="One lifecycle callback: which event (kind) invokes which operation (cwmOperation, owned by the listener or the entity class). Replaces the seven former one-per-event classes."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1" eType="//CallbackKind">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The lifecycle event invoking the method."/>
+        <details key="documentation" value="The lifecycle event invoking the operation."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="methodName" lowerBound="1">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmOperation" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Name of the callback method."/>
+        <details key="documentation" value="The callback operation (behavioral::Operation) of the listener or entity class."/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormLifecycleCallback"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormLifecycleCallback"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/behavioral#//Operation"/>
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PersistenceUnitMetadata" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Metadata that applies to the whole persistence unit."/>
+      <details key="documentation" value="Metadata that applies to the whole persistence unit. The mapping is always complete; a converter to orm.xml writes metadata-complete."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="xmlMappingMetadataComplete" unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Whether the XML mapping metadata is complete for the unit."/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="persistenceUnitDefaults" eType="//PersistenceUnitDefaults"
         containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -793,7 +741,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PersistenceUnitDefaults" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Defaults for the persistence unit. Default schema and catalog are the EntityMappings cwmSchema/cwmCatalog references — not repeated as strings."/>
+      <details key="documentation" value="Defaults for the persistence unit. Schema and catalog follow from the tables, the access type is EntityMappings.access."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="delimitedIdentifiers" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -807,21 +755,21 @@
       </eAnnotations>
       <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="access" eType="//AccessType" unsettable="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="listener" upperBound="-1" eType="//EntityListener">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Default access strategy of the unit."/>
+        <details key="documentation" value="Default entity listeners of the unit in invocation order (defined in EntityMappings)."/>
       </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="entityListener" ordered="false" upperBound="-1"
-        eType="//EntityListener" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Default entity listeners of the unit."/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormDefaultListenerUser"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormDefaultListenerUser"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EntityMappings">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Root of an object/relational mapping set: the managed types, generators, queries and result-set mappings, anchored to the object package (cwmObjectPackage) and the default relational catalog/schema."/>
+      <details key="documentation" value="Root of an object/relational mapping set and the only place of unit-wide definitions: managed types, generators, queries, result-set mappings, converters and entity listeners. The object package and the relational schema follow from the anchors of the managed types."/>
     </eAnnotations>
     <eSuperTypes href="#//OrmElement"/>
     <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Namespace"/>
@@ -833,43 +781,37 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="access" eType="//AccessType" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Default access strategy of this mapping set."/>
+        <details key="documentation" value="Default access strategy of this mapping set and its persistence unit."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="sequenceGenerator" ordered="false" upperBound="-1"
-        eType="//SequenceGenerator" containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="generator" ordered="false" upperBound="-1"
+        eType="//Generator" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Globally defined sequence generators."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="tableGenerator" ordered="false" upperBound="-1"
-        eType="//TableGenerator" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Globally defined table generators."/>
+        <details key="documentation" value="The id generators of the unit (sequence and table generators)."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="namedQuery" ordered="false" upperBound="-1"
         eType="//NamedQuery" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Globally defined named queries."/>
+        <details key="documentation" value="Named JPQL queries of the unit."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="namedNativeQuery" ordered="false" upperBound="-1"
         eType="//NamedNativeQuery" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Globally defined named native queries."/>
+        <details key="documentation" value="Named native queries of the unit."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="namedStoredProcedureQuery" ordered="false"
         upperBound="-1" eType="//NamedStoredProcedureQuery" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Globally defined stored-procedure queries."/>
+        <details key="documentation" value="Named stored-procedure queries of the unit."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="sqlResultSetMapping" ordered="false" upperBound="-1"
         eType="//SqlResultSetMapping" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Globally defined result-set mappings."/>
+        <details key="documentation" value="Result-set mappings of the unit."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="mappedSuperclass" ordered="false" upperBound="-1"
@@ -896,50 +838,20 @@
         <details key="documentation" value="Registered converters."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmObjectPackage">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="entityListener" ordered="false" upperBound="-1"
+        eType="//EntityListener" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The core::Package holding the mapped classes; its package chain is the Java package (converter convention: package names are the Java package segments)."/>
+        <details key="documentation" value="Entity listeners, used by types and as unit defaults."/>
       </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormEntityMappings"/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormEntityMappings"/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmCatalog">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The default relational::Catalog of this mapping set."/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormEntityMappingsCatalog"/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormEntityMappingsCatalog"/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//Catalog"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmSchema">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The default relational::Schema of this mapping set."/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormEntityMappingsSchema"/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormEntityMappingsSchema"/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//Schema"/>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Entity" eSuperTypes="//IdentifiableType">
+  <eClassifiers xsi:type="ecore:EClass" name="Entity" eSuperTypes="//IdentifiableType //OverrideHost">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="An entity: cwmClass (inherited) is the Java class, cwmTable its primary table. The JPA entity name is the inherited name; the fully qualified class name is materialized by the converter from the core package chain."/>
+      <details key="documentation" value="An entity: cwmClass (inherited) is the Java class, cwmTable its primary table. The JPA entity name is the inherited name; the fully qualified class name follows from the core package chain."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="cwmTable">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The primary table (relational::NamedColumnSet; a table or updatable view). Replaces the former Table wrapper — schema and catalog follow from the table's namespace chain."/>
+        <details key="documentation" value="The primary table (relational::NamedColumnSet; a table or updatable view). Schema and catalog follow from the table's namespace chain. Unset only for a SINGLE_TABLE subclass, which lives in the table of its root."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="ormEntity"/>
@@ -967,11 +879,17 @@
       </eAnnotations>
       <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="discriminatorColumn" eType="//DiscriminatorColumn"
-        containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmDiscriminatorColumn">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The discriminator column of the hierarchy rooted here."/>
+        <details key="documentation" value="The discriminator column of the hierarchy rooted here; its SQL type is the discriminator type."/>
       </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormDiscriminatorColumn"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormDiscriminatorColumn"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//Column"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="secondaryTable" ordered="false" upperBound="-1"
         eType="//SecondaryTable" containment="true">
@@ -979,107 +897,41 @@
         <details key="documentation" value="Additional tables of the entity."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKeyJoinColumn" upperBound="-1" eType="//JoinColumn"
-        containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKeyJoin" eType="//Join" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Join columns to the superclass table in a JOINED hierarchy (insertable/updatable are meaningless here)."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKeyForeignKey" eType="//ForeignKey"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Foreign-key policy for the JOINED primary-key join."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="sequenceGenerator" eType="//SequenceGenerator"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Entity-local sequence generator."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="tableGenerator" eType="//TableGenerator"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Entity-local table generator."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="namedQuery" ordered="false" upperBound="-1"
-        eType="//NamedQuery" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Entity-local named queries."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="namedNativeQuery" ordered="false" upperBound="-1"
-        eType="//NamedNativeQuery" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Entity-local named native queries."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="namedStoredProcedureQuery" ordered="false"
-        upperBound="-1" eType="//NamedStoredProcedureQuery" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Entity-local stored-procedure queries."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="sqlResultSetMapping" ordered="false" upperBound="-1"
-        eType="//SqlResultSetMapping" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Entity-local result-set mappings."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="attributeOverride" ordered="false" upperBound="-1"
-        eType="//AttributeOverride" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Column overrides for inherited value mappings."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="associationOverride" ordered="false" upperBound="-1"
-        eType="//AssociationOverride" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Join overrides for inherited relationship mappings."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="convert" ordered="false" upperBound="-1"
-        eType="//Convert" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Converter applications for inherited attributes."/>
+        <details key="documentation" value="The join to the superclass table in a JOINED hierarchy."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="namedEntityGraph" ordered="false" upperBound="-1"
         eType="//NamedEntityGraph" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Named entity graphs of the entity."/>
+        <details key="documentation" value="Named entity graphs rooted at the entity."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MappedSuperclass" eSuperTypes="//IdentifiableType">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A mapped superclass: contributes mappings to subclasses, has no table of its own."/>
+      <details key="documentation" value="A mapped superclass: contributes mappings to subclasses, has no table of its own; columns it leaves open are set by every inheriting entity."/>
     </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Embeddable" eSuperTypes="//ManagedType">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="An embeddable type: its attribute mappings apply within the owning entity's table(s)."/>
+      <details key="documentation" value="An embeddable type: its attribute mappings apply within the owning entity's table(s); columns it leaves open are set by every embedding mapping."/>
     </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Base" abstract="true" eSuperTypes="//ValueMapping">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Value mapping with a column: the optional Column wrapper carries the catalog column and the insert/update flags."/>
+      <details key="documentation" value="Value mapping with a column: the Column carries the catalog column and the insert/update flags."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="column" eType="//Column" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The mapped column with its insert/update flags."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="temporal" eType="//TemporalType" unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Temporal precision of a temporal value."/>
+        <details key="documentation" value="The mapped column with its insert/update flags; open only in a mapped superclass or embeddable whose users override it."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SimpleBase" abstract="true" eSuperTypes="//Base">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Value mapping with fetch, conversion and LOB/enum/temporal options."/>
+      <details key="documentation" value="Value mapping with fetch and enum options. Temporal precision and large-object storage follow from the SQL type of the column."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="fetch" eType="//FetchType" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -1091,33 +943,20 @@
         <details key="documentation" value="Enum mapping of an enum value."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lob" unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Maps the value as a large object (replaces the former empty Lob marker class)."/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="convert" ordered="false" upperBound="-1"
-        eType="//Convert" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Converter applications for the value (paths for embeddable elements)."/>
-      </eAnnotations>
-    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Basic" eSuperTypes="//SimpleBase">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A basic value mapping."/>
+      <details key="documentation" value="A basic value mapping. Whether the value may be null follows from the multiplicity of the attribute and the nullability of the column."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="optional" unsettable="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="convert" eType="//Convert" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Whether the value may be null."/>
+        <details key="documentation" value="The conversion of the value (without path)."/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Id" eSuperTypes="//Base">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="An id attribute mapping; cwmPrimaryKey anchors the catalog primary key the id column belongs to."/>
+      <details key="documentation" value="An id attribute mapping; its column belongs to the primary key of the entity table."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="generatedValue" eType="//GeneratedValue"
         containment="true">
@@ -1125,103 +964,43 @@
         <details key="documentation" value="Id generation for this id attribute."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="sequenceGenerator" eType="//SequenceGenerator"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Id-local sequence generator."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="tableGenerator" eType="//TableGenerator"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Id-local table generator."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmPrimaryKey">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The catalog primary key the id column belongs to."/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormIdMapping"/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormIdMapping"/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//PrimaryKey"/>
-    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Version" eSuperTypes="//Base">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="An optimistic-locking version attribute mapping."/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Embedded" eSuperTypes="//ValueMapping">
+  <eClassifiers xsi:type="ecore:EClass" name="Embedded" eSuperTypes="//ValueMapping //OverrideHost">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Maps an attribute whose type is an embeddable; columns may be overridden per path."/>
+      <details key="documentation" value="Maps an attribute whose type is an embeddable; columns and joins may be overridden per path."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="attributeOverride" ordered="false" upperBound="-1"
-        eType="//AttributeOverride" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Column overrides per embeddable path."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="associationOverride" ordered="false" upperBound="-1"
-        eType="//AssociationOverride" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Join overrides per embeddable path."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="convert" ordered="false" upperBound="-1"
-        eType="//Convert" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Converter applications per embeddable path."/>
-      </eAnnotations>
-    </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EmbeddedId" eSuperTypes="//ValueMapping">
+  <eClassifiers xsi:type="ecore:EClass" name="EmbeddedId" eSuperTypes="//ValueMapping //OverrideHost">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A composite id held in an embeddable; cwmPrimaryKey anchors the catalog primary key."/>
+      <details key="documentation" value="A composite id held in an embeddable; its columns form the primary key of the entity table."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="attributeOverride" ordered="false" upperBound="-1"
-        eType="//AttributeOverride" containment="true">
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Transient" eSuperTypes="//AttributeMapping">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Marks an attribute or a navigable association end as not persistent — explicitly, because every feature of a mapped class needs a mapping."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmFeature" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Column overrides per embeddable path."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmPrimaryKey">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The catalog primary key the composite id maps to."/>
+        <details key="documentation" value="The attribute or association end that is not persistent."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormEmbeddedIdMapping"/>
+        <details key="Property.oppositeRoleName" value="ormTransient"/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormEmbeddedIdMapping"/>
+        <details key="body" value="ormTransient"/>
       </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//PrimaryKey"/>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Transient" eSuperTypes="//ValueMapping">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Marks an attribute as not persistent."/>
-    </eAnnotations>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ElementCollection" eSuperTypes="//SimpleBase //CollectionSupport">
+  <eClassifiers xsi:type="ecore:EClass" name="ElementCollection" eSuperTypes="//SimpleBase //CollectionSupport //OverrideHost">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A collection of basic or embeddable values, stored in a collection table."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="attributeOverride" ordered="false" upperBound="-1"
-        eType="//AttributeOverride" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Column overrides for embeddable elements."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="associationOverride" ordered="false" upperBound="-1"
-        eType="//AssociationOverride" containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Join overrides for embeddable elements."/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="collectionTable" eType="//CollectionTable"
         containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -1231,72 +1010,75 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ManyToOne" eSuperTypes="//RelationshipMapping">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A many-to-one relationship mapping, joined by join columns."/>
+      <details key="documentation" value="A many-to-one relationship mapping, always the owning side."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="joinColumn" upperBound="-1" eType="//JoinColumn"
-        containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="join" eType="//Join" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Join columns of the relationship."/>
+        <details key="documentation" value="The join from the owner's table to the target's table."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Whether the relationship is part of the id (derived identity)."/>
+        <details key="documentation" value="Whether the relationship is part of the id (derived identity with an id class)."/>
       </eAnnotations>
       <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mapsId">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mapsId" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Maps the relationship onto an id attribute of an embedded id (derived identity)."/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="optional" unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Whether the reference may be null."/>
+        <details key="documentation" value="Whether the relationship provides the id (derived identity with an embedded id)."/>
       </eAnnotations>
       <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmMapsIdAttribute">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The attribute of the embedded-id class the relationship provides; unset when it provides the whole id."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormManyToOneMapsId"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormManyToOneMapsId"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute"/>
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OneToOne" eSuperTypes="//OwnableRelationship">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A one-to-one relationship mapping, joined by join columns or primary-key join columns."/>
+      <details key="documentation" value="A one-to-one relationship mapping, joined by a join, a primary-key join, a join table or a derived id."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKeyJoinColumn" upperBound="-1" eType="//JoinColumn"
-        containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="join" eType="//Join" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Primary-key join columns (shared primary key)."/>
+        <details key="documentation" value="The join from the owner's table to the target's table."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKeyForeignKey" eType="//ForeignKey"
-        containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKeyJoin" eType="//Join" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Foreign-key policy for the primary-key join."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="joinColumn" upperBound="-1" eType="//JoinColumn"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Join columns of the relationship."/>
+        <details key="documentation" value="The join over the shared primary key."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Whether the relationship is part of the id (derived identity)."/>
+        <details key="documentation" value="Whether the relationship is part of the id (derived identity with an id class)."/>
       </eAnnotations>
       <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mapsId">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mapsId" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Maps the relationship onto an id attribute of an embedded id (derived identity)."/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="optional" unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Whether the reference may be null."/>
+        <details key="documentation" value="Whether the relationship provides the id (derived identity with an embedded id)."/>
       </eAnnotations>
       <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmMapsIdAttribute">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The attribute of the embedded-id class the relationship provides; unset when it provides the whole id."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormOneToOneMapsId"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormOneToOneMapsId"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="orphanRemoval" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -1307,12 +1089,11 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OneToMany" eSuperTypes="//OwnableRelationship //CollectionSupport">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A one-to-many relationship mapping, joined by foreign-key columns on the target or a join table."/>
+      <details key="documentation" value="A one-to-many relationship mapping, joined by a foreign key in the target table or a join table."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="joinColumn" upperBound="-1" eType="//JoinColumn"
-        containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="join" eType="//Join" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Foreign-key columns on the target table (unidirectional without a join table)."/>
+        <details key="documentation" value="The join from the target's table to the owner's table (unidirectional without a join table)."/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="orphanRemoval" unsettable="true">
@@ -1352,23 +1133,11 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TableGenerator" eSuperTypes="//Generator">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A table-based id generator: generator table, pk and value columns are catalog references; pkColumnValue is the row selector (a real value, not a name)."/>
+      <details key="documentation" value="A table-based id generator: pk and value columns are catalog references, the generator table is their owner; pkColumnValue is the row selector (a real value, not a name)."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmTable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmPkColumn" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The generator table."/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormTableGenerator"/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormTableGenerator"/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//NamedColumnSet"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmPkColumn">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The column holding the generator names."/>
+        <details key="documentation" value="The column holding the generator names; its owner is the generator table."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="ormTableGeneratorPk"/>
@@ -1378,7 +1147,7 @@
       </eAnnotations>
       <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//Column"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmValueColumn">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmValueColumn" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The column holding the last allocated value."/>
       </eAnnotations>
@@ -1408,7 +1177,7 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="generator" eType="//Generator">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The generator producing the values (typed reference instead of the former name lookup)."/>
+        <details key="documentation" value="The generator producing the values, set exactly for SEQUENCE and TABLE."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="ormGeneratedValue"/>
@@ -1429,9 +1198,9 @@
       <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="NamedQuery" eSuperTypes="//OrmElement">
+  <eClassifiers xsi:type="ecore:EClass" name="NamedQuery" eSuperTypes="//Query">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A named JPQL query; the query name is the inherited name."/>
+      <details key="documentation" value="A named JPQL query; the JPQL text is the only query text of the model, because JPQL has no CWM counterpart."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="query" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -1442,12 +1211,6 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="lockMode" eType="//LockModeType" unsettable="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Lock mode applied when the query executes."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="hint" ordered="false" upperBound="-1" eType="//QueryHint"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Provider hints."/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
@@ -1474,25 +1237,37 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="NamedNativeQuery" eSuperTypes="//OrmElement">
+  <eClassifiers xsi:type="ecore:EClass" name="NamedNativeQuery" eSuperTypes="//Query">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A named native SQL query; resultSetMapping is a typed reference (no name lookup)."/>
+      <details key="documentation" value="A named native SQL query over a stored query of the catalog: cwmQuery is the relational::QueryColumnSet whose expression is the SQL and whose columns are the result columns."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="query" lowerBound="1">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmQuery" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The native SQL query text."/>
+        <details key="documentation" value="The stored query of the catalog: its query expression is the SQL, its columns the result columns."/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormNativeQuery"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormNativeQuery"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//QueryColumnSet"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="resultClass">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmResultClass">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Fully qualified Java class name of the result entity (runtime artifact)."/>
+        <details key="documentation" value="The result entity class (exclusive with resultSetMapping)."/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormNativeQueryResultClass"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormNativeQueryResultClass"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="resultSetMapping" eType="//SqlResultSetMapping">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The result-set mapping shaping the result."/>
+        <details key="documentation" value="The result-set mapping shaping the result (exclusive with cwmResultClass)."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="ormNativeQueryUser"/>
@@ -1501,20 +1276,14 @@
         <details key="body" value="ormNativeQueryUser"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="hint" ordered="false" upperBound="-1" eType="//QueryHint"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Provider hints."/>
-      </eAnnotations>
-    </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="NamedStoredProcedureQuery" eSuperTypes="//OrmElement">
+  <eClassifiers xsi:type="ecore:EClass" name="NamedStoredProcedureQuery" eSuperTypes="//Query">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A named stored-procedure query; cwmProcedure anchors the catalog procedure (the procedure name is not repeated as a string)."/>
+      <details key="documentation" value="A named stored-procedure query; cwmProcedure anchors the catalog procedure, whose parameters (order, direction, type) are the query parameters."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmProcedure">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmProcedure" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The catalog procedure (relational::Procedure) — the procedure name is not repeated as a string."/>
+        <details key="documentation" value="The catalog procedure (relational::Procedure); its parameters are the query parameters."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="ormStoredProcedureQuery"/>
@@ -1524,17 +1293,17 @@
       </eAnnotations>
       <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//Procedure"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="parameter" upperBound="-1" eType="//StoredProcedureParameter"
-        containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmResultClass" upperBound="-1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Parameters in call order."/>
+        <details key="documentation" value="Result entity classes in result order."/>
       </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="resultClass" upperBound="-1">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Result entity class names in result order (runtime artifacts)."/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormStoredProcedureQueryResultClass"/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormStoredProcedureQueryResultClass"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="resultSetMapping" upperBound="-1" eType="//SqlResultSetMapping">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -1547,72 +1316,14 @@
         <details key="body" value="ormStoredProcedureQueryUser"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="hint" ordered="false" upperBound="-1" eType="//QueryHint"
-        containment="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Provider hints."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="StoredProcedureParameter" eSuperTypes="//OrmElement">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A parameter of a named stored-procedure query: the Java-side class string plus optional catalog anchors (cwmParameter, cwmType). Aliases may prevent resolution, so the strings stay settable."/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="class">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Java-side parameter class name (runtime artifact; stays settable)."/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mode" eType="//ParameterMode" unsettable="true">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Parameter direction (stays settable; cwmParameter is additive)."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmParameter">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The catalog parameter (relational::SQLParameter), when resolvable."/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormParameter"/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormParameter"/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//SQLParameter"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmType">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The catalog parameter type, when resolvable."/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="ormParameterType"/>
-      </eAnnotations>
-      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="ormParameterType"/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier"/>
-    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EntityResult" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Maps result columns to an entity; entityClass stays settable (alias case), cwmClass is the additive anchor and takes precedence when set."/>
+      <details key="documentation" value="Maps result columns to an entity class."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="entityClass">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmClass" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Fully qualified Java class name of the result entity (stays settable; cwmClass is additive and takes precedence when set)."/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="discriminatorColumn">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Alias of the discriminator column in the result set."/>
-      </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmClass">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The result entity class as core::Class (additive anchor)."/>
+        <details key="documentation" value="The result entity class."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="ormEntityResult"/>
@@ -1621,6 +1332,18 @@
         <details key="body" value="ormEntityResult"/>
       </eAnnotations>
       <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmDiscriminatorColumn">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The result column holding the discriminator."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormEntityResultDiscriminator"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormEntityResultDiscriminator"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//Column"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="fieldResult" ordered="false" upperBound="-1"
         eType="//FieldResult" containment="true">
@@ -1631,17 +1354,23 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FieldResult" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Maps one result column to a field; the field name is the inherited name, cwmFeature the additive anchor."/>
+      <details key="documentation" value="Maps one result column to a feature of the result entity; the name is the feature name."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="column" lowerBound="1">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmColumn" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Alias of the column in the result set (aliases may prevent catalog resolution)."/>
+        <details key="documentation" value="The result column: a column of the stored query of the native query (its name is the alias in the result set)."/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormFieldResultColumn"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormFieldResultColumn"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/resource/relational#//Column"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmFeature">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmFeature" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The mapped object feature (additive anchor)."/>
+        <details key="documentation" value="The feature of the result entity the column fills."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="ormFieldResult"/>
@@ -1654,17 +1383,23 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ColumnResult" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A scalar result column; the column alias is the inherited name, cwmColumn the additive anchor (aliases may prevent resolution)."/>
+      <details key="documentation" value="A scalar result column or constructor argument: cwmColumn is the column of the stored query (its name is the alias); the name is the column name."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="class">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmType">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Java type the scalar value converts to (runtime artifact)."/>
+        <details key="documentation" value="The type the scalar value converts to."/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormColumnResultType"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormColumnResultType"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmColumn">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmColumn" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The catalog column, when the alias is resolvable (additive anchor)."/>
+        <details key="documentation" value="The result column: a column of the stored query of the native query (its name is the alias in the result set)."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="ormColumnResult"/>
@@ -1677,13 +1412,19 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConstructorResult" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Maps result columns to a constructor invocation of targetClass; column order is the argument order."/>
+      <details key="documentation" value="Maps result columns to a constructor invocation of cwmClass; column order is the argument order."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targetClass" lowerBound="1">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmClass" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Fully qualified Java class name whose constructor is invoked (runtime artifact)."/>
+        <details key="documentation" value="The class whose constructor is invoked."/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormConstructorResult"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormConstructorResult"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="columnResult" upperBound="-1" eType="//ColumnResult"
         containment="true">
@@ -1723,30 +1464,58 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NamedAttributeNode" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A node of an entity graph; the attribute name is the inherited name, subgraph and keySubgraph refer to subgraphs by their graph-local names."/>
+      <details key="documentation" value="A node of an entity graph: the fetched feature and the subgraphs for its value and its map key."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="subgraph">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmFeature" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Graph-local name of the subgraph fetched for this attribute."/>
+        <details key="documentation" value="The fetched attribute or association end."/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormAttributeNode"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormAttributeNode"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="keySubgraph">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subgraph" eType="//NamedSubgraph">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Graph-local name of the subgraph fetched for the map key."/>
+        <details key="documentation" value="The subgraph fetched for the value of the feature."/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormAttributeNodeSubgraph"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormAttributeNodeSubgraph"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="keySubgraph" eType="//NamedSubgraph">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The subgraph fetched for the map key of the feature."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormAttributeNodeKeySubgraph"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormAttributeNodeKeySubgraph"/>
+      </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NamedSubgraph" eSuperTypes="//OrmElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A subgraph of an entity graph; the subgraph name is the inherited name."/>
+      <details key="documentation" value="A subgraph of an entity graph for the type cwmClass; the subgraph name is the inherited, graph-local name."/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="class">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cwmClass" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Fully qualified Java class name the subgraph applies to (runtime artifact)."/>
+        <details key="documentation" value="The type the subgraph applies to."/>
       </eAnnotations>
-      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="ormSubgraph"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="ormSubgraph"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="namedAttributeNode" ordered="false" upperBound="-1"
         eType="//NamedAttributeNode" containment="true">
