@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Entity plus named queries.">
+  <namedQuery xmi:id="NamedQuery_library.Loan.findOverdue" name="Loan.findOverdue" description="Overdue loans: JPQL speaks about ENTITIES and attributes, never about tables — which is why the query needs no catalog anchors. The query name is the inherited ModelElement.name." query="SELECT l FROM Loan l WHERE l.returned = false AND l.dueDate &lt; :today ORDER BY l.dueDate" lockMode="PESSIMISTIC_READ">
+    <hint xmi:id="QueryHint_library.Loan.findOverdue.jakarta.persistence.query.timeout" name="jakarta.persistence.query.timeout" description="Provider hint as a name/value pair." value="5000"/>
+  </namedQuery>
+  <namedQuery xmi:id="NamedQuery_library.Loan.findOpenCount" name="Loan.findOpenCount" query="SELECT COUNT(l) FROM Loan l WHERE l.returned = false"/>
+  <entity xmi:id="Entity_library.Loan" name="Loan">
+    <cwmClass href="objects.xmi#Class_library.Loan"/>
+    <basic xmi:id="Basic_library.Loan.dueDate" name="dueDate">
+      <cwmAttribute href="objects.xmi#Attribute_library.Loan.dueDate"/>
+      <column xmi:id="Column_library.Loan.dueDate.DUE_DATE" name="DUE_DATE">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.LOAN.DUE_DATE"/>
+      </column>
+    </basic>
+    <basic xmi:id="Basic_library.Loan.returned" name="returned">
+      <cwmAttribute href="objects.xmi#Attribute_library.Loan.returned"/>
+      <column xmi:id="Column_library.Loan.returned.RETURNED" name="RETURNED">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.LOAN.RETURNED"/>
+      </column>
+    </basic>
+    <id xmi:id="Id_library.Loan.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Loan.id"/>
+      <column xmi:id="Column_library.Loan.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.LOAN.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.LOAN"/>
+  </entity>
+</orm:EntityMappings>

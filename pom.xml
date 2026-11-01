@@ -57,6 +57,9 @@
     <module>data</module>
     <module>resource</module>
     <module>testkit</module>
+    <module>emf</module>
+    <module>orm</module>
+    <module>maven</module>
     <!--
     <module>codegen</module>
     -->

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="All value mapping options on one entity.">
+  <entity xmi:id="Entity_library.Member" name="Member">
+    <cwmClass href="objects.xmi#Class_library.Member"/>
+    <basic xmi:id="Basic_library.Member.birthDate" name="birthDate" description="Date only, no time of day: the SQL type DATE of BIRTH_DATE says so — the former temporal flag repeated it (JPA @Temporal(DATE)).">
+      <cwmAttribute href="objects.xmi#Attribute_library.Member.birthDate"/>
+      <column xmi:id="Column_library.Member.birthDate.BIRTH_DATE" name="BIRTH_DATE">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEMBER.BIRTH_DATE"/>
+      </column>
+    </basic>
+    <basic xmi:id="Basic_library.Member.status" name="status" description="enumerated=STRING: the enum literal is stored by name; the enum TYPE itself is the foundation::datatypes::Enumeration behind cwmAttribute.type." enumerated="STRING">
+      <cwmAttribute href="objects.xmi#Attribute_library.Member.status"/>
+      <column xmi:id="Column_library.Member.status.STATUS" name="STATUS">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEMBER.STATUS"/>
+      </column>
+    </basic>
+    <basic xmi:id="Basic_library.Member.photo" name="photo" description="Stored as a large object because PHOTO is a BLOB column — the SQL type is the single place of that fact (JPA @Lob).">
+      <cwmAttribute href="objects.xmi#Attribute_library.Member.photo"/>
+      <column xmi:id="Column_library.Member.photo.PHOTO" name="PHOTO">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEMBER.PHOTO"/>
+      </column>
+    </basic>
+    <transient xmi:id="Transient_library.Member.age" name="age" description="transient: age is computed and NOT persisted — the mapping says so explicitly instead of silently omitting the attribute.">
+      <cwmFeature xsi:type="core:Attribute" href="objects.xmi#Attribute_library.Member.age"/>
+    </transient>
+    <id xmi:id="Id_library.Member.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Member.id"/>
+      <column xmi:id="Column_library.Member.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEMBER.ID"/>
+      </column>
+    </id>
+    <version xmi:id="Version_library.Member.version" name="version" description="Optimistic locking: the provider checks and increments VERSION on every UPDATE (JPA @Version).">
+      <cwmAttribute href="objects.xmi#Attribute_library.Member.version"/>
+      <column xmi:id="Column_library.Member.version.VERSION" name="VERSION">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEMBER.VERSION"/>
+      </column>
+    </version>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.MEMBER"/>
+  </entity>
+</orm:EntityMappings>

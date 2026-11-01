@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships" xmi:id="Package_library" name="library">
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Member" name="Member">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Member.id" name="id" type="DataType_library.long"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.long" name="long"/>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.LibraryCard" name="LibraryCard">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.LibraryCard.id" name="id" type="DataType_library.long"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Badge" name="Badge">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Badge.id" name="id" type="DataType_library.long"/>
+  </ownedElement>
+  <ownedElement xsi:type="relationships:Association" xmi:id="Association_library.MemberCard" name="MemberCard">
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.MemberCard.card" name="card" type="Class_library.LibraryCard" isNavigable="true">
+      <multiplicity xmi:id="Multiplicity_library.MemberCard.card.multiplicity">
+        <range xmi:id="MultiplicityRange_library.MemberCard.card.multiplicity.range" upper="1"/>
+      </multiplicity>
+    </feature>
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.MemberCard.owner" name="owner" type="Class_library.Member" isNavigable="true">
+      <multiplicity xmi:id="Multiplicity_library.MemberCard.owner.multiplicity">
+        <range xmi:id="MultiplicityRange_library.MemberCard.owner.multiplicity.range" lower="1" upper="1"/>
+      </multiplicity>
+    </feature>
+  </ownedElement>
+  <ownedElement xsi:type="relationships:Association" xmi:id="Association_library.MemberBadge" name="MemberBadge">
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.MemberBadge.badge" name="badge" type="Class_library.Badge" isNavigable="true">
+      <multiplicity xmi:id="Multiplicity_library.MemberBadge.badge.multiplicity">
+        <range xmi:id="MultiplicityRange_library.MemberBadge.badge.multiplicity.range" upper="1"/>
+      </multiplicity>
+    </feature>
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.MemberBadge.wearer" name="wearer" type="Class_library.Member" isNavigable="true">
+      <multiplicity xmi:id="Multiplicity_library.MemberBadge.wearer.multiplicity">
+        <range xmi:id="MultiplicityRange_library.MemberBadge.wearer.multiplicity.range" lower="1" upper="1"/>
+      </multiplicity>
+    </feature>
+  </ownedElement>
+</core:Package>

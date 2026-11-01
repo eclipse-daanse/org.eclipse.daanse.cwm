@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="One embeddable, two usages — each embedding names the columns of its table.">
+  <entity xmi:id="Entity_library.Publisher" name="Publisher" description="The publisher stores its address in STREET/CITY.">
+    <cwmClass href="objects.xmi#Class_library.Publisher"/>
+    <embedded xmi:id="Embedded_library.Publisher.address" name="address" description="Embedding with overrides onto the plain column names STREET and CITY.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Publisher.address"/>
+      <attributeOverride xmi:id="AttributeOverride_library.Publisher.address.street" name="street">
+        <cwmPath xsi:type="core:Attribute" href="objects.xmi#Attribute_library.Address.street"/>
+        <column xmi:id="Column_library.Publisher.address.street.STREET" name="STREET">
+          <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.PUBLISHER.STREET"/>
+        </column>
+      </attributeOverride>
+      <attributeOverride xmi:id="AttributeOverride_library.Publisher.address.city" name="city">
+        <cwmPath xsi:type="core:Attribute" href="objects.xmi#Attribute_library.Address.city"/>
+        <column xmi:id="Column_library.Publisher.address.city.CITY" name="CITY">
+          <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.PUBLISHER.CITY"/>
+        </column>
+      </attributeOverride>
+    </embedded>
+    <id xmi:id="Id_library.Publisher.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Publisher.id"/>
+      <column xmi:id="Column_library.Publisher.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.PUBLISHER.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.PUBLISHER"/>
+  </entity>
+  <entity xmi:id="Entity_library.Member" name="Member" description="Same Address class, different columns — the overrides redirect.">
+    <cwmClass href="objects.xmi#Class_library.Member"/>
+    <embedded xmi:id="Embedded_library.Member.address" name="address" description="Embedding with overrides: cwmPath selects the embeddable attribute, the column the target location in MEMBER.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Member.address"/>
+      <attributeOverride xmi:id="AttributeOverride_library.Member.address.street" name="street">
+        <cwmPath xsi:type="core:Attribute" href="objects.xmi#Attribute_library.Address.street"/>
+        <column xmi:id="Column_library.Member.address.street.ADDR_STREET" name="ADDR_STREET">
+          <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEMBER.ADDR_STREET"/>
+        </column>
+      </attributeOverride>
+      <attributeOverride xmi:id="AttributeOverride_library.Member.address.city" name="city">
+        <cwmPath xsi:type="core:Attribute" href="objects.xmi#Attribute_library.Address.city"/>
+        <column xmi:id="Column_library.Member.address.city.ADDR_CITY" name="ADDR_CITY">
+          <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEMBER.ADDR_CITY"/>
+        </column>
+      </attributeOverride>
+    </embedded>
+    <id xmi:id="Id_library.Member.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Member.id"/>
+      <column xmi:id="Column_library.Member.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEMBER.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.MEMBER"/>
+  </entity>
+  <embeddable xmi:id="Embeddable_library.Address" name="Address" description="The embeddable maps the attributes of Address but names NO columns: it has no table, so every embedding sets the columns in its own table.">
+    <cwmClass href="objects.xmi#Class_library.Address"/>
+    <basic xmi:id="Basic_library.Address.street" name="street">
+      <cwmAttribute href="objects.xmi#Attribute_library.Address.street"/>
+    </basic>
+    <basic xmi:id="Basic_library.Address.city" name="city">
+      <cwmAttribute href="objects.xmi#Attribute_library.Address.city"/>
+    </basic>
+  </embeddable>
+</orm:EntityMappings>

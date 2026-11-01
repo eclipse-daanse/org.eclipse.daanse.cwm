@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Unidirectional 1:n relationship.">
+  <entity xmi:id="Entity_library.Publisher" name="Publisher">
+    <cwmClass href="objects.xmi#Class_library.Publisher"/>
+    <oneToMany xmi:id="OneToMany_library.Publisher.notes" name="notes" description="Unidirectional OneToMany: the join columns sit on the TARGET table NOTE (JPA @OneToMany + @JoinColumn, without mappedBy). owningSide stays at the default true — there is no opposite side. orphanRemoval: notes removed from the list get deleted." orphanRemoval="true">
+      <cwmAssociationEnd href="objects.xmi#AssociationEnd_library.PublisherNotes.notes"/>
+      <cascade>ALL</cascade>
+      <join xmi:id="Join_library.Publisher.notes.FK_NOTE_PUBLISHER" name="FK_NOTE_PUBLISHER">
+        <cwmForeignKey href="catalog.xmi#ForeignKey_LIBRARYDB.LIB.NOTE.FK_NOTE_PUBLISHER"/>
+      </join>
+    </oneToMany>
+    <id xmi:id="Id_library.Publisher.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Publisher.id"/>
+      <column xmi:id="Column_library.Publisher.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.PUBLISHER.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.PUBLISHER"/>
+  </entity>
+  <entity xmi:id="Entity_library.Note" name="Note">
+    <cwmClass href="objects.xmi#Class_library.Note"/>
+    <basic xmi:id="Basic_library.Note.text" name="text">
+      <cwmAttribute href="objects.xmi#Attribute_library.Note.text"/>
+      <column xmi:id="Column_library.Note.text.TEXT" name="TEXT">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.NOTE.TEXT"/>
+      </column>
+    </basic>
+    <id xmi:id="Id_library.Note.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Note.id"/>
+      <column xmi:id="Column_library.Note.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.NOTE.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.NOTE"/>
+  </entity>
+</orm:EntityMappings>

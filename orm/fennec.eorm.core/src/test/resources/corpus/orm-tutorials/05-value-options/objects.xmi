@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:datatypes="http://www.omg.org/spec/CWM/1.1/foundation/datatypes" xmi:id="Package_library" name="library">
+  <ownedElement xsi:type="datatypes:Enumeration" xmi:id="Enumeration_library.MemberStatus" name="MemberStatus">
+    <literal xmi:id="EnumerationLiteral_library.MemberStatus.ACTIVE" name="ACTIVE"/>
+    <literal xmi:id="EnumerationLiteral_library.MemberStatus.SUSPENDED" name="SUSPENDED"/>
+    <literal xmi:id="EnumerationLiteral_library.MemberStatus.EXPIRED" name="EXPIRED"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Member" name="Member">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.Member.Doc_Member" name="Doc_Member" body="Member with a version counter, status enumeration, photo and a computed (non-persistent) age." language="en" type="text/plain" modelElement="Class_library.Member"/>
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.Member.Doc_age" name="Doc_age" body="Computed from birthDate — is NOT persisted (transient)." language="en" type="text/plain" modelElement="Attribute_library.Member.age"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Member.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Member.version" name="version" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Member.birthDate" name="birthDate" type="DataType_library.LocalDate"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Member.status" name="status" type="Enumeration_library.MemberStatus"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Member.photo" name="photo" type="DataType_library.byte__"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Member.age" name="age" type="DataType_library.int"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.long" name="long"/>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.LocalDate" name="LocalDate"/>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.byte__" name="byte[]"/>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.int" name="int"/>
+</core:Package>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmi:id="Package_library" name="library">
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Isbn" name="Isbn">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.Isbn.Doc_Isbn" name="Doc_Isbn" body="Value object ISBN — in the Java code a class of its own with check-digit logic." language="en" type="text/plain" modelElement="Class_library.Isbn"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Isbn.value" name="value" type="DataType_library.String"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.String" name="String"/>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Book" name="Book">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.Book.Doc_isbn" name="Doc_isbn" body="Attribute typed with the value object; the converter turns it into a string." language="en" type="text/plain" modelElement="Attribute_library.Book.isbn"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.isbn" name="isbn" type="Class_library.Isbn"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.long" name="long"/>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.IsbnConverter" name="IsbnConverter">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.IsbnConverter.Doc_IsbnConverter" name="Doc_IsbnConverter" body="The AttributeConverter class (Isbn &lt;-> String) — a class of the object model like any other; its package chain gives the Java name." language="en" type="text/plain" modelElement="Class_library.IsbnConverter"/>
+  </ownedElement>
+</core:Package>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmi:id="Package_library" name="library">
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Loan" name="Loan">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Loan.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Loan.dueDate" name="dueDate" type="DataType_library.LocalDate"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Loan.returned" name="returned" type="DataType_library.boolean"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.long" name="long"/>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.LocalDate" name="LocalDate"/>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.boolean" name="boolean"/>
+</core:Package>

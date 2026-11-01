@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Basic and embeddable collections.">
+  <entity xmi:id="Entity_library.Book" name="Book">
+    <cwmClass href="objects.xmi#Class_library.Book"/>
+    <elementCollection xmi:id="ElementCollection_library.Book.keywords" name="keywords" description="Basic collection: the values live in BOOK_KEYWORD.KEYWORD (JPA @ElementCollection + @CollectionTable + @Column).">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.keywords"/>
+      <column xmi:id="Column_library.Book.keywords.KEYWORD" name="KEYWORD">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK_KEYWORD.KEYWORD"/>
+      </column>
+      <collectionTable xmi:id="CollectionTable_library.Book.keywords.BOOK_KEYWORD" name="BOOK_KEYWORD" description="The collection table BOOK_KEYWORD, reached over FK_BK_BOOK (BOOK_ID -> BOOK.ID).">
+        <join xmi:id="Join_library.Book.keywords.BOOK_KEYWORD.FK_BK_BOOK" name="FK_BK_BOOK">
+          <cwmForeignKey href="catalog.xmi#ForeignKey_LIBRARYDB.LIB.BOOK_KEYWORD.FK_BK_BOOK"/>
+        </join>
+      </collectionTable>
+    </elementCollection>
+    <id xmi:id="Id_library.Book.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.id"/>
+      <column xmi:id="Column_library.Book.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.BOOK"/>
+  </entity>
+  <entity xmi:id="Entity_library.Member" name="Member">
+    <cwmClass href="objects.xmi#Class_library.Member"/>
+    <elementCollection xmi:id="ElementCollection_library.Member.previousAddresses" name="previousAddresses" description="Embeddable collection: the Address attributes land in the columns of the collection table via AttributeOverride; IDX holds the list position (orderColumn).">
+      <cwmAttribute href="objects.xmi#Attribute_library.Member.previousAddresses"/>
+      <orderColumn xmi:id="Column_library.Member.previousAddresses.IDX" name="IDX">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEMBER_ADDR.IDX"/>
+      </orderColumn>
+      <attributeOverride xmi:id="AttributeOverride_library.Member.previousAddresses.street" name="street">
+        <cwmPath xsi:type="core:Attribute" href="objects.xmi#Attribute_library.Address.street"/>
+        <column xmi:id="Column_library.Member.previousAddresses.street.STREET" name="STREET">
+          <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEMBER_ADDR.STREET"/>
+        </column>
+      </attributeOverride>
+      <attributeOverride xmi:id="AttributeOverride_library.Member.previousAddresses.city" name="city">
+        <cwmPath xsi:type="core:Attribute" href="objects.xmi#Attribute_library.Address.city"/>
+        <column xmi:id="Column_library.Member.previousAddresses.city.CITY" name="CITY">
+          <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEMBER_ADDR.CITY"/>
+        </column>
+      </attributeOverride>
+      <collectionTable xmi:id="CollectionTable_library.Member.previousAddresses.MEMBER_ADDR" name="MEMBER_ADDR" description="The collection table MEMBER_ADDR, reached over FK_MA_MEMBER (MEMBER_ID -> MEMBER.ID).">
+        <join xmi:id="Join_library.Member.previousAddresses.MEMBER_ADDR.FK_MA_MEMBER" name="FK_MA_MEMBER">
+          <cwmForeignKey href="catalog.xmi#ForeignKey_LIBRARYDB.LIB.MEMBER_ADDR.FK_MA_MEMBER"/>
+        </join>
+      </collectionTable>
+    </elementCollection>
+    <id xmi:id="Id_library.Member.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Member.id"/>
+      <column xmi:id="Column_library.Member.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEMBER.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.MEMBER"/>
+  </entity>
+  <embeddable xmi:id="Embeddable_library.Address" name="Address" description="Address as an Embeddable: it maps street and city without columns — every use sets them in its own table.">
+    <cwmClass href="objects.xmi#Class_library.Address"/>
+    <basic xmi:id="Basic_library.Address.street" name="street">
+      <cwmAttribute href="objects.xmi#Attribute_library.Address.street"/>
+    </basic>
+    <basic xmi:id="Basic_library.Address.city" name="city">
+      <cwmAttribute href="objects.xmi#Attribute_library.Address.city"/>
+    </basic>
+  </embeddable>
+</orm:EntityMappings>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="library" nsURI="http://daanse.eclipse.org/cwm/ecore/library" nsPrefix="library">
+  <eClassifiers xsi:type="ecore:EClass" name="Book">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="chapters" ordered="false" upperBound="-1" eType="#//Chapter">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="book"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="translations" ordered="false" upperBound="-1" eType="#//Translation">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="book"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="reviews" ordered="false" upperBound="-1" eType="#//Review">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="book"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="long" instanceClassName="long"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Chapter">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="heading" eType="#//String"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="String" instanceClassName="java.lang.String"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Translation">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="language" eType="#//String"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="#//String"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Review">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rating" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reviewer" eType="#//String"/>
+  </eClassifiers>
+</ecore:EPackage>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="The mapping set as a whole. It anchors neither package nor catalog nor schema: the object package is the common container of the mapped classes, schema and catalog are the namespace chain of the entity tables. The access type of the unit is the access of this set." access="FIELD">
+  <persistenceUnitMetadata xmi:id="PersistenceUnitMetadata_library.persistence-unit-metadata" name="persistence-unit-metadata" description="Metadata of the unit (JPA &lt;persistence-unit-metadata>). The mapping is always complete; a converter to orm.xml writes metadata-complete.">
+    <persistenceUnitDefaults xmi:id="PersistenceUnitDefaults_library.persistence-unit-metadata.persistence-unit-defaults" name="persistence-unit-defaults" description="Defaults of the unit: schema, catalog and access type are NOT repeated here. delimitedIdentifiers, cascadePersist and the default listeners remain genuine settings." delimitedIdentifiers="true" cascadePersist="true" listener="EntityListener_library.GlobalAuditListener"/>
+  </persistenceUnitMetadata>
+  <entity xmi:id="Entity_library.Book" name="Book">
+    <cwmClass href="objects.xmi#Class_library.Book"/>
+    <id xmi:id="Id_library.Book.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.id"/>
+      <column xmi:id="Column_library.Book.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.BOOK"/>
+  </entity>
+  <entityListener xmi:id="EntityListener_library.GlobalAuditListener" name="GlobalAuditListener" description="Default listener for ALL entities of the unit; defined once at the root.">
+    <cwmClass href="objects.xmi#Class_library.GlobalAuditListener"/>
+    <lifecycleCallback xmi:id="LifecycleCallback_library.GlobalAuditListener.audit" name="audit">
+      <cwmOperation href="objects.xmi#Operation_library.GlobalAuditListener.audit"/>
+    </lifecycleCallback>
+  </entityListener>
+</orm:EntityMappings>

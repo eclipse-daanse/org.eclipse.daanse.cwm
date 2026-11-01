@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<relational:Catalog xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:relational="http://www.omg.org/spec/CWM/1.1/resource/relational" xmi:id="Catalog_LIBRARYDB" name="LIBRARYDB">
+  <ownedElement xsi:type="relational:Schema" xmi:id="Schema_LIBRARYDB.LIB" name="LIB">
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.BOOK" name="BOOK">
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.BOOK.PK_BOOK" name="PK_BOOK" feature="Column_LIBRARYDB.LIB.BOOK.ID" keyRelationship="ForeignKey_LIBRARYDB.LIB.BOOK_DETAILS.FK_DETAILS_BOOK"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.BOOK.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.BOOK.TITLE" name="TITLE" type="SQLSimpleType_LIBRARYDB.VARCHAR"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.BOOK_DETAILS" name="BOOK_DETAILS">
+      <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_LIBRARYDB.LIB.BOOK_DETAILS.Doc_BOOK_DETAILS" name="Doc_BOOK_DETAILS" body="Outsourced, rarely read columns; BOOK_ID is PK and FK to BOOK.ID." language="en" type="text/plain" modelElement="Table_LIBRARYDB.LIB.BOOK_DETAILS"/>
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.BOOK_DETAILS.PK_BOOK_DETAILS" name="PK_BOOK_DETAILS" feature="Column_LIBRARYDB.LIB.BOOK_DETAILS.BOOK_ID"/>
+      <ownedElement xsi:type="relational:ForeignKey" xmi:id="ForeignKey_LIBRARYDB.LIB.BOOK_DETAILS.FK_DETAILS_BOOK" name="FK_DETAILS_BOOK" feature="Column_LIBRARYDB.LIB.BOOK_DETAILS.BOOK_ID" uniqueKey="PrimaryKey_LIBRARYDB.LIB.BOOK.PK_BOOK"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.BOOK_DETAILS.BOOK_ID" name="BOOK_ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.BOOK_DETAILS.SUMMARY" name="SUMMARY" type="SQLSimpleType_LIBRARYDB.CLOB"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.BOOK_DETAILS.COVER" name="COVER" type="SQLSimpleType_LIBRARYDB.BLOB"/>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.BIGINT" name="BIGINT"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.VARCHAR" name="VARCHAR"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.CLOB" name="CLOB"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.BLOB" name="BLOB"/>
+</relational:Catalog>

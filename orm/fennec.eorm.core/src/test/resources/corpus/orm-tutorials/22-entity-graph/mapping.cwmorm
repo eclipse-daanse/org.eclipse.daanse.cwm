@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships" xmi:id="EntityMappings_library" name="library" description="Entity with fetch plan.">
+  <entity xmi:id="Entity_library.Publisher" name="Publisher">
+    <cwmClass href="objects.xmi#Class_library.Publisher"/>
+    <basic xmi:id="Basic_library.Publisher.name" name="name">
+      <cwmAttribute href="objects.xmi#Attribute_library.Publisher.name"/>
+      <column xmi:id="Column_library.Publisher.name.NAME" name="NAME">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.PUBLISHER.NAME"/>
+      </column>
+    </basic>
+    <id xmi:id="Id_library.Publisher.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Publisher.id"/>
+      <column xmi:id="Column_library.Publisher.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.PUBLISHER.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.PUBLISHER"/>
+  </entity>
+  <entity xmi:id="Entity_library.Book" name="Book">
+    <cwmClass href="objects.xmi#Class_library.Book"/>
+    <basic xmi:id="Basic_library.Book.title" name="title">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.title"/>
+      <column xmi:id="Column_library.Book.title.TITLE" name="TITLE">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.TITLE"/>
+      </column>
+    </basic>
+    <manyToOne xmi:id="ManyToOne_library.Book.publisher" name="publisher">
+      <cwmAssociationEnd href="objects.xmi#AssociationEnd_library.BookPublisher.publisher"/>
+      <join xmi:id="Join_library.Book.publisher.FK_BOOK_PUBLISHER" name="FK_BOOK_PUBLISHER">
+        <cwmForeignKey href="catalog.xmi#ForeignKey_LIBRARYDB.LIB.BOOK.FK_BOOK_PUBLISHER"/>
+      </join>
+    </manyToOne>
+    <id xmi:id="Id_library.Book.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.id"/>
+      <column xmi:id="Column_library.Book.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.BOOK"/>
+    <namedEntityGraph xmi:id="NamedEntityGraph_library.Book.Book.withPublisher" name="Book.withPublisher" description="Fetch plan: when loading a book, load the publisher along. The graph name is unit-wide; nodes reference the fetched features themselves.">
+      <namedAttributeNode xmi:id="NamedAttributeNode_library.Book.Book.withPublisher.publisher" name="publisher" description="Node for the association end publisher; subgraph is a typed reference to the subgraph, not its name." subgraph="NamedSubgraph_library.Book.Book.withPublisher.publisherDetails">
+        <cwmFeature xsi:type="relationships:AssociationEnd" href="objects.xmi#AssociationEnd_library.BookPublisher.publisher"/>
+      </namedAttributeNode>
+      <subgraph xmi:id="NamedSubgraph_library.Book.Book.withPublisher.publisherDetails" name="publisherDetails" description="Subgraph for the type Publisher (cwmClass); its name is graph-local.">
+        <cwmClass href="objects.xmi#Class_library.Publisher"/>
+        <namedAttributeNode xmi:id="NamedAttributeNode_library.Book.Book.withPublisher.publisherDetails.name" name="name">
+          <cwmFeature xsi:type="core:Attribute" href="objects.xmi#Attribute_library.Publisher.name"/>
+        </namedAttributeNode>
+      </subgraph>
+    </namedEntityGraph>
+  </entity>
+</orm:EntityMappings>

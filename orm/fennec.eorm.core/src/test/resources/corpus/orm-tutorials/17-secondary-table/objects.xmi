@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmi:id="Package_library" name="library">
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Book" name="Book">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.title" name="title" type="DataType_library.String"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.summary" name="summary" type="DataType_library.String"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.coverImage" name="coverImage" type="DataType_library.byte__"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.long" name="long"/>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.String" name="String"/>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.byte__" name="byte[]"/>
+</core:Package>

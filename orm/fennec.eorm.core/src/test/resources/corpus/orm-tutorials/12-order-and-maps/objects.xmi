@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships" xmi:id="Package_library" name="library">
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Book" name="Book">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.id" name="id" type="DataType_library.long"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.long" name="long"/>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Chapter" name="Chapter">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Chapter.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Chapter.heading" name="heading" type="DataType_library.String"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.String" name="String"/>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Translation" name="Translation">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Translation.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Translation.language" name="language" type="DataType_library.String"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Translation.title" name="title" type="DataType_library.String"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Review" name="Review">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Review.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Review.rating" name="rating" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Review.reviewer" name="reviewer" type="DataType_library.String"/>
+  </ownedElement>
+  <ownedElement xsi:type="relationships:Association" xmi:id="Association_library.BookChapters" name="BookChapters">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.BookChapters.Doc_book" name="Doc_book" body="Not navigable: a chapter holds no reference to its book (unidirectional list)." language="en" type="text/plain" modelElement="AssociationEnd_library.BookChapters.book"/>
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.BookChapters.book" name="book" type="Class_library.Book">
+      <multiplicity xmi:id="Multiplicity_library.BookChapters.book.multiplicity">
+        <range xmi:id="MultiplicityRange_library.BookChapters.book.multiplicity.range" upper="1"/>
+      </multiplicity>
+    </feature>
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.BookChapters.chapters" name="chapters" type="Class_library.Chapter" isNavigable="true">
+      <multiplicity xmi:id="Multiplicity_library.BookChapters.chapters.multiplicity">
+        <range xmi:id="MultiplicityRange_library.BookChapters.chapters.multiplicity.range" upper="-1"/>
+      </multiplicity>
+    </feature>
+  </ownedElement>
+  <ownedElement xsi:type="relationships:Association" xmi:id="Association_library.BookTranslations" name="BookTranslations">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.BookTranslations.Doc_book" name="Doc_book" body="Not navigable: a translation holds no reference to its book (unidirectional map)." language="en" type="text/plain" modelElement="AssociationEnd_library.BookTranslations.book"/>
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.BookTranslations.book" name="book" type="Class_library.Book">
+      <multiplicity xmi:id="Multiplicity_library.BookTranslations.book.multiplicity">
+        <range xmi:id="MultiplicityRange_library.BookTranslations.book.multiplicity.range" upper="1"/>
+      </multiplicity>
+    </feature>
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.BookTranslations.translations" name="translations" type="Class_library.Translation" isNavigable="true">
+      <multiplicity xmi:id="Multiplicity_library.BookTranslations.translations.multiplicity">
+        <range xmi:id="MultiplicityRange_library.BookTranslations.translations.multiplicity.range" upper="-1"/>
+      </multiplicity>
+    </feature>
+  </ownedElement>
+  <ownedElement xsi:type="relationships:Association" xmi:id="Association_library.BookReviews" name="BookReviews">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.BookReviews.Doc_book" name="Doc_book" body="Not navigable: a review holds no reference to its book (unidirectional list)." language="en" type="text/plain" modelElement="AssociationEnd_library.BookReviews.book"/>
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.BookReviews.book" name="book" type="Class_library.Book">
+      <multiplicity xmi:id="Multiplicity_library.BookReviews.book.multiplicity">
+        <range xmi:id="MultiplicityRange_library.BookReviews.book.multiplicity.range" upper="1"/>
+      </multiplicity>
+    </feature>
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.BookReviews.reviews" name="reviews" type="Class_library.Review" isNavigable="true">
+      <multiplicity xmi:id="Multiplicity_library.BookReviews.reviews.multiplicity">
+        <range xmi:id="MultiplicityRange_library.BookReviews.reviews.multiplicity.range" upper="-1"/>
+      </multiplicity>
+    </feature>
+  </ownedElement>
+</core:Package>

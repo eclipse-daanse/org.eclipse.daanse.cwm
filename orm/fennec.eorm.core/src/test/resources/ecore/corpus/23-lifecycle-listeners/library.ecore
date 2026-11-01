@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="library" nsURI="http://daanse.eclipse.org/cwm/ecore/library" nsPrefix="library">
+  <eClassifiers xsi:type="ecore:EClass" name="Loan">
+    <eOperations name="stampCreated"/>
+    <eOperations name="stampUpdated"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="createdAt" eType="#//Instant"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="updatedAt" eType="#//Instant"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="long" instanceClassName="long"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="Instant" instanceClassName="java.time.Instant"/>
+  <eClassifiers xsi:type="ecore:EClass" name="LoanAuditListener">
+    <eOperations name="onLoaded"/>
+  </eClassifiers>
+</ecore:EPackage>

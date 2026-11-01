@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Entity plus procedure query.">
+  <namedStoredProcedureQuery xmi:id="NamedStoredProcedureQuery_library.Loan.extend" name="Loan.extend" description="cwmProcedure anchors the catalog procedure — the old procedureName string is gone, and so are the parameter elements: name, order, direction and type of each parameter are those of the procedure's SQLParameters.">
+    <cwmProcedure href="catalog.xmi#Procedure_LIBRARYDB.LIB.sp_extend_loan"/>
+  </namedStoredProcedureQuery>
+  <entity xmi:id="Entity_library.Loan" name="Loan">
+    <cwmClass href="objects.xmi#Class_library.Loan"/>
+    <id xmi:id="Id_library.Loan.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Loan.id"/>
+      <column xmi:id="Column_library.Loan.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.LOAN.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.LOAN"/>
+  </entity>
+</orm:EntityMappings>

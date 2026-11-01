@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<relational:Catalog xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:relational="http://www.omg.org/spec/CWM/1.1/resource/relational" xmi:id="Catalog_LIBRARYDB" name="LIBRARYDB">
+  <ownedElement xsi:type="relational:Schema" xmi:id="Schema_LIBRARYDB.LIB" name="LIB">
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.BOOK" name="BOOK">
+      <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_LIBRARYDB.LIB.BOOK.Doc_BOOK" name="Doc_BOOK" body="Storage table for books." language="en" type="text/plain" modelElement="Table_LIBRARYDB.LIB.BOOK"/>
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.BOOK.PK_BOOK" name="PK_BOOK" feature="Column_LIBRARYDB.LIB.BOOK.ID"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.BOOK.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.BOOK.TITLE" name="TITLE" type="SQLSimpleType_LIBRARYDB.VARCHAR"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.BOOK.PAGES" name="PAGES" type="SQLSimpleType_LIBRARYDB.INTEGER"/>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.BIGINT" name="BIGINT"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.VARCHAR" name="VARCHAR"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.INTEGER" name="INTEGER"/>
+</relational:Catalog>

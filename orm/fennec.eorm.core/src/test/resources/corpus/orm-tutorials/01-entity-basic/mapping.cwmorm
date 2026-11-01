@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Mapping set of the basics tutorial: one entity, its id and two basics.">
+  <entity xmi:id="Entity_library.Book" name="Book" description="The class Book is stored in the table BOOK (cwmClass -> core::Class, cwmTable -> relational::Table).">
+    <cwmClass href="objects.xmi#Class_library.Book"/>
+    <basic xmi:id="Basic_library.Book.title" name="title" description="title lands in the column TITLE; name and type come from the referenced CWM elements, not from strings.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.title"/>
+      <column xmi:id="Column_library.Book.title.TITLE" name="TITLE">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.TITLE"/>
+      </column>
+    </basic>
+    <basic xmi:id="Basic_library.Book.pages" name="pages" description="pages lands in the column PAGES.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.pages"/>
+      <column xmi:id="Column_library.Book.pages.PAGES" name="PAGES">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.PAGES"/>
+      </column>
+    </basic>
+    <id xmi:id="Id_library.Book.id" name="id" description="Every entity names its identity — the Id mapping is explained in tutorial 02.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.id"/>
+      <column xmi:id="Column_library.Book.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.BOOK"/>
+  </entity>
+</orm:EntityMappings>

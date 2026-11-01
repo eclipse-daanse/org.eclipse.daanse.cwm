@@ -46,6 +46,9 @@ header:
     - 'license.templates'
     - '**/logback-test.xml'
     - '**/*.svg'
+    - '**/src/test/resources/**/*.xmi'
+    - '**/src/test/resources/**/*.cwmorm'
+    - '**/src/test/resources/**/*.ecore'
     - '**/org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlGeneratorFactory'
 
   comment: always

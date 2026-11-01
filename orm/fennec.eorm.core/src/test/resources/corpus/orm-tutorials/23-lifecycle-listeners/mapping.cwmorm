@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Audit stamps via lifecycle callbacks.">
+  <entity xmi:id="Entity_library.Loan" name="Loan" description="The entity stamps itself (callbacks) AND is observed by an external listener." listener="EntityListener_library.LoanAuditListener">
+    <cwmClass href="objects.xmi#Class_library.Loan"/>
+    <basic xmi:id="Basic_library.Loan.createdAt" name="createdAt">
+      <cwmAttribute href="objects.xmi#Attribute_library.Loan.createdAt"/>
+      <column xmi:id="Column_library.Loan.createdAt.CREATED_AT" name="CREATED_AT">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.LOAN.CREATED_AT"/>
+      </column>
+    </basic>
+    <basic xmi:id="Basic_library.Loan.updatedAt" name="updatedAt">
+      <cwmAttribute href="objects.xmi#Attribute_library.Loan.updatedAt"/>
+      <column xmi:id="Column_library.Loan.updatedAt.UPDATED_AT" name="UPDATED_AT">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.LOAN.UPDATED_AT"/>
+      </column>
+    </basic>
+    <id xmi:id="Id_library.Loan.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Loan.id"/>
+      <column xmi:id="Column_library.Loan.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.LOAN.ID"/>
+      </column>
+    </id>
+    <lifecycleCallback xmi:id="LifecycleCallback_library.Loan.stampCreated" name="stampCreated" description="Replaces the seven old one-class-per-event wrappers: kind selects the event, cwmOperation the method of the Loan class (JPA @PrePersist).">
+      <cwmOperation href="objects.xmi#Operation_library.Loan.stampCreated"/>
+    </lifecycleCallback>
+    <lifecycleCallback xmi:id="LifecycleCallback_library.Loan.stampUpdated" name="stampUpdated" kind="PRE_UPDATE">
+      <cwmOperation href="objects.xmi#Operation_library.Loan.stampUpdated"/>
+    </lifecycleCallback>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.LOAN"/>
+  </entity>
+  <entityListener xmi:id="EntityListener_library.LoanAuditListener" name="LoanAuditListener" description="External listener, defined once in the mapping set: cwmClass references the listener class; its callbacks use the same LifecycleCallback form.">
+    <cwmClass href="objects.xmi#Class_library.LoanAuditListener"/>
+    <lifecycleCallback xmi:id="LifecycleCallback_library.LoanAuditListener.onLoaded" name="onLoaded" kind="POST_LOAD">
+      <cwmOperation href="objects.xmi#Operation_library.LoanAuditListener.onLoaded"/>
+    </lifecycleCallback>
+  </entityListener>
+</orm:EntityMappings>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="library" nsURI="http://daanse.eclipse.org/cwm/ecore/library" nsPrefix="library">
+  <eClassifiers xsi:type="ecore:EClass" name="Member">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="card" eType="#//LibraryCard" eOpposite="#//LibraryCard/owner"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="badge" eType="#//Badge" eOpposite="#//Badge/wearer"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="long" instanceClassName="long"/>
+  <eClassifiers xsi:type="ecore:EClass" name="LibraryCard">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="owner" lowerBound="1" eType="#//Member" eOpposite="#//Member/card"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Badge">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="wearer" lowerBound="1" eType="#//Member" eOpposite="#//Member/badge"/>
+  </eClassifiers>
+</ecore:EPackage>

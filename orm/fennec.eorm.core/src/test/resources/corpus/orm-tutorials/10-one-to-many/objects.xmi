@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships" xmi:id="Package_library" name="library">
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Publisher" name="Publisher">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Publisher.id" name="id" type="DataType_library.long"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.long" name="long"/>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Note" name="Note">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.Note.Doc_Note" name="Doc_Note" body="Internal note on a publisher — does NOT know its publisher (unidirectional relationship)." language="en" type="text/plain" modelElement="Class_library.Note"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Note.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Note.text" name="text" type="DataType_library.String"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.String" name="String"/>
+  <ownedElement xsi:type="relationships:Association" xmi:id="Association_library.PublisherNotes" name="PublisherNotes">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.PublisherNotes.Doc_publisher" name="Doc_publisher" body="Not navigable: a note holds no reference to its publisher." language="en" type="text/plain" modelElement="AssociationEnd_library.PublisherNotes.publisher"/>
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.PublisherNotes.publisher" name="publisher" type="Class_library.Publisher">
+      <multiplicity xmi:id="Multiplicity_library.PublisherNotes.publisher.multiplicity">
+        <range xmi:id="MultiplicityRange_library.PublisherNotes.publisher.multiplicity.range" upper="1"/>
+      </multiplicity>
+    </feature>
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.PublisherNotes.notes" name="notes" type="Class_library.Note" isNavigable="true">
+      <multiplicity xmi:id="Multiplicity_library.PublisherNotes.notes.multiplicity">
+        <range xmi:id="MultiplicityRange_library.PublisherNotes.notes.multiplicity.range" upper="-1"/>
+      </multiplicity>
+    </feature>
+  </ownedElement>
+</core:Package>

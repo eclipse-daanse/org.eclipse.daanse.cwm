@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<relational:Catalog xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:relational="http://www.omg.org/spec/CWM/1.1/resource/relational" xmi:id="Catalog_LIBRARYDB" name="LIBRARYDB">
+  <ownedElement xsi:type="relational:Schema" xmi:id="Schema_LIBRARYDB.LIB" name="LIB">
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.BOOK" name="BOOK">
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.BOOK.PK_BOOK" name="PK_BOOK" feature="Column_LIBRARYDB.LIB.BOOK.ID" keyRelationship="ForeignKey_LIBRARYDB.LIB.BOOK_AUTHOR.FK_BA_BOOK"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.BOOK.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.AUTHOR" name="AUTHOR">
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.AUTHOR.PK_AUTHOR" name="PK_AUTHOR" feature="Column_LIBRARYDB.LIB.AUTHOR.ID" keyRelationship="ForeignKey_LIBRARYDB.LIB.BOOK_AUTHOR.FK_BA_AUTHOR"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.AUTHOR.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.BOOK_AUTHOR" name="BOOK_AUTHOR">
+      <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_LIBRARYDB.LIB.BOOK_AUTHOR.Doc_BOOK_AUTHOR" name="Doc_BOOK_AUTHOR" body="Intersection table: exists ONLY relationally, has no object class." language="en" type="text/plain" modelElement="Table_LIBRARYDB.LIB.BOOK_AUTHOR"/>
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.BOOK_AUTHOR.PK_BOOK_AUTHOR" name="PK_BOOK_AUTHOR" feature="Column_LIBRARYDB.LIB.BOOK_AUTHOR.BOOK_ID Column_LIBRARYDB.LIB.BOOK_AUTHOR.AUTHOR_ID"/>
+      <ownedElement xsi:type="relational:ForeignKey" xmi:id="ForeignKey_LIBRARYDB.LIB.BOOK_AUTHOR.FK_BA_BOOK" name="FK_BA_BOOK" feature="Column_LIBRARYDB.LIB.BOOK_AUTHOR.BOOK_ID" uniqueKey="PrimaryKey_LIBRARYDB.LIB.BOOK.PK_BOOK"/>
+      <ownedElement xsi:type="relational:ForeignKey" xmi:id="ForeignKey_LIBRARYDB.LIB.BOOK_AUTHOR.FK_BA_AUTHOR" name="FK_BA_AUTHOR" feature="Column_LIBRARYDB.LIB.BOOK_AUTHOR.AUTHOR_ID" uniqueKey="PrimaryKey_LIBRARYDB.LIB.AUTHOR.PK_AUTHOR"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.BOOK_AUTHOR.BOOK_ID" name="BOOK_ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.BOOK_AUTHOR.AUTHOR_ID" name="AUTHOR_ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.BIGINT" name="BIGINT"/>
+</relational:Catalog>

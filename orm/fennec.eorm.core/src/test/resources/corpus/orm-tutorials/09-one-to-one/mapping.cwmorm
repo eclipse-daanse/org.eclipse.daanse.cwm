@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Both 1:1 forms side by side.">
+  <entity xmi:id="Entity_library.Member" name="Member">
+    <cwmClass href="objects.xmi#Class_library.Member"/>
+    <oneToOne xmi:id="OneToOne_library.Member.card" name="card" description="Inverse view of variant A (owningSide=false)." owningSide="false">
+      <cwmAssociationEnd href="objects.xmi#AssociationEnd_library.MemberCard.card"/>
+    </oneToOne>
+    <oneToOne xmi:id="OneToOne_library.Member.badge" name="badge" description="Inverse view of variant B: the member knows its badge as well." owningSide="false">
+      <cwmAssociationEnd href="objects.xmi#AssociationEnd_library.MemberBadge.badge"/>
+    </oneToOne>
+    <id xmi:id="Id_library.Member.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Member.id"/>
+      <column xmi:id="Column_library.Member.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEMBER.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.MEMBER"/>
+  </entity>
+  <entity xmi:id="Entity_library.LibraryCard" name="LibraryCard">
+    <cwmClass href="objects.xmi#Class_library.LibraryCard"/>
+    <oneToOne xmi:id="OneToOne_library.LibraryCard.owner" name="owner" description="Variant A (owning side): a join over the foreign key FK_CARD_MEMBER; the 1:1 guarantee comes from the unique constraint UQ_CARD_MEMBER in the CATALOG — the mapping need not repeat it.">
+      <cwmAssociationEnd href="objects.xmi#AssociationEnd_library.MemberCard.owner"/>
+      <join xmi:id="Join_library.LibraryCard.owner.FK_CARD_MEMBER" name="FK_CARD_MEMBER">
+        <cwmForeignKey href="catalog.xmi#ForeignKey_LIBRARYDB.LIB.CARD.FK_CARD_MEMBER"/>
+      </join>
+    </oneToOne>
+    <id xmi:id="Id_library.LibraryCard.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.LibraryCard.id"/>
+      <column xmi:id="Column_library.LibraryCard.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.CARD.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.CARD"/>
+  </entity>
+  <entity xmi:id="Entity_library.Badge" name="Badge">
+    <cwmClass href="objects.xmi#Class_library.Badge"/>
+    <oneToOne xmi:id="OneToOne_library.Badge.wearer" name="wearer" description="Variant B: shared primary key — the primaryKeyJoin follows FK_BADGE_MEMBER, which connects BADGE.ID directly to MEMBER.ID (JPA @PrimaryKeyJoinColumn).">
+      <cwmAssociationEnd href="objects.xmi#AssociationEnd_library.MemberBadge.wearer"/>
+      <primaryKeyJoin xmi:id="Join_library.Badge.wearer.FK_BADGE_MEMBER" name="FK_BADGE_MEMBER">
+        <cwmForeignKey href="catalog.xmi#ForeignKey_LIBRARYDB.LIB.BADGE.FK_BADGE_MEMBER"/>
+      </primaryKeyJoin>
+    </oneToOne>
+    <id xmi:id="Id_library.Badge.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Badge.id"/>
+      <column xmi:id="Column_library.Badge.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BADGE.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.BADGE"/>
+  </entity>
+</orm:EntityMappings>

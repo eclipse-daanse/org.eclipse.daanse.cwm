@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmi:id="Package_library" name="library">
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Address" name="Address">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.Address.Doc_Address" name="Doc_Address" body="Reusable address value object — has NO identity of its own and NO table of its own." language="en" type="text/plain" modelElement="Class_library.Address"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Address.street" name="street" type="DataType_library.String"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Address.city" name="city" type="DataType_library.String"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.String" name="String"/>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Publisher" name="Publisher">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Publisher.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Publisher.address" name="address" type="Class_library.Address"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.long" name="long"/>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Member" name="Member">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Member.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Member.address" name="address" type="Class_library.Address"/>
+  </ownedElement>
+</core:Package>

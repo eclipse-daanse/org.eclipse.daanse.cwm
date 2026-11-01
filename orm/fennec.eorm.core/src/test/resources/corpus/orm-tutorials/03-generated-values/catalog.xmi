@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<relational:Catalog xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:relational="http://www.omg.org/spec/CWM/1.1/resource/relational" xmi:id="Catalog_LIBRARYDB" name="LIBRARYDB">
+  <ownedElement xsi:type="relational:Schema" xmi:id="Schema_LIBRARYDB.LIB" name="LIB">
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.MEMBER" name="MEMBER">
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.MEMBER.PK_MEMBER" name="PK_MEMBER" feature="Column_LIBRARYDB.LIB.MEMBER.ID"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.MEMBER.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.LOAN" name="LOAN">
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.LOAN.PK_LOAN" name="PK_LOAN" feature="Column_LIBRARYDB.LIB.LOAN.ID"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.LOAN.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.RESERVATION" name="RESERVATION">
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.RESERVATION.PK_RESERVATION" name="PK_RESERVATION" feature="Column_LIBRARYDB.LIB.RESERVATION.ID"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.RESERVATION.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.NOTE" name="NOTE">
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.NOTE.PK_NOTE" name="PK_NOTE" feature="Column_LIBRARYDB.LIB.NOTE.ID"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.NOTE.ID" name="ID" type="SQLSimpleType_LIBRARYDB.VARCHAR"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.ID_GEN" name="ID_GEN">
+      <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_LIBRARYDB.LIB.ID_GEN.Doc_ID_GEN" name="Doc_ID_GEN" body="Generator table: GEN_NAME selects the row, GEN_VALUE holds the counter value." language="en" type="text/plain" modelElement="Table_LIBRARYDB.LIB.ID_GEN"/>
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.ID_GEN.PK_ID_GEN" name="PK_ID_GEN" feature="Column_LIBRARYDB.LIB.ID_GEN.GEN_NAME"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.ID_GEN.GEN_NAME" name="GEN_NAME" type="SQLSimpleType_LIBRARYDB.VARCHAR"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.ID_GEN.GEN_VALUE" name="GEN_VALUE" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.BIGINT" name="BIGINT"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.VARCHAR" name="VARCHAR"/>
+</relational:Catalog>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<relational:Catalog xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:relational="http://www.omg.org/spec/CWM/1.1/resource/relational" xmi:id="Catalog_LIBRARYDB" name="LIBRARYDB">
+  <ownedElement xsi:type="relational:Schema" xmi:id="Schema_LIBRARYDB.LIB" name="LIB">
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.PUBLISHER" name="PUBLISHER">
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.PUBLISHER.PK_PUBLISHER" name="PK_PUBLISHER" feature="Column_LIBRARYDB.LIB.PUBLISHER.ID"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.PUBLISHER.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.PUBLISHER.STREET" name="STREET" type="SQLSimpleType_LIBRARYDB.VARCHAR"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.PUBLISHER.CITY" name="CITY" type="SQLSimpleType_LIBRARYDB.VARCHAR"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.MEMBER" name="MEMBER">
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.MEMBER.PK_MEMBER" name="PK_MEMBER" feature="Column_LIBRARYDB.LIB.MEMBER.ID"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.MEMBER.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.MEMBER.ADDR_STREET" name="ADDR_STREET" type="SQLSimpleType_LIBRARYDB.VARCHAR"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.MEMBER.ADDR_CITY" name="ADDR_CITY" type="SQLSimpleType_LIBRARYDB.VARCHAR"/>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.BIGINT" name="BIGINT"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.VARCHAR" name="VARCHAR"/>
+</relational:Catalog>

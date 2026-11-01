@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Bidirectional m:n relationship.">
+  <entity xmi:id="Entity_library.Book" name="Book">
+    <cwmClass href="objects.xmi#Class_library.Book"/>
+    <manyToMany xmi:id="ManyToMany_library.Book.authors" name="authors" description="The owning side chooses the JoinTable.">
+      <cwmAssociationEnd href="objects.xmi#AssociationEnd_library.BookAuthor.authors"/>
+      <joinTable xmi:id="JoinTable_library.Book.authors.BOOK_AUTHOR" name="BOOK_AUTHOR" description="The intersection table: the join FK_BA_BOOK leads to the own side (BOOK_ID), the inverse join FK_BA_AUTHOR to the opposite side (AUTHOR_ID). The table BOOK_AUTHOR is the table of both joins, not a separate reference.">
+        <join xmi:id="Join_library.Book.authors.BOOK_AUTHOR.FK_BA_BOOK" name="FK_BA_BOOK">
+          <cwmForeignKey href="catalog.xmi#ForeignKey_LIBRARYDB.LIB.BOOK_AUTHOR.FK_BA_BOOK"/>
+        </join>
+        <inverseJoin xmi:id="Join_library.Book.authors.BOOK_AUTHOR.FK_BA_AUTHOR" name="FK_BA_AUTHOR">
+          <cwmForeignKey href="catalog.xmi#ForeignKey_LIBRARYDB.LIB.BOOK_AUTHOR.FK_BA_AUTHOR"/>
+        </inverseJoin>
+      </joinTable>
+    </manyToMany>
+    <id xmi:id="Id_library.Book.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.id"/>
+      <column xmi:id="Column_library.Book.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.BOOK"/>
+  </entity>
+  <entity xmi:id="Entity_library.Author" name="Author">
+    <cwmClass href="objects.xmi#Class_library.Author"/>
+    <manyToMany xmi:id="ManyToMany_library.Author.books" name="books" description="The inverse side (owningSide=false)." owningSide="false">
+      <cwmAssociationEnd href="objects.xmi#AssociationEnd_library.BookAuthor.books"/>
+    </manyToMany>
+    <id xmi:id="Id_library.Author.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Author.id"/>
+      <column xmi:id="Column_library.Author.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.AUTHOR.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.AUTHOR"/>
+  </entity>
+</orm:EntityMappings>
