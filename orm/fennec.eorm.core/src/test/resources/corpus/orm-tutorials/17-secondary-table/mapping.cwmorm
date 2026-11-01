@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Entity across a main and a detail table.">
+  <entity xmi:id="Entity_library.Book" name="Book" description="Primary table BOOK; the detail columns live in the SecondaryTable.">
+    <cwmClass href="objects.xmi#Class_library.Book"/>
+    <basic xmi:id="Basic_library.Book.title" name="title">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.title"/>
+      <column xmi:id="Column_library.Book.title.TITLE" name="TITLE">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.TITLE"/>
+      </column>
+    </basic>
+    <basic xmi:id="Basic_library.Book.summary" name="summary" description="A Basic whose column lives in the SECONDARY table — the column reference says so, no table string needed.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.summary"/>
+      <column xmi:id="Column_library.Book.summary.SUMMARY" name="SUMMARY">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK_DETAILS.SUMMARY"/>
+      </column>
+    </basic>
+    <basic xmi:id="Basic_library.Book.coverImage" name="coverImage" description="A large object because COVER is a BLOB column.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.coverImage"/>
+      <column xmi:id="Column_library.Book.coverImage.COVER" name="COVER">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK_DETAILS.COVER"/>
+      </column>
+    </basic>
+    <id xmi:id="Id_library.Book.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.id"/>
+      <column xmi:id="Column_library.Book.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.BOOK"/>
+    <secondaryTable xmi:id="SecondaryTable_library.Book.BOOK_DETAILS" name="BOOK_DETAILS" description="The entity's second table, reached over the primary-key join FK_DETAILS_BOOK (BOOK_ID -> BOOK.ID); the table is the table of the join columns (JPA @SecondaryTable + @PrimaryKeyJoinColumn).">
+      <join xmi:id="Join_library.Book.BOOK_DETAILS.FK_DETAILS_BOOK" name="FK_DETAILS_BOOK">
+        <cwmForeignKey href="catalog.xmi#ForeignKey_LIBRARYDB.LIB.BOOK_DETAILS.FK_DETAILS_BOOK"/>
+      </join>
+    </secondaryTable>
+  </entity>
+</orm:EntityMappings>

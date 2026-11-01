@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<relational:Catalog xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:relational="http://www.omg.org/spec/CWM/1.1/resource/relational" xmi:id="Catalog_LIBRARYDB" name="LIBRARYDB">
+  <ownedElement xsi:type="relational:Schema" xmi:id="Schema_LIBRARYDB.LIB" name="LIB">
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.BOOK" name="BOOK">
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.BOOK.PK_BOOK" name="PK_BOOK" feature="Column_LIBRARYDB.LIB.BOOK.ID" keyRelationship="ForeignKey_LIBRARYDB.LIB.CHAPTER.FK_CHAPTER_BOOK ForeignKey_LIBRARYDB.LIB.TRANSLATION.FK_TRANSLATION_BOOK ForeignKey_LIBRARYDB.LIB.REVIEW.FK_REVIEW_BOOK"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.BOOK.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.CHAPTER" name="CHAPTER">
+      <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_LIBRARYDB.LIB.CHAPTER.Doc_CHAPTER" name="Doc_CHAPTER" body="Chapter with position column POS — the list order lives in the data." language="en" type="text/plain" modelElement="Table_LIBRARYDB.LIB.CHAPTER"/>
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.CHAPTER.PK_CHAPTER" name="PK_CHAPTER" feature="Column_LIBRARYDB.LIB.CHAPTER.ID"/>
+      <ownedElement xsi:type="relational:ForeignKey" xmi:id="ForeignKey_LIBRARYDB.LIB.CHAPTER.FK_CHAPTER_BOOK" name="FK_CHAPTER_BOOK" feature="Column_LIBRARYDB.LIB.CHAPTER.BOOK_ID" uniqueKey="PrimaryKey_LIBRARYDB.LIB.BOOK.PK_BOOK"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.CHAPTER.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.CHAPTER.HEADING" name="HEADING" type="SQLSimpleType_LIBRARYDB.VARCHAR"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.CHAPTER.BOOK_ID" name="BOOK_ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.CHAPTER.POS" name="POS" type="SQLSimpleType_LIBRARYDB.INTEGER"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.TRANSLATION" name="TRANSLATION">
+      <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_LIBRARYDB.LIB.TRANSLATION.Doc_TRANSLATION" name="Doc_TRANSLATION" body="Translations — LANGUAGE serves the map as the key column." language="en" type="text/plain" modelElement="Table_LIBRARYDB.LIB.TRANSLATION"/>
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.TRANSLATION.PK_TRANSLATION" name="PK_TRANSLATION" feature="Column_LIBRARYDB.LIB.TRANSLATION.ID"/>
+      <ownedElement xsi:type="relational:ForeignKey" xmi:id="ForeignKey_LIBRARYDB.LIB.TRANSLATION.FK_TRANSLATION_BOOK" name="FK_TRANSLATION_BOOK" feature="Column_LIBRARYDB.LIB.TRANSLATION.BOOK_ID" uniqueKey="PrimaryKey_LIBRARYDB.LIB.BOOK.PK_BOOK"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.TRANSLATION.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.TRANSLATION.LANGUAGE" name="LANGUAGE" type="SQLSimpleType_LIBRARYDB.VARCHAR"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.TRANSLATION.TITLE" name="TITLE" type="SQLSimpleType_LIBRARYDB.VARCHAR"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.TRANSLATION.BOOK_ID" name="BOOK_ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.REVIEW" name="REVIEW">
+      <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_LIBRARYDB.LIB.REVIEW.Doc_REVIEW" name="Doc_REVIEW" body="Reviews — no position column: their order is computed when loading." language="en" type="text/plain" modelElement="Table_LIBRARYDB.LIB.REVIEW"/>
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.REVIEW.PK_REVIEW" name="PK_REVIEW" feature="Column_LIBRARYDB.LIB.REVIEW.ID"/>
+      <ownedElement xsi:type="relational:ForeignKey" xmi:id="ForeignKey_LIBRARYDB.LIB.REVIEW.FK_REVIEW_BOOK" name="FK_REVIEW_BOOK" feature="Column_LIBRARYDB.LIB.REVIEW.BOOK_ID" uniqueKey="PrimaryKey_LIBRARYDB.LIB.BOOK.PK_BOOK"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.REVIEW.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.REVIEW.RATING" name="RATING" type="SQLSimpleType_LIBRARYDB.INTEGER"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.REVIEW.REVIEWER" name="REVIEWER" type="SQLSimpleType_LIBRARYDB.VARCHAR"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.REVIEW.BOOK_ID" name="BOOK_ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.BIGINT" name="BIGINT"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.VARCHAR" name="VARCHAR"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.INTEGER" name="INTEGER"/>
+</relational:Catalog>

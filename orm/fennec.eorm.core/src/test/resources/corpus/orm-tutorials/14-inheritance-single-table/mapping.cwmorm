@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="SINGLE_TABLE hierarchy.">
+  <entity xmi:id="Entity_library.Media" name="Media" description="The root entity carries the strategy, the discriminator column (a catalog reference; its SQL type VARCHAR makes the discriminator type STRING) and the shared table. Media is abstract and needs no value." inheritanceStrategy="SINGLE_TABLE">
+    <cwmClass href="objects.xmi#Class_library.Media"/>
+    <basic xmi:id="Basic_library.Media.title" name="title">
+      <cwmAttribute href="objects.xmi#Attribute_library.Media.title"/>
+      <column xmi:id="Column_library.Media.title.TITLE" name="TITLE">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEDIA.TITLE"/>
+      </column>
+    </basic>
+    <id xmi:id="Id_library.Media.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Media.id"/>
+      <column xmi:id="Column_library.Media.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEDIA.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.MEDIA"/>
+    <cwmDiscriminatorColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEDIA.MEDIA_TYPE"/>
+  </entity>
+  <entity xmi:id="Entity_library.Book" name="Book" description="Subclass entity WITHOUT cwmTable — it inherits the root's table; discriminatorValue selects its rows." discriminatorValue="BOOK">
+    <cwmClass href="objects.xmi#Class_library.Book"/>
+    <basic xmi:id="Basic_library.Book.pages" name="pages" description="Specific column in the shared table (nullable for non-books).">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.pages"/>
+      <column xmi:id="Column_library.Book.pages.PAGES" name="PAGES">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEDIA.PAGES"/>
+      </column>
+    </basic>
+  </entity>
+  <entity xmi:id="Entity_library.Dvd" name="Dvd" discriminatorValue="DVD">
+    <cwmClass href="objects.xmi#Class_library.Dvd"/>
+    <basic xmi:id="Basic_library.Dvd.minutes" name="minutes">
+      <cwmAttribute href="objects.xmi#Attribute_library.Dvd.minutes"/>
+      <column xmi:id="Column_library.Dvd.minutes.MINUTES" name="MINUTES">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEDIA.MINUTES"/>
+      </column>
+    </basic>
+  </entity>
+</orm:EntityMappings>

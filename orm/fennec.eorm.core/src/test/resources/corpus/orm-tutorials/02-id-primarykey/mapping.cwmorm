@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Mapping set: one entity with an Id.">
+  <entity xmi:id="Entity_library.Book" name="Book" description="Book is stored in BOOK.">
+    <cwmClass href="objects.xmi#Class_library.Book"/>
+    <basic xmi:id="Basic_library.Book.title" name="title" description="title lands in TITLE.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.title"/>
+      <column xmi:id="Column_library.Book.title.TITLE" name="TITLE">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.TITLE"/>
+      </column>
+    </basic>
+    <id xmi:id="Id_library.Book.id" name="id" description="The Id mapping: cwmAttribute -> Book.id, cwmColumn -> BOOK.ID. The primary key is not repeated: it is the key of the entity table, and the validator checks that BOOK.ID belongs to it.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.id"/>
+      <column xmi:id="Column_library.Book.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.BOOK"/>
+  </entity>
+</orm:EntityMappings>

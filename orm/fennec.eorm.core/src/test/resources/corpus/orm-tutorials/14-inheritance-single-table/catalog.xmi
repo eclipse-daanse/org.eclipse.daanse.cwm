@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<relational:Catalog xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:relational="http://www.omg.org/spec/CWM/1.1/resource/relational" xmi:id="Catalog_LIBRARYDB" name="LIBRARYDB">
+  <ownedElement xsi:type="relational:Schema" xmi:id="Schema_LIBRARYDB.LIB" name="LIB">
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.MEDIA" name="MEDIA">
+      <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_LIBRARYDB.LIB.MEDIA.Doc_MEDIA" name="Doc_MEDIA" body="ONE table for the whole hierarchy; MEDIA_TYPE distinguishes the rows, specific columns are nullable." language="en" type="text/plain" modelElement="Table_LIBRARYDB.LIB.MEDIA"/>
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.MEDIA.PK_MEDIA" name="PK_MEDIA" feature="Column_LIBRARYDB.LIB.MEDIA.ID"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.MEDIA.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.MEDIA.MEDIA_TYPE" name="MEDIA_TYPE" type="SQLSimpleType_LIBRARYDB.VARCHAR"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.MEDIA.TITLE" name="TITLE" type="SQLSimpleType_LIBRARYDB.VARCHAR"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.MEDIA.PAGES" name="PAGES" type="SQLSimpleType_LIBRARYDB.INTEGER"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.MEDIA.MINUTES" name="MINUTES" type="SQLSimpleType_LIBRARYDB.INTEGER"/>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.BIGINT" name="BIGINT"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.VARCHAR" name="VARCHAR"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.INTEGER" name="INTEGER"/>
+</relational:Catalog>

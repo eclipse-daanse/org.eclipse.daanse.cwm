@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<relational:Catalog xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:relational="http://www.omg.org/spec/CWM/1.1/resource/relational" xmi:id="Catalog_LIBRARYDB" name="LIBRARYDB">
+  <ownedElement xsi:type="relational:Schema" xmi:id="Schema_LIBRARYDB.LIB" name="LIB">
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.MEMBER" name="MEMBER">
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.MEMBER.PK_MEMBER" name="PK_MEMBER" feature="Column_LIBRARYDB.LIB.MEMBER.ID" keyRelationship="ForeignKey_LIBRARYDB.LIB.LOAN.FK_LOAN_MEMBER"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.MEMBER.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.BOOK" name="BOOK">
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.BOOK.PK_BOOK" name="PK_BOOK" feature="Column_LIBRARYDB.LIB.BOOK.ID" keyRelationship="ForeignKey_LIBRARYDB.LIB.LOAN.FK_LOAN_BOOK"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.BOOK.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.LOAN" name="LOAN">
+      <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_LIBRARYDB.LIB.LOAN.Doc_LOAN" name="Doc_LOAN" body="Loans table with a composite primary key." language="en" type="text/plain" modelElement="Table_LIBRARYDB.LIB.LOAN"/>
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.LOAN.PK_LOAN" name="PK_LOAN" feature="Column_LIBRARYDB.LIB.LOAN.MEMBER_ID Column_LIBRARYDB.LIB.LOAN.BOOK_ID"/>
+      <ownedElement xsi:type="relational:ForeignKey" xmi:id="ForeignKey_LIBRARYDB.LIB.LOAN.FK_LOAN_MEMBER" name="FK_LOAN_MEMBER" feature="Column_LIBRARYDB.LIB.LOAN.MEMBER_ID" uniqueKey="PrimaryKey_LIBRARYDB.LIB.MEMBER.PK_MEMBER"/>
+      <ownedElement xsi:type="relational:ForeignKey" xmi:id="ForeignKey_LIBRARYDB.LIB.LOAN.FK_LOAN_BOOK" name="FK_LOAN_BOOK" feature="Column_LIBRARYDB.LIB.LOAN.BOOK_ID" uniqueKey="PrimaryKey_LIBRARYDB.LIB.BOOK.PK_BOOK"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.LOAN.MEMBER_ID" name="MEMBER_ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.LOAN.BOOK_ID" name="BOOK_ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.LOAN.LOAN_DATE" name="LOAN_DATE" type="SQLSimpleType_LIBRARYDB.DATE"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.RESERVATION" name="RESERVATION">
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.RESERVATION.PK_RESERVATION" name="PK_RESERVATION" feature="Column_LIBRARYDB.LIB.RESERVATION.MEMBER_ID Column_LIBRARYDB.LIB.RESERVATION.DAY"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.RESERVATION.MEMBER_ID" name="MEMBER_ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.RESERVATION.DAY" name="DAY" type="SQLSimpleType_LIBRARYDB.VARCHAR"/>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.BIGINT" name="BIGINT"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.DATE" name="DATE"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.VARCHAR" name="VARCHAR"/>
+</relational:Catalog>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Converter registration + application + access type." access="FIELD">
+  <entity xmi:id="Entity_library.Book" name="Book" description="Book with access=PROPERTY as an override of the set's FIELD default." access="PROPERTY">
+    <cwmClass href="objects.xmi#Class_library.Book"/>
+    <basic xmi:id="Basic_library.Book.isbn" name="isbn" description="The value object lands in ISBN as a VARCHAR; the conversion is done by the converter.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.isbn"/>
+      <column xmi:id="Column_library.Book.isbn.ISBN" name="ISBN">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.ISBN"/>
+      </column>
+      <convert xmi:id="Convert_library.Book.isbn.IsbnConverter" name="IsbnConverter" description="Applies the converter explicitly to this attribute (JPA @Convert); the converter is a typed reference to its registration." converter="Converter_library.IsbnConverter"/>
+    </basic>
+    <id xmi:id="Id_library.Book.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.id"/>
+      <column xmi:id="Column_library.Book.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.BOOK"/>
+  </entity>
+  <converter xmi:id="Converter_library.IsbnConverter" name="IsbnConverter" description="Registers the AttributeConverter: cwmClass references the converter class of the object model, the name is the class name." autoApply="true">
+    <cwmClass href="objects.xmi#Class_library.IsbnConverter"/>
+  </converter>
+</orm:EntityMappings>

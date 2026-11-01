@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships" xmi:id="Package_library" name="library">
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Member" name="Member">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Member.id" name="id" type="DataType_library.long"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.long" name="long"/>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Book" name="Book">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.id" name="id" type="DataType_library.long"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.LoanKey" name="LoanKey">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.LoanKey.Doc_LoanKey" name="Doc_LoanKey" body="Key class of the loan: (memberId, bookId)." language="en" type="text/plain" modelElement="Class_library.LoanKey"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.LoanKey.memberId" name="memberId" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.LoanKey.bookId" name="bookId" type="DataType_library.long"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Loan" name="Loan">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.Loan.Doc_Loan" name="Doc_Loan" body="A loan — identified by member AND book." language="en" type="text/plain" modelElement="Class_library.Loan"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Loan.key" name="key" type="Class_library.LoanKey"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Loan.loanDate" name="loanDate" type="DataType_library.LocalDate"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.LocalDate" name="LocalDate"/>
+  <ownedElement xsi:type="relationships:Association" xmi:id="Association_library.LoanMember" name="LoanMember">
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.LoanMember.loans" name="loans" type="Class_library.Loan" isNavigable="true">
+      <multiplicity xmi:id="Multiplicity_library.LoanMember.loans.multiplicity">
+        <range xmi:id="MultiplicityRange_library.LoanMember.loans.multiplicity.range" upper="-1"/>
+      </multiplicity>
+    </feature>
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.LoanMember.member" name="member" type="Class_library.Member" isNavigable="true">
+      <multiplicity xmi:id="Multiplicity_library.LoanMember.member.multiplicity">
+        <range xmi:id="MultiplicityRange_library.LoanMember.member.multiplicity.range" lower="1" upper="1"/>
+      </multiplicity>
+    </feature>
+  </ownedElement>
+  <ownedElement xsi:type="relationships:Association" xmi:id="Association_library.LoanBook" name="LoanBook">
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.LoanBook.loans" name="loans" type="Class_library.Loan" isNavigable="true">
+      <multiplicity xmi:id="Multiplicity_library.LoanBook.loans.multiplicity">
+        <range xmi:id="MultiplicityRange_library.LoanBook.loans.multiplicity.range" upper="-1"/>
+      </multiplicity>
+    </feature>
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.LoanBook.book" name="book" type="Class_library.Book" isNavigable="true">
+      <multiplicity xmi:id="Multiplicity_library.LoanBook.book.multiplicity">
+        <range xmi:id="MultiplicityRange_library.LoanBook.book.multiplicity.range" lower="1" upper="1"/>
+      </multiplicity>
+    </feature>
+  </ownedElement>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.ReservationKey" name="ReservationKey">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.ReservationKey.memberId" name="memberId" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.ReservationKey.day" name="day" type="DataType_library.String"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.String" name="String"/>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Reservation" name="Reservation">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.Reservation.Doc_Reservation" name="Doc_Reservation" body="A reservation — the key (memberId, day) sits as an IdClass BESIDE the class." language="en" type="text/plain" modelElement="Class_library.Reservation"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Reservation.memberId" name="memberId" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Reservation.day" name="day" type="DataType_library.String"/>
+  </ownedElement>
+</core:Package>

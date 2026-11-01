@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Native SQL report with result mapping.">
+  <namedNativeQuery xmi:id="NamedNativeQuery_library.Book.loanStatistics" name="Book.loanStatistics" description="Native SQL over the stored query BOOK_LOAN_STATISTICS (cwmQuery) — the SQL text lives once, in the catalog; resultSetMapping is a TYPED reference to the mapping (a name string in the XSD model)." resultSetMapping="SqlResultSetMapping_library.BookWithLoanCount">
+    <cwmQuery href="catalog.xmi#QueryColumnSet_LIBRARYDB.LIB.BOOK_LOAN_STATISTICS"/>
+  </namedNativeQuery>
+  <sqlResultSetMapping xmi:id="SqlResultSetMapping_library.BookWithLoanCount" name="BookWithLoanCount" description="Decomposes the result set: one entity column-by-column, one constructor call for the statistics, one scalar. Every result column is a column of the stored query, so every part is anchored.">
+    <entityResult xmi:id="EntityResult_library.BookWithLoanCount.Book" name="Book" description="Entity result: cwmClass is the result entity class.">
+      <cwmClass href="objects.xmi#Class_library.Book"/>
+      <fieldResult xmi:id="FieldResult_library.BookWithLoanCount.Book.title" name="title" description="Result column B_TITLE -> field title; cwmFeature anchors the field, cwmColumn the column of the stored query (its name is the alias in the result set).">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK_LOAN_STATISTICS.B_TITLE"/>
+        <cwmFeature xsi:type="core:Attribute" href="objects.xmi#Attribute_library.Book.title"/>
+      </fieldResult>
+    </entityResult>
+    <constructorResult xmi:id="ConstructorResult_library.BookWithLoanCount.LoanStats" name="LoanStats" description="Constructor result: cwmClass is the DTO class, column order = argument order.">
+      <cwmClass href="objects.xmi#Class_library.LoanStats"/>
+      <columnResult xmi:id="ColumnResult_library.BookWithLoanCount.LoanStats.BOOK_ID" name="BOOK_ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK_LOAN_STATISTICS.BOOK_ID"/>
+      </columnResult>
+      <columnResult xmi:id="ColumnResult_library.BookWithLoanCount.LoanStats.LOAN_COUNT" name="LOAN_COUNT" description="Computed alias (COUNT) — anchored all the same: the stored query has a column for it.">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK_LOAN_STATISTICS.LOAN_COUNT"/>
+      </columnResult>
+    </constructorResult>
+    <columnResult xmi:id="ColumnResult_library.BookWithLoanCount.TOTAL" name="TOTAL">
+      <cwmType xsi:type="core:DataType" href="objects.xmi#DataType_library.long"/>
+      <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK_LOAN_STATISTICS.TOTAL"/>
+    </columnResult>
+  </sqlResultSetMapping>
+  <entity xmi:id="Entity_library.Book" name="Book">
+    <cwmClass href="objects.xmi#Class_library.Book"/>
+    <basic xmi:id="Basic_library.Book.title" name="title">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.title"/>
+      <column xmi:id="Column_library.Book.title.TITLE" name="TITLE">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.TITLE"/>
+      </column>
+    </basic>
+    <id xmi:id="Id_library.Book.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.id"/>
+      <column xmi:id="Column_library.Book.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.BOOK"/>
+  </entity>
+</orm:EntityMappings>

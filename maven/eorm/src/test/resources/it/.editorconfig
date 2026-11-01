@@ -1,0 +1,3 @@
+# The corpus files are XMI written by EMF with two-space indentation, whatever their extension.
+[*.cwmorm]
+indent_size = 2

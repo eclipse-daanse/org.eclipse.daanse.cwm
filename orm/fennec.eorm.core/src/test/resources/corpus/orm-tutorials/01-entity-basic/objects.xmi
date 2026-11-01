@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmi:id="Package_library" name="library">
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Book" name="Book">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.Book.Doc_Book" name="Doc_Book" body="A book of the library — the central domain class of this tutorial." language="en" type="text/plain" modelElement="Class_library.Book"/>
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.Book.Doc_id" name="Doc_id" body="The identity of the book (topic of tutorial 02)." language="en" type="text/plain" modelElement="Attribute_library.Book.id"/>
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.Book.Doc_title" name="Doc_title" body="The title of the book." language="en" type="text/plain" modelElement="Attribute_library.Book.title"/>
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.Book.Doc_pages" name="Doc_pages" body="The page count of the book." language="en" type="text/plain" modelElement="Attribute_library.Book.pages"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.title" name="title" type="DataType_library.String"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.pages" name="pages" type="DataType_library.int"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.long" name="long"/>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.String" name="String"/>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.int" name="int"/>
+</core:Package>

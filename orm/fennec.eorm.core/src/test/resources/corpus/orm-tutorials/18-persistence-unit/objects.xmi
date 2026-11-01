@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:behavioral="http://www.omg.org/spec/CWM/1.1/objectmodel/behavioral" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmi:id="Package_library" name="library">
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Book" name="Book">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.id" name="id" type="DataType_library.long"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.long" name="long"/>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.GlobalAuditListener" name="GlobalAuditListener">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.GlobalAuditListener.Doc_GlobalAuditListener" name="Doc_GlobalAuditListener" body="Default entity listener of the unit — a class of the object model whose operation is the callback method." language="en" type="text/plain" modelElement="Class_library.GlobalAuditListener"/>
+    <feature xsi:type="behavioral:Operation" xmi:id="Operation_library.GlobalAuditListener.audit" name="audit"/>
+  </ownedElement>
+</core:Package>

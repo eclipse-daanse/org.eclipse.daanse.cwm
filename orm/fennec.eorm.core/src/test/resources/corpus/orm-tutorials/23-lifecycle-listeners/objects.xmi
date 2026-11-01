@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:behavioral="http://www.omg.org/spec/CWM/1.1/objectmodel/behavioral" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmi:id="Package_library" name="library">
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Loan" name="Loan">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Loan.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Loan.createdAt" name="createdAt" type="DataType_library.Instant"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Loan.updatedAt" name="updatedAt" type="DataType_library.Instant"/>
+    <feature xsi:type="behavioral:Operation" xmi:id="Operation_library.Loan.stampCreated" name="stampCreated"/>
+    <feature xsi:type="behavioral:Operation" xmi:id="Operation_library.Loan.stampUpdated" name="stampUpdated"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.long" name="long"/>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.Instant" name="Instant"/>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.LoanAuditListener" name="LoanAuditListener">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.LoanAuditListener.Doc_LoanAuditListener" name="Doc_LoanAuditListener" body="External listener class observing loans; its operation onLoaded is the callback method." language="en" type="text/plain" modelElement="Class_library.LoanAuditListener"/>
+    <feature xsi:type="behavioral:Operation" xmi:id="Operation_library.LoanAuditListener.onLoaded" name="onLoaded"/>
+  </ownedElement>
+</core:Package>

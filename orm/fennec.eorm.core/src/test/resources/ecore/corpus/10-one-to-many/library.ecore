@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="library" nsURI="http://daanse.eclipse.org/cwm/ecore/library" nsPrefix="library">
+  <eClassifiers xsi:type="ecore:EClass" name="Publisher">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="notes" ordered="false" upperBound="-1" eType="#//Note">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="publisher"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="long" instanceClassName="long"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Note">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="text" eType="#//String"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="String" instanceClassName="java.lang.String"/>
+</ecore:EPackage>

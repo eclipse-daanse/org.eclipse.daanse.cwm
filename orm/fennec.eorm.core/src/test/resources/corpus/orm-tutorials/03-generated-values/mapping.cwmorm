@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Four entities, four generation strategies; sequence and table generator are defined globally on the mapping set.">
+  <generator xsi:type="orm:SequenceGenerator" xmi:id="SequenceGenerator_library.loanSeq" name="loanSeq" description="Sequence generator: CWM 1.1 has no sequence class, which is why sequenceName remains a string; cwmSchema anchors only the location." allocationSize="50" sequenceName="SEQ_LOAN">
+    <cwmSchema href="catalog.xmi#Schema_LIBRARYDB.LIB"/>
+  </generator>
+  <generator xsi:type="orm:TableGenerator" xmi:id="TableGenerator_library.reservationGen" name="reservationGen" description="Table generator: name column and value column are catalog references, the generator table is their owner; pkColumnValue is a DATA value (row selector), not a model name." allocationSize="20" pkColumnValue="RESERVATION">
+    <cwmPkColumn href="catalog.xmi#Column_LIBRARYDB.LIB.ID_GEN.GEN_NAME"/>
+    <cwmValueColumn href="catalog.xmi#Column_LIBRARYDB.LIB.ID_GEN.GEN_VALUE"/>
+  </generator>
+  <entity xmi:id="Entity_library.Member" name="Member">
+    <cwmClass href="objects.xmi#Class_library.Member"/>
+    <id xmi:id="Id_library.Member.id" name="id" description="IDENTITY: the database assigns the value at INSERT time (auto-increment).">
+      <cwmAttribute href="objects.xmi#Attribute_library.Member.id"/>
+      <column xmi:id="Column_library.Member.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEMBER.ID"/>
+      </column>
+      <generatedValue xmi:id="GeneratedValue_library.Member.id.IDENTITY" name="IDENTITY" strategy="IDENTITY"/>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.MEMBER"/>
+  </entity>
+  <entity xmi:id="Entity_library.Loan" name="Loan">
+    <cwmClass href="objects.xmi#Class_library.Loan"/>
+    <id xmi:id="Id_library.Loan.id" name="id" description="SEQUENCE: values from SEQ_LOAN; generator is a TYPED reference to the generator, not a name string.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Loan.id"/>
+      <column xmi:id="Column_library.Loan.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.LOAN.ID"/>
+      </column>
+      <generatedValue xmi:id="GeneratedValue_library.Loan.id.loanSeq" name="loanSeq" strategy="SEQUENCE" generator="SequenceGenerator_library.loanSeq"/>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.LOAN"/>
+  </entity>
+  <entity xmi:id="Entity_library.Reservation" name="Reservation">
+    <cwmClass href="objects.xmi#Class_library.Reservation"/>
+    <id xmi:id="Id_library.Reservation.id" name="id" description="TABLE: values from the generator table ID_GEN.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Reservation.id"/>
+      <column xmi:id="Column_library.Reservation.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.RESERVATION.ID"/>
+      </column>
+      <generatedValue xmi:id="GeneratedValue_library.Reservation.id.reservationGen" name="reservationGen" strategy="TABLE" generator="TableGenerator_library.reservationGen"/>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.RESERVATION"/>
+  </entity>
+  <entity xmi:id="Entity_library.Note" name="Note">
+    <cwmClass href="objects.xmi#Class_library.Note"/>
+    <id xmi:id="Id_library.Note.id" name="id" description="UUID: the provider generates a UUID. AUTO would leave the choice to the provider — the strategy is always stated explicitly, never defaulted.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Note.id"/>
+      <column xmi:id="Column_library.Note.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.NOTE.ID"/>
+      </column>
+      <generatedValue xmi:id="GeneratedValue_library.Note.id.UUID" name="UUID" strategy="UUID"/>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.NOTE"/>
+  </entity>
+</orm:EntityMappings>

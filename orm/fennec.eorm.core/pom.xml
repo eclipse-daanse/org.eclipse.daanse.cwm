@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.daanse</groupId>
+    <artifactId>org.eclipse.daanse.cwm.orm</artifactId>
+    <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>org.eclipse.daanse.cwm.orm.fennec.eorm.core</artifactId>
+  <name>Daanse CWM ORM — CWM-ORM to Fennec EORM</name>
+  <description>Converts a CWM-ORM mapping (org.eclipse.daanse.cwm.model.daanse.orm, explicit
+    profile) into the EntityMappings model of Eclipse Fennec Persistence (.eorm). Classes and
+    features are referenced as Ecore elements of the given .ecore files of the class model, found
+    by names.</description>
+
+  <repositories>
+    <!-- Fennec Persistence: snapshots only -->
+    <repository>
+      <id>ossrh</id>
+      <name>Sonatype Central Snapshots</name>
+      <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.daanse.orm</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- the class model side, read by names -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.relationships</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.datatypes</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- Only the generated EMF models (eorm, epersistence) of this jar are used: -->
+    <!-- no EclipseLink, no Fennec runtime, no OSGi service jars. -->
+    <dependency>
+      <groupId>org.eclipse.fennec.persistence</groupId>
+      <artifactId>org.eclipse.fennec.persistence.orm</artifactId>
+      <version>${fennec.persistence.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.persistence</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.fennec.persistence</groupId>
+          <artifactId>org.eclipse.fennec.persistence</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.osgi</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.fennec.emf</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <!-- EMF comes in the versions of this build, through the CWM models -->
+        <exclusion>
+          <groupId>org.eclipse.emf</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- loading CWM XMI outside OSGi, every CWM package registered by name -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.emf.standalone</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.ecore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

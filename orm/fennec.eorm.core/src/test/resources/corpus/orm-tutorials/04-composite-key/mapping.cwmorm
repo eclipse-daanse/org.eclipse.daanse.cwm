@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Composite keys in both JPA forms plus derived identity.">
+  <entity xmi:id="Entity_library.Member" name="Member">
+    <cwmClass href="objects.xmi#Class_library.Member"/>
+    <oneToMany xmi:id="OneToMany_library.Member.loans" name="loans" description="Inverse view of the loans of a member; the owning side is Loan.member." owningSide="false">
+      <cwmAssociationEnd href="objects.xmi#AssociationEnd_library.LoanMember.loans"/>
+    </oneToMany>
+    <id xmi:id="Id_library.Member.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Member.id"/>
+      <column xmi:id="Column_library.Member.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.MEMBER.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.MEMBER"/>
+  </entity>
+  <entity xmi:id="Entity_library.Book" name="Book">
+    <cwmClass href="objects.xmi#Class_library.Book"/>
+    <oneToMany xmi:id="OneToMany_library.Book.loans" name="loans" description="Inverse view of the loans of a book; the owning side is Loan.book." owningSide="false">
+      <cwmAssociationEnd href="objects.xmi#AssociationEnd_library.LoanBook.loans"/>
+    </oneToMany>
+    <id xmi:id="Id_library.Book.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.id"/>
+      <column xmi:id="Column_library.Book.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.BOOK"/>
+  </entity>
+  <entity xmi:id="Entity_library.Loan" name="Loan" description="Loan with EmbeddedId and two derived identities (mapsId).">
+    <cwmClass href="objects.xmi#Class_library.Loan"/>
+    <basic xmi:id="Basic_library.Loan.loanDate" name="loanDate" description="The loan date.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Loan.loanDate"/>
+      <column xmi:id="Column_library.Loan.loanDate.LOAN_DATE" name="LOAN_DATE">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.LOAN.LOAN_DATE"/>
+      </column>
+    </basic>
+    <manyToOne xmi:id="ManyToOne_library.Loan.member" name="member" description="Derived identity: the relationship provides the key part LoanKey.memberId (JPA @MapsId(&quot;memberId&quot;)); its join column is that key column." mapsId="true">
+      <cwmAssociationEnd href="objects.xmi#AssociationEnd_library.LoanMember.member"/>
+      <cwmMapsIdAttribute href="objects.xmi#Attribute_library.LoanKey.memberId"/>
+    </manyToOne>
+    <manyToOne xmi:id="ManyToOne_library.Loan.book" name="book" description="Derived identity for the key part LoanKey.bookId." mapsId="true">
+      <cwmAssociationEnd href="objects.xmi#AssociationEnd_library.LoanBook.book"/>
+      <cwmMapsIdAttribute href="objects.xmi#Attribute_library.LoanKey.bookId"/>
+    </manyToOne>
+    <embeddedId xmi:id="EmbeddedId_library.Loan.key" name="key" description="The EmbeddedId mapping: cwmAttribute -> Loan.key; the overrides put the key parts on the columns of PK_LOAN, the primary key of LOAN.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Loan.key"/>
+      <attributeOverride xmi:id="AttributeOverride_library.Loan.key.memberId" name="memberId">
+        <cwmPath xsi:type="core:Attribute" href="objects.xmi#Attribute_library.LoanKey.memberId"/>
+        <column xmi:id="Column_library.Loan.key.memberId.MEMBER_ID" name="MEMBER_ID">
+          <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.LOAN.MEMBER_ID"/>
+        </column>
+      </attributeOverride>
+      <attributeOverride xmi:id="AttributeOverride_library.Loan.key.bookId" name="bookId">
+        <cwmPath xsi:type="core:Attribute" href="objects.xmi#Attribute_library.LoanKey.bookId"/>
+        <column xmi:id="Column_library.Loan.key.bookId.BOOK_ID" name="BOOK_ID">
+          <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.LOAN.BOOK_ID"/>
+        </column>
+      </attributeOverride>
+    </embeddedId>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.LOAN"/>
+  </entity>
+  <entity xmi:id="Entity_library.Reservation" name="Reservation" description="IdClass variant: the key class sits BESIDE the entity (cwmIdClass); the key attributes are ordinary Id mappings.">
+    <cwmClass href="objects.xmi#Class_library.Reservation"/>
+    <id xmi:id="Id_library.Reservation.memberId" name="memberId" description="First key part.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Reservation.memberId"/>
+      <column xmi:id="Column_library.Reservation.memberId.MEMBER_ID" name="MEMBER_ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.RESERVATION.MEMBER_ID"/>
+      </column>
+    </id>
+    <id xmi:id="Id_library.Reservation.day" name="day" description="Second key part.">
+      <cwmAttribute href="objects.xmi#Attribute_library.Reservation.day"/>
+      <column xmi:id="Column_library.Reservation.day.DAY" name="DAY">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.RESERVATION.DAY"/>
+      </column>
+    </id>
+    <cwmIdClass href="objects.xmi#Class_library.ReservationKey"/>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.RESERVATION"/>
+  </entity>
+  <embeddable xmi:id="Embeddable_library.LoanKey" name="LoanKey" description="The key class as an Embeddable. It has no table, so its Basics leave the columns open; the EmbeddedId sets them.">
+    <cwmClass href="objects.xmi#Class_library.LoanKey"/>
+    <basic xmi:id="Basic_library.LoanKey.memberId" name="memberId">
+      <cwmAttribute href="objects.xmi#Attribute_library.LoanKey.memberId"/>
+    </basic>
+    <basic xmi:id="Basic_library.LoanKey.bookId" name="bookId">
+      <cwmAttribute href="objects.xmi#Attribute_library.LoanKey.bookId"/>
+    </basic>
+  </embeddable>
+</orm:EntityMappings>

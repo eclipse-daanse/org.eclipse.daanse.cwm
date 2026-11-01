@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.daanse</groupId>
+    <artifactId>org.eclipse.daanse.cwm.emf</artifactId>
+    <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>org.eclipse.daanse.cwm.emf.standalone</artifactId>
+  <name>Daanse CWM EMF — standalone</name>
+  <description>Loads CWM XMI outside OSGi: CwmPackages registers the generated EPackages of CWM 1.1
+    and of the Daanse extensions by name and creates resource sets that read XMI under any file
+    extension. Brings every CWM package at run time, so any CWM XMI loads; used wherever CWM XMI
+    is read outside OSGi, in particular by the Maven plugins.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.ecore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- every package of CwmPackages.KNOWN, so that any CWM XMI loads wherever this library is
+      used; CwmPackages registers them by name -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.relationships</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.instance</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.datatypes</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.expressions</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.keysindexes</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.softwaredeployment</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.typemapping</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.relational</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.record</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.multidimensional</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.xml</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.analysis.transformation</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.analysis.olap</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.analysis.businessnomenclature</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.analysis.informationvisualization</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.management.warehouseprocess</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.management.warehouseoperation</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.daanse.orm</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

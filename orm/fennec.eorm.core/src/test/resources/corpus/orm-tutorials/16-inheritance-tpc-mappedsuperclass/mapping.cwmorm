@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="TPC hierarchy on top of a MappedSuperclass.">
+  <mappedSuperclass xmi:id="MappedSuperclass_library.AuditBase" name="AuditBase" description="MappedSuperclass: passes its mappings down, but has no table and no entity status. Its Basic createdAt leaves the column open — every inheriting entity sets it with an AttributeOverride.">
+    <cwmClass href="objects.xmi#Class_library.AuditBase"/>
+    <basic xmi:id="Basic_library.AuditBase.createdAt" name="createdAt">
+      <cwmAttribute href="objects.xmi#Attribute_library.AuditBase.createdAt"/>
+    </basic>
+  </mappedSuperclass>
+  <entity xmi:id="Entity_library.Media" name="Media" description="Abstract root WITHOUT a table; strategy TABLE_PER_CLASS. Its attributes are bound canonically to BOOK_T, where Book inherits them unchanged." inheritanceStrategy="TABLE_PER_CLASS">
+    <cwmClass href="objects.xmi#Class_library.Media"/>
+    <basic xmi:id="Basic_library.Media.title" name="title">
+      <cwmAttribute href="objects.xmi#Attribute_library.Media.title"/>
+      <column xmi:id="Column_library.Media.title.TITLE" name="TITLE">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK_T.TITLE"/>
+      </column>
+    </basic>
+    <id xmi:id="Id_library.Media.id" name="id" description="Canonical binding of the inherited key (present with identical structure in each concrete table).">
+      <cwmAttribute href="objects.xmi#Attribute_library.Media.id"/>
+      <column xmi:id="Column_library.Media.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK_T.ID"/>
+      </column>
+    </id>
+    <attributeOverride xmi:id="AttributeOverride_library.Media.createdAt" name="createdAt" description="Media is the first entity below AuditBase and therefore sets the open column of createdAt — canonically in BOOK_T like its own attributes.">
+      <cwmPath xsi:type="core:Attribute" href="objects.xmi#Attribute_library.AuditBase.createdAt"/>
+      <column xmi:id="Column_library.Media.createdAt.CREATED_AT" name="CREATED_AT">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK_T.CREATED_AT"/>
+      </column>
+    </attributeOverride>
+  </entity>
+  <entity xmi:id="Entity_library.Book" name="Book" description="Concrete class with a COMPLETE table of its own; the inherited columns are the canonical ones.">
+    <cwmClass href="objects.xmi#Class_library.Book"/>
+    <basic xmi:id="Basic_library.Book.pages" name="pages">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.pages"/>
+      <column xmi:id="Column_library.Book.pages.PAGES" name="PAGES">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK_T.PAGES"/>
+      </column>
+    </basic>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.BOOK_T"/>
+  </entity>
+  <entity xmi:id="Entity_library.Dvd" name="Dvd" description="Concrete class with a COMPLETE table of its own: it redirects every inherited attribute to the columns of DVD_T.">
+    <cwmClass href="objects.xmi#Class_library.Dvd"/>
+    <basic xmi:id="Basic_library.Dvd.minutes" name="minutes">
+      <cwmAttribute href="objects.xmi#Attribute_library.Dvd.minutes"/>
+      <column xmi:id="Column_library.Dvd.minutes.MINUTES" name="MINUTES">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.DVD_T.MINUTES"/>
+      </column>
+    </basic>
+    <attributeOverride xmi:id="AttributeOverride_library.Dvd.id" name="id">
+      <cwmPath xsi:type="core:Attribute" href="objects.xmi#Attribute_library.Media.id"/>
+      <column xmi:id="Column_library.Dvd.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.DVD_T.ID"/>
+      </column>
+    </attributeOverride>
+    <attributeOverride xmi:id="AttributeOverride_library.Dvd.title" name="title">
+      <cwmPath xsi:type="core:Attribute" href="objects.xmi#Attribute_library.Media.title"/>
+      <column xmi:id="Column_library.Dvd.title.TITLE" name="TITLE">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.DVD_T.TITLE"/>
+      </column>
+    </attributeOverride>
+    <attributeOverride xmi:id="AttributeOverride_library.Dvd.createdAt" name="createdAt">
+      <cwmPath xsi:type="core:Attribute" href="objects.xmi#Attribute_library.AuditBase.createdAt"/>
+      <column xmi:id="Column_library.Dvd.createdAt.CREATED_AT" name="CREATED_AT">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.DVD_T.CREATED_AT"/>
+      </column>
+    </attributeOverride>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.DVD_T"/>
+  </entity>
+</orm:EntityMappings>

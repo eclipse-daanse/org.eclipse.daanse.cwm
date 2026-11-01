@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmi:id="Package_library" name="library">
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Book" name="Book">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.Book.Doc_Book" name="Doc_Book" body="A book with a domain identity attribute id." language="en" type="text/plain" modelElement="Class_library.Book"/>
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.Book.Doc_id" name="Doc_id" body="The identity of the book." language="en" type="text/plain" modelElement="Attribute_library.Book.id"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.title" name="title" type="DataType_library.String"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.long" name="long"/>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.String" name="String"/>
+</core:Package>

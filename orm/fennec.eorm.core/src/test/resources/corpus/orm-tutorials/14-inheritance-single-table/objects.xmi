@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships" xmi:id="Package_library" name="library">
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Media" name="Media" isAbstract="true">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.Media.Doc_Media" name="Doc_Media" body="Abstract root of the media hierarchy." language="en" type="text/plain" modelElement="Class_library.Media"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Media.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Media.title" name="title" type="DataType_library.String"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.long" name="long"/>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.String" name="String"/>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Book" name="Book">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.pages" name="pages" type="DataType_library.int"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.int" name="int"/>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Dvd" name="Dvd">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Dvd.minutes" name="minutes" type="DataType_library.int"/>
+  </ownedElement>
+  <ownedElement xsi:type="relationships:Generalization" xmi:id="Generalization_library.Book_extends_Media" name="Book_extends_Media" child="Class_library.Book" parent="Class_library.Media"/>
+  <ownedElement xsi:type="relationships:Generalization" xmi:id="Generalization_library.Dvd_extends_Media" name="Dvd_extends_Media" child="Class_library.Dvd" parent="Class_library.Media"/>
+</core:Package>

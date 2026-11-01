@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="library" nsURI="http://daanse.eclipse.org/cwm/ecore/library" nsPrefix="library">
+  <eClassifiers xsi:type="ecore:EClass" name="Member">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="loans" ordered="false" upperBound="-1" eType="#//Loan" eOpposite="#//Loan/member"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="long" instanceClassName="long"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Book">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="loans" ordered="false" upperBound="-1" eType="#//Loan" eOpposite="#//Loan/book"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LoanKey">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="memberId" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="bookId" eType="#//long"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Loan">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="key" eType="#//LoanKey" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="loanDate" eType="#//LocalDate"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="member" lowerBound="1" eType="#//Member" eOpposite="#//Member/loans"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="book" lowerBound="1" eType="#//Book" eOpposite="#//Book/loans"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="LocalDate" instanceClassName="java.time.LocalDate"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ReservationKey">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="memberId" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="day" eType="#//String"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="String" instanceClassName="java.lang.String"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Reservation">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="memberId" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="day" eType="#//String"/>
+  </eClassifiers>
+</ecore:EPackage>

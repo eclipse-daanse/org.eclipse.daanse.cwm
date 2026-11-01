@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="library" nsURI="http://daanse.eclipse.org/cwm/ecore/model/library" nsPrefix="library">
+  <eClassifiers xsi:type="ecore:EDataType" name="long" instanceClassName="long"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="String" instanceClassName="java.lang.String"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="Date" instanceClassName="java.util.Date"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="LocalDate" instanceClassName="java.time.LocalDate"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="byteArray" instanceClassName="byte[]"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="int" instanceClassName="int"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="BigDecimal" instanceClassName="java.math.BigDecimal"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Item" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="#//long"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Book" eSuperTypes="#//Item">
+    <eOperations name="validate"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" lowerBound="1" eType="#//String"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="subtitle" eType="#//String"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="published" eType="#//Date"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="released" eType="#//LocalDate"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cover" eType="#//byteArray"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="price" eType="#//BigDecimal"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" lowerBound="1" eType="#//int"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="blurb" eType="#//String"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tags" ordered="false" upperBound="-1" eType="#//String"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="address" eType="#//Address" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="genre" eType="#//Genre"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="publisher" lowerBound="1" eType="#//Publisher" eOpposite="#//Publisher/books"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="authors" ordered="false" upperBound="-1" eType="#//Author" eOpposite="#//Author/books"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="detail" eType="#//Detail" eOpposite="#//Detail/book"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Magazine" eSuperTypes="#//Item">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="issue" lowerBound="1" eType="#//int"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Address">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="street" eType="#//String"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="city" eType="#//String"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Publisher">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="#//String"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="books" ordered="false" upperBound="-1" eType="#//Book" eOpposite="#//Book/publisher"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Author">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="books" ordered="false" upperBound="-1" eType="#//Book" eOpposite="#//Book/authors"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Detail">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="book" lowerBound="1" eType="#//Book" eOpposite="#//Book/detail"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BookKey">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isbn" lowerBound="1" eType="#//String"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Audit">
+    <eOperations name="onPersist"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="YesNoConverter"/>
+  <eClassifiers xsi:type="ecore:EEnum" name="Genre">
+    <eLiterals name="FICTION" literal="FICTION"/>
+    <eLiterals name="SCIENCE" value="1" literal="SCIENCE"/>
+  </eClassifiers>
+</ecore:EPackage>

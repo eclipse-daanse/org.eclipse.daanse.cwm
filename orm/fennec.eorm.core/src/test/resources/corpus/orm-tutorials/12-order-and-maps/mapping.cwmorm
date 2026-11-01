@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Ordered list and map relationship.">
+  <entity xmi:id="Entity_library.Book" name="Book">
+    <cwmClass href="objects.xmi#Class_library.Book"/>
+    <oneToMany xmi:id="OneToMany_library.Book.chapters" name="chapters" description="Ordered list: orderColumn references the position column POS — the provider maintains it on reordering (JPA @OrderColumn). The alternative would be orderBy (Ordering criteria at load time, no persistent position).">
+      <cwmAssociationEnd href="objects.xmi#AssociationEnd_library.BookChapters.chapters"/>
+      <orderColumn xmi:id="Column_library.Book.chapters.POS" name="POS">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.CHAPTER.POS"/>
+      </orderColumn>
+      <join xmi:id="Join_library.Book.chapters.FK_CHAPTER_BOOK" name="FK_CHAPTER_BOOK">
+        <cwmForeignKey href="catalog.xmi#ForeignKey_LIBRARYDB.LIB.CHAPTER.FK_CHAPTER_BOOK"/>
+      </join>
+    </oneToMany>
+    <oneToMany xmi:id="OneToMany_library.Book.translations" name="translations" description="Map relationship: the map key is the target's language attribute (JPA Map&lt;String,Translation> + @MapKey(name=&quot;language&quot;)).">
+      <cwmAssociationEnd href="objects.xmi#AssociationEnd_library.BookTranslations.translations"/>
+      <mapKey xmi:id="MapKey_library.Book.translations.language" name="language" description="The key is Translation.language; its column LANGUAGE follows from the Basic of that attribute, the key type from the attribute's type.">
+        <cwmAttribute xsi:type="core:Attribute" href="objects.xmi#Attribute_library.Translation.language"/>
+      </mapKey>
+      <join xmi:id="Join_library.Book.translations.FK_TRANSLATION_BOOK" name="FK_TRANSLATION_BOOK">
+        <cwmForeignKey href="catalog.xmi#ForeignKey_LIBRARYDB.LIB.TRANSLATION.FK_TRANSLATION_BOOK"/>
+      </join>
+    </oneToMany>
+    <oneToMany xmi:id="OneToMany_library.Book.reviews" name="reviews" description="List ordered at load time (JPA @OrderBy(&quot;rating DESC, reviewer&quot;)): two Ordering criteria, most significant first; no position is stored.">
+      <cwmAssociationEnd href="objects.xmi#AssociationEnd_library.BookReviews.reviews"/>
+      <orderBy xmi:id="Ordering_library.Book.reviews.rating" name="rating" description="First criterion: the rating, descending. cwmPath is a typed feature path into the target class — it could continue into an embeddable (e.g. author.name)." descending="true">
+        <cwmPath xsi:type="core:Attribute" href="objects.xmi#Attribute_library.Review.rating"/>
+      </orderBy>
+      <orderBy xmi:id="Ordering_library.Book.reviews.reviewer" name="reviewer">
+        <cwmPath xsi:type="core:Attribute" href="objects.xmi#Attribute_library.Review.reviewer"/>
+      </orderBy>
+      <join xmi:id="Join_library.Book.reviews.FK_REVIEW_BOOK" name="FK_REVIEW_BOOK">
+        <cwmForeignKey href="catalog.xmi#ForeignKey_LIBRARYDB.LIB.REVIEW.FK_REVIEW_BOOK"/>
+      </join>
+    </oneToMany>
+    <id xmi:id="Id_library.Book.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Book.id"/>
+      <column xmi:id="Column_library.Book.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.BOOK.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.BOOK"/>
+  </entity>
+  <entity xmi:id="Entity_library.Chapter" name="Chapter">
+    <cwmClass href="objects.xmi#Class_library.Chapter"/>
+    <basic xmi:id="Basic_library.Chapter.heading" name="heading">
+      <cwmAttribute href="objects.xmi#Attribute_library.Chapter.heading"/>
+      <column xmi:id="Column_library.Chapter.heading.HEADING" name="HEADING">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.CHAPTER.HEADING"/>
+      </column>
+    </basic>
+    <id xmi:id="Id_library.Chapter.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Chapter.id"/>
+      <column xmi:id="Column_library.Chapter.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.CHAPTER.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.CHAPTER"/>
+  </entity>
+  <entity xmi:id="Entity_library.Translation" name="Translation">
+    <cwmClass href="objects.xmi#Class_library.Translation"/>
+    <basic xmi:id="Basic_library.Translation.language" name="language">
+      <cwmAttribute href="objects.xmi#Attribute_library.Translation.language"/>
+      <column xmi:id="Column_library.Translation.language.LANGUAGE" name="LANGUAGE">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.TRANSLATION.LANGUAGE"/>
+      </column>
+    </basic>
+    <basic xmi:id="Basic_library.Translation.title" name="title">
+      <cwmAttribute href="objects.xmi#Attribute_library.Translation.title"/>
+      <column xmi:id="Column_library.Translation.title.TITLE" name="TITLE">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.TRANSLATION.TITLE"/>
+      </column>
+    </basic>
+    <id xmi:id="Id_library.Translation.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Translation.id"/>
+      <column xmi:id="Column_library.Translation.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.TRANSLATION.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.TRANSLATION"/>
+  </entity>
+  <entity xmi:id="Entity_library.Review" name="Review">
+    <cwmClass href="objects.xmi#Class_library.Review"/>
+    <basic xmi:id="Basic_library.Review.rating" name="rating">
+      <cwmAttribute href="objects.xmi#Attribute_library.Review.rating"/>
+      <column xmi:id="Column_library.Review.rating.RATING" name="RATING">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.REVIEW.RATING"/>
+      </column>
+    </basic>
+    <basic xmi:id="Basic_library.Review.reviewer" name="reviewer">
+      <cwmAttribute href="objects.xmi#Attribute_library.Review.reviewer"/>
+      <column xmi:id="Column_library.Review.reviewer.REVIEWER" name="REVIEWER">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.REVIEW.REVIEWER"/>
+      </column>
+    </basic>
+    <id xmi:id="Id_library.Review.id" name="id">
+      <cwmAttribute href="objects.xmi#Attribute_library.Review.id"/>
+      <column xmi:id="Column_library.Review.id.ID" name="ID">
+        <cwmColumn href="catalog.xmi#Column_LIBRARYDB.LIB.REVIEW.ID"/>
+      </column>
+    </id>
+    <cwmTable href="catalog.xmi#Table_LIBRARYDB.LIB.REVIEW"/>
+  </entity>
+</orm:EntityMappings>

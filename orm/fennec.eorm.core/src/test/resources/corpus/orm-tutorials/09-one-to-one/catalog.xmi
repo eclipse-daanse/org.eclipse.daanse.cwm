@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<relational:Catalog xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:relational="http://www.omg.org/spec/CWM/1.1/resource/relational" xmi:id="Catalog_LIBRARYDB" name="LIBRARYDB">
+  <ownedElement xsi:type="relational:Schema" xmi:id="Schema_LIBRARYDB.LIB" name="LIB">
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.MEMBER" name="MEMBER">
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.MEMBER.PK_MEMBER" name="PK_MEMBER" feature="Column_LIBRARYDB.LIB.MEMBER.ID" keyRelationship="ForeignKey_LIBRARYDB.LIB.CARD.FK_CARD_MEMBER ForeignKey_LIBRARYDB.LIB.BADGE.FK_BADGE_MEMBER"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.MEMBER.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.CARD" name="CARD">
+      <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_LIBRARYDB.LIB.CARD.Doc_CARD" name="Doc_CARD" body="1:1 via FK column MEMBER_ID with unique constraint." language="en" type="text/plain" modelElement="Table_LIBRARYDB.LIB.CARD"/>
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.CARD.PK_CARD" name="PK_CARD" feature="Column_LIBRARYDB.LIB.CARD.ID"/>
+      <ownedElement xsi:type="relational:ForeignKey" xmi:id="ForeignKey_LIBRARYDB.LIB.CARD.FK_CARD_MEMBER" name="FK_CARD_MEMBER" feature="Column_LIBRARYDB.LIB.CARD.MEMBER_ID" uniqueKey="PrimaryKey_LIBRARYDB.LIB.MEMBER.PK_MEMBER"/>
+      <ownedElement xsi:type="relational:UniqueConstraint" xmi:id="UniqueConstraint_LIBRARYDB.LIB.CARD.UQ_CARD_MEMBER" name="UQ_CARD_MEMBER" feature="Column_LIBRARYDB.LIB.CARD.MEMBER_ID"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.CARD.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.CARD.MEMBER_ID" name="MEMBER_ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.BADGE" name="BADGE">
+      <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_LIBRARYDB.LIB.BADGE.Doc_BADGE" name="Doc_BADGE" body="1:1 via shared primary key: BADGE.ID is PK AND FK onto MEMBER.ID." language="en" type="text/plain" modelElement="Table_LIBRARYDB.LIB.BADGE"/>
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.BADGE.PK_BADGE" name="PK_BADGE" feature="Column_LIBRARYDB.LIB.BADGE.ID"/>
+      <ownedElement xsi:type="relational:ForeignKey" xmi:id="ForeignKey_LIBRARYDB.LIB.BADGE.FK_BADGE_MEMBER" name="FK_BADGE_MEMBER" feature="Column_LIBRARYDB.LIB.BADGE.ID" uniqueKey="PrimaryKey_LIBRARYDB.LIB.MEMBER.PK_MEMBER"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.BADGE.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.BIGINT" name="BIGINT"/>
+</relational:Catalog>

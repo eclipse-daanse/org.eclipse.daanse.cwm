@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<relational:Catalog xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:relational="http://www.omg.org/spec/CWM/1.1/resource/relational" xmi:id="Catalog_LIBRARYDB" name="LIBRARYDB">
+  <ownedElement xsi:type="relational:Schema" xmi:id="Schema_LIBRARYDB.LIB" name="LIB">
+    <ownedElement xsi:type="relational:Table" xmi:id="Table_LIBRARYDB.LIB.LOAN" name="LOAN">
+      <ownedElement xsi:type="relational:PrimaryKey" xmi:id="PrimaryKey_LIBRARYDB.LIB.LOAN.PK_LOAN" name="PK_LOAN" feature="Column_LIBRARYDB.LIB.LOAN.ID"/>
+      <feature xsi:type="relational:Column" xmi:id="Column_LIBRARYDB.LIB.LOAN.ID" name="ID" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Procedure" xmi:id="Procedure_LIBRARYDB.LIB.sp_extend_loan" name="sp_extend_loan">
+      <parameter xsi:type="relational:SQLParameter" xmi:id="SQLParameter_LIBRARYDB.LIB.sp_extend_loan.p_loan_id" name="p_loan_id" type="SQLSimpleType_LIBRARYDB.BIGINT"/>
+      <parameter xsi:type="relational:SQLParameter" xmi:id="SQLParameter_LIBRARYDB.LIB.sp_extend_loan.p_days" name="p_days" type="SQLSimpleType_LIBRARYDB.INTEGER"/>
+      <parameter xsi:type="relational:SQLParameter" xmi:id="SQLParameter_LIBRARYDB.LIB.sp_extend_loan.p_new_due" name="p_new_due" kind="pdk_out" type="SQLSimpleType_LIBRARYDB.DATE"/>
+    </ownedElement>
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_LIBRARYDB.LIB.Doc_sp_extend_loan" name="Doc_sp_extend_loan" body="Extends a loan by n days and reports back the new due date — a relational::Procedure (⊂ behavioral::Method) in the catalog." language="en" type="text/plain" modelElement="Procedure_LIBRARYDB.LIB.sp_extend_loan"/>
+  </ownedElement>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.BIGINT" name="BIGINT"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.INTEGER" name="INTEGER"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="SQLSimpleType_LIBRARYDB.DATE" name="DATE"/>
+</relational:Catalog>

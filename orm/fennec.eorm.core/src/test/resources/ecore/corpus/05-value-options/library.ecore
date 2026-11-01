@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="library" nsURI="http://daanse.eclipse.org/cwm/ecore/library" nsPrefix="library">
+  <eClassifiers xsi:type="ecore:EEnum" name="MemberStatus">
+    <eLiterals name="ACTIVE" literal="ACTIVE"/>
+    <eLiterals name="SUSPENDED" value="1" literal="SUSPENDED"/>
+    <eLiterals name="EXPIRED" value="2" literal="EXPIRED"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Member">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="birthDate" eType="#//LocalDate"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="status" eType="#//MemberStatus"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="photo" eType="#//byteArray"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="age" eType="#//int"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="long" instanceClassName="long"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="LocalDate" instanceClassName="java.time.LocalDate"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="byteArray" instanceClassName="byte[]"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="int" instanceClassName="int"/>
+</ecore:EPackage>
