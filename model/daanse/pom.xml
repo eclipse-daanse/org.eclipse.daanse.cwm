@@ -23,6 +23,7 @@
 
   <modules>
     <module>orm</module>
+    <module>units</module>
   <!--
     <module>resource.r</module>
     <module>resource.json</module>
