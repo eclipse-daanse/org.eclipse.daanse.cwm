@@ -97,7 +97,7 @@
     </dependency>
 
     <!-- Test: round-trip the same CWM fixture against H2 (in-process),
-         PostgreSQL, MariaDB, SQL Server and Oracle via Testcontainers. -->
+        PostgreSQL, MariaDB, SQL Server and Oracle via Testcontainers. -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.sql.jdbc.impl</artifactId>
@@ -121,7 +121,7 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
-      <version>1.19.7</version>
+      <version>1.21.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -167,7 +167,7 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>mariadb</artifactId>
-      <version>1.19.7</version>
+      <version>1.21.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -193,7 +193,7 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>mssqlserver</artifactId>
-      <version>1.19.7</version>
+      <version>1.21.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -219,7 +219,7 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>oracle-free</artifactId>
-      <version>1.19.7</version>
+      <version>1.21.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -232,7 +232,7 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <version>1.19.7</version>
+      <version>1.21.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -248,7 +248,7 @@
   <build>
     <plugins>
       <!-- Publish a test-jar so the diff module can reuse the shared
-           cross-dialect test support (DialectProfile, SqlGenAssertions). -->
+          cross-dialect test support (DialectProfile, SqlGenAssertions). -->
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
