@@ -1,0 +1,225 @@
+<?xml version="1.0"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.daanse</groupId>
+    <artifactId>org.eclipse.daanse.cwm.model.daanse.governance</artifactId>
+    <version>${revision}</version>
+  </parent>
+  <artifactId>org.eclipse.daanse.cwm.model.daanse.governance.lifecycle</artifactId>
+  <name>Daanse CWM Governance — lifecycle</name>
+  <description>The base of the lifecycle rules of any CWM element and the retention schedules: a rule
+    is a core::Constraint on the elements it governs, acting on the values of each feature or on the
+    rows of a classifier; the nearest rule of a kind and scope wins along feature, owner and
+    namespaces. A retention schedule says what happens to data as it ages - from where its periods
+    start (the time of a value, a time feature, a business event; aligned to the end of a month,
+    quarter or year), its stages follow one another (tier, restrict, review, notify, aggregate,
+    transfer, delete), and its limits keep the newest. Which value changes are recorded is the model
+    recording.</description>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.daanse</groupId>
+        <artifactId>org.eclipse.daanse.tooling.emf.codegen.maven</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <ecoreFile>model/lifecycle.ecore</ecoreFile>
+              <outputDirectory>target/generated-sources/emf</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>biz.aQute.bnd</groupId>
+            <artifactId>biz.aQute.bndlib</artifactId>
+            <version>7.2.0</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.6.0</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>target/generated-sources/emf</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.core</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <!-- the event a period starts with -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <!-- the party that reviews or is told -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <!-- generalizations in tests: the time feature of a retention rule may be inherited -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.relationships</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- the examples of doc/rules-across-cwm.md run as tests on the packages they govern -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.instance</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.softwaredeployment</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.relational</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.record</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.multidimensional</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.xml</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.analysis.olap</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.management.warehouseprocess</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.management.warehouseoperation</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Classic Eclipse OCL as EMF validation delegate, so that the tests evaluate the OCL
+      constraints of the ecore (same setup as model/cwm); the 2013-era poms declare version ranges
+      against coordinates that no longer exist, so their transitive dependencies are excluded. -->
+    <dependency>
+      <groupId>org.eclipse.ocl</groupId>
+      <artifactId>ecore</artifactId>
+      <version>3.3.0-v20130520-1222</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>ocl</artifactId>
+      <version>3.4.0-v20140524-1358</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.ocl</groupId>
+      <artifactId>common</artifactId>
+      <version>1.2.0-v20140528-1458</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>lpg.runtime</groupId>
+      <artifactId>java</artifactId>
+      <version>2.0.17-v201004271640</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

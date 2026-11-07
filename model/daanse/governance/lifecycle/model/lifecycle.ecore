@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="lifecycle" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.lifecycle"
+    nsPrefix="lifecycle">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The base of the lifecycle models of a CWM element, and its retention schedules. A lifecycle rule is a core::Constraint that names the elements it governs in constrainedElement, and every element finds its rules in ModelElement.constraint. A rule on a feature applies to that feature, a rule on a classifier to its features or rows, a rule on a namespace to everything in it; of the rules of a kind and scope the nearest one wins. The scope says what a rule acts on: each value of a feature, one series per feature, or each row of a classifier. The inherited body holds the rule as text in the language daanse.lifecycle, the typed attributes are the truth. A retention schedule says what happens to data as it ages: from the start of its periods — the time of a value, the value of a time feature, the time of a business event, aligned to the end of a month, quarter or year and offset — its stages follow one another (tier, restrict, review, notify, aggregate, transfer, delete), and its limits keep the newest values or bytes. Which value changes are recorded is the model recording; obligations and de-identification build on this model."/>
+    <details key="modelName" value="Lifecycle"/>
+    <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse.governance"/>
+    <details key="resource" value="XMI"/>
+    <details key="prefix" value="Lifecycle"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EDataType" name="Duration" instanceClassName="java.lang.String">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An exact amount of time as an ISO-8601 duration literal in the grammar of java.time.Duration: days of 24 hours, hours, minutes and seconds (P90D, PT10M, PT1H30M, P1DT12H); months and years are not durations of fixed length and are not allowed. For intervals of recording and cleanup. Backed by a string so that a model loaded dynamically from this ecore reads it too."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Period" instanceClassName="java.lang.String">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An amount of calendar time as an ISO-8601 period literal: years, months, weeks and days, and an optional time part (P10Y, P6M, P2W, P90D, P1Y6M, P1DT12H). Years and months are calendar units of varying length, added in the time zone of the start; weeks, days of 24 hours and the time part are exact. For the stages and terms of retention. Backed by a string."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="DataScope">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="What a rule acts on. value: each value of a feature, one series of values per feature (the history of a column, of a resource of a digital twin); a value rule on a classifier or namespace is the default for each of its features. row: each row of a classifier (the records of a table, of a record file); a row rule names classifiers or namespaces, never a feature."/>
+    </eAnnotations>
+    <eLiterals name="value"/>
+    <eLiterals name="row" value="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Alignment">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="To which boundary the start of a period moves before it runs: none, or the end of the month, the quarter or the year of the start — the first instant of the next month, quarter or year in the time zone of the start (a retention period that begins with the end of the calendar year)."/>
+    </eAnnotations>
+    <eLiterals name="none"/>
+    <eLiterals name="endOfMonth" value="1"/>
+    <eLiterals name="endOfQuarter" value="2"/>
+    <eLiterals name="endOfYear" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="AggregateFunction">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="How the values of an interval are summarized when they are aggregated."/>
+    </eAnnotations>
+    <eLiterals name="average"/>
+    <eLiterals name="minimum" value="1"/>
+    <eLiterals name="maximum" value="2"/>
+    <eLiterals name="sum" value="3"/>
+    <eLiterals name="count" value="4"/>
+    <eLiterals name="first" value="5"/>
+    <eLiterals name="last" value="6"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LifecycleRule" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="ConstrainsAnElement RowsNotOnFeature"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="ConstrainsAnElement" value="self.constrainedElement->notEmpty()"/>
+      <details key="RowsNotOnFeature" value="self.scope = DataScope::row implies self.constrainedElement->forAll(e | not e.oclIsKindOf(core::StructuralFeature))"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A rule about the data of the elements it constrains: a core::Constraint whose constrainedElement names the governed elements. A rule on a feature applies to that feature, on a classifier to its features or rows, on a namespace to everything in it; of the rules of a kind and scope the nearest one wins (the element itself, then the owner of a feature, then the namespaces outward). The inherited body is the rule as text in the language daanse.lifecycle; the typed attributes of the concrete rule are the truth."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Constraint"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="scope" lowerBound="1" eType="//DataScope">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="What the rule acts on: each value of the governed features (the default) or each row of the governed classifiers."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PeriodStart" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="AlignmentNeedsZone"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="AlignmentNeedsZone" value="self.alignment = Alignment::none or (not self.zone.oclIsUndefined() and self.zone &lt;> '')"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Where the periods of a schedule or a stage start: the subclass says from which time — of the value, of a feature, of a business event. The start moves to the end of the month, quarter or year (alignment, in zone) and then by offset; from there the after of each stage runs."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alignment" lowerBound="1" eType="//Alignment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="To which boundary the start moves; none (the default) keeps it."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="offset" eType="//Period">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A period added to the aligned start."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="zone">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The IANA time zone in which the start is aligned and calendar periods are added (Europe/Berlin); required with an alignment. Unset: UTC."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ValueTime" eSuperTypes="//PeriodStart">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The periods start at the time of each value: when it was recorded, or when the row was written."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FeatureTime" eSuperTypes="//PeriodStart">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The periods start at the time a feature holds: the date column of a row, the time field of a record."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="feature" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The feature that holds the start time; a feature of the governed classifier or of the owner of the governed feature."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="lifecycleTimeOf"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="lifecycleTimeOf"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EventTime" eSuperTypes="//PeriodStart">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The periods start at a business event: the end of a contract, the closing of an account, the withdrawal of a consent. Where the time of the event is held per row, feature names it."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="event" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The event the periods start with."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="lifecycleEventStart"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="lifecycleEventStart"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/behavioral#//Event"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="feature">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The feature that holds the time of the event for each row; unset where the start is abstract, as in a deletion class."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="lifecycleEventTimeOf"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="lifecycleEventTimeOf"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Stage" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A step in the life of data, due after a period from the start: a stage moves, restricts, reviews, announces, summarizes, hands over or deletes. A stage is named and can be described like any model element."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="after" eType="//Period">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="How long after the start the stage is due; unset only where another rule gives it, as a deletion class gives the term of the last stage."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="start" eType="//PeriodStart" containment="true"
+        resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A start of the stage's own, where it differs from the start of the schedule."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DestructiveStage" abstract="true" eSuperTypes="//Stage">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A stage after which data is no longer as it was: summarized, handed over, deleted. A retention hold suspends it."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TerminalStage" abstract="true" eSuperTypes="//DestructiveStage">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A stage after which the data is gone: it ends the life of the data and fulfils a duty to delete. A schedule has at most one, as its last stage."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Delete" eSuperTypes="//TerminalStage">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The data is deleted."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Aggregate" eSuperTypes="//DestructiveStage">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The values are summarized per interval and the single values are given up: per day an average, a sum, a count. The summary goes to target where given."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="interval" lowerBound="1" eType="//Period">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The interval the values are summarized over."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="function" lowerBound="1" eType="//AggregateFunction">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="How the values of an interval are summarized."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The classifier that holds the summaries: the table of daily values."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="lifecycleAggregateTarget"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="lifecycleAggregateTarget"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Transfer" eSuperTypes="//DestructiveStage">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The data is handed over to another place and leaves this one: an archive, another schema, a data manager."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The namespace the data goes to: a schema, a package, a data manager."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="lifecycleTransferTarget"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="lifecycleTransferTarget"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Namespace"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Tier" eSuperTypes="//Stage">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The data moves to another tier of storage and stays as it is: warm, cold, archive."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tier" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The name of the tier: warm, cold, archive."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="compressed" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Whether the data is compressed in the tier."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Restrict" eSuperTypes="//Stage">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The data is kept but no longer processed except for what the restriction allows: kept for a legal claim, blocked for everything else."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Review" eSuperTypes="//Stage">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A party reviews the data before the next stage: the disposition review of a records manager."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="reviewer" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Who reviews."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="lifecycleReviewStage"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="lifecycleReviewStage"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Notify" eSuperTypes="//Stage">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A party is told that the next stage is near."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="party" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Who is told."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="lifecycleNotifyStage"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="lifecycleNotifyStage"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Limit" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A bound on how much data is kept, whatever its age; the oldest data beyond it goes."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CountLimit" eSuperTypes="//Limit">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Keeps the newest keep values, or rows; with key, the newest keep per value of the key features (the newest ten versions per customer)."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="keep" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="How many of the newest are kept; at least 1."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="key" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The features whose values group what is counted; empty: everything governed counts together."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="lifecycleCountLimitKey"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="lifecycleCountLimitKey"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SizeLimit" eSuperTypes="//Limit">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Keeps the newest data up to bytes in size."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="bytes" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The size kept, in bytes; above 0."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RetentionSchedule" eSuperTypes="//LifecycleRule">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="StageOrLimit StagesHaveAStart AtMostOneTerminalStage"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="StageOrLimit" value="self.stage->notEmpty() or self.limit->notEmpty()"/>
+      <details key="StagesHaveAStart" value="self.stage->notEmpty() implies (not self.start.oclIsUndefined() or self.stage->forAll(s | not s.start.oclIsUndefined()))"/>
+      <details key="AtMostOneTerminalStage" value="self.stage->select(s | s.oclIsKindOf(TerminalStage))->size() &lt;= 1"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Decides what happens to the data of the governed elements as it ages: from the start of its periods the stages follow one another in order, each due after its period; the limits bound how much is kept. A cleanup runs every cleanupInterval and deletes at most maxDelete per run. Of the schedules of a scope the nearest one applies; a schedule of rows and one of values of an element apply together, and the last stage of the rows ends the values too."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="start" eType="//PeriodStart" containment="true"
+        resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Where the periods of the stages start, unless a stage has a start of its own."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stage" upperBound="-1" eType="//Stage"
+        containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The stages, in the order they follow."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="limit" ordered="false" upperBound="-1"
+        eType="//Limit" containment="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The limits, all of which hold."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cleanupInterval" eType="//Duration">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="How often the cleanup runs; unset leaves the cadence to the runtime."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxDelete" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Safety cap on what a single cleanup run deletes; unset deletes without limit."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>

@@ -25,5 +25,6 @@
     <module>gdpr</module>
     <module>transparency</module>
     <module>criticality</module>
+    <module>lifecycle</module>
   </modules>
 </project>
