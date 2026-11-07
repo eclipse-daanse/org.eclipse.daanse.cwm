@@ -13,14 +13,37 @@
  */
 package org.eclipse.daanse.cwm.model.cwm.resource.relational.util;
 
+import java.util.Objects;
 import java.util.Optional;
 
+import org.eclipse.daanse.cwm.model.cwm.foundation.datatypes.DatatypesFactory;
 import org.eclipse.daanse.cwm.model.cwm.foundation.datatypes.QueryExpression;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
 
 public final class Views {
 
     private Views() {
+    }
+
+    /**
+     * A View whose {@code queryExpression} is {@code sql} (language
+     * {@code SQL}), owned by {@code parent} via {@code ownedElement}. Creation
+     * rule: see {@code objectmodel.core.util.Models}.
+     */
+    public static View create(Schema parent, String name, String sql) {
+        Objects.requireNonNull(parent, "parent");
+        Objects.requireNonNull(name, "name");
+        Objects.requireNonNull(sql, "sql");
+        View view = RelationalFactory.eINSTANCE.createView();
+        view.setName(name);
+        QueryExpression query = DatatypesFactory.eINSTANCE.createQueryExpression();
+        query.setLanguage("SQL");
+        query.setBody(sql);
+        view.setQueryExpression(query);
+        parent.getOwnedElement().add(view);
+        return view;
     }
 
     /** The query expression body, or empty if the view has no query. */

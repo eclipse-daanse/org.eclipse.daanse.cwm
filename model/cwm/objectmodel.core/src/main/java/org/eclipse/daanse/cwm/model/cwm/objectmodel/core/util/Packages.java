@@ -13,10 +13,13 @@
 package org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CoreFactory;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Namespace;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package;
 
 /**
@@ -29,6 +32,19 @@ import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package;
 public final class Packages {
 
     private Packages() {
+    }
+
+    /**
+     * A plain {@code core::Package} owned by {@code parent} via
+     * {@code ownedElement}. Creation rule: see {@link Models}.
+     */
+    public static Package create(Namespace parent, String name) {
+        Objects.requireNonNull(parent, "parent");
+        Objects.requireNonNull(name, "name");
+        Package pkg = CoreFactory.eINSTANCE.createPackage();
+        pkg.setName(name);
+        parent.getOwnedElement().add(pkg);
+        return pkg;
     }
 
     /**

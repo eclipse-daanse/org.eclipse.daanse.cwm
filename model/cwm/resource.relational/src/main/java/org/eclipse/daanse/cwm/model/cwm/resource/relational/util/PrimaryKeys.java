@@ -13,16 +13,35 @@
  */
 package org.eclipse.daanse.cwm.model.cwm.resource.relational.util;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Classifiers;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 
 public final class PrimaryKeys {
 
     private PrimaryKeys() {
+    }
+
+    /**
+     * A PrimaryKey over {@code columns} (in key order), owned by
+     * {@code parent} via {@code ownedElement}. Creation rule: see
+     * {@code objectmodel.core.util.Models}.
+     */
+    public static PrimaryKey create(Table parent, String name, Column... columns) {
+        Objects.requireNonNull(parent, "parent");
+        Objects.requireNonNull(name, "name");
+        PrimaryKey pk = RelationalFactory.eINSTANCE.createPrimaryKey();
+        pk.setName(name);
+        pk.getFeature().addAll(Arrays.asList(columns));
+        parent.getOwnedElement().add(pk);
+        return pk;
     }
 
     /** Columns that make up the primary key, in declared order. */

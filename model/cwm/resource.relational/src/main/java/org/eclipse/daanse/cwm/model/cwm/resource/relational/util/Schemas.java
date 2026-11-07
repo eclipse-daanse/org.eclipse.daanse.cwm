@@ -14,6 +14,7 @@
 package org.eclipse.daanse.cwm.model.cwm.resource.relational.util;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -21,6 +22,7 @@ import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Catalog;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.QueryColumnSet;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
@@ -29,6 +31,19 @@ import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Namespaces;
 public final class Schemas {
 
     private Schemas() {
+    }
+
+    /**
+     * A Schema owned by {@code parent} via {@code ownedElement}. Creation
+     * rule: see {@code objectmodel.core.util.Models}.
+     */
+    public static Schema create(Catalog parent, String name) {
+        Objects.requireNonNull(parent, "parent");
+        Objects.requireNonNull(name, "name");
+        Schema schema = RelationalFactory.eINSTANCE.createSchema();
+        schema.setName(name);
+        parent.getOwnedElement().add(schema);
+        return schema;
     }
 
     /** Tables directly owned by {@code schema}. */

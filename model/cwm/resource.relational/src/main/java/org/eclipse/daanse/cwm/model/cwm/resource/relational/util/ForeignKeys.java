@@ -13,19 +13,42 @@
  */
 package org.eclipse.daanse.cwm.model.cwm.resource.relational.util;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.cwm.model.cwm.foundation.keysindexes.UniqueKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Classifiers;
 
 public final class ForeignKeys {
 
     private ForeignKeys() {
+    }
+
+    /**
+     * A ForeignKey over {@code columns} referencing {@code target} (a
+     * PrimaryKey or UniqueConstraint), owned by {@code parent} via
+     * {@code ownedElement}. Sets the single-valued
+     * {@code KeyRelationship.uniqueKey}; EMF maintains the opposite
+     * {@code UniqueKey.keyRelationship}. Creation rule: see
+     * {@code objectmodel.core.util.Models}.
+     */
+    public static ForeignKey create(Table parent, String name, UniqueKey target, Column... columns) {
+        Objects.requireNonNull(parent, "parent");
+        Objects.requireNonNull(name, "name");
+        Objects.requireNonNull(target, "target");
+        ForeignKey fk = RelationalFactory.eINSTANCE.createForeignKey();
+        fk.setName(name);
+        fk.getFeature().addAll(Arrays.asList(columns));
+        fk.setUniqueKey(target);
+        parent.getOwnedElement().add(fk);
+        return fk;
     }
 
     /** Columns participating in the foreign key, in declared order. */

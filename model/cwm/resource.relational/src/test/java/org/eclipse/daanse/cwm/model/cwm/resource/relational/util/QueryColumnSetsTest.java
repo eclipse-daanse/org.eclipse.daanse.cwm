@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.Parameter;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.ParameterDirectionKind;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CoreFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.QueryColumnSet;
@@ -51,8 +52,8 @@ class QueryColumnSetsTest {
         QueryColumnSets.addParameter(qcs, QueryColumnSets.inParameter("second", SQLSimpleTypes.varcharType(10)));
         QueryColumnSets.addParameter(qcs, QueryColumnSets.inParameter("third", SQLSimpleTypes.Sql99.dateType()));
 
-        List<SQLParameter> params = QueryColumnSets.parametersOf(qcs);
-        assertThat(params).extracting(SQLParameter::getName).containsExactly("first", "second", "third");
+        List<Parameter> params = QueryColumnSets.parametersOf(qcs);
+        assertThat(params).extracting(Parameter::getName).containsExactly("first", "second", "third");
         assertThat(params).allMatch(p -> p.getKind() == ParameterDirectionKind.PDK_IN);
         assertThat(QueryColumnSets.isParameterized(qcs)).isTrue();
         assertThat(QueryColumnSets.checkConvention(qcs)).isEmpty();
@@ -115,8 +116,8 @@ class QueryColumnSetsTest {
 
         List<QueryColumnSet> found = Schemas.queryColumnSetsDeep(loaded);
         assertThat(found).hasSize(1);
-        List<SQLParameter> params = QueryColumnSets.parametersOf(found.get(0));
-        assertThat(params).extracting(SQLParameter::getName).containsExactly("region", "since", "tier");
+        List<Parameter> params = QueryColumnSets.parametersOf(found.get(0));
+        assertThat(params).extracting(Parameter::getName).containsExactly("region", "since", "tier");
         assertThat(params.get(1).getType()).isInstanceOf(SQLSimpleType.class);
         assertThat(((SQLSimpleType) params.get(2).getType()).getTypeNumber())
                 .isEqualTo(intType.getTypeNumber());

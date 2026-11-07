@@ -15,6 +15,7 @@ package org.eclipse.daanse.cwm.model.cwm.resource.relational.util;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -22,7 +23,9 @@ import org.eclipse.daanse.cwm.model.cwm.foundation.keysindexes.UniqueKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Namespaces;
@@ -30,6 +33,20 @@ import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Namespaces;
 public final class Tables {
 
     private Tables() {
+    }
+
+    /**
+     * A Table owned by {@code parent} via {@code ownedElement}; columns
+     * follow with {@link Columns#create}. Creation rule: see
+     * {@code objectmodel.core.util.Models}.
+     */
+    public static Table create(Schema parent, String name) {
+        Objects.requireNonNull(parent, "parent");
+        Objects.requireNonNull(name, "name");
+        Table table = RelationalFactory.eINSTANCE.createTable();
+        table.setName(name);
+        parent.getOwnedElement().add(table);
+        return table;
     }
 
     /** Primary key owned by the table, or empty if none. */
