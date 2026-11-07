@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="obligations" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.obligations"
+    nsPrefix="obligations">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Legal duties on the data of any CWM element. A retention obligation demands that data is kept for a minimum period, a deletion obligation that it is deleted within a maximum period, each counted from a start and resting on legal sources. Of the obligations along the path of an element all apply, the strictest wins: the longest minimum, the shortest maximum. A retention hold suspends every destructive stage of the schedules of the data it governs while it lasts. A deletion class gives a kind of data an abstract start and a standard term, from which a retention schedule may take the term of its last stage. A legal source is a businessinformation::Document that names the duties it gives. Every duty, hold and class is a lifecycle::LifecycleRule, a core::Constraint on the elements it governs."/>
+    <details key="modelName" value="Obligations"/>
+    <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse.governance"/>
+    <details key="resource" value="XMI"/>
+    <details key="prefix" value="Obligations"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="LegalSource">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The legal ground of duties on data: a statute, a contract, an internal policy. A document (reference: where it is found, type: statute, contract or policy) that names the obligations, holds and deletion classes it gives in modelElement; provision is the part it is (a paragraph, an article, a clause), jurisdiction where it applies, validFrom and validTo when — a change of the law is a new source."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//Document"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="jurisdiction">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Where the source applies: a country, a state, the European Union (DE, DE-TH, EU)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="provision">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The part of the source that gives the duty: § 147 (4), Art. 17, clause 12."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="validFrom">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="From when the source applies, an ISO-8601 date or instant."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="validTo">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Until when the source applies, an ISO-8601 date or instant; unset: still in force."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Obligation" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A legal duty on the data of the governed elements, counted from start. Of the obligations of a kind along the path of an element all apply, and the strictest wins."/>
+    </eAnnotations>
+    <eSuperTypes href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.lifecycle#//LifecycleRule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="start" lowerBound="1" containment="true"
+        resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Where the period of the duty starts."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.lifecycle#//PeriodStart"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RetentionObligation" eSuperTypes="//Obligation">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The data must be kept for at least minimum from the start: no stage that summarizes, hands over or deletes it may come before. immutable: it must also stay unchanged (write once, read many)."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minimum" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="How long the data is kept at least."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.lifecycle#//Period"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="immutable" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Whether the data must stay unchanged while kept."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DeletionObligation" eSuperTypes="//Obligation">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The data must be gone within maximum from the start: a terminal stage — the delete — must come by then. anonymizationSatisfies: making the data anonymous fulfils the duty as well, as the source says. Where a retention obligation demands a longer minimum, the data is restricted at the latest at the maximum and deleted at the minimum."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maximum" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Within how long the data is gone."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.lifecycle#//Period"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="anonymizationSatisfies" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Whether a stage that makes the data anonymous fulfils the duty."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RetentionHold">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="UntilAfterSince"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="UntilAfterSince" value="self.until.oclIsUndefined() or self.until > self.since"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A hold on the data of the governed elements — for a lawsuit, an audit, an investigation: from since until until (unset: until released) every destructive stage of their schedules is suspended. All holds that reach an element apply."/>
+    </eAnnotations>
+    <eSuperTypes href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.lifecycle#//LifecycleRule"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="since" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="From when the hold applies, an ISO-8601 instant."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="until">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="When the hold was released, an ISO-8601 instant; unset: it still applies."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reason" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Why the data is held."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="holder">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Who ordered the hold."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="obligationsHold"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="obligationsHold"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DeletionClass">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="AbstractStart"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="AbstractStart" value="self.start.oclIsKindOf(lifecycle::ValueTime) or (self.start.oclIsKindOf(lifecycle::EventTime) and self.start.oclAsType(lifecycle::EventTime).feature.oclIsUndefined())"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A class of deletion: an abstract start — the time of a value, or a business event without the feature that holds its time — and a standard term. It governs the kinds of data that are deleted alike; a retention schedule on such data may leave the period of its last stage unset and take the term of the class, its start being the class's event bound to the feature of the data."/>
+    </eAnnotations>
+    <eSuperTypes href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.lifecycle#//LifecycleRule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="start" lowerBound="1" containment="true"
+        resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The abstract start of the term."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.lifecycle#//PeriodStart"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="term" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The standard term after the start."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.lifecycle#//Period"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
