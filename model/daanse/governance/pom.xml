@@ -27,5 +27,6 @@
     <module>criticality</module>
     <module>lifecycle</module>
     <module>recording</module>
+    <module>obligations</module>
   </modules>
 </project>
