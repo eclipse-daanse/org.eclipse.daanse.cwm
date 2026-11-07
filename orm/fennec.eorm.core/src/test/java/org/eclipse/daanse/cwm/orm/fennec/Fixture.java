@@ -12,6 +12,7 @@ package org.eclipse.daanse.cwm.orm.fennec;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.eclipse.daanse.cwm.emf.standalone.EcoreIndex;
 import org.eclipse.daanse.cwm.model.cwm.foundation.datatypes.DatatypesFactory;
 import org.eclipse.daanse.cwm.model.cwm.foundation.datatypes.Enumeration;
 import org.eclipse.daanse.cwm.model.cwm.foundation.datatypes.EnumerationLiteral;

@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import org.eclipse.daanse.cwm.emf.standalone.EcoreIndex;
 import org.eclipse.daanse.cwm.model.daanse.orm.CWMORMFactory;
 import org.eclipse.daanse.cwm.model.daanse.orm.CallbackKind;
 import org.eclipse.daanse.cwm.model.daanse.orm.CascadeKind;

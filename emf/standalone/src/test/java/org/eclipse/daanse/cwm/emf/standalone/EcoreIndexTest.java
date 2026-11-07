@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
-package org.eclipse.daanse.cwm.orm.fennec;
+package org.eclipse.daanse.cwm.emf.standalone;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

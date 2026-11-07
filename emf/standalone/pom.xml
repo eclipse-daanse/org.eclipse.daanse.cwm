@@ -24,8 +24,9 @@
   <name>Daanse CWM EMF — standalone</name>
   <description>Loads CWM XMI outside OSGi: CwmPackages registers the generated EPackages of CWM 1.1
     and of the Daanse extensions by name and creates resource sets that read XMI under any file
-    extension. Brings every CWM package at run time, so any CWM XMI loads; used wherever CWM XMI
-    is read outside OSGi, in particular by the Maven plugins.</description>
+    extension; EcoreIndex finds the Ecore element of a CWM class model element by names. Brings
+    every CWM package at run time, so any CWM XMI loads; used wherever CWM XMI is read outside
+    OSGi, in particular by the Maven plugins.</description>
 
   <dependencies>
     <dependency>
@@ -45,8 +46,19 @@
       <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.core</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <!-- every package of CwmPackages.KNOWN, so that any CWM XMI loads wherever this library is
-      used; CwmPackages registers them by name -->
+    <!-- EcoreIndex reads association ends and enumeration literals -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.relationships</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.datatypes</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- every further package of CwmPackages.KNOWN, so that any CWM XMI loads wherever this
+      library is used; CwmPackages registers them by name -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral</artifactId>
@@ -55,19 +67,7 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.relationships</artifactId>
-      <version>${project.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.instance</artifactId>
-      <version>${project.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.datatypes</artifactId>
       <version>${project.version}</version>
       <scope>runtime</scope>
     </dependency>

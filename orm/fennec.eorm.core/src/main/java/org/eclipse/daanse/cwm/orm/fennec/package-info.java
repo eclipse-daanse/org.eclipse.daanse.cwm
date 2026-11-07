@@ -9,7 +9,7 @@
  **********************************************************************/
 /**
  * CWM-ORM to Eclipse Fennec EORM: {@link org.eclipse.daanse.cwm.orm.fennec.CwmOrmToEorm}
- * converts, {@link org.eclipse.daanse.cwm.orm.fennec.EcoreIndex} finds the Ecore elements,
+ * converts, {@link org.eclipse.daanse.cwm.emf.standalone.EcoreIndex} finds the Ecore elements,
  * {@link org.eclipse.daanse.cwm.orm.fennec.EormWriter} writes {@code .eorm} files and
  * {@link org.eclipse.daanse.cwm.orm.fennec.EormGenerator} runs the whole way from CWM to files.
  */
