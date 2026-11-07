@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
-package org.eclipse.daanse.cwm.orm.fennec;
+package org.eclipse.daanse.cwm.emf.standalone;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -52,6 +52,9 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * <p>A CWM name that is no Java identifier is matched in the form Ecore requires: characters that
  * are not allowed are dropped and the next letter is upper-cased, {@code byte[]} becomes
  * {@code byteArray}, a leading digit gets an underscore.</p>
+ *
+ * <p>The converters into Fennec models (EORM, event.atlas mappings) share this lookup: both refer
+ * to the Ecore model of a CWM class model that someone else generated or wrote.</p>
  */
 public final class EcoreIndex {
 
@@ -236,7 +239,7 @@ public final class EcoreIndex {
      * are no Java identifier part are dropped and the next letter is upper-cased, a leading
      * character that cannot start a Java identifier gets an underscore.
      */
-    static String javaName(String name) {
+    public static String javaName(String name) {
         if (name == null || name.isEmpty()) {
             return "_";
         }

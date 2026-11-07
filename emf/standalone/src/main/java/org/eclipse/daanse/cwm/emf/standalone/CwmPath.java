@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
-package org.eclipse.daanse.cwm.orm.fennec;
+package org.eclipse.daanse.cwm.emf.standalone;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -15,13 +15,17 @@ import java.util.Deque;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.emf.ecore.EObject;
 
-/** The qualified name of a CWM element: the names of it and its containers, dot separated. */
-final class CwmPath {
+/**
+ * The qualified name of a CWM element: the names of it and its containers, dot separated
+ * ({@code library.Book.title}). Converters name the CWM element of a note with it.
+ */
+public final class CwmPath {
 
     private CwmPath() {
     }
 
-    static String of(EObject element) {
+    /** The names of {@code element} and of every named container above it, outermost first. */
+    public static String of(EObject element) {
         Deque<String> names = new ArrayDeque<>();
         for (EObject o = element; o != null; o = o.eContainer()) {
             if (o instanceof ModelElement me && me.getName() != null) {

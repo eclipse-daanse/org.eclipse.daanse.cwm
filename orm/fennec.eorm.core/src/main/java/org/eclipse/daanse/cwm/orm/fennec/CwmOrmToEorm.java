@@ -12,6 +12,8 @@ package org.eclipse.daanse.cwm.orm.fennec;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.daanse.cwm.emf.standalone.CwmPath;
+import org.eclipse.daanse.cwm.emf.standalone.EcoreIndex;
 import org.eclipse.daanse.cwm.model.daanse.orm.EntityMappings;
 import org.eclipse.daanse.cwm.model.daanse.orm.util.OrmModelValidator;
 import org.eclipse.emf.common.util.TreeIterator;

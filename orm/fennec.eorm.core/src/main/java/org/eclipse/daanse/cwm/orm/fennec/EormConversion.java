@@ -19,6 +19,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.eclipse.daanse.cwm.emf.standalone.CwmPath;
+import org.eclipse.daanse.cwm.emf.standalone.EcoreIndex;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.Parameter;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Attribute;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;
