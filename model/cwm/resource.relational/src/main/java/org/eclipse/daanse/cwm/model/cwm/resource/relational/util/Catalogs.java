@@ -14,17 +14,36 @@
 package org.eclipse.daanse.cwm.model.cwm.resource.relational.util;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Namespace;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Catalog;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Namespaces;
 
 public final class Catalogs {
 
     private Catalogs() {
+    }
+
+    /** A root Catalog, owned by no namespace. Creation rule: see {@code objectmodel.core.util.Models}. */
+    public static Catalog create(String name) {
+        Objects.requireNonNull(name, "name");
+        Catalog catalog = RelationalFactory.eINSTANCE.createCatalog();
+        catalog.setName(name);
+        return catalog;
+    }
+
+    /** A Catalog owned by {@code parent} via {@code ownedElement}. */
+    public static Catalog create(Namespace parent, String name) {
+        Objects.requireNonNull(parent, "parent");
+        Catalog catalog = create(name);
+        parent.getOwnedElement().add(catalog);
+        return catalog;
     }
 
     /** Schemas directly owned by {@code catalog}. */

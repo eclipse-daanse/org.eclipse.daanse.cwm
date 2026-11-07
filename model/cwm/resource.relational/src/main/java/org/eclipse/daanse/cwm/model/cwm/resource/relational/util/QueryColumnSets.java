@@ -16,12 +16,15 @@ package org.eclipse.daanse.cwm.model.cwm.resource.relational.util;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.daanse.cwm.model.cwm.foundation.datatypes.DatatypesFactory;
 import org.eclipse.daanse.cwm.model.cwm.foundation.datatypes.QueryExpression;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.Parameter;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.ParameterDirectionKind;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Namespace;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Namespaces;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.QueryColumnSet;
@@ -31,18 +34,21 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 
 /**
  * Helpers for stored queries modeled as {@link QueryColumnSet}s, including the
- * prepared-statement style: {@link SQLParameter}s placed into the query's
- * {@code ownedElement} list.
+ * prepared-statement style: parameters placed into the query's
+ * {@code ownedElement} list. A parameter is a {@code behavioral::Parameter} —
+ * typed by any Classifier, e.g. a Java type of a TypeSystem — or its
+ * specialization {@link SQLParameter}, typed by an SQL type; every reader here
+ * sees both kinds.
  *
  * <p>
  * Convention: a QueryColumnSet is a Namespace (via {@code core::Class}), so its
  * parameters live in {@code getOwnedElement()}. CWM declares
  * {@code Namespace.ownedElement} as unordered; this project relies on the EMF
  * list order (which XMI serialization preserves) — the position of a parameter
- * is its index among the {@code SQLParameter} owned elements, matching the
+ * is its index among the {@code Parameter} owned elements, matching the
  * placeholder order in the SQL body. Parameter name is
- * {@code ModelElement.name}, the type a {@code SQLSimpleType}, and the
- * direction {@code PDK_IN}. Tools that legally reorder {@code ownedElement}
+ * {@code ModelElement.name}, the type a Classifier (an {@code SQLSimpleType}
+ * for SQLParameters), and the direction {@code PDK_IN}. Tools that legally reorder {@code ownedElement}
  * break the positional mapping; named placeholders ({@code :name}) are the
  * order-independent alternative.
  * </p>
@@ -50,6 +56,22 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 public final class QueryColumnSets {
 
     private QueryColumnSets() {
+    }
+
+    /**
+     * A QueryColumnSet with a {@code QueryExpression(language="SQL")}, owned by
+     * {@code parent} via {@code ownedElement}; result columns follow with
+     * {@link Columns#create}, parameters with {@link SQLParameters#create} or
+     * {@code behavioral.util.Parameters#create}. Creation rule: see
+     * {@code objectmodel.core.util.Models}.
+     */
+    public static QueryColumnSet create(Namespace parent, String name, String sql) {
+        Objects.requireNonNull(parent, "parent");
+        Objects.requireNonNull(name, "name");
+        Objects.requireNonNull(sql, "sql");
+        QueryColumnSet qcs = create(name, sql);
+        parent.getOwnedElement().add(qcs);
+        return qcs;
     }
 
     /** QueryColumnSet with name and a {@code QueryExpression(language="SQL")}. */
@@ -67,7 +89,8 @@ public final class QueryColumnSets {
      * Full form: declared output columns (into {@code feature}) and parameters in
      * declaration order (into {@code ownedElement}).
      */
-    public static QueryColumnSet create(String name, String sql, List<Column> columns, List<SQLParameter> parameters) {
+    public static QueryColumnSet create(String name, String sql, List<Column> columns,
+            List<? extends Parameter> parameters) {
         QueryColumnSet qcs = create(name, sql);
         if (columns != null) {
             qcs.getFeature().addAll(columns);
@@ -88,17 +111,20 @@ public final class QueryColumnSets {
     }
 
     /** Append a parameter; its position is the current parameter count. */
-    public static void addParameter(QueryColumnSet qcs, SQLParameter parameter) {
+    public static void addParameter(QueryColumnSet qcs, Parameter parameter) {
         qcs.getOwnedElement().add(parameter);
     }
 
-    /** Declared parameters in list order (the positional convention). */
-    public static List<SQLParameter> parametersOf(QueryColumnSet qcs) {
-        return Namespaces.ownedElements(qcs, SQLParameter.class);
+    /**
+     * Declared parameters in list order (the positional convention) — plain
+     * Parameters and SQLParameters alike.
+     */
+    public static List<Parameter> parametersOf(QueryColumnSet qcs) {
+        return Namespaces.ownedElements(qcs, Parameter.class);
     }
 
     public static boolean isParameterized(QueryColumnSet qcs) {
-        return qcs != null && Namespaces.ownedElementStream(qcs, SQLParameter.class).findAny().isPresent();
+        return qcs != null && Namespaces.ownedElementStream(qcs, Parameter.class).findAny().isPresent();
     }
 
     /** The query expression body, or empty if the query is unset. */
@@ -113,12 +139,12 @@ public final class QueryColumnSets {
      */
     public static List<String> checkConvention(QueryColumnSet qcs) {
         List<String> warnings = new ArrayList<>();
-        List<SQLParameter> params = parametersOf(qcs);
+        List<Parameter> params = parametersOf(qcs);
         Set<String> names = new HashSet<>();
         boolean anyNamed = false;
         boolean anyUnnamed = false;
         for (int i = 0; i < params.size(); i++) {
-            SQLParameter p = params.get(i);
+            Parameter p = params.get(i);
             String label = p.getName() == null ? "#" + i : p.getName();
             if (p.getName() == null || p.getName().isBlank()) {
                 anyUnnamed = true;

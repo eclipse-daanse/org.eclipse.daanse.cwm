@@ -17,10 +17,13 @@ import java.sql.JDBCType;
 import java.sql.Types;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Supplier;
 
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Namespace;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Namespaces;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLDataType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
@@ -29,6 +32,50 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 public final class SQLSimpleTypes {
 
     private SQLSimpleTypes() {
+    }
+
+    /**
+     * The SQL-99 type {@code name} (see {@link #byName}: aliases such as
+     * {@code VARCHAR} resolve to the canonical name), owned by {@code parent}
+     * via {@code ownedElement}. Sizes stay off the type — a column carries its
+     * own {@code length}/{@code precision}/{@code scale}. Creation rule: see
+     * {@code objectmodel.core.util.Models}.
+     *
+     * @throws IllegalArgumentException for a name {@link #byName} does not know
+     */
+    public static SQLSimpleType create(Namespace parent, String name) {
+        Objects.requireNonNull(parent, "parent");
+        SQLSimpleType type = byName(Objects.requireNonNull(name, "name"))
+                .orElseThrow(() -> new IllegalArgumentException("unknown SQL type: " + name));
+        parent.getOwnedElement().add(type);
+        return type;
+    }
+
+    /**
+     * A product-specific type outside the SQL-99 catalogue, identified by its
+     * {@code java.sql.Types} number (spec 19.6), owned by {@code parent}.
+     */
+    public static SQLSimpleType create(Namespace parent, String name, long typeNumber) {
+        Objects.requireNonNull(parent, "parent");
+        Objects.requireNonNull(name, "name");
+        SQLSimpleType type = RelationalFactory.eINSTANCE.createSQLSimpleType();
+        type.setName(name);
+        type.setTypeNumber(typeNumber);
+        parent.getOwnedElement().add(type);
+        return type;
+    }
+
+    /**
+     * The SQL-99 type {@code name} owned by {@code parent}, created on first
+     * use — one bare type per canonical name, shared by every column of the
+     * catalog. Aliases resolve like {@link #byName}.
+     */
+    public static SQLSimpleType ownedIn(Namespace parent, String name) {
+        Objects.requireNonNull(parent, "parent");
+        String canonical = byName(Objects.requireNonNull(name, "name")).map(SQLSimpleType::getName)
+                .orElseThrow(() -> new IllegalArgumentException("unknown SQL type: " + name));
+        return Namespaces.findOwnedByName(parent, SQLSimpleType.class, canonical)
+                .orElseGet(() -> create(parent, canonical));
     }
 
     /** {@code VARCHAR(length)}. */
