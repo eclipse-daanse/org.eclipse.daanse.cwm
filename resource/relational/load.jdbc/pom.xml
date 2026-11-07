@@ -86,7 +86,7 @@
     </dependency>
 
     <!-- Test: generate DDL (ddl module), apply it, then load it back and
-         compare — against PostgreSQL and Oracle via Testcontainers. -->
+        compare — against PostgreSQL and Oracle via Testcontainers. -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.cwm.resource.relational.ddl</artifactId>
@@ -136,7 +136,7 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
-      <version>1.19.7</version>
+      <version>1.21.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -162,7 +162,7 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>oracle-free</artifactId>
-      <version>1.19.7</version>
+      <version>1.21.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -175,7 +175,7 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <version>1.19.7</version>
+      <version>1.21.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
