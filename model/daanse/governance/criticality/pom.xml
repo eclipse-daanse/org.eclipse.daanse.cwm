@@ -20,6 +20,10 @@
     <version>${revision}</version>
   </parent>
   <artifactId>org.eclipse.daanse.cwm.model.daanse.governance.criticality</artifactId>
+  <name>Daanse CWM Governance — criticality</name>
+  <description>Criticality ratings of CWM model objects under NIS2, DORA and the KRITIS regimes: a rating
+    per element and dimension, with the measures that reduce it, the evidence, the change assessments
+    and the regime and sector profiles.</description>
 
   <build>
     <plugins>
@@ -85,7 +89,6 @@
       <artifactId>org.eclipse.daanse.cwm.model.cwm.management.warehouseoperation</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
-
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.relationships</artifactId>
@@ -111,6 +114,51 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Classic Eclipse OCL as EMF validation delegate, so that the tests evaluate the OCL
+      constraints of the ecore (same setup as model/cwm); the 2013-era poms declare version ranges
+      against coordinates that no longer exist, so their transitive dependencies are excluded. -->
+    <dependency>
+      <groupId>org.eclipse.ocl</groupId>
+      <artifactId>ecore</artifactId>
+      <version>3.3.0-v20130520-1222</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>ocl</artifactId>
+      <version>3.4.0-v20140524-1358</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.ocl</groupId>
+      <artifactId>common</artifactId>
+      <version>1.2.0-v20140528-1458</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>lpg.runtime</groupId>
+      <artifactId>java</artifactId>
+      <version>2.0.17-v201004271640</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
