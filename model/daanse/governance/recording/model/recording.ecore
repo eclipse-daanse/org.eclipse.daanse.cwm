@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="recording" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.recording"
+    nsPrefix="recording">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Capture and historisation rules for any CWM element. A recording rule decides which value changes of a feature are recorded: a change of at least a delta, a percent of the last value or a percent of the measurement range, one value out of every n, at most one value per minimum interval, changed values only, swinging-door compression; every rule may add a minimum interval, a heartbeat that records regardless after a maximum interval, a status feature whose changes record, the handling of values older than the last recorded one, and the interpolation between recorded values. A historisation rule decides how the history of a class or of an attribute is kept: overwritten, as new versions with their validity, in a column of the previous value, in a history table. Every rule is a lifecycle::LifecycleRule, a core::Constraint on the elements it governs; of the rules of a kind the nearest one along feature, owner and namespaces applies."/>
+    <details key="modelName" value="Recording"/>
+    <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse.governance"/>
+    <details key="resource" value="XMI"/>
+    <details key="prefix" value="Recording"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EEnum" name="LateValueHandling">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="What happens to a value older than the last recorded one. compare (the default): it is judged like any other value — recorded, it becomes the last recorded value — and a minimum interval drops it; drop: it is never recorded; insert: it is always recorded, and the last recorded value stays the newest one."/>
+    </eAnnotations>
+    <eLiterals name="compare"/>
+    <eLiterals name="drop" value="1"/>
+    <eLiterals name="insert" value="2"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Interpolation">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="How a value between two recorded values is read: linear (the default, OPC UA sloped) between the two, or stepped — the earlier value holds until the next."/>
+    </eAnnotations>
+    <eLiterals name="linear"/>
+    <eLiterals name="stepped" value="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="HistorisationKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="How the history of a class or an attribute is kept, after the slowly changing dimensions of a data warehouse. overwrite: no history, the new value replaces the old one (type 1). newVersion: a change makes a new row with its validity (type 2); of the values of a feature, each value is a version valid from its own time, the series of a feature. previousValue: the previous value is kept in a column of its own (type 3). historyTable: the current row stays, the history goes to a table of its own (type 4). versionAndCurrent: new versions, and the current value in a column of every version (type 6). snapshot: the whole state of the rows at regular times. previousValue and versionAndCurrent act on the values of an attribute, snapshot on rows. A value that may not change at all is a frozen feature of CWM (type 0)."/>
+    </eAnnotations>
+    <eLiterals name="overwrite"/>
+    <eLiterals name="newVersion" value="1"/>
+    <eLiterals name="previousValue" value="2"/>
+    <eLiterals name="historyTable" value="3"/>
+    <eLiterals name="versionAndCurrent" value="4"/>
+    <eLiterals name="snapshot" value="5"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RecordingRule" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="ValuesOnly"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="ValuesOnly" value="self.scope = lifecycle::DataScope::value"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Decides which value changes of a feature are recorded. Every rule compares against the last recorded value; the first value is always recorded. In this order: a late value is handled by lateValues; a value sooner than minimumInterval after the last recorded one is dropped; a value is recorded once the last one is older than maximumInterval, or when the status feature changed; else the criterion of the rule decides. A value that is no number passes a rule that compares numbers. At most one recording rule applies to an element, and it acts on values."/>
+    </eAnnotations>
+    <eSuperTypes href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.lifecycle#//LifecycleRule"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minimumInterval">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The shortest time between two recorded values, even if the value changes: a value that arrives sooner after the last recorded one is not recorded. Unset: no minimum."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.lifecycle#//Duration"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maximumInterval">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Heartbeat: a value is recorded regardless of the rule once the last recorded value is older than this, so that an unchanged value still shows up at least once per interval. Unset: no heartbeat."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.lifecycle#//Duration"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lateValues" lowerBound="1" eType="//LateValueHandling">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="What happens to a value older than the last recorded one."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="interpolation" lowerBound="1" eType="//Interpolation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="How a value between two recorded values is read; also what swinging-door compression and an aggregation of the values assume."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="statusFeature">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A feature of the same classifier that holds the status or quality of the value: a change of the status records the value even if the value itself did not change (OPC UA data change trigger status-value)."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="recordingStatusRule"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="recordingStatusRule"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AbsoluteChangeRule" eSuperTypes="//RecordingRule">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Records a value when it differs from the last recorded value by at least delta (a dead band, OPC UA ExceptionDeviation as absolute value): |value - last| >= delta."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="delta" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The smallest absolute change that is recorded, a non-negative decimal number in the unit of the value."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Float"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RelativeChangeRule" eSuperTypes="//RecordingRule">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Records a value when it differs from the last recorded value by at least percent percent of the last value: |value - last| / |last| * 100 >= percent. Against a last value of zero every change is recorded."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="percent" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The smallest relative change that is recorded, in percent of the last recorded value, a non-negative decimal number."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Float"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RangeChangeRule" eSuperTypes="//RecordingRule">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Records a value when it differs from the last recorded value by at least percent percent of the measurement range: |value - last| >= percent / 100 * (high - low) (OPC UA percent dead band of the engineering-unit range)."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="percent" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The smallest change that is recorded, in percent of the range, a decimal number from 0 to 100."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Float"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="low" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The low end of the measurement range, in the unit of the value."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Float"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="high" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The high end of the measurement range, in the unit of the value; above low."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Float"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SamplingRule" eSuperTypes="//RecordingRule">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Records one value out of every n values, however much they change: the first, the n+1st, the 2n+1st and so on."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="every" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="n: one value out of every n is recorded; 1 records every value."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ThrottleRule" eSuperTypes="//RecordingRule">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="HasMinimumInterval"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="HasMinimumInterval" value="not self.minimumInterval.oclIsUndefined()"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Records every value, at most one per minimumInterval: a value that arrives sooner than minimumInterval after the last recorded one is not recorded, and neither is a value older than the last recorded one. With maximumInterval equal to minimumInterval it samples periodically."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ChangedValueRule" eSuperTypes="//RecordingRule">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Records a value only when it differs from the last recorded value; numbers are compared by their value."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SwingingDoorRule" eSuperTypes="//RecordingRule">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Swinging-door compression: a value is held until a later value can no longer be reached by a straight line from the last recorded value within deviation of every value in between; then the held value is recorded and the doors swing anew from it. What is recorded draws the curve within deviation."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deviation" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="How far the curve of the recorded values may lie from a value, a non-negative decimal number in the unit of the value (the precision of the instrument)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Float"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HistorisationRule">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="KindHasItsAnchors"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="KindHasItsAnchors" value="((self.kind = HistorisationKind::snapshot or (self.kind = HistorisationKind::newVersion and self.scope = lifecycle::DataScope::row)) implies not self.validFrom.oclIsUndefined()) and (self.kind = HistorisationKind::previousValue implies not self.previousValue.oclIsUndefined()) and (self.kind = HistorisationKind::versionAndCurrent implies not self.currentValue.oclIsUndefined()) and (self.kind = HistorisationKind::historyTable implies not self.history.oclIsUndefined())"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Decides how the history of the governed elements is kept. On a classifier with scope row: how its rows keep their history — new versions with their validity, a history table, snapshots. On an attribute (scope value, also as the default of a classifier or namespace for its features): what a change of that attribute does — overwrite, make a new version, keep the previous value or the current value in a column of its own. The anchors name the features and the classifier that hold the history."/>
+    </eAnnotations>
+    <eSuperTypes href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.lifecycle#//LifecycleRule"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1" eType="//HistorisationKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="How the history is kept."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="validFrom">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The feature that holds the time from which a version is valid, or the time of a snapshot."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="recordingValidFromRule"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="recordingValidFromRule"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="validTo">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The feature that holds the time to which a version is valid; unset: the next version ends it."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="recordingValidToRule"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="recordingValidToRule"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="currentFlag">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The feature that marks the current version."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="recordingCurrentFlagRule"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="recordingCurrentFlagRule"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="previousValue">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The feature that holds the previous value of the governed attribute."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="recordingPreviousValueRule"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="recordingPreviousValueRule"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="currentValue">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The feature that holds the current value of the governed attribute in every version."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="recordingCurrentValueRule"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="recordingCurrentValueRule"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="history">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The classifier that holds the history rows."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="recordingHistoryRule"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="recordingHistoryRule"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>

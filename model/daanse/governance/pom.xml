@@ -26,5 +26,6 @@
     <module>transparency</module>
     <module>criticality</module>
     <module>lifecycle</module>
+    <module>recording</module>
   </modules>
 </project>
