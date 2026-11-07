@@ -13,6 +13,17 @@
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="criticality" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.criticality"
     nsPrefix="criticality">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="KRITIS criticality overlay: rates how critical a CWM model object or its content is - classes, attributes, references, associations, warehouse processes, systems and changes - for banks, public authorities and network operators under NIS2, DORA, the BSI Act, the BSI-KritisV and the KRITIS umbrella act. A single generic rating attaches via element -> core::ModelElement to arbitrary objects, exactly like warehouseoperation::Measurement in the CWM core. Supersedes the empty critis placeholder package."/>
+    <details key="modelName" value="Criticality"/>
+    <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse.governance"/>
+    <details key="resource" value="XMI"/>
+    <details key="prefix" value="Criticality"/>
+    <details key="literalsInterface" value="true"/>
+    <details key="loadInitialization" value="false"/>
+  </eAnnotations>
   <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
     <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
     <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
@@ -20,15 +31,6 @@
   </eAnnotations>
   <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
     <details key="hiddenOpposites" value="true"/>
-  </eAnnotations>
-  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-    <details key="documentation" value="KRITIS criticality overlay: rates how critical a CWM model object or its content is - classes, attributes, references, associations, warehouse processes, systems and changes - for banks, public authorities and network operators under NIS2, DORA, the BSI Act, the BSI-KritisV and the KRITIS umbrella act. A single generic rating attaches via element -> core::ModelElement to arbitrary objects, exactly like warehouseoperation::Measurement in the CWM core. Supersedes the empty critis placeholder package."/>
-    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse.governance"/>
-    <details key="prefix" value="Criticality"/>
-    <details key="oSGiCompatible" value="true"/>
-    <details key="literalsInterface" value="true"/>
-    <details key="loadInitialization" value="false"/>
-    <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
   </eAnnotations>
   <eClassifiers xsi:type="ecore:EEnum" name="CriticalityLevel">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -443,47 +445,50 @@
       </eAnnotations>
     </eLiterals>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="CriticalityAssessment" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+  <eClassifiers xsi:type="ecore:EClass" name="CriticalityAssessment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="constraints" value="OnlyGovernanceContent"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
       <details key="OnlyGovernanceContent" value="self.ownedElement->forAll(e | e.oclIsKindOf(CriticalityRating) or e.oclIsKindOf(ChangeAssessment) or e.oclIsKindOf(RegimeProfile) or e.oclIsKindOf(SectorProfile) or e.oclIsKindOf(EquivalenceMapping) or e.oclIsKindOf(warehouseoperation::Measurement) or e.oclIsKindOf(warehouseoperation::ChangeRequest))"/>
     </eAnnotations>
-    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.criticality/constraints">
-      <details key="OnlyGovernanceContent.name" value="OnlyGovernanceContent"/>
-      <details key="OnlyGovernanceContent.description" value="A criticality assessment contains only ratings, change assessments and profiles."/>
-      <details key="OnlyGovernanceContent.level" value="error"/>
-    </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A versioned criticality assessment context for a domain, operator or service. Extends core::Package: its content lives in the inherited Namespace.ownedElement. Good owned objects (enforced by the OnlyGovernanceContent constraint): CriticalityRating, ChangeAssessment, RegimeProfile, SectorProfile, EquivalenceMapping - plus the warehouseoperation::Measurement and warehouseoperation::ChangeRequest instances the ratings reference (they get their home here, so cross-resource proxies resolve). Versioning via validFrom/validTo represents the transition from the BSI-KritisV to the KRITIS umbrella act."/>
       <details key="caption.de" value="Kritikalitaetsbewertung"/>
       <details key="caption.en" value="Criticality Assessment"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="validFrom" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.criticality/constraints">
+      <details key="OnlyGovernanceContent.name" value="OnlyGovernanceContent"/>
+      <details key="OnlyGovernanceContent.description" value="A criticality assessment contains only ratings, change assessments and profiles."/>
+      <details key="OnlyGovernanceContent.level" value="error"/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="validFrom" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Valid from."/>
         <details key="caption.de" value="Gueltig ab"/>
         <details key="caption.en" value="Valid From"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="validTo" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="validTo">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Valid to."/>
         <details key="caption.de" value="Gueltig bis"/>
         <details key="caption.en" value="Valid To"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="CriticalityRating" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+  <eClassifiers xsi:type="ecore:EClass" name="CriticalityRating">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="The central, generic rating. It attaches via element to one or more arbitrary CWM model objects - class, attribute, association, warehouse process, system - exactly like warehouseoperation::Measurement. overallLevel follows the BSI maximum principle over the dimension scores."/>
       <details key="caption.de" value="Element-Kritikalitaetsbewertung"/>
       <details key="caption.en" value="Element Criticality Rating"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="element" ordered="false"
-        lowerBound="1" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="element" ordered="false" lowerBound="1"
+        upperBound="-1">
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="criticalityRating"/>
       </eAnnotations>
@@ -495,48 +500,48 @@
         <details key="caption.de" value="Bewertetes Element"/>
         <details key="caption.en" value="Rated Element"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="overallLevel" lowerBound="1"
-        eType="#//CriticalityLevel">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="overallLevel" lowerBound="1" eType="//CriticalityLevel">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Overall criticality (the maximum over the dimensions)."/>
         <details key="caption.de" value="Gesamtstufe"/>
         <details key="caption.en" value="Overall Level"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="classification" eType="#//Classification">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="classification" eType="//Classification">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Classification level (Verschlusssache), if applicable."/>
         <details key="caption.de" value="VS-Einstufung"/>
         <details key="caption.en" value="Classification"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rationale" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rationale" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Rationale of the rating."/>
         <details key="caption.de" value="Begruendung"/>
         <details key="caption.en" value="Rationale"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dimensionScore" ordered="false"
-        lowerBound="1" upperBound="-1" eType="#//DimensionScore" containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dimensionScore" ordered="false" lowerBound="1"
+        upperBound="-1" eType="//DimensionScore" containment="true" resolveProxies="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The per-dimension scores."/>
         <details key="caption.de" value="Dimensionsbewertungen"/>
         <details key="caption.en" value="Dimension Scores"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="measureAssignment" ordered="false"
-        upperBound="-1" eType="#//MeasureAssignment" containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="measureAssignment" ordered="false" upperBound="-1"
+        eType="//MeasureAssignment" containment="true" resolveProxies="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Assigned measures with context."/>
         <details key="caption.de" value="Massnahmenzuordnungen"/>
         <details key="caption.en" value="Measure Assignments"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="evidence" ordered="false"
-        upperBound="-1" eType="#//Evidence" containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="evidence" ordered="false" upperBound="-1"
+        eType="//Evidence" containment="true" resolveProxies="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Evidence for this rating."/>
         <details key="caption.de" value="Nachweise"/>
@@ -544,133 +549,138 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DimensionScore" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element">
+  <eClassifiers xsi:type="ecore:EClass" name="DimensionScore">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A single score for exactly one criticality dimension. Extends core::Element (not a namespace member, just a value carrier)."/>
       <details key="caption.de" value="Dimensionsbewertung"/>
       <details key="caption.en" value="Dimension Score"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dimension" lowerBound="1"
-        eType="#//CriticalityDimension">
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dimension" lowerBound="1" eType="//CriticalityDimension">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The rated dimension."/>
         <details key="caption.de" value="Dimension"/>
         <details key="caption.en" value="Dimension"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="level" lowerBound="1" eType="#//CriticalityLevel">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="level" lowerBound="1" eType="//CriticalityLevel">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The score of this dimension."/>
         <details key="caption.de" value="Stufe"/>
         <details key="caption.en" value="Level"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="justification" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="justification">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Justification of this dimension."/>
         <details key="caption.de" value="Begruendung"/>
         <details key="caption.en" value="Justification"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="measurement" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/management/warehouseoperation#//Measurement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="measurement">
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="dimensionScore"/>
+        <details key="Property.oppositeRoleName" value="criticalityDimensionScore"/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="dimensionScore"/>
+        <details key="body" value="criticalityDimensionScore"/>
       </eAnnotations>
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Optional link to a warehouseoperation::Measurement carrying the raw value, its type (measured/estimated/planned) and the creation/effective dates. The Measurement lives as an ownedElement in the CriticalityAssessment namespace; dimension and level here are the typed criticality view of it. No containment."/>
         <details key="caption.de" value="Messung"/>
         <details key="caption.en" value="Measurement"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/management/warehouseoperation#//Measurement"/>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="MeasureAssignment" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+  <eClassifiers xsi:type="ecore:EClass" name="MeasureAssignment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Context-specific assignment of a reusable TOM measure to a rating. The same measure can play different roles and have different effect in different contexts, so the context sits here and not on the measure itself."/>
       <details key="caption.de" value="Massnahmenzuordnung"/>
       <details key="caption.en" value="Measure Assignment"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="measure" lowerBound="1"
-        eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/management/warehouseoperation#//ChangeRequest">
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="measure" lowerBound="1">
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="measureAssignment"/>
+        <details key="Property.oppositeRoleName" value="criticalityMeasureAssignment"/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="measureAssignment"/>
+        <details key="body" value="criticalityMeasureAssignment"/>
       </eAnnotations>
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The assigned measure as a warehouseoperation::ChangeRequest - a tracked countermeasure with its own lifecycle (status/completed/dates) affecting model elements. Its implementation status therefore lives on the ChangeRequest itself, not here. No containment; the opposite end is not a feature."/>
         <details key="caption.de" value="Massnahme"/>
         <details key="caption.en" value="Measure"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/management/warehouseoperation#//ChangeRequest"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="role" lowerBound="1" eType="#//MeasureRole">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="role" lowerBound="1" eType="//MeasureRole">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Functional role in context."/>
         <details key="caption.de" value="Rolle"/>
         <details key="caption.en" value="Role"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="effectiveness" eType="#//CriticalityLevel">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="effectiveness" eType="//CriticalityLevel">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Residual criticality after the measure."/>
         <details key="caption.de" value="Wirksamkeit"/>
         <details key="caption.en" value="Effectiveness"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reviewDate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reviewDate">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Next review date."/>
         <details key="caption.de" value="Ueberpruefung"/>
         <details key="caption.en" value="Review Date"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ChangeAssessment" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+  <eClassifiers xsi:type="ecore:EClass" name="ChangeAssessment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Assessment of the criticality risk arising from a major change (DORA major change). changeElement points generically at the changed model objects - canonically a warehouseoperation::ChangeRequest, but deliberately core::ModelElement so this package does not inherit the warehouse hull."/>
       <details key="caption.de" value="Aenderungsbewertung"/>
       <details key="caption.en" value="Change Assessment"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="majorChange" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="majorChange" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Whether this is a major change in the sense of DORA."/>
         <details key="caption.de" value="Wesentliche Aenderung"/>
         <details key="caption.en" value="Major Change"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="changeRiskLevel" lowerBound="1"
-        eType="#//CriticalityLevel">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="changeRiskLevel" lowerBound="1" eType="//CriticalityLevel">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Criticality of the change."/>
         <details key="caption.de" value="Aenderungsrisiko"/>
         <details key="caption.en" value="Change Risk Level"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="changeElement" ordered="false"
-        lowerBound="1" upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="changeElement" ordered="false" lowerBound="1"
+        upperBound="-1">
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="changeAssessment"/>
+        <details key="Property.oppositeRoleName" value="criticalityChangeAssessment"/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="changeAssessment"/>
+        <details key="body" value="criticalityChangeAssessment"/>
       </eAnnotations>
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The changed model objects (canonically a warehouseoperation::ChangeRequest). No containment; the opposite end is not a feature."/>
         <details key="caption.de" value="Geaendertes Element"/>
         <details key="caption.en" value="Changed Element"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedRating" ordered="false"
-        upperBound="-1" eType="#//CriticalityRating">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedRating" ordered="false" upperBound="-1"
+        eType="//CriticalityRating">
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-        <details key="Property.oppositeRoleName" value="changeAssessment"/>
+        <details key="Property.oppositeRoleName" value="criticalityChangeAssessment"/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-        <details key="body" value="changeAssessment"/>
+        <details key="body" value="criticalityChangeAssessment"/>
       </eAnnotations>
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The ratings affected by the change. No containment."/>
@@ -679,58 +689,60 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RegimeProfile" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+  <eClassifiers xsi:type="ecore:EClass" name="RegimeProfile">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="View of a regulatory regime on the assessment. Several profiles allow looking at the same object under DORA, BSIG and NIS2 at once."/>
       <details key="caption.de" value="Regime-Profil"/>
       <details key="caption.en" value="Regime Profile"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="regime" lowerBound="1"
-        eType="#//LegalRegime">
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="regime" lowerBound="1" eType="//LegalRegime">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The regime."/>
         <details key="caption.de" value="Regime"/>
         <details key="caption.en" value="Regime"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="legalReference" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="legalReference">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Legal reference."/>
         <details key="caption.de" value="Rechtsgrundlage"/>
         <details key="caption.en" value="Legal Reference"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="equivalentTo" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="equivalentTo">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Free-text equivalence; formally via EquivalenceMapping."/>
         <details key="caption.de" value="Gleichwertig zu"/>
         <details key="caption.en" value="Equivalent To"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SectorProfile" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+  <eClassifiers xsi:type="ecore:EClass" name="SectorProfile">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Sector and operator classification of the assessment."/>
       <details key="caption.de" value="Sektor-Profil"/>
       <details key="caption.en" value="Sector Profile"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sector" lowerBound="1"
-        eType="#//Sector">
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sector" lowerBound="1" eType="//Sector">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The KRITIS sector."/>
         <details key="caption.de" value="Sektor"/>
         <details key="caption.en" value="Sector"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="subsector" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="subsector">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Subsector or installation category."/>
         <details key="caption.de" value="Teilsektor"/>
         <details key="caption.en" value="Subsector"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="category" lowerBound="1"
-        eType="#//EntityCategory">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="category" lowerBound="1" eType="//EntityCategory">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Regulatory category."/>
         <details key="caption.de" value="Kategorie"/>
@@ -738,64 +750,65 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EquivalenceMapping" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+  <eClassifiers xsi:type="ecore:EClass" name="EquivalenceMapping">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Declares when one regime is satisfied by satisfying another (DORA/BSIG offsetting). Prevents duplicated obligations and contradictory dashboards for banks and certain digital operators."/>
       <details key="caption.de" value="Gleichwertigkeitsabbildung"/>
       <details key="caption.en" value="Equivalence Mapping"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fromRegime" lowerBound="1"
-        eType="#//LegalRegime">
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fromRegime" lowerBound="1" eType="//LegalRegime">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Source regime."/>
         <details key="caption.de" value="Von Regime"/>
         <details key="caption.en" value="From Regime"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="toRegime" lowerBound="1"
-        eType="#//LegalRegime">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="toRegime" lowerBound="1" eType="//LegalRegime">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Target regime."/>
         <details key="caption.de" value="Zu Regime"/>
         <details key="caption.en" value="To Regime"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="condition" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="condition" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Condition of the offsetting."/>
         <details key="caption.de" value="Bedingung"/>
         <details key="caption.en" value="Condition"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Evidence" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+  <eClassifiers xsi:type="ecore:EClass" name="Evidence">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A compliance evidence item: audit, certificate, assurance audit, resilience plan, test or risk analysis."/>
       <details key="caption.de" value="Nachweis"/>
       <details key="caption.en" value="Evidence"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1" eType="#//EvidenceKind">
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1" eType="//EvidenceKind">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Kind of evidence."/>
         <details key="caption.de" value="Art"/>
         <details key="caption.en" value="Kind"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reference" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reference" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Reference or file number."/>
         <details key="caption.de" value="Fundstelle"/>
         <details key="caption.en" value="Reference"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="issuedDate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="issuedDate">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Issue date."/>
         <details key="caption.de" value="Ausstellungsdatum"/>
         <details key="caption.en" value="Issued Date"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
     </eStructuralFeatures>
   </eClassifiers>
 </ecore:EPackage>
