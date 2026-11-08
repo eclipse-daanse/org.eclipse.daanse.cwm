@@ -23,7 +23,8 @@
 
   <modules>
     <module>mapping.relational</module>
-    <module>sensinact</module>
+    <module>resource.sensinact</module>
+    <module>mapping.sensinact</module>
     <module>units</module>
   <!--
     <module>resource.r</module>
