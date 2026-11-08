@@ -13,6 +13,19 @@
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="transparency" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.transparency"
     nsPrefix="transparency">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Package of models for transparency obligation assessment according to the Thuringian Transparency Act (ThuerTG). How long published information is kept is a retention obligation of the model obligations, how its personal data is de-identified a policy of the model deidentification; the legal sources of an assessment are obligations::LegalSource documents that name it."/>
+    <details key="caption.de" value="Transparenzpflichten ThuerTG"/>
+    <details key="caption.en" value="Transparency Obligations ThuerTG"/>
+    <details key="modelName" value="Transparency"/>
+    <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse.governance"/>
+    <details key="resource" value="XMI"/>
+    <details key="prefix" value="Transparency"/>
+    <details key="literalsInterface" value="true"/>
+    <details key="loadInitialization" value="false"/>
+  </eAnnotations>
   <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
     <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
     <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
@@ -20,13 +33,6 @@
   </eAnnotations>
   <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
     <details key="hiddenOpposites" value="true"/>
-  </eAnnotations>
-  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse.governance"/>
-    <details key="prefix" value="Transparency"/>
-    <details key="documentation" value="Package of models for transparency obligation assessment according to Thuringian Transparency Act (ThuerTG)"/>
-    <details key="caption.de" value="Transparenzpflichten ThuerTG"/>
-    <details key="caption.en" value="Transparency Obligations ThuerTG"/>
   </eAnnotations>
   <eClassifiers xsi:type="ecore:EEnum" name="PublicationMode">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -251,77 +257,45 @@
       </eAnnotations>
     </eLiterals>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="AnonymizationLevel">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Anonymization level for personal data according to §13 ThuerTG"/>
-      <details key="caption.de" value="Anonymisierungsgrad"/>
-      <details key="caption.en" value="Anonymization Level"/>
-    </eAnnotations>
-    <eLiterals name="UNEDITED" literal="UNEDITED">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Unedited"/>
-      </eAnnotations>
-    </eLiterals>
-    <eLiterals name="NONE" value="1" literal="NONE">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="No anonymization required"/>
-      </eAnnotations>
-    </eLiterals>
-    <eLiterals name="PSEUDONYMIZED" value="2" literal="PSEUDONYMIZED">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Pseudonymized (mapping via key possible)"/>
-      </eAnnotations>
-    </eLiterals>
-    <eLiterals name="ANONYMIZED" value="3" literal="ANONYMIZED">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Fully anonymized (no personal reference possible)"/>
-      </eAnnotations>
-    </eLiterals>
-    <eLiterals name="REDACTED" value="4" literal="REDACTED">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Redacted (affected passages removed)"/>
-      </eAnnotations>
-    </eLiterals>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TransparencyAssessment" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+  <eClassifiers xsi:type="ecore:EClass" name="TransparencyAssessment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Transparency assessment of a data domain according to Thuringian Transparency Act (ThuerTG). Extends core::Package; the name comes from core::ModelElement and a description is attached as businessinformation::Description. Its ratings are the typed dataClasses containment feature - keep them there. The inherited Namespace.ownedElement is only for auxiliary owned CWM objects (e.g. a businessinformation::Description)."/>
       <details key="caption.de" value="Transparenzbewertung"/>
       <details key="caption.en" value="Transparency Assessment"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="legalBasis" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Legal basis for the transparency obligation (e.g. ThuerTG §6 para. 3)"/>
-        <details key="caption.de" value="Rechtsgrundlage"/>
-        <details key="caption.en" value="Legal Basis"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="validFrom" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="validFrom" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Validity start date of the transparency assessment"/>
         <details key="caption.de" value="Gueltig ab"/>
         <details key="caption.en" value="Valid From"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastReview" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastReview">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Date of the last review"/>
         <details key="caption.de" value="Letzte Ueberpruefung"/>
         <details key="caption.en" value="Last Review"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="contactResponsible" lowerBound="1"
-        eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="contactResponsible" lowerBound="1">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="transparencyResponsibleFor"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="transparencyResponsibleFor"/>
+      </eAnnotations>
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Responsible contact person for this transparency assessment"/>
         <details key="caption.de" value="Verantwortlicher"/>
         <details key="caption.en" value="Responsible Contact"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dataClasses" upperBound="-1"
-        eType="#//TransparencyClassRating" containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataClasses" ordered="false" upperBound="-1"
+        eType="//TransparencyClassRating" containment="true" resolveProxies="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Assessed transparency data classes within this assessment"/>
         <details key="caption.de" value="Datenklassen"/>
@@ -329,14 +303,14 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TransparencyClassRating" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+  <eClassifiers xsi:type="ecore:EClass" name="TransparencyClassRating">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Transparency rating of a data class according to Thuringian Transparency Act (ThuerTG): links a CWM Classifier (table, class, view, ...) to its transparency-law metadata."/>
       <details key="caption.de" value="Transparenz-Klassenbewertung"/>
       <details key="caption.en" value="Transparency Class Rating"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dataClass" lowerBound="1"
-        eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataClass" lowerBound="1">
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="transparencyClassRating"/>
       </eAnnotations>
@@ -348,72 +322,76 @@
         <details key="caption.de" value="Datenklasse"/>
         <details key="caption.en" value="Data Class"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="publicationMode" eType="#//PublicationMode">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="publicationMode" eType="//PublicationMode">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Publication mode: proactive, on request or excluded"/>
         <details key="caption.de" value="Veroeffentlichungsart"/>
         <details key="caption.en" value="Publication Mode"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="transparencyCategory" eType="#//TransparencyCategory">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="transparencyCategory" eType="//TransparencyCategory">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Information category according to §6 para. 3 no. 2 ThuerTG"/>
         <details key="caption.de" value="Transparenzkategorie"/>
         <details key="caption.en" value="Transparency Category"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exclusionGround" eType="#//ExclusionGround">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exclusionGround" eType="//ExclusionGround">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Exclusion ground according to §12/§13 ThuerTG"/>
         <details key="caption.de" value="Ausschlussgrund"/>
         <details key="caption.en" value="Exclusion Ground"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataFormatLevel" eType="#//DataFormatLevel">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataFormatLevel" eType="//DataFormatLevel">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Data format level according to §3 para. 3 and §7 para. 5 ThuerTG"/>
         <details key="caption.de" value="Datenformat-Stufe"/>
         <details key="caption.en" value="Data Format Level"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="anonymizationLevel" eType="#//AnonymizationLevel">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Anonymization level for personal data according to §13 ThuerTG"/>
-        <details key="caption.de" value="Anonymisierungsgrad"/>
-        <details key="caption.en" value="Anonymization Level"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="retentionYears" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Retention period in years according to §7 para. 8 ThuerTG (minimum 10 years)"/>
-        <details key="caption.de" value="Vorhaltefrist (Jahre)"/>
-        <details key="caption.en" value="Retention Period (Years)"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="legalReference" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="legalReference">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Specific legal reference (e.g. ThuerTG §6 para. 3 no. 2 lit. a)"/>
         <details key="caption.de" value="Paragraphen-Bezug"/>
         <details key="caption.en" value="Legal Reference"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="publicationNote" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="publicationNote">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Free-text note regarding publication"/>
         <details key="caption.de" value="Veroeffentlichungshinweis"/>
         <details key="caption.en" value="Publication Note"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastReview" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastReview">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Date of the last review"/>
         <details key="caption.de" value="Letzte Ueberpruefung"/>
         <details key="caption.en" value="Last Review"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dataFields" upperBound="-1"
-        eType="#//TransparencyFieldRating" containment="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="policy">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="transparencyRating"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="transparencyRating"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="How the data of the class is de-identified before it is published: a policy of the model deidentification that governs the data class."/>
+        <details key="caption.de" value="Deidentifizierung"/>
+        <details key="caption.en" value="De-identification"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.deidentification#//DeidentificationPolicy"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataFields" ordered="false" upperBound="-1"
+        eType="//TransparencyFieldRating" containment="true" resolveProxies="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Transparency ratings of the data fields belonging to this data class"/>
         <details key="caption.de" value="Datenfeld-Bewertungen"/>
@@ -421,14 +399,14 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TransparencyFieldRating" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+  <eClassifiers xsi:type="ecore:EClass" name="TransparencyFieldRating">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Transparency rating of a data field according to Thuringian Transparency Act (ThuerTG): links a CWM StructuralFeature (column, attribute, field, association end, ...) to its transparency-law metadata."/>
       <details key="caption.de" value="Transparenz-Feldbewertung"/>
       <details key="caption.en" value="Transparency Field Rating"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dataField" lowerBound="1"
-        eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature">
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataField" lowerBound="1">
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="transparencyFieldRating"/>
       </eAnnotations>
@@ -440,26 +418,20 @@
         <details key="caption.de" value="Datenfeld"/>
         <details key="caption.en" value="Data Field"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="publicationMode" eType="#//PublicationMode">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="publicationMode" eType="//PublicationMode">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Publication mode of the data field"/>
         <details key="caption.de" value="Veroeffentlichungsart"/>
         <details key="caption.en" value="Publication Mode"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exclusionGround" eType="#//ExclusionGround">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exclusionGround" eType="//ExclusionGround">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Exclusion ground of the data field according to §12/§13 ThuerTG"/>
         <details key="caption.de" value="Ausschlussgrund"/>
         <details key="caption.en" value="Exclusion Ground"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="anonymizationLevel" eType="#//AnonymizationLevel">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Anonymization level of the data field according to §13 ThuerTG"/>
-        <details key="caption.de" value="Anonymisierungsgrad"/>
-        <details key="caption.en" value="Anonymization Level"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
