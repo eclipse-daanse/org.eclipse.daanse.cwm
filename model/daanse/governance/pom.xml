@@ -28,5 +28,6 @@
     <module>lifecycle</module>
     <module>recording</module>
     <module>obligations</module>
+    <module>deidentification</module>
   </modules>
 </project>
