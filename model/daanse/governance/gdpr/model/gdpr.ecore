@@ -14,14 +14,27 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="gdpr" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.gdpr"
     nsPrefix="gdpr">
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse.governance"/>
-    <details key="prefix" value="Gdpr"/>
-    <details key="documentation" value="Package of data models concerning data protection according to GDPR (DSGVO)"/>
+    <details key="documentation" value="Data protection after the GDPR: the records of processing activities (Art. 30) with their processings, transmissions and erasures in the subpackage processing; the data protection impact assessments (Art. 35) and the privacy ratings of data classes and fields in the subpackage assessment. A data erasure is a deletion obligation of the model obligations, a transmission names the de-identification policy of the model deidentification; the legal sources of a processing are obligations::LegalSource documents that name it."/>
     <details key="caption.de" value="Datenschutz DSGVO"/>
     <details key="caption.en" value="Data Protection GDPR"/>
+    <details key="modelName" value="Gdpr"/>
+    <details key="copyrightText" value="Copyright (c) 2024 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse.governance"/>
+    <details key="prefix" value="Gdpr"/>
+    <details key="literalsInterface" value="true"/>
+    <details key="loadInitialization" value="false"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true"/>
   </eAnnotations>
   <eSubpackages name="processing" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.gdpr/processing"
-      nsPrefix="gdpr.processing">
+      nsPrefix="gdprprocessing">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
       <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
@@ -35,7 +48,7 @@
       <details key="caption.de" value="Verarbeitung"/>
       <details key="caption.en" value="Processing"/>
     </eAnnotations>
-    <eClassifiers xsi:type="ecore:EClass" name="DataProcessingRecord" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eClassifiers xsi:type="ecore:EClass" name="DataProcessingRecord">
       <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
         <details key="constraints" value="RecordHoldsProcessings OnlyProcessingsInRecord"/>
       </eAnnotations>
@@ -48,351 +61,324 @@
         <details key="caption.de" value="Verarbeitungsverzeichnis"/>
         <details key="caption.en" value="Processing Record"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="contactControllerGlobal"
-          lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty">
+      <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="contactControllerGlobal" lowerBound="1">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="gdprGlobalControllerOf"/>
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="gdprGlobalControllerOf"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Kontaktdaten global Verantwortliche:r"/>
           <details key="caption.en" value="Contact Information Global Controller"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="contactControllerInternal"
-          lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="contactControllerInternal" lowerBound="1">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="gdprInternalControllerOf"/>
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="gdprInternalControllerOf"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Kontaktdaten des intern Verantwortliche:r"/>
           <details key="caption.en" value="Contact Information Internal Controller"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="contactJointResponsibilities"
-          upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="contactJointResponsibilities" ordered="false"
+          upperBound="-1">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="gdprJointControllerOf"/>
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="gdprJointControllerOf"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Kontaktdaten gemeinsam Verantwortliche"/>
           <details key="caption.en" value="Contact Information Joint Controllers"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="contactPrivacyOfficer"
-          lowerBound="1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="contactPrivacyOfficer" lowerBound="1">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="gdprPrivacyOfficerOf"/>
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="gdprPrivacyOfficerOf"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Kontaktdaten Datenschutzbeauftragte:r"/>
           <details key="caption.en" value="Contact Information Data Protection Officer"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="contactCommissionedProcessor"
-          eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="contactCommissionedProcessor">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="gdprProcessorOf"/>
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="gdprProcessorOf"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Kontaktdaten Auftragsverarbeitende:r"/>
           <details key="caption.en" value="Contact Information Processor"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty"/>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="DataProcessing" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eClassifiers xsi:type="ecore:EClass" name="DataProcessing">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Any operation or set of operations which is performed on personal data or on sets of personal data, whether or not by automated means, such as collection, recording, organisation, structuring, storage, adaptation or alteration, retrieval, consultation, use, disclosure by transmission, dissemination or otherwise making available, alignment or combination, restriction, erasure or destruction (according to Art. 4 No. 2 GDPR). Extends core::Package. Its structural parts (dataProcessingLawfulness, dataTransmissions, dataErasures) are typed containment features, not free ownedElement members - keep them there so their per-type cardinality and typed access stay enforced. The inherited Namespace.ownedElement is only for auxiliary owned CWM objects (e.g. a businessinformation::Description describing this processing)."/>
         <details key="caption.de" value="Datenverarbeitung"/>
         <details key="caption.en" value="Data Processing"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="dataClasses" upperBound="-1"
-          eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+      <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dataClasses" ordered="false" upperBound="-1">
         <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-          <details key="Property.oppositeRoleName" value="dataProcessing"/>
+          <details key="Property.oppositeRoleName" value="gdprDataProcessing"/>
         </eAnnotations>
         <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-          <details key="body" value="dataProcessing"/>
+          <details key="body" value="gdprDataProcessing"/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Datenklassen"/>
           <details key="caption.en" value="Data Classes"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="personalReferenceTypes"
-          lowerBound="1" upperBound="-1" eType="#//processing/PersonalReferenceType">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="personalReferenceTypes" lowerBound="1"
+          upperBound="-1" eType="//processing/PersonalReferenceType">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Personenbezugsarten"/>
           <details key="caption.en" value="Personal Reference Types"/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataProcessingTypes"
-          lowerBound="1" upperBound="-1" eType="#//processing/DataProcessingType">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataProcessingTypes" lowerBound="1" upperBound="-1"
+          eType="//processing/DataProcessingType">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Data processing types used in the specific data process"/>
           <details key="caption.de" value="Verarbeitungsarten"/>
           <details key="caption.en" value="Processing Types"/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="bpmnProcesses" upperBound="-1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="bpmnProcesses" upperBound="-1">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="reference to related bpmn process model/process step descriptions"/>
           <details key="caption.de" value="BPMN-Prozesse"/>
           <details key="caption.en" value="BPMN Processes"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="softwareSystems" upperBound="-1"
-          eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/softwaredeployment#//SoftwareSystem">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="softwareSystems" ordered="false" upperBound="-1">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="gdprDataProcessing"/>
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="gdprDataProcessing"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Software-Systeme"/>
           <details key="caption.en" value="Software Systems"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/softwaredeployment#//SoftwareSystem"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="softwareModules" upperBound="-1"
-          eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/softwaredeployment#//DeployedComponent">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="softwareModules" ordered="false" upperBound="-1">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="gdprDataProcessing"/>
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="gdprDataProcessing"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Software-Module"/>
           <details key="caption.en" value="Software Modules"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/softwaredeployment#//DeployedComponent"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="otherEnvironmentHardware"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="otherEnvironmentHardware">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Sonstige Umgebung und Hardware"/>
           <details key="caption.en" value="Other Environment and Hardware"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataProcessingPurpose"
-          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataProcessingPurpose" lowerBound="1">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Purpose of data processing in accordance with Article 30 Paragraph 1 Sentence 2 Letter b) DSGVO"/>
           <details key="caption.de" value="Zweck der Datenverarbeitung"/>
           <details key="caption.en" value="Purpose of Data Processing"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="legalBasis" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dataProcessingLawfulness" ordered="false"
+          lowerBound="1" upperBound="-1" eType="//processing/DataProcessingLawfulness" containment="true"
+          resolveProxies="false">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
-          <details key="caption.de" value="Rechtsgrundlage"/>
-          <details key="caption.en" value="Legal Basis"/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="dataProcessingLawfulness"
-          lowerBound="1" upperBound="-1" eType="#//processing/DataProcessingLawfulness"
-          containment="true">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Erfassungsberechtigungen"/>
           <details key="caption.en" value="Processing Lawfulness"/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="dataTransmissions" upperBound="-1"
-          eType="#//processing/DataTransmission" containment="true">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dataTransmissions" ordered="false" upperBound="-1"
+          eType="//processing/DataTransmission" containment="true" resolveProxies="false">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Datenweitergaben"/>
           <details key="caption.en" value="Data Transmissions"/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="dataErasures" lowerBound="1"
-          upperBound="-1" eType="#//processing/DataErasure" containment="true">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dataErasures" ordered="false" lowerBound="1"
+          upperBound="-1" eType="//processing/DataErasure" containment="true" resolveProxies="false">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Datenlöschungen"/>
           <details key="caption.en" value="Data Erasures"/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="validFrom" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="validFrom" lowerBound="1">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Gültigkeit von"/>
           <details key="caption.en" value="Valid From"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="validTo" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="validTo">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Gültigkeit bis"/>
           <details key="caption.en" value="Valid To"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="dpiaRequirementAnalysis"
-          lowerBound="1" eType="#//assessment/DPIARequirementAnalysis">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dpiaRequirementAnalysis" lowerBound="1"
+          eType="//assessment/DPIARequirementAnalysis">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="gdprDataProcessing"/>
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="gdprDataProcessing"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Schwellenwert-Analyse"/>
           <details key="caption.en" value="Threshold Analysis"/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="DataProcessingLawfulness" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eClassifiers xsi:type="ecore:EClass" name="DataProcessingLawfulness">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Erfassungsberechtigung"/>
         <details key="caption.en" value="Processing Lawfulness"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataProcessingLawfulnessTypes"
-          eType="#//processing/DataProcessingLawfulnessType">
+      <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataProcessingLawfulnessTypes" eType="//processing/DataProcessingLawfulnessType">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Art der Erfassungsberechtigung"/>
           <details key="caption.en" value="Lawfulness Type"/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataProcessingLawfulnessTypesSpecialCategories"
-          eType="#//processing/DataProcessingLawfulnessTypeSpecialCategories">
+          eType="//processing/DataProcessingLawfulnessTypeSpecialCategories">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Erfassungsberechtigungs-Art für besondere Kategorien"/>
           <details key="caption.en" value="Lawfulness Type for Special Categories"/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataProcessingLawfulnessAnnotation"
-          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataProcessingLawfulnessAnnotation" lowerBound="1">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Begründung zur Erfassungsberechtigung"/>
           <details key="caption.en" value="Lawfulness Annotation"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="DataTransmission" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eClassifiers xsi:type="ecore:EClass" name="DataTransmission">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Datenweitergabe"/>
         <details key="caption.en" value="Data Transmission"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="dataClasses" upperBound="-1"
-          eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+      <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dataClasses" ordered="false" upperBound="-1">
         <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-          <details key="Property.oppositeRoleName" value="dataTransmission"/>
+          <details key="Property.oppositeRoleName" value="gdprDataTransmission"/>
         </eAnnotations>
         <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-          <details key="body" value="dataTransmission"/>
+          <details key="body" value="gdprDataTransmission"/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Datenklassen"/>
           <details key="caption.en" value="Data Classes"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="dataFields" upperBound="-1"
-          eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dataFields" ordered="false" upperBound="-1">
         <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-          <details key="Property.oppositeRoleName" value="dataTransmission"/>
+          <details key="Property.oppositeRoleName" value="gdprDataTransmission"/>
         </eAnnotations>
         <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-          <details key="body" value="dataTransmission"/>
+          <details key="body" value="gdprDataTransmission"/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Datenfelder"/>
           <details key="caption.en" value="Data Fields"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="contactRecipient" lowerBound="1"
-          eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="contactRecipient" lowerBound="1">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="gdprRecipientOf"/>
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="gdprRecipientOf"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Kontaktdaten Empfänger"/>
           <details key="caption.en" value="Contact Information Recipient"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="legalBasis" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
-          <details key="caption.de" value="Rechtsgrundlage"/>
-          <details key="caption.en" value="Legal Basis"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="policy">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="gdprTransmission"/>
         </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="guarantee" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="gdprTransmission"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
+          <details key="documentation" value="How the transmitted data is de-identified for the recipient: the policy of the model deidentification, whose audience is the recipient."/>
+          <details key="caption.de" value="Deidentifizierung"/>
+          <details key="caption.en" value="De-identification"/>
+        </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.deidentification#//DeidentificationPolicy"/>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="guarantee">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Garantie"/>
           <details key="caption.en" value="Guarantee"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="adequacyDecision" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="adequacyDecision">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Angemessenheitsbeschluss"/>
           <details key="caption.en" value="Adequacy Decision"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="DataErasure" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eClassifiers xsi:type="ecore:EClass" name="DataErasure">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
+        <details key="documentation" value="The erasure of personal data a data processing promises (Art. 17 and Art. 30 (1) (f) GDPR): a deletion obligation of the model obligations. It governs the data classes and fields to erase in constrainedElement, counted from its start, within its maximum; its legal sources are obligations::LegalSource documents that name it. It is contained in its data processing."/>
         <details key="caption.de" value="Datenlöschung"/>
         <details key="caption.en" value="Data Erasure"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="dataClasses" upperBound="-1"
-          eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
-        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-          <details key="Property.oppositeRoleName" value="dataErasure"/>
-        </eAnnotations>
-        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-          <details key="body" value="dataErasure"/>
-        </eAnnotations>
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
-          <details key="caption.de" value="Datenklassen"/>
-          <details key="caption.en" value="Data Classes"/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="dataFields" upperBound="-1"
-          eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature">
-        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-          <details key="Property.oppositeRoleName" value="dataErasure"/>
-        </eAnnotations>
-        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-          <details key="body" value="dataErasure"/>
-        </eAnnotations>
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
-          <details key="caption.de" value="Datenfelder"/>
-          <details key="caption.en" value="Data Fields"/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="deletionTermValue" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
-          <details key="caption.de" value="Löschfrist Wert"/>
-          <details key="caption.en" value="Erasure Term Value"/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="deletionTermUnit" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
-          <details key="caption.de" value="Löschfrist Einheit"/>
-          <details key="caption.en" value="Erasure Term Unit"/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="deletionTermBasis" ordered="false"
-          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
-          <details key="caption.de" value="Löschfrist Basis"/>
-          <details key="caption.en" value="Erasure Term Basis"/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="legalBasis" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
-          <details key="caption.de" value="Rechtsgrundlage der Löschung"/>
-          <details key="caption.en" value="Legal Basis of Erasure"/>
-        </eAnnotations>
-      </eStructuralFeatures>
+      <eSuperTypes href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.obligations#//DeletionObligation"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="DataProcessingType">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Datenverarbeitungs-Art"/>
         <details key="caption.en" value="Data Processing Type"/>
       </eAnnotations>
-      <eLiterals name="UNEDITED">
+      <eLiterals name="UNEDITED" literal="UNEDITED">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="UNBEARBEITET"/>
           <details key="caption.en" value="UNEDITED"/>
         </eAnnotations>
@@ -401,178 +387,158 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Erheben"/>
           <details key="caption.en" value="Collection"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="RECORDING" value="2">
+      <eLiterals name="RECORDING" value="2" literal="RECORDING">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Erfassen"/>
           <details key="caption.en" value="Recording"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="ORGANISATION" value="3">
+      <eLiterals name="ORGANISATION" value="3" literal="ORGANISATION">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Organisation"/>
           <details key="caption.en" value="Organisation"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="STRUCTURING" value="4">
+      <eLiterals name="STRUCTURING" value="4" literal="STRUCTURING">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Ordnen"/>
           <details key="caption.en" value="Structuring"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="STORAGE" value="5">
+      <eLiterals name="STORAGE" value="5" literal="STORAGE">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Speicherung"/>
           <details key="caption.en" value="Storage"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="ADAPTATION" value="6">
+      <eLiterals name="ADAPTATION" value="6" literal="ADAPTATION">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Anpassung"/>
           <details key="caption.en" value="Adaptation"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="ALTERATION" value="7">
+      <eLiterals name="ALTERATION" value="7" literal="ALTERATION">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Veränderung"/>
           <details key="caption.en" value="Alteration"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="RETRIEVAL" value="8">
+      <eLiterals name="RETRIEVAL" value="8" literal="RETRIEVAL">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Auslesen"/>
           <details key="caption.en" value="Retrieval"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="CONSULTATION" value="9">
+      <eLiterals name="CONSULTATION" value="9" literal="CONSULTATION">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Abfragen"/>
           <details key="caption.en" value="Consultation"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="USE" value="10">
+      <eLiterals name="USE" value="10" literal="USE">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Verwendung"/>
           <details key="caption.en" value="Use"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="TRANSMISSION" value="11">
+      <eLiterals name="TRANSMISSION" value="11" literal="TRANSMISSION">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Übermittlung"/>
           <details key="caption.en" value="Transmission"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="DISSEMINATION" value="12">
+      <eLiterals name="DISSEMINATION" value="12" literal="DISSEMINATION">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Verbreitung"/>
           <details key="caption.en" value="Dissemination"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="MAKING_AVAILABLE" value="13">
+      <eLiterals name="MAKING_AVAILABLE" value="13" literal="MAKING_AVAILABLE">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Bereitstellung"/>
           <details key="caption.en" value="Making Available"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="ALIGNMENT" value="14">
+      <eLiterals name="ALIGNMENT" value="14" literal="ALIGNMENT">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Abgleich"/>
           <details key="caption.en" value="Alignment"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="COMBINATION" value="15">
+      <eLiterals name="COMBINATION" value="15" literal="COMBINATION">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Verknüpfung"/>
           <details key="caption.en" value="Combination"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="RESTRICTION" value="16">
+      <eLiterals name="RESTRICTION" value="16" literal="RESTRICTION">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Einschränkung"/>
           <details key="caption.en" value="Restriction"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="ERASURE" value="17">
+      <eLiterals name="ERASURE" value="17" literal="ERASURE">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Löschung"/>
           <details key="caption.en" value="Erasure"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="DESTRUCTION" value="18">
+      <eLiterals name="DESTRUCTION" value="18" literal="DESTRUCTION">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="caption.de" value="Vernichtung"/>
           <details key="caption.en" value="Destruction"/>
-          <details key="documentation" value=" "/>
         </eAnnotations>
       </eLiterals>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="DataProcessingLawfulnessType">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Erfassungsberechtigungs-Art"/>
         <details key="caption.en" value="Processing Lawfulness Type"/>
       </eAnnotations>
-      <eLiterals name="UNEDITED">
+      <eLiterals name="UNEDITED" literal="UNEDITED">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="UNBEARBEITET"/>
           <details key="caption.en" value="UNEDITED"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="CONSENT" value="1">
+      <eLiterals name="CONSENT" value="1" literal="CONSENT">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The data subject has given written consent to the collection, processing and/or use of personal data (Art. 6(1)(a) GDPR in conjunction with Art. 7 GDPR and Recital 32)."/>
           <details key="caption.de" value="EINWILLIGUNG"/>
           <details key="caption.en" value="CONSENT"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="CONTRACTUAL_REQUIREMENT" value="2">
+      <eLiterals name="CONTRACTUAL_REQUIREMENT" value="2" literal="CONTRACTUAL_REQUIREMENT">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Processing is necessary for the performance of a contract to which the data subject is party or in order to take steps at the request of the data subject prior to entering into a contract (Art. 6(1)(b) GDPR)."/>
           <details key="caption.de" value="VERTRAGLICHES_ERFORDERNIS"/>
           <details key="caption.en" value="CONTRACTUAL_REQUIREMENT"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="LEGAL_OBLIGATION" value="3">
+      <eLiterals name="LEGAL_OBLIGATION" value="3" literal="LEGAL_OBLIGATION">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Processing is necessary for compliance with a legal obligation to which the controller is subject (Art. 6(1)(c) GDPR)."/>
           <details key="caption.de" value="RECHTLICHE_VERPFLICHTUNG"/>
           <details key="caption.en" value="LEGAL_OBLIGATION"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="VITAL_INTERESTS" value="4">
+      <eLiterals name="VITAL_INTERESTS" value="4" literal="VITAL_INTERESTS">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Processing is necessary in order to protect the vital interests of the data subject or of another natural person, i.e. all essential interests in the area of health protection; e.g. processing for humanitarian purposes including the monitoring of epidemics and their spread or in humanitarian emergencies, in particular in situations of natural and man-made disasters (Art. 6(1)(d) GDPR in conjunction with Recitals 46 and 112)."/>
           <details key="caption.de" value="LEBENSWICHTIGE_INTERESSEN"/>
           <details key="caption.en" value="VITAL_INTERESTS"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="PUBLIC_INTERESTS_OR_AUTHORITY" value="5">
+      <eLiterals name="PUBLIC_INTERESTS_OR_AUTHORITY" value="5" literal="PUBLIC_INTERESTS_OR_AUTHORITY">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Processing is necessary for the performance of a task carried out in the public interest or in the exercise of official authority, for example for the international exchange of data between competition, tax or customs authorities, between financial supervisory authorities or between services responsible for social security or public health matters, such as in the case of contact tracing for communicable diseases or to reduce and/or eliminate doping in sport (Art. 6(1)(e) GDPR in conjunction with Recital 112)."/>
           <details key="caption.de" value="OEFFENTLICHE_INTERESSEN_ODER_GEWALT"/>
           <details key="caption.en" value="PUBLIC_INTERESTS_OR_AUTHORITY"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="LEGITIMATE_INTERESTS_AFTER_WEIGHING" value="6">
+      <eLiterals name="LEGITIMATE_INTERESTS_AFTER_WEIGHING" value="6" literal="LEGITIMATE_INTERESTS_AFTER_WEIGHING">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The legitimate interest requires a bilateral balancing of the interests of both the controller and the data subjects to assess lawfulness. If there are less intrusive means, the legitimate interest usually (always?) appears as not legitimate and therefore as not given (Art. 6(1)(f) GDPR in conjunction with Recital 47)."/>
           <details key="caption.de" value="BERECHTIGTE_INTERESSEN_NACH_ABWAEGUNG"/>
@@ -582,74 +548,72 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="DataProcessingLawfulnessTypeSpecialCategories">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Erfassungsberechtigungs-Art für besondere Kategorien"/>
         <details key="caption.en" value="Lawfulness Type for Special Categories"/>
       </eAnnotations>
-      <eLiterals name="UNEDITED">
+      <eLiterals name="UNEDITED" literal="UNEDITED">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="UNBEARBEITET"/>
           <details key="caption.en" value="UNEDITED"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="CONSENT" value="1">
+      <eLiterals name="CONSENT" value="1" literal="CONSENT">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The data subject has given explicit consent to the processing of those personal data for one or more specified purposes (Art. 9(2)(a) GDPR)."/>
           <details key="caption.de" value="EINWILLIGUNG"/>
           <details key="caption.en" value="CONSENT"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="PUBLISHED_DATA" value="2">
+      <eLiterals name="PUBLISHED_DATA" value="2" literal="PUBLISHED_DATA">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Processing relates to personal data which are manifestly made public by the data subject (Art. 9(2)(e) GDPR)."/>
           <details key="caption.de" value="VEROEFFENTLICHTE_DATEN"/>
           <details key="caption.en" value="PUBLISHED_DATA"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="EMPLOYMENT_SOCIAL_SECURITY" value="3">
+      <eLiterals name="EMPLOYMENT_SOCIAL_SECURITY" value="3" literal="EMPLOYMENT_SOCIAL_SECURITY">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Processing is necessary for the purposes of carrying out the obligations and exercising specific rights of the controller or of the data subject in the field of employment and social security and social protection law in so far as it is authorised by Union or Member State law or a collective agreement pursuant to Member State law providing for appropriate safeguards for the fundamental rights and the interests of the data subject (Art. 9(2)(b) GDPR)."/>
           <details key="caption.de" value="ARBEITSRECHT_SOZIALE_SICHERHEIT"/>
           <details key="caption.en" value="EMPLOYMENT_SOCIAL_SECURITY"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="PUBLIC_EMPLOYMENT_CIVIL_SERVICE_LAW" value="4">
+      <eLiterals name="PUBLIC_EMPLOYMENT_CIVIL_SERVICE_LAW" value="4" literal="PUBLIC_EMPLOYMENT_CIVIL_SERVICE_LAW">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Processing is necessary to take account of the rights and obligations of public bodies in the field of civil service and employment law (Section 16(2)(4) ThuerDSG)."/>
           <details key="caption.de" value="OEFFENTLICHES_DIENST_ARBEITSRECHT"/>
           <details key="caption.en" value="PUBLIC_EMPLOYMENT_CIVIL_SERVICE_LAW"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="VITAL_INTERESTS" value="5">
+      <eLiterals name="VITAL_INTERESTS" value="5" literal="VITAL_INTERESTS">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Processing is necessary to protect the vital interests of the data subject or of another natural person where the data subject is physically or legally incapable of giving consent (Art. 9(2)(c) GDPR)."/>
           <details key="caption.de" value="LEBENSWICHTIGE_INTERESSEN"/>
           <details key="caption.en" value="VITAL_INTERESTS"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="PUBLIC_HEALTH" value="6">
+      <eLiterals name="PUBLIC_HEALTH" value="6" literal="PUBLIC_HEALTH">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Processing is necessary for reasons of public interest in the area of public health, such as protecting against serious cross-border threats to health or ensuring high standards of quality and safety of health care and of medicinal products or medical devices, on the basis of Union or Member State law which provides for suitable and specific measures to safeguard the rights and freedoms of the data subject, in particular professional secrecy (Art. 9(2)(i) GDPR)."/>
           <details key="caption.de" value="OEFFENTLICHE_GESUNDHEIT"/>
           <details key="caption.en" value="PUBLIC_HEALTH"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="HEALTH_CARE" value="7">
+      <eLiterals name="HEALTH_CARE" value="7" literal="HEALTH_CARE">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Processing is necessary for the purposes of preventive or occupational medicine, for the assessment of the working capacity of the employee, medical diagnosis, the provision of health or social care or treatment or the management of health or social care systems and services on the basis of Union or Member State law or pursuant to contract with a health professional and subject to the conditions and safeguards referred to in paragraph 3 (Art. 9(2)(h) GDPR). Processing is necessary for the purposes of preventive medicine, medical diagnosis, health care or treatment or the management of health care services, and the processing of such data is carried out by medical personnel subject to professional secrecy or by other persons subject to a corresponding obligation of confidentiality (Section 16(2)(5) ThuerDSG)."/>
           <details key="caption.de" value="GESUNDHEITSVORSORGE"/>
           <details key="caption.en" value="HEALTH_CARE"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="SIGNIFICANT_PUBLIC_INTEREST" value="8">
+      <eLiterals name="SIGNIFICANT_PUBLIC_INTEREST" value="8" literal="SIGNIFICANT_PUBLIC_INTEREST">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Processing is necessary for reasons of substantial public interest, on the basis of Union or Member State law which shall be proportionate to the aim pursued, respect the essence of the right to data protection and provide for suitable and specific measures to safeguard the fundamental rights and the interests of the data subject (Art. 9(2)(g) GDPR). Processing is necessary for reasons of substantial public interest, in particular where there are factual indications that the functionality of the administration is substantially endangered (Section 16(2)(2) ThuerDSG)."/>
           <details key="caption.de" value="ERHEBLICHES_OEFFENTLICHES_INTERESSE"/>
           <details key="caption.en" value="SIGNIFICANT_PUBLIC_INTEREST"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="RESEARCH_STATISTICS_ARCHIVING" value="9">
+      <eLiterals name="RESEARCH_STATISTICS_ARCHIVING" value="9" literal="RESEARCH_STATISTICS_ARCHIVING">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Processing is necessary for archiving purposes in the public interest, scientific or historical research purposes or statistical purposes in accordance with Article 89(1) based on Union or Member State law which shall be proportionate to the aim pursued, respect the essence of the right to data protection and provide for suitable and specific measures to safeguard the fundamental rights and the interests of the data subject (Art. 9(2)(j) GDPR). Processing is necessary for conducting scientific or historical research, the scientific interest in conducting the research project substantially outweighs the interest of the data subject in the exclusion of processing, and the purpose of the research cannot be achieved by other means or only with disproportionate effort (Section 16(2)(3) ThuerDSG)."/>
           <details key="caption.de" value="FORSCHUNG_STATISTIK_ARCHIVIERUNG"/>
@@ -680,25 +644,23 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="PersonalReferenceType">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Personenbezug-Art"/>
         <details key="caption.en" value="Personal Reference Type"/>
       </eAnnotations>
-      <eLiterals name="UNEDITED">
+      <eLiterals name="UNEDITED" literal="UNEDITED">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="UNBEARBEITET"/>
           <details key="caption.en" value="UNEDITED"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="DIRECT" value="1">
+      <eLiterals name="DIRECT" value="1" literal="DIRECT">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Through the assignment of data, a direct reference to the person can be established (Art. 4 No. 1 GDPR)."/>
           <details key="caption.de" value="DIREKT"/>
           <details key="caption.en" value="DIRECT"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="INDIRECT" value="2">
+      <eLiterals name="INDIRECT" value="2" literal="INDIRECT">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Identification of a person is only possible with the help of additional knowledge, as the reference alone is not sufficient for unambiguous identification (Art. 4 No. 1 GDPR)."/>
           <details key="caption.de" value="INDIREKT"/>
@@ -708,7 +670,7 @@
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="assessment" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.gdpr/assessment"
-      nsPrefix="gdpr.assessment">
+      nsPrefix="gdprassessment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
       <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
       <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
@@ -722,122 +684,131 @@
       <details key="caption.de" value="Folgenabschaetzung"/>
       <details key="caption.en" value="Impact Assessment"/>
     </eAnnotations>
-    <eClassifiers xsi:type="ecore:EClass" name="DPIARequirementAnalysis" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eClassifiers xsi:type="ecore:EClass" name="DPIARequirementAnalysis">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Schwellenwert-Analyse"/>
         <details key="caption.en" value="Threshold Analysis"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="riskyProcessings" lowerBound="1"
-          upperBound="-1" eType="#//assessment/RiskyProcessing">
+      <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="riskyProcessings" ordered="false" lowerBound="1"
+          upperBound="-1" eType="//assessment/RiskyProcessing">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="gdprRequirementAnalysis"/>
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="gdprRequirementAnalysis"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Riskante Verarbeitungen"/>
           <details key="caption.en" value="Risky Processings"/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="otherHighRisk" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="otherHighRisk">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Sonstiges hohes Risiko"/>
           <details key="caption.en" value="Other High Risk"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="explanation" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="explanation" lowerBound="1">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Begründung"/>
           <details key="caption.en" value="Explanation"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dpiaRequired" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dpiaRequired" lowerBound="1">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Erfordernis DSFA"/>
           <details key="caption.en" value="DPIA Required"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="RiskyProcessing" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eClassifiers xsi:type="ecore:EClass" name="RiskyProcessing">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Riskante Verarbeitung"/>
         <details key="caption.en" value="Risky Processing"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="score" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+      <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="score" lowerBound="1">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Punktzahl"/>
           <details key="caption.en" value="Score"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="DataProtectionImpactAssessment" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package">
+    <eClassifiers xsi:type="ecore:EClass" name="DataProtectionImpactAssessment">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Data Protection Impact Assessment (DPIA) per Art. 35 GDPR. Extends core::Package. Its parts (responsibilities, risks) are typed containment features - keep them there for typed access and their [1..*] cardinality. The inherited Namespace.ownedElement is only for auxiliary owned CWM objects (e.g. a businessinformation::Description)."/>
         <details key="caption.de" value="Datenschutz-Folgenabschätzung"/>
         <details key="caption.en" value="Data Protection Impact Assessment"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="dataProcessings" lowerBound="1"
-          upperBound="-1" eType="#//processing/DataProcessing">
+      <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dataProcessings" ordered="false" lowerBound="1"
+          upperBound="-1" eType="//processing/DataProcessing">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="gdprImpactAssessment"/>
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="gdprImpactAssessment"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Datenverarbeitungen"/>
           <details key="caption.en" value="Data Processings"/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="responsibilities" lowerBound="1"
-          upperBound="-1" eType="#//assessment/ResponsibilityDPIA" containment="true">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="responsibilities" ordered="false" lowerBound="1"
+          upperBound="-1" eType="//assessment/ResponsibilityDPIA" containment="true" resolveProxies="false">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Zuständigkeiten"/>
           <details key="caption.en" value="Responsibilities"/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="affectedParties" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="affectedParties" lowerBound="1">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Betroffene"/>
           <details key="caption.en" value="Affected Parties"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="risks" lowerBound="1"
-          upperBound="-1" eType="#//assessment/Risk" containment="true">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="risks" ordered="false" lowerBound="1"
+          upperBound="-1" eType="//assessment/Risk" containment="true" resolveProxies="false">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Risiken"/>
           <details key="caption.en" value="Risks"/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ResponsibilityDPIA" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eClassifiers xsi:type="ecore:EClass" name="ResponsibilityDPIA">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Zuständigkeit DSFA"/>
         <details key="caption.en" value="DPIA Responsibility"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="contact" lowerBound="1"
-          eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty">
+      <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="contact" lowerBound="1">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="gdprDpiaResponsibility"/>
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="gdprDpiaResponsibility"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Kontakt"/>
           <details key="caption.en" value="Contact"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="role" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="role" lowerBound="1">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Rolle"/>
           <details key="caption.en" value="Role"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Risk" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eClassifiers xsi:type="ecore:EClass" name="Risk">
       <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
         <details key="constraints" value="ExactlyOneInherentAssessment ResidualAssessmentNamesMeasures"/>
       </eAnnotations>
@@ -846,36 +817,33 @@
         <details key="ResidualAssessmentNamesMeasures" value="self.assessment->forAll(a | a.kind = assessment::RiskAssessmentKind::RESIDUAL implies a.appliedMeasure->notEmpty())"/>
       </eAnnotations>
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Risiko"/>
         <details key="caption.en" value="Risk"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="incidentDescription"
-          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="incidentDescription" lowerBound="1">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Ereignisbeschreibung"/>
           <details key="caption.en" value="Incident Description"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="riskSource" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="riskSource" lowerBound="1">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Risikoquelle"/>
           <details key="caption.en" value="Risk Source"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="damageDescription" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="damageDescription" lowerBound="1">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Schadensbeschreibung"/>
           <details key="caption.en" value="Damage Description"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="assessment" lowerBound="1"
-          upperBound="-1" eType="#//assessment/RiskAssessment" containment="true">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="assessment" ordered="false" lowerBound="1"
+          upperBound="-1" eType="//assessment/RiskAssessment" containment="true" resolveProxies="false">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The risk assessments over time: one inherent assessment (before measures) and any number of residual assessments (after measures)."/>
           <details key="caption.de" value="Risikobewertungen"/>
@@ -904,75 +872,77 @@
         </eAnnotations>
       </eLiterals>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="RiskAssessment" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eClassifiers xsi:type="ecore:EClass" name="RiskAssessment">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Risikobewertung"/>
         <details key="caption.en" value="Risk Assessment"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1"
-          eType="#//assessment/RiskAssessmentKind">
+      <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1" eType="//assessment/RiskAssessmentKind">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Whether this is the inherent assessment (before measures) or a residual assessment (after measures)."/>
           <details key="caption.de" value="Art"/>
           <details key="caption.en" value="Kind"/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="assessedAt" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="assessedAt">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="When this assessment was made."/>
           <details key="caption.de" value="Bewertet am"/>
           <details key="caption.en" value="Assessed At"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="appliedMeasure" ordered="false"
-          upperBound="-1" eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/management/warehouseoperation#//ChangeRequest">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="appliedMeasure" ordered="false" upperBound="-1">
         <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-          <details key="Property.oppositeRoleName" value="riskAssessment"/>
+          <details key="Property.oppositeRoleName" value="gdprRiskAssessment"/>
         </eAnnotations>
         <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-          <details key="body" value="riskAssessment"/>
+          <details key="body" value="gdprRiskAssessment"/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The measures whose effect this residual assessment presupposes, each a warehouseoperation::ChangeRequest (a tracked, lifecycle-bearing countermeasure affecting model elements). No containment."/>
           <details key="caption.de" value="Angewandte Massnahmen"/>
           <details key="caption.en" value="Applied Measures"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/management/warehouseoperation#//ChangeRequest"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="damageExtents" lowerBound="1"
-          upperBound="-1" eType="#//assessment/DamageExtent" containment="true">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="damageExtents" ordered="false" lowerBound="1"
+          upperBound="-1" eType="//assessment/DamageExtent" containment="true" resolveProxies="false">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Schadensausprägungen"/>
           <details key="caption.en" value="Damage Extents"/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="occurrenceProbability"
-          lowerBound="1" eType="#//assessment/OccurrenceProbability">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="occurrenceProbability" lowerBound="1"
+          eType="//assessment/OccurrenceProbability">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Eintrittswahrscheinlichkeit"/>
           <details key="caption.en" value="Occurrence Probability"/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="DamageCategory" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eClassifiers xsi:type="ecore:EClass" name="DamageCategory">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Schadenskategorie"/>
         <details key="caption.en" value="Damage Category"/>
       </eAnnotations>
+      <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="DamageExtent" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eClassifiers xsi:type="ecore:EClass" name="DamageExtent">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Schadensausprägung"/>
         <details key="caption.en" value="Damage Extent"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="damageCategory" lowerBound="1"
-          eType="#//assessment/DamageCategory">
+      <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="damageCategory" lowerBound="1" eType="//assessment/DamageCategory">
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+          <details key="Property.oppositeRoleName" value="gdprDamageExtent"/>
+        </eAnnotations>
+        <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+          <details key="body" value="gdprDamageExtent"/>
+        </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Schadenskategorie"/>
           <details key="caption.en" value="Damage Category"/>
         </eAnnotations>
@@ -980,39 +950,37 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="OccurrenceProbability">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Eintrittswahrscheinlichkeit"/>
         <details key="caption.en" value="Occurrence Probability"/>
       </eAnnotations>
-      <eLiterals name="UNEDITED">
+      <eLiterals name="UNEDITED" literal="UNEDITED">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="UNBEARBEITET"/>
           <details key="caption.en" value="UNEDITED"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="LOW" value="1">
+      <eLiterals name="LOW" value="1" literal="LOW">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The incident will probably not occur within the next 6 years, occurred more than 6 years ago or has not occurred yet."/>
           <details key="caption.de" value="GERING"/>
           <details key="caption.en" value="LOW"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="MEDIUM" value="2">
+      <eLiterals name="MEDIUM" value="2" literal="MEDIUM">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The incident will probably occur within the next 4 to 6 years or has occurred during the past 4 to 6 years."/>
           <details key="caption.de" value="MITTEL"/>
           <details key="caption.en" value="MEDIUM"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="HIGH" value="3">
+      <eLiterals name="HIGH" value="3" literal="HIGH">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The incident will probably occur within the next 1 to 3 years or has occurred during the past 1 to 3 years."/>
           <details key="caption.de" value="HOCH"/>
           <details key="caption.en" value="HIGH"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="VERY_HIGH" value="4">
+      <eLiterals name="VERY_HIGH" value="4" literal="VERY_HIGH">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="The incident will probably occur within the next year or has occurred during the past year."/>
           <details key="caption.de" value="SEHR_HOCH"/>
@@ -1020,59 +988,58 @@
         </eAnnotations>
       </eLiterals>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="PrivacyClassRating" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eClassifiers xsi:type="ecore:EClass" name="PrivacyClassRating">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Privacy rating of a data class: links a CWM Classifier (table, class, view, ...) to its GDPR privacy level."/>
         <details key="caption.de" value="Datenklasse-Datenschutzbewertung"/>
         <details key="caption.en" value="Privacy Class Rating"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="dataClass" lowerBound="1"
-          eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier">
+      <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dataClass" lowerBound="1">
         <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-          <details key="Property.oppositeRoleName" value="privacyClassRating"/>
+          <details key="Property.oppositeRoleName" value="gdprPrivacyClassRating"/>
         </eAnnotations>
         <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-          <details key="body" value="privacyClassRating"/>
+          <details key="body" value="gdprPrivacyClassRating"/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Classified data class"/>
           <details key="caption.de" value="Datenklasse"/>
           <details key="caption.en" value="Data Class"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="privacyLevel" lowerBound="1"
-          eType="#//assessment/PrivacyLevel">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="privacyLevel" lowerBound="1" eType="//assessment/PrivacyLevel">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Datenschutz-Level"/>
           <details key="caption.en" value="Privacy Level"/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="PrivacyFieldRating" eSuperTypes="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement">
+    <eClassifiers xsi:type="ecore:EClass" name="PrivacyFieldRating">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Privacy rating of a data field: links a CWM StructuralFeature (column, attribute, field, ...) to its GDPR personal-data category according to Art. 4 / Art. 9 GDPR."/>
         <details key="caption.de" value="Datenfeld-Datenschutzbewertung"/>
         <details key="caption.en" value="Privacy Field Rating"/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="dataField" lowerBound="1"
-          eType="ecore:EClass http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature">
+      <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dataField" lowerBound="1">
         <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
-          <details key="Property.oppositeRoleName" value="privacyFieldRating"/>
+          <details key="Property.oppositeRoleName" value="gdprPrivacyFieldRating"/>
         </eAnnotations>
         <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
-          <details key="body" value="privacyFieldRating"/>
+          <details key="body" value="gdprPrivacyFieldRating"/>
         </eAnnotations>
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Classified data field"/>
           <details key="caption.de" value="Datenfeld"/>
           <details key="caption.en" value="Data Field"/>
         </eAnnotations>
+        <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//StructuralFeature"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="personalDataCategory"
-          lowerBound="1" eType="#//assessment/PersonalDataCategory">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="personalDataCategory" lowerBound="1"
+          eType="//assessment/PersonalDataCategory">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="Kategorie der personenbezogenen Daten"/>
           <details key="caption.en" value="Personal Data Category"/>
         </eAnnotations>
@@ -1080,41 +1047,35 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="PrivacyLevel">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Datenschutz-Level"/>
         <details key="caption.en" value="Privacy Level"/>
       </eAnnotations>
       <eLiterals name="UNEDITED" literal="UNKNOWN">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="UNBEARBEITET"/>
           <details key="caption.en" value="UNEDITED"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="NONE" value="1">
+      <eLiterals name="NONE" value="1" literal="NONE">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="KEINE"/>
           <details key="caption.en" value="NONE"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="LOW" value="2">
+      <eLiterals name="LOW" value="2" literal="LOW">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="GERING"/>
           <details key="caption.en" value="LOW"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="MEDIUM" value="3">
+      <eLiterals name="MEDIUM" value="3" literal="MEDIUM">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="MITTEL"/>
           <details key="caption.en" value="MEDIUM"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="HIGH" value="4">
+      <eLiterals name="HIGH" value="4" literal="HIGH">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="HOCH"/>
           <details key="caption.en" value="HIGH"/>
         </eAnnotations>
@@ -1122,81 +1083,79 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="PersonalDataCategory">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value=" "/>
         <details key="caption.de" value="Personendaten-Kategorie"/>
         <details key="caption.en" value="Personal Data Category"/>
       </eAnnotations>
-      <eLiterals name="UNEDITED">
+      <eLiterals name="UNEDITED" literal="UNEDITED">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value=" "/>
           <details key="caption.de" value="UNBEARBEITET"/>
           <details key="caption.en" value="UNEDITED"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="NO_PERSONAL_DATA" value="1">
+      <eLiterals name="NO_PERSONAL_DATA" value="1" literal="NO_PERSONAL_DATA">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Information that does not relate to identified or identifiable natural persons within the meaning of Art. 4 No. 1 GDPR, or where potential identification is not possible."/>
           <details key="caption.de" value="KEINE_PERSONENBEZOGENEN_DATEN"/>
           <details key="caption.en" value="NO_PERSONAL_DATA"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="PERSONAL_DATA_WITHOUT_SPECIAL_CATEGORY" value="2">
+      <eLiterals name="PERSONAL_DATA_WITHOUT_SPECIAL_CATEGORY" value="2" literal="PERSONAL_DATA_WITHOUT_SPECIAL_CATEGORY">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Personal data that does not belong to any special category pursuant to Art. 9(1), 10 GDPR. Personal data comprises all information relating to an identified or identifiable natural person, i.e. information that can directly or indirectly, in particular by reference to an identifier such as a name, an identification number, location data, an online identifier, or to one or more factors specific to the physical, physiological, genetic, mental, economic, cultural or social identity of that natural person, lead to the identification of a natural person (Art. 4 No. 1 GDPR)."/>
           <details key="caption.de" value="PERSONENBEZOGENE_DATEN_OHNE_BESONDERE_KATEGORIE"/>
           <details key="caption.en" value="PERSONAL_DATA_WITHOUT_SPECIAL_CATEGORY"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="ETHNIC_ORIGIN" value="3">
+      <eLiterals name="ETHNIC_ORIGIN" value="3" literal="ETHNIC_ORIGIN">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Information about characteristics that allow conclusions about belonging to a race or ethnicity, in particular information about a person's physical appearance, such as skin colour, hair type, eye and nose shape."/>
           <details key="caption.de" value="ETHNISCHE_HERKUNFT"/>
           <details key="caption.en" value="ETHNIC_ORIGIN"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="RELIGIOUS_PHILOSOPHICAL_BELIEFS" value="4">
+      <eLiterals name="RELIGIOUS_PHILOSOPHICAL_BELIEFS" value="4" literal="RELIGIOUS_PHILOSOPHICAL_BELIEFS">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Information about a person's religious or philosophical beliefs. In addition to a person's inner attitude, this also includes external activities through which they express their religious or philosophical conviction, including membership in a religious community or the wearing of a kippah or headscarf."/>
           <details key="caption.de" value="RELIGIOESES_PHILOSOPHISCHES_WELTBILD"/>
           <details key="caption.en" value="RELIGIOUS_PHILOSOPHICAL_BELIEFS"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="TRADE_UNION_MEMBERSHIP" value="5">
+      <eLiterals name="TRADE_UNION_MEMBERSHIP" value="5" literal="TRADE_UNION_MEMBERSHIP">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Information about membership in a trade union and its orientation."/>
           <details key="caption.de" value="MITGLIEDSCHAFT_GEWERKSCHAFT"/>
           <details key="caption.en" value="TRADE_UNION_MEMBERSHIP"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="GENETIC_DATA" value="6">
+      <eLiterals name="GENETIC_DATA" value="6" literal="GENETIC_DATA">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Personal data relating to the inherited or acquired genetic characteristics of a natural person which give unique information about the physiology or the health of that natural person and which result, in particular, from an analysis of a biological sample from the natural person in question."/>
           <details key="caption.de" value="GENETISCHE_DATEN"/>
           <details key="caption.en" value="GENETIC_DATA"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="BIOMETRIC_DATA" value="7">
+      <eLiterals name="BIOMETRIC_DATA" value="7" literal="BIOMETRIC_DATA">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Personal data resulting from specific technical processing relating to the physical, physiological or behavioural characteristics of a natural person, which allow or confirm the unique identification of that natural person, such as facial images or dactyloscopic data."/>
           <details key="caption.de" value="BIOMETRISCHE_DATEN"/>
           <details key="caption.en" value="BIOMETRIC_DATA"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="HEALTH_DATA" value="8">
+      <eLiterals name="HEALTH_DATA" value="8" literal="HEALTH_DATA">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Personal data related to the physical or mental health of a natural person, including the provision of health care services, which reveal information about his or her health status."/>
           <details key="caption.de" value="GESUNDHEITSDATEN"/>
           <details key="caption.en" value="HEALTH_DATA"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="SEXUAL_LIFE_ORIENTATION" value="9">
+      <eLiterals name="SEXUAL_LIFE_ORIENTATION" value="9" literal="SEXUAL_LIFE_ORIENTATION">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Information about heterosexuality, homosexuality, bisexuality, frequency or type of sexual activity of the data subject."/>
           <details key="caption.de" value="SEXUALLEBEN_SEXUELLE_ORIENTIERUNG"/>
           <details key="caption.en" value="SEXUAL_LIFE_ORIENTATION"/>
         </eAnnotations>
       </eLiterals>
-      <eLiterals name="CRIMINAL_CONVICTIONS_OFFENSES" value="10">
+      <eLiterals name="CRIMINAL_CONVICTIONS_OFFENSES" value="10" literal="CRIMINAL_CONVICTIONS_OFFENSES">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="In addition to criminal offences, this also includes information about administrative offences. Furthermore, this includes data on binding official decisions in preparatory proceedings aimed at establishing a criminal offence, in particular data on measures in criminal investigation proceedings."/>
           <details key="caption.de" value="STRAFTATEN_VERURTEILUNGEN"/>
