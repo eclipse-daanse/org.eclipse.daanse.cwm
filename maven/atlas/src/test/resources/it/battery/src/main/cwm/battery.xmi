@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core"
+    xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships" xmlns:sensinact="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.sensinact"
+    xmlns:sensinactmapping="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.mapping.sensinact" xmlns:units="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.units"
+    xmi:id="_battery" name="battery">
+  <ownedElement xsi:type="core:Package" xmi:id="_ecore" name="ecore">
+    <ownedElement xsi:type="core:DataType" xmi:id="_EString" name="EString"/>
+    <ownedElement xsi:type="core:DataType" xmi:id="_EInt" name="EInt"/>
+    <ownedElement xsi:type="core:DataType" xmi:id="_EDouble" name="EDouble"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="_lorawan" name="lorawan">
+    <ownedElement xsi:type="core:Class" xmi:id="_UplinkMessage" name="UplinkMessage">
+      <feature xsi:type="core:Attribute" xmi:id="_UplinkMessage.deduplicationId" name="deduplicationId" type="_EString"/>
+      <feature xsi:type="core:Attribute" xmi:id="_UplinkMessage.time" name="time" type="_EString"/>
+      <feature xsi:type="core:Attribute" xmi:id="_UplinkMessage.fCnt" name="fCnt" type="_EInt"/>
+      <feature xsi:type="core:Attribute" xmi:id="_UplinkMessage.deviceInfo" name="deviceInfo" type="_DeviceInfo"/>
+      <feature xsi:type="core:Attribute" xmi:id="_UplinkMessage.rxInfo" name="rxInfo" type="_RxInfo">
+        <multiplicity xmi:id="_UplinkMessage.rxInfo.multiplicity">
+          <range xmi:id="_UplinkMessage.rxInfo.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="_DeviceInfo" name="DeviceInfo">
+      <feature xsi:type="core:Attribute" xmi:id="_DeviceInfo.deviceProfileName" name="deviceProfileName" type="_EString"/>
+      <feature xsi:type="core:Attribute" xmi:id="_DeviceInfo.deviceName" name="deviceName" type="_EString"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="_RxInfo" name="RxInfo">
+      <feature xsi:type="core:Attribute" xmi:id="_RxInfo.time" name="time" type="_EString"/>
+      <feature xsi:type="core:Attribute" xmi:id="_RxInfo.rssi" name="rssi" type="_EInt"/>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="_dragino" name="dragino">
+    <ownedElement xsi:type="core:Class" xmi:id="_dragino.DecodedObject" name="DecodedObject">
+      <feature xsi:type="core:Attribute" xmi:id="_dragino.DecodedObject.batV" name="batV" type="_EDouble"/>
+      <feature xsi:type="core:Attribute" xmi:id="_dragino.DecodedObject.temp_SOIL" name="temp_SOIL" type="_EDouble"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="_DraginoLSE01Uplink" name="DraginoLSE01Uplink">
+      <feature xsi:type="core:Attribute" xmi:id="_DraginoLSE01Uplink.object" name="object" type="_dragino.DecodedObject"/>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Generalization" xmi:id="_DraginoLSE01Uplink_UplinkMessage" name="DraginoLSE01Uplink_UplinkMessage"
+        child="_DraginoLSE01Uplink" parent="_UplinkMessage"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="_em310udl" name="em310udl">
+    <ownedElement xsi:type="core:Class" xmi:id="_em310udl.DecodedObject" name="DecodedObject">
+      <feature xsi:type="core:Attribute" xmi:id="_em310udl.DecodedObject.battery" name="battery" type="_EDouble"/>
+      <feature xsi:type="core:Attribute" xmi:id="_em310udl.DecodedObject.distance" name="distance" type="_EDouble"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="_EM310UDLUplink" name="EM310UDLUplink">
+      <feature xsi:type="core:Attribute" xmi:id="_EM310UDLUplink.object" name="object" type="_em310udl.DecodedObject"/>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Generalization" xmi:id="_EM310UDLUplink_UplinkMessage" name="EM310UDLUplink_UplinkMessage"
+        child="_EM310UDLUplink" parent="_UplinkMessage"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="_providers" name="providers">
+    <ownedElement xsi:type="sensinact:Provider" xmi:id="_battery-sensor" name="battery-sensor" friendlyNameRequired="true">
+      <ownedElement xsi:type="sensinact:Service" xmi:id="_battery-sensor.battery" name="battery" displayName="Battery">
+        <feature xsi:type="sensinact:Resource" xmi:id="_battery-sensor.battery.level" name="level" type="_EDouble" displayName="Battery Level"/>
+      </ownedElement>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="_mappings" name="mappings">
+    <ownedElement xsi:type="sensinactmapping:ProviderMapping" xmi:id="_dragino-battery-sensor" name="dragino-battery-sensor"
+        provider="_battery-sensor" sourceClass="_DraginoLSE01Uplink">
+      <ownedElement xsi:type="sensinactmapping:ServiceMapping" xmi:id="_dragino-battery-sensor.battery" name="battery" service="_battery-sensor.battery">
+        <ownedElement xsi:type="sensinactmapping:ResourceMapping" xmi:id="_dragino-battery-sensor.battery.level" name="level"
+            resource="_battery-sensor.battery.level">
+          <value xsi:type="sensinactmapping:PathSource" xmi:id="_dragino-battery-sensor.battery.level.value" path="_DraginoLSE01Uplink.object _dragino.DecodedObject.batV"/>
+        </ownedElement>
+      </ownedElement>
+      <id xsi:type="sensinactmapping:PathSource" xmi:id="_dragino-battery-sensor.id" path="_UplinkMessage.deduplicationId">
+        <fallback xsi:type="sensinactmapping:LiteralSource" xmi:id="_dragino-battery-sensor.id.fallback" literal="Dragino LSE01 Battery Sensor"/>
+      </id>
+      <timestamp xsi:type="sensinactmapping:PathSource" xmi:id="_dragino-battery-sensor.timestamp" path="_UplinkMessage.rxInfo _RxInfo.time"
+          index="0"/>
+      <admin xmi:id="_dragino-battery-sensor.admin" name="admin">
+        <friendlyName xsi:type="sensinactmapping:PathSource" xmi:id="_dragino-battery-sensor.admin.friendlyName" path="_UplinkMessage.deviceInfo _DeviceInfo.deviceProfileName"/>
+      </admin>
+    </ownedElement>
+    <ownedElement xsi:type="sensinactmapping:ProviderMapping" xmi:id="_em310udl-battery-sensor" name="em310udl-battery-sensor"
+        provider="_battery-sensor" sourceClass="_EM310UDLUplink">
+      <ownedElement xsi:type="sensinactmapping:ServiceMapping" xmi:id="_em310udl-battery-sensor.battery" name="battery" service="_battery-sensor.battery">
+        <ownedElement xsi:type="sensinactmapping:ResourceMapping" xmi:id="_em310udl-battery-sensor.battery.level" name="level"
+            resource="_battery-sensor.battery.level">
+          <value xsi:type="sensinactmapping:PathSource" xmi:id="_em310udl-battery-sensor.battery.level.value" path="_EM310UDLUplink.object _em310udl.DecodedObject.battery"/>
+        </ownedElement>
+      </ownedElement>
+      <id xsi:type="sensinactmapping:PathSource" xmi:id="_em310udl-battery-sensor.id" path="_UplinkMessage.deduplicationId">
+        <fallback xsi:type="sensinactmapping:LiteralSource" xmi:id="_em310udl-battery-sensor.id.fallback" literal="EM310UDL Battery Sensor"/>
+      </id>
+      <timestamp xsi:type="sensinactmapping:PathSource" xmi:id="_em310udl-battery-sensor.timestamp" path="_UplinkMessage.time"/>
+      <admin xmi:id="_em310udl-battery-sensor.admin" name="admin">
+        <friendlyName xsi:type="sensinactmapping:PathSource" xmi:id="_em310udl-battery-sensor.admin.friendlyName" path="_UplinkMessage.deviceInfo _DeviceInfo.deviceProfileName"/>
+      </admin>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="_units" name="units">
+    <ownedElement xsi:type="units:SystemOfUnits" xmi:id="_fennec-units" name="fennec-units">
+      <ownedElement xsi:type="units:Prefix" xmi:id="_milli" name="milli" symbol="m" base="10" exponent="-3"/>
+      <ownedElement xsi:type="units:Prefix" xmi:id="_kilo" name="kilo" symbol="k" base="10" exponent="3"/>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L1I0M0H0T0D0" name="A0E0L1I0M0H0T0D0" length="1"/>
+      <ownedElement xsi:type="units:BaseUnit" xmi:id="_metre" name="metre" symbol="m" ucumCode="m" dimension="_A0E0L1I0M0H0T0D0"/>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L0I0M1H0T0D0" name="A0E0L0I0M1H0T0D0" mass="1"/>
+      <ownedElement xsi:type="units:BaseUnit" xmi:id="_kilogram" name="kilogram" symbol="kg" ucumCode="kg" dimension="_A0E0L0I0M1H0T0D0"/>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L0I0M0H0T1D0" name="A0E0L0I0M0H0T1D0" time="1"/>
+      <ownedElement xsi:type="units:BaseUnit" xmi:id="_second" name="second" symbol="s" ucumCode="s" dimension="_A0E0L0I0M0H0T1D0"/>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E1L0I0M0H0T0D0" name="A0E1L0I0M0H0T0D0" electricCurrent="1"/>
+      <ownedElement xsi:type="units:BaseUnit" xmi:id="_ampere" name="ampere" symbol="A" ucumCode="A" dimension="_A0E1L0I0M0H0T0D0"/>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L0I0M0H1T0D0" name="A0E0L0I0M0H1T0D0" thermodynamicTemperature="1"/>
+      <ownedElement xsi:type="units:BaseUnit" xmi:id="_kelvin" name="kelvin" symbol="K" ucumCode="K" dimension="_A0E0L0I0M0H1T0D0"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_one" name="one" symbol="1" ucumCode="1" dimension="_A0E0L0I0M0H0T0D1"/>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L0I0M0H0T0D1" name="A0E0L0I0M0H0T0D1"/>
+      <ownedElement xsi:type="units:ScaledUnit" xmi:id="_percent" name="percent" symbol="%" ucumCode="%" dimension="_A0E0L0I0M0H0T0D1"
+          reference="_one" multiplier="0.01"/>
+      <ownedElement xsi:type="units:AlternateUnit" xmi:id="_radian" name="radian" symbol="rad" ucumCode="rad" dimension="_A0E0L0I0M0H0T0D1"
+          reference="_one"/>
+      <ownedElement xsi:type="units:ScaledUnit" xmi:id="_degree" name="degree" symbol="°" ucumCode="deg" dimension="_A0E0L0I0M0H0T0D1"
+          reference="_radian" multiplier="0.0174532925199433"/>
+      <ownedElement xsi:type="units:ScaledUnit" xmi:id="_degreeCelsius" name="degreeCelsius" symbol="°C" ucumCode="Cel" dimension="_A0E0L0I0M0H1T0D0"
+          reference="_kelvin" multiplier="1" offset="273.15"/>
+      <ownedElement xsi:type="units:ScaledUnit" xmi:id="_degreeFahrenheit" name="degreeFahrenheit" symbol="F" ucumCode="[degF]"
+          dimension="_A0E0L0I0M0H1T0D0" reference="_kelvin" multiplier="0.5555555555555556" offset="459.67"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_pascal" name="pascal" symbol="Pa" ucumCode="Pa" dimension="_A0E0L-1I0M1H0T-2D0">
+        <factor xmi:id="_pascal.factor1" unit="_kilogram" exponent="1"/>
+        <factor xmi:id="_pascal.factor2" unit="_metre" exponent="-1"/>
+        <factor xmi:id="_pascal.factor3" unit="_second" exponent="-2"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L-1I0M1H0T-2D0" name="A0E0L-1I0M1H0T-2D0" length="-1" mass="1"
+          time="-2"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_joule" name="joule" symbol="J" ucumCode="J" dimension="_A0E0L2I0M1H0T-2D0">
+        <factor xmi:id="_joule.factor1" unit="_kilogram" exponent="1"/>
+        <factor xmi:id="_joule.factor2" unit="_metre" exponent="2"/>
+        <factor xmi:id="_joule.factor3" unit="_second" exponent="-2"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L2I0M1H0T-2D0" name="A0E0L2I0M1H0T-2D0" length="2" mass="1" time="-2"/>
+      <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_kilojoule" name="kilojoule" symbol="kJ" ucumCode="kJ" dimension="_A0E0L2I0M1H0T-2D0"
+          reference="_joule" prefix="_kilo"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_kilojoulePerSquareMetre" name="kilojoulePerSquareMetre" symbol="kJ/m2"
+          ucumCode="kJ/m2" dimension="_A0E0L0I0M1H0T-2D0">
+        <factor xmi:id="_kilojoulePerSquareMetre.factor1" unit="_kilojoule" exponent="1"/>
+        <factor xmi:id="_kilojoulePerSquareMetre.factor2" unit="_metre" exponent="-2"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L0I0M1H0T-2D0" name="A0E0L0I0M1H0T-2D0" mass="1" time="-2"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_watt" name="watt" symbol="W" ucumCode="W" dimension="_A0E0L2I0M1H0T-3D0">
+        <factor xmi:id="_watt.factor1" unit="_joule" exponent="1"/>
+        <factor xmi:id="_watt.factor2" unit="_second" exponent="-1"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L2I0M1H0T-3D0" name="A0E0L2I0M1H0T-3D0" length="2" mass="1" time="-3"/>
+      <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_milliwatt" name="milliwatt" symbol="mW" ucumCode="mW" dimension="_A0E0L2I0M1H0T-3D0"
+          reference="_watt" prefix="_milli"/>
+      <ownedElement xsi:type="units:LogarithmicUnit" xmi:id="_decibelMilliwatt" name="decibelMilliwatt" symbol="dBm" dimension="_A0E0L2I0M1H0T-3D0"
+          reference="_milliwatt" base="10" divisor="10"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_volt" name="volt" symbol="V" ucumCode="V" dimension="_A0E-1L2I0M1H0T-3D0">
+        <factor xmi:id="_volt.factor1" unit="_watt" exponent="1"/>
+        <factor xmi:id="_volt.factor2" unit="_ampere" exponent="-1"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E-1L2I0M1H0T-3D0" name="A0E-1L2I0M1H0T-3D0" length="2" mass="1"
+          time="-3" electricCurrent="-1"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_metrePerSecond" name="metrePerSecond" symbol="m/s" ucumCode="m/s"
+          dimension="_A0E0L1I0M0H0T-1D0">
+        <factor xmi:id="_metrePerSecond.factor1" unit="_metre" exponent="1"/>
+        <factor xmi:id="_metrePerSecond.factor2" unit="_second" exponent="-1"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L1I0M0H0T-1D0" name="A0E0L1I0M0H0T-1D0" length="1" time="-1"/>
+      <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_millimetre" name="millimetre" symbol="mm" ucumCode="mm" dimension="_A0E0L1I0M0H0T0D0"
+          reference="_metre" prefix="_milli"/>
+      <ownedElement xsi:type="units:ScaledUnit" xmi:id="_hour" name="hour" symbol="h" ucumCode="h" dimension="_A0E0L0I0M0H0T1D0"
+          reference="_second" multiplier="3600"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_millimetrePerHour" name="millimetrePerHour" symbol="mm/h" ucumCode="mm/h"
+          dimension="_A0E0L1I0M0H0T-1D0">
+        <factor xmi:id="_millimetrePerHour.factor1" unit="_millimetre" exponent="1"/>
+        <factor xmi:id="_millimetrePerHour.factor2" unit="_hour" exponent="-1"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_kilogramPerSquareMetre" name="kilogramPerSquareMetre" symbol="kg/m2"
+          ucumCode="kg/m2" dimension="_A0E0L-2I0M1H0T0D0">
+        <factor xmi:id="_kilogramPerSquareMetre.factor1" unit="_kilogram" exponent="1"/>
+        <factor xmi:id="_kilogramPerSquareMetre.factor2" unit="_metre" exponent="-2"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L-2I0M1H0T0D0" name="A0E0L-2I0M1H0T0D0" length="-2" mass="1"/>
+    </ownedElement>
+    <ownedElement xsi:type="units:Quantity" xmi:id="_level" name="level" modelElement="_battery-sensor.battery.level" unit="_volt"/>
+  </ownedElement>
+</core:Model>

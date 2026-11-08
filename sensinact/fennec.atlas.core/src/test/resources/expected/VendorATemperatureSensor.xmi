@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sensinactMapping:ProviderMapping
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:sensinactMapping="https://fennec.eclipse.org/event.atlas/mapping/1.0"
+    xsi:schemaLocation="https://fennec.eclipse.org/event.atlas/mapping/1.0 ../sensinact-mapping.ecore"
+    mid="vendor-a-temperature-sensor">
+    
+  <!-- Reference to the temperature sensor profile -->
+  <profile href="../profiles/temperature-sensor-profile.xmi#/"/>
+  
+  <timestamp strategy="NOW"/>
+  
+  <name name="Vendor A Temperature Sensor"/>
+  
+  <!-- Fictional vendor A sensor model -->
+  <providerClasses
+      href="http://vendora.com/sensors#//VendorATemperatureSensor"/>
+      
+  <services
+      xsi:type="sensinactMapping:AdminMapping"
+      mid="admin">
+    <!-- Maps to vendor A's device name field -->
+    <friendlyNameFeature
+        xsi:type="ecore:EAttribute"
+        href="http://vendora.com/sensors#//VendorATemperatureSensor/deviceName"/>
+    <providerPackage
+        href="http://vendora.com/sensors#/"/>
+    <!-- Maps to vendor A's location structure -->
+    <latitudeRef
+        xsi:type="ecore:EAttribute"
+        href="http://vendora.com/sensors#//VendorATemperatureSensor/lat"/>
+    <longitudeRef
+        xsi:type="ecore:EAttribute"
+        href="http://vendora.com/sensors#//VendorATemperatureSensor/lon"/>
+  </services>
+  
+  <!-- Temperature service conforming to profile -->
+  <services mid="temperature">
+    <name name="Temperature"/>
+    <resources
+        name="Current Temperature"
+        unit="°C"
+        mid="current">
+      <eType
+          xsi:type="ecore:EDataType"
+          href="http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <valueFeature
+          xsi:type="ecore:EAttribute"
+          href="http://vendora.com/sensors#//VendorATemperatureSensor/currentTemp"/>
+    </resources>
+    <resources
+        name="Minimum Temperature"
+        unit="°C"
+        mid="minimum">
+      <eType
+          xsi:type="ecore:EDataType"
+          href="http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <valueFeature
+          xsi:type="ecore:EAttribute"
+          href="http://vendora.com/sensors#//VendorATemperatureSensor/minTemp"/>
+    </resources>
+    <resources
+        name="Maximum Temperature"
+        unit="°C"
+        mid="maximum">
+      <eType
+          xsi:type="ecore:EDataType"
+          href="http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <valueFeature
+          xsi:type="ecore:EAttribute"
+          href="http://vendora.com/sensors#//VendorATemperatureSensor/maxTemp"/>
+    </resources>
+  </services>
+  
+  <!-- Optional status service -->
+  <services mid="status">
+    <name name="Device Status"/>
+    <resources
+        name="Battery Level"
+        unit="%"
+        mid="battery">
+      <eType
+          xsi:type="ecore:EDataType"
+          href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <valueFeature
+          xsi:type="ecore:EAttribute"
+          href="http://vendora.com/sensors#//VendorATemperatureSensor/batteryLevel"/>
+    </resources>
+  </services>
+  
+</sensinactMapping:ProviderMapping>

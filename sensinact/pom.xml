@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.daanse</groupId>
+    <artifactId>org.eclipse.daanse.cwm</artifactId>
+    <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>org.eclipse.daanse.cwm.sensinact</artifactId>
+  <packaging>pom</packaging>
+  <name>Daanse CWM sensiNact (aggregator)</name>
+  <description>Digital-twin tooling: fennec.atlas.core converts CWM sensiNact mappings
+    (model/daanse/mapping.sensinact) with their recording and retention rules
+    (model/daanse/governance/recording, model/daanse/governance/lifecycle) and units into
+    the provider mappings and profiles of Eclipse Fennec event.atlas; its Maven goal
+    fennec-atlas:generate lives in maven/atlas.</description>
+
+  <properties>
+    <!-- Fennec event.atlas is published as snapshot only (Sonatype Central snapshots) -->
+    <fennec.event.atlas.version>1.0.0-SNAPSHOT</fennec.event.atlas.version>
+  </properties>
+
+  <modules>
+    <module>fennec.atlas.core</module>
+  </modules>
+</project>

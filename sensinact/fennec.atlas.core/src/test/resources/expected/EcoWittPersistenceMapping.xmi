@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Example: an EcoWitt weather-station mapping whose resources carry persistence rules
+  (WP-SN-2). Rules are CONTAINED by the resource that uses them, so each is written out inline
+  and two resources that behave alike each carry their own copy. persistence-rules.xmi keeps
+  the same shapes as a catalogue to copy from; nothing resolves it at runtime.
+
+  Change rules are applied when a payload is mapped (see the user guide); deletion rules are
+  carried by the model but not yet enforced.
+-->
+<mapping:ProviderMapping
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:mapping="https://fennec.eclipse.org/event.atlas/mapping/1.0"
+    xsi:schemaLocation="https://fennec.eclipse.org/event.atlas/mapping/1.0 ../sensinact-mapping.ecore"
+    mid="ecowitt-persistence">
+  <timestamp strategy="FEATURE">
+    <featurePath xsi:type="ecore:EAttribute" href="../ecowitt.ecore#//EcoWittWeather/dateUTC"/>
+  </timestamp>
+  <name>
+    <featurePath xsi:type="ecore:EAttribute" href="../ecowitt.ecore#//EcoWittWeather/passkey"/>
+  </name>
+  <providerClasses href="../ecowitt.ecore#//EcoWittWeather"/>
+
+  <services mid="weather">
+    <name name="weather"/>
+
+    <!-- Temperature: store on a 5% change; keep the history for a year -->
+    <resources name="Temperature" unit="F" timestamp="//@timestamp" mid="temperature">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <valueFeature xsi:type="ecore:EAttribute" href="../ecowitt.ecore#//EcoWittWeather/temperaturOutdoor"/>
+      <changeRule xsi:type="mapping:PercentageChangeRule" id="pct-5" percentage="5.0"/>
+      <deletionRule id="keep-1y" retention="365" retentionUnit="DAYS" cleanupInterval="7" cleanupIntervalUnit="DAYS"/>
+    </resources>
+
+    <!-- Humidity: store on an absolute 2 %RH change; keep 90 days -->
+    <resources name="Humidity" unit="%" timestamp="//@timestamp" mid="humidity">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <valueFeature xsi:type="ecore:EAttribute" href="../ecowitt.ecore#//EcoWittWeather/humidityOutdoor"/>
+      <changeRule xsi:type="mapping:AbsoluteChangeRule" id="abs-2" delta="2.0"/>
+      <deletionRule id="keep-90d" retention="90" retentionUnit="DAYS" cleanupInterval="1" cleanupIntervalUnit="DAYS"/>
+    </resources>
+
+    <!-- Rain rate: throttle to at most one store every 10 minutes; keep 90 days -->
+    <resources name="Rain rate" unit="mm/h" timestamp="//@timestamp" mid="rainRate">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <valueFeature xsi:type="ecore:EAttribute" href="../ecowitt.ecore#//EcoWittWeather/rainRate"/>
+      <changeRule xsi:type="mapping:TimeThrottleChangeRule" id="throttle-10m" interval="10" intervalUnit="MINUTES"/>
+      <deletionRule id="keep-90d" retention="90" retentionUnit="DAYS" cleanupInterval="1" cleanupIntervalUnit="DAYS"/>
+    </resources>
+  </services>
+
+  <admin mid="admin" latitude="8.531689" longitude="51.952503">
+    <name name="Admin"/>
+    <friendlyNameFeature xsi:type="ecore:EAttribute" href="../ecowitt.ecore#//EcoWittWeather/stationType"/>
+    <providerPackage href="../ecowitt.ecore#/"/>
+  </admin>
+</mapping:ProviderMapping>

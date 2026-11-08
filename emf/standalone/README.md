@@ -8,7 +8,7 @@ the CWM names works; `CwmPath.of` gives the dotted names of a CWM element and it
 
 ## Relations
 
-- Brings the generated packages of CWM 1.1 and the ORM model.
+- Brings the generated packages of CWM 1.1, the ORM, sensiNact, governance and units models.
 - Used by the converters and Maven plugins that read CWM XMI outside OSGi.
 
 ## Example

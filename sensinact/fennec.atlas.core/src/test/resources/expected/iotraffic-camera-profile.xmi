@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping:MappingProfile
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:mapping="https://fennec.eclipse.org/event.atlas/mapping/1.0"
+    profileId="iotraffic-camera"
+    name="iotraffic Camera"
+    description="One camera is one provider. The camera sends counting reports and AI module health on different ports, i.e. as different message types, so two mappings describe it - and a UNIFIED profile is what makes both contribute services to the same provider instead of creating two."
+    version="1.0"
+    providerStrategy="UNIFIED">
+  <provider providerId="iotraffic-camera">
+    <admin serviceId="admin" serviceName="Admin" required="true"
+           requiresLocation="true" requiresFriendlyName="true"/>
+  </provider>
+</mapping:MappingProfile>

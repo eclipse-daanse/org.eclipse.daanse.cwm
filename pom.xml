@@ -59,6 +59,7 @@
     <module>testkit</module>
     <module>emf</module>
     <module>orm</module>
+    <module>sensinact</module>
     <module>maven</module>
     <!--
     <module>codegen</module>

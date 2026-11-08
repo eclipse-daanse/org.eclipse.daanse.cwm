@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping:MappingProfile xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mapping="https://fennec.eclipse.org/event.atlas/mapping/1.0" profileId="battery-sensor" name="Battery Sensor Profile" description="Standard profile for battery-powered sensor devices that report battery level information." providerStrategy="UNIFIED">
+  <provider providerId="battery-sensor">
+    <services serviceId="battery" serviceName="Battery">
+      <resources resourceId="level" resourceName="Battery Level" expectedUnit="V">
+        <expectedType href="http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      </resources>
+    </services>
+    <admin serviceId="admin" serviceName="Admin" requiresFriendlyName="true">
+      <resources resourceId="friendlyName" resourceName="Device Name" required="false">
+        <expectedType href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </resources>
+      <resources resourceId="location" resourceName="Location" required="false">
+        <expectedType href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </resources>
+    </admin>
+  </provider>
+</mapping:MappingProfile>

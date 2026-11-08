@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core"
+    xmlns:lifecycle="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.lifecycle" xmlns:recording="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.governance.recording"
+    xmlns:sensinact="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.sensinact" xmlns:sensinactmapping="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.mapping.sensinact"
+    xmlns:units="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.units" xmi:id="_ecowitt" name="ecowitt">
+  <ownedElement xsi:type="core:Package" xmi:id="_providers" name="providers">
+    <ownedElement xsi:type="sensinact:Provider" xmi:id="_ecowitt-weather" name="ecowitt-weather">
+      <ownedElement xsi:type="sensinact:Service" xmi:id="_ecowitt-weather.weather" name="weather" displayName="weather">
+        <feature xsi:type="sensinact:Resource" xmi:id="_ecowitt-weather.weather.temperature" name="temperature" constraint="_pct-5 _keep-1y"
+            displayName="Temperature">
+          <type xsi:type="core:DataType" href="classes.xmi#_EDouble"/>
+        </feature>
+        <feature xsi:type="sensinact:Resource" xmi:id="_ecowitt-weather.weather.humidity" name="humidity" constraint="_abs-2 _keep-90d"
+            displayName="Humidity">
+          <type xsi:type="core:DataType" href="classes.xmi#_EInt"/>
+        </feature>
+        <feature xsi:type="sensinact:Resource" xmi:id="_ecowitt-weather.weather.rainRate" name="rainRate" constraint="_throttle-10m _keep-90d"
+            displayName="Rain rate">
+          <type xsi:type="core:DataType" href="classes.xmi#_EDouble"/>
+        </feature>
+      </ownedElement>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="_mappings" name="mappings">
+    <ownedElement xsi:type="sensinactmapping:ProviderMapping" xmi:id="_ecowitt-persistence" name="ecowitt-persistence" provider="_ecowitt-weather">
+      <ownedElement xsi:type="sensinactmapping:ServiceMapping" xmi:id="_ecowitt-persistence.weather" name="weather" service="_ecowitt-weather.weather">
+        <ownedElement xsi:type="sensinactmapping:ResourceMapping" xmi:id="_ecowitt-persistence.weather.temperature" name="temperature"
+            resource="_ecowitt-weather.weather.temperature">
+          <value xsi:type="sensinactmapping:PathSource" xmi:id="_ecowitt-persistence.weather.temperature.value">
+            <path xsi:type="core:Attribute" href="classes.xmi#_EcoWittWeather.temperaturOutdoor"/>
+          </value>
+        </ownedElement>
+        <ownedElement xsi:type="sensinactmapping:ResourceMapping" xmi:id="_ecowitt-persistence.weather.humidity" name="humidity"
+            resource="_ecowitt-weather.weather.humidity">
+          <value xsi:type="sensinactmapping:PathSource" xmi:id="_ecowitt-persistence.weather.humidity.value">
+            <path xsi:type="core:Attribute" href="classes.xmi#_EcoWittWeather.humidityOutdoor"/>
+          </value>
+        </ownedElement>
+        <ownedElement xsi:type="sensinactmapping:ResourceMapping" xmi:id="_ecowitt-persistence.weather.rainRate" name="rainRate"
+            resource="_ecowitt-weather.weather.rainRate">
+          <value xsi:type="sensinactmapping:PathSource" xmi:id="_ecowitt-persistence.weather.rainRate.value">
+            <path xsi:type="core:Attribute" href="classes.xmi#_EcoWittWeather.rainRate"/>
+          </value>
+        </ownedElement>
+      </ownedElement>
+      <sourceClass href="classes.xmi#_EcoWittWeather"/>
+      <id xsi:type="sensinactmapping:PathSource" xmi:id="_ecowitt-persistence.id">
+        <path xsi:type="core:Attribute" href="classes.xmi#_EcoWittWeather.passkey"/>
+      </id>
+      <timestamp xsi:type="sensinactmapping:PathSource" xmi:id="_ecowitt-persistence.timestamp">
+        <path xsi:type="core:Attribute" href="classes.xmi#_EcoWittWeather.dateUTC"/>
+      </timestamp>
+      <admin xmi:id="_ecowitt-persistence.admin" name="admin">
+        <friendlyName xsi:type="sensinactmapping:PathSource" xmi:id="_ecowitt-persistence.admin.friendlyName">
+          <path xsi:type="core:Attribute" href="classes.xmi#_EcoWittWeather.stationType"/>
+        </friendlyName>
+        <latitude xsi:type="sensinactmapping:LiteralSource" xmi:id="_ecowitt-persistence.admin.latitude" literal="8.531689"/>
+        <longitude xsi:type="sensinactmapping:LiteralSource" xmi:id="_ecowitt-persistence.admin.longitude" literal="51.952503"/>
+      </admin>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="_rules" name="rules">
+    <ownedElement xsi:type="recording:RelativeChangeRule" xmi:id="_pct-5" name="pct-5" constrainedElement="_ecowitt-weather.weather.temperature"
+        percent="5.0">
+      <body xmi:id="_pct-5.body" body="abs(value - last) >= 5.0 % of abs(last)" language="daanse.lifecycle"/>
+    </ownedElement>
+    <ownedElement xsi:type="recording:AbsoluteChangeRule" xmi:id="_abs-2" name="abs-2" constrainedElement="_ecowitt-weather.weather.humidity"
+        delta="2.0">
+      <body xmi:id="_abs-2.body" body="abs(value - last) >= 2.0" language="daanse.lifecycle"/>
+    </ownedElement>
+    <ownedElement xsi:type="recording:ThrottleRule" xmi:id="_throttle-10m" name="throttle-10m" constrainedElement="_ecowitt-weather.weather.rainRate"
+        minimumInterval="PT10M">
+      <body xmi:id="_throttle-10m.body" body="time - lastTime >= PT10M" language="daanse.lifecycle"/>
+    </ownedElement>
+    <ownedElement xsi:type="lifecycle:RetentionSchedule" xmi:id="_keep-1y" name="keep-1y" constrainedElement="_ecowitt-weather.weather.temperature"
+        cleanupInterval="P7D">
+      <body xmi:id="_keep-1y.body" body="from the time of the value: delete after P365D; cleanup every P7D" language="daanse.lifecycle"/>
+      <start xsi:type="lifecycle:ValueTime" xmi:id="_keep-1y.start"/>
+      <stage xsi:type="lifecycle:Delete" xmi:id="_keep-1y.delete" name="delete" after="P365D"/>
+    </ownedElement>
+    <ownedElement xsi:type="lifecycle:RetentionSchedule" xmi:id="_keep-90d" name="keep-90d" constrainedElement="_ecowitt-weather.weather.humidity _ecowitt-weather.weather.rainRate"
+        cleanupInterval="P1D">
+      <body xmi:id="_keep-90d.body" body="from the time of the value: delete after P90D; cleanup every P1D" language="daanse.lifecycle"/>
+      <start xsi:type="lifecycle:ValueTime" xmi:id="_keep-90d.start"/>
+      <stage xsi:type="lifecycle:Delete" xmi:id="_keep-90d.delete" name="delete" after="P90D"/>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="_units" name="units">
+    <ownedElement xsi:type="units:SystemOfUnits" xmi:id="_fennec-units" name="fennec-units">
+      <ownedElement xsi:type="units:Prefix" xmi:id="_milli" name="milli" symbol="m" base="10" exponent="-3"/>
+      <ownedElement xsi:type="units:Prefix" xmi:id="_kilo" name="kilo" symbol="k" base="10" exponent="3"/>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L1I0M0H0T0D0" name="A0E0L1I0M0H0T0D0" length="1"/>
+      <ownedElement xsi:type="units:BaseUnit" xmi:id="_metre" name="metre" symbol="m" ucumCode="m" dimension="_A0E0L1I0M0H0T0D0"/>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L0I0M1H0T0D0" name="A0E0L0I0M1H0T0D0" mass="1"/>
+      <ownedElement xsi:type="units:BaseUnit" xmi:id="_kilogram" name="kilogram" symbol="kg" ucumCode="kg" dimension="_A0E0L0I0M1H0T0D0"/>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L0I0M0H0T1D0" name="A0E0L0I0M0H0T1D0" time="1"/>
+      <ownedElement xsi:type="units:BaseUnit" xmi:id="_second" name="second" symbol="s" ucumCode="s" dimension="_A0E0L0I0M0H0T1D0"/>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E1L0I0M0H0T0D0" name="A0E1L0I0M0H0T0D0" electricCurrent="1"/>
+      <ownedElement xsi:type="units:BaseUnit" xmi:id="_ampere" name="ampere" symbol="A" ucumCode="A" dimension="_A0E1L0I0M0H0T0D0"/>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L0I0M0H1T0D0" name="A0E0L0I0M0H1T0D0" thermodynamicTemperature="1"/>
+      <ownedElement xsi:type="units:BaseUnit" xmi:id="_kelvin" name="kelvin" symbol="K" ucumCode="K" dimension="_A0E0L0I0M0H1T0D0"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_one" name="one" symbol="1" ucumCode="1" dimension="_A0E0L0I0M0H0T0D1"/>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L0I0M0H0T0D1" name="A0E0L0I0M0H0T0D1"/>
+      <ownedElement xsi:type="units:ScaledUnit" xmi:id="_percent" name="percent" symbol="%" ucumCode="%" dimension="_A0E0L0I0M0H0T0D1"
+          reference="_one" multiplier="0.01"/>
+      <ownedElement xsi:type="units:AlternateUnit" xmi:id="_radian" name="radian" symbol="rad" ucumCode="rad" dimension="_A0E0L0I0M0H0T0D1"
+          reference="_one"/>
+      <ownedElement xsi:type="units:ScaledUnit" xmi:id="_degree" name="degree" symbol="°" ucumCode="deg" dimension="_A0E0L0I0M0H0T0D1"
+          reference="_radian" multiplier="0.0174532925199433"/>
+      <ownedElement xsi:type="units:ScaledUnit" xmi:id="_degreeCelsius" name="degreeCelsius" symbol="°C" ucumCode="Cel" dimension="_A0E0L0I0M0H1T0D0"
+          reference="_kelvin" multiplier="1" offset="273.15"/>
+      <ownedElement xsi:type="units:ScaledUnit" xmi:id="_degreeFahrenheit" name="degreeFahrenheit" symbol="F" ucumCode="[degF]"
+          dimension="_A0E0L0I0M0H1T0D0" reference="_kelvin" multiplier="0.5555555555555556" offset="459.67"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_pascal" name="pascal" symbol="Pa" ucumCode="Pa" dimension="_A0E0L-1I0M1H0T-2D0">
+        <factor xmi:id="_pascal.factor1" unit="_kilogram" exponent="1"/>
+        <factor xmi:id="_pascal.factor2" unit="_metre" exponent="-1"/>
+        <factor xmi:id="_pascal.factor3" unit="_second" exponent="-2"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L-1I0M1H0T-2D0" name="A0E0L-1I0M1H0T-2D0" length="-1" mass="1"
+          time="-2"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_joule" name="joule" symbol="J" ucumCode="J" dimension="_A0E0L2I0M1H0T-2D0">
+        <factor xmi:id="_joule.factor1" unit="_kilogram" exponent="1"/>
+        <factor xmi:id="_joule.factor2" unit="_metre" exponent="2"/>
+        <factor xmi:id="_joule.factor3" unit="_second" exponent="-2"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L2I0M1H0T-2D0" name="A0E0L2I0M1H0T-2D0" length="2" mass="1" time="-2"/>
+      <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_kilojoule" name="kilojoule" symbol="kJ" ucumCode="kJ" dimension="_A0E0L2I0M1H0T-2D0"
+          reference="_joule" prefix="_kilo"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_kilojoulePerSquareMetre" name="kilojoulePerSquareMetre" symbol="kJ/m2"
+          ucumCode="kJ/m2" dimension="_A0E0L0I0M1H0T-2D0">
+        <factor xmi:id="_kilojoulePerSquareMetre.factor1" unit="_kilojoule" exponent="1"/>
+        <factor xmi:id="_kilojoulePerSquareMetre.factor2" unit="_metre" exponent="-2"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L0I0M1H0T-2D0" name="A0E0L0I0M1H0T-2D0" mass="1" time="-2"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_watt" name="watt" symbol="W" ucumCode="W" dimension="_A0E0L2I0M1H0T-3D0">
+        <factor xmi:id="_watt.factor1" unit="_joule" exponent="1"/>
+        <factor xmi:id="_watt.factor2" unit="_second" exponent="-1"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L2I0M1H0T-3D0" name="A0E0L2I0M1H0T-3D0" length="2" mass="1" time="-3"/>
+      <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_milliwatt" name="milliwatt" symbol="mW" ucumCode="mW" dimension="_A0E0L2I0M1H0T-3D0"
+          reference="_watt" prefix="_milli"/>
+      <ownedElement xsi:type="units:LogarithmicUnit" xmi:id="_decibelMilliwatt" name="decibelMilliwatt" symbol="dBm" dimension="_A0E0L2I0M1H0T-3D0"
+          reference="_milliwatt" base="10" divisor="10"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_volt" name="volt" symbol="V" ucumCode="V" dimension="_A0E-1L2I0M1H0T-3D0">
+        <factor xmi:id="_volt.factor1" unit="_watt" exponent="1"/>
+        <factor xmi:id="_volt.factor2" unit="_ampere" exponent="-1"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E-1L2I0M1H0T-3D0" name="A0E-1L2I0M1H0T-3D0" length="2" mass="1"
+          time="-3" electricCurrent="-1"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_metrePerSecond" name="metrePerSecond" symbol="m/s" ucumCode="m/s"
+          dimension="_A0E0L1I0M0H0T-1D0">
+        <factor xmi:id="_metrePerSecond.factor1" unit="_metre" exponent="1"/>
+        <factor xmi:id="_metrePerSecond.factor2" unit="_second" exponent="-1"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L1I0M0H0T-1D0" name="A0E0L1I0M0H0T-1D0" length="1" time="-1"/>
+      <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_millimetre" name="millimetre" symbol="mm" ucumCode="mm" dimension="_A0E0L1I0M0H0T0D0"
+          reference="_metre" prefix="_milli"/>
+      <ownedElement xsi:type="units:ScaledUnit" xmi:id="_hour" name="hour" symbol="h" ucumCode="h" dimension="_A0E0L0I0M0H0T1D0"
+          reference="_second" multiplier="3600"/>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_millimetrePerHour" name="millimetrePerHour" symbol="mm/h" ucumCode="mm/h"
+          dimension="_A0E0L1I0M0H0T-1D0">
+        <factor xmi:id="_millimetrePerHour.factor1" unit="_millimetre" exponent="1"/>
+        <factor xmi:id="_millimetrePerHour.factor2" unit="_hour" exponent="-1"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:DerivedUnit" xmi:id="_kilogramPerSquareMetre" name="kilogramPerSquareMetre" symbol="kg/m2"
+          ucumCode="kg/m2" dimension="_A0E0L-2I0M1H0T0D0">
+        <factor xmi:id="_kilogramPerSquareMetre.factor1" unit="_kilogram" exponent="1"/>
+        <factor xmi:id="_kilogramPerSquareMetre.factor2" unit="_metre" exponent="-2"/>
+      </ownedElement>
+      <ownedElement xsi:type="units:Dimension" xmi:id="_A0E0L-2I0M1H0T0D0" name="A0E0L-2I0M1H0T0D0" length="-2" mass="1"/>
+    </ownedElement>
+    <ownedElement xsi:type="units:Quantity" xmi:id="_temperature" name="temperature" modelElement="_ecowitt-weather.weather.temperature"
+        unit="_degreeFahrenheit"/>
+    <ownedElement xsi:type="units:Quantity" xmi:id="_humidity" name="humidity" modelElement="_ecowitt-weather.weather.humidity"
+        unit="_percent"/>
+    <ownedElement xsi:type="units:Quantity" xmi:id="_rainRate" name="rainRate" modelElement="_ecowitt-weather.weather.rainRate"
+        unit="_millimetrePerHour"/>
+  </ownedElement>
+</core:Model>

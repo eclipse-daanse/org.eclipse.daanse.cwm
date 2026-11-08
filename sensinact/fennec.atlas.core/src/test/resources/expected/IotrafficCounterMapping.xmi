@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping:ProviderMapping
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:mapping="https://fennec.eclipse.org/event.atlas/mapping/1.0"
+    mid="iotraffic-counter">
+  <timestamp>
+    <featurePath xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/lorawan/iotraffic#//IotrafficUplink/time"/>
+  </timestamp>
+  <name>
+    <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//IotrafficUplink/deviceInfo"/>
+    <featurePath xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/lorawan/iotraffic#//DeviceInfo/devEui"/>
+  </name>
+  <providerClasses href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterUplink"/>
+  <profile href="iotraffic-camera-profile.xmi#iotraffic-camera"/>
+  <services mid="window">
+    <name name="Reporting window"/>
+    <resources name="From" mid="from" timestamp="//@timestamp">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <valueFeature xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterUplink/object"/>
+      <valueFeature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterData/from_time_text"/>
+    </resources>
+    <resources name="To" mid="to" timestamp="//@timestamp">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <valueFeature xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterUplink/object"/>
+      <valueFeature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterData/to_time_text"/>
+    </resources>
+  </services>
+  <!-- One service per configured line. The filter, not a position, is what picks it:
+       the camera writes its lines in no fixed order and splits them over several uplinks,
+       so a service whose line this uplink does not carry is simply skipped. -->
+  <services mid="line1">
+    <name name="Line 1"/>
+    <referencedResource xsi:type="mapping:ReferenceMapping" collectionFilter="key=line_1">
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterUplink/object"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterData/lines"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//LineEntry/value"/>
+    </referencedResource>
+  </services>
+  <!-- One service per configured line. The filter, not a position, is what picks it:
+       the camera writes its lines in no fixed order and splits them over several uplinks,
+       so a service whose line this uplink does not carry is simply skipped. -->
+  <services mid="line2">
+    <name name="Line 2"/>
+    <referencedResource xsi:type="mapping:ReferenceMapping" collectionFilter="key=line_2">
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterUplink/object"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterData/lines"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//LineEntry/value"/>
+    </referencedResource>
+  </services>
+  <!-- One service per configured line. The filter, not a position, is what picks it:
+       the camera writes its lines in no fixed order and splits them over several uplinks,
+       so a service whose line this uplink does not carry is simply skipped. -->
+  <services mid="line3">
+    <name name="Line 3"/>
+    <referencedResource xsi:type="mapping:ReferenceMapping" collectionFilter="key=line_3">
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterUplink/object"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterData/lines"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//LineEntry/value"/>
+    </referencedResource>
+  </services>
+  <!-- One service per configured line. The filter, not a position, is what picks it:
+       the camera writes its lines in no fixed order and splits them over several uplinks,
+       so a service whose line this uplink does not carry is simply skipped. -->
+  <services mid="line4">
+    <name name="Line 4"/>
+    <referencedResource xsi:type="mapping:ReferenceMapping" collectionFilter="key=line_4">
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterUplink/object"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterData/lines"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//LineEntry/value"/>
+    </referencedResource>
+  </services>
+  <!-- One service per configured line. The filter, not a position, is what picks it:
+       the camera writes its lines in no fixed order and splits them over several uplinks,
+       so a service whose line this uplink does not carry is simply skipped. -->
+  <services mid="line5">
+    <name name="Line 5"/>
+    <referencedResource xsi:type="mapping:ReferenceMapping" collectionFilter="key=line_5">
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterUplink/object"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterData/lines"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//LineEntry/value"/>
+    </referencedResource>
+  </services>
+  <!-- One service per configured line. The filter, not a position, is what picks it:
+       the camera writes its lines in no fixed order and splits them over several uplinks,
+       so a service whose line this uplink does not carry is simply skipped. -->
+  <services mid="line6">
+    <name name="Line 6"/>
+    <referencedResource xsi:type="mapping:ReferenceMapping" collectionFilter="key=line_6">
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterUplink/object"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterData/lines"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//LineEntry/value"/>
+    </referencedResource>
+  </services>
+  <!-- One service per configured line. The filter, not a position, is what picks it:
+       the camera writes its lines in no fixed order and splits them over several uplinks,
+       so a service whose line this uplink does not carry is simply skipped. -->
+  <services mid="line7">
+    <name name="Line 7"/>
+    <referencedResource xsi:type="mapping:ReferenceMapping" collectionFilter="key=line_7">
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterUplink/object"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterData/lines"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//LineEntry/value"/>
+    </referencedResource>
+  </services>
+  <!-- One service per configured line. The filter, not a position, is what picks it:
+       the camera writes its lines in no fixed order and splits them over several uplinks,
+       so a service whose line this uplink does not carry is simply skipped. -->
+  <services mid="line8">
+    <name name="Line 8"/>
+    <referencedResource xsi:type="mapping:ReferenceMapping" collectionFilter="key=line_8">
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterUplink/object"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterData/lines"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//LineEntry/value"/>
+    </referencedResource>
+  </services>
+  <!-- One service per configured line. The filter, not a position, is what picks it:
+       the camera writes its lines in no fixed order and splits them over several uplinks,
+       so a service whose line this uplink does not carry is simply skipped. -->
+  <services mid="line9">
+    <name name="Line 9"/>
+    <referencedResource xsi:type="mapping:ReferenceMapping" collectionFilter="key=line_9">
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterUplink/object"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//CounterData/lines"/>
+      <featurePath xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//LineEntry/value"/>
+    </referencedResource>
+  </services>
+  <admin mid="admin">
+    <name name="Admin"/>
+    <friendlyNameFeature xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//IotrafficUplink/deviceInfo"/>
+    <friendlyNameFeature xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/lorawan/iotraffic#//DeviceInfo/deviceName"/>
+    <!-- The camera reports no position of its own, so the receiving gateway's stands in. -->
+    <latitudeRef xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//IotrafficUplink/rxInfo"/>
+    <latitudeRef xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//RxInfo/location"/>
+    <latitudeRef xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/lorawan/iotraffic#//Location/latitude"/>
+    <longitudeRef xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//IotrafficUplink/rxInfo"/>
+    <longitudeRef xsi:type="ecore:EReference" href="https://eclipse.org/fennec/lorawan/iotraffic#//RxInfo/location"/>
+    <longitudeRef xsi:type="ecore:EAttribute" href="https://eclipse.org/fennec/lorawan/iotraffic#//Location/longitude"/>
+    <providerPackage href="https://eclipse.org/fennec/lorawan/iotraffic#/"/>
+  </admin>
+</mapping:ProviderMapping>

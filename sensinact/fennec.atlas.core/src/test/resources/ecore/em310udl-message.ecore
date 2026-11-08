@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="em310udl" nsURI="http://www.example.org/lorawan/specific/em310udl"
+    nsPrefix="em310udl">
+  <eClassifiers xsi:type="ecore:EClass" name="DecodedObject">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="distance" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="position" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="battery" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EM310UDLUplink" eSuperTypes="lorawan-uplink.ecore#//UplinkMessage">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="object" eType="#//DecodedObject"
+        containment="true"/>
+  </eClassifiers>
+</ecore:EPackage>
