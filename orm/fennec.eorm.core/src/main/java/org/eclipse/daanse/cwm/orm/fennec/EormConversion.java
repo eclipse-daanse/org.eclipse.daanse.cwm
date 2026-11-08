@@ -30,66 +30,66 @@ import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.StructuralFeature;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.relationships.AssociationEnd;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
-import org.eclipse.daanse.cwm.model.daanse.orm.AssociationOverride;
-import org.eclipse.daanse.cwm.model.daanse.orm.AttributeMapping;
-import org.eclipse.daanse.cwm.model.daanse.orm.AttributeOverride;
-import org.eclipse.daanse.cwm.model.daanse.orm.Base;
-import org.eclipse.daanse.cwm.model.daanse.orm.Basic;
-import org.eclipse.daanse.cwm.model.daanse.orm.CascadeKind;
-import org.eclipse.daanse.cwm.model.daanse.orm.CollectionSupport;
-import org.eclipse.daanse.cwm.model.daanse.orm.CollectionTable;
-import org.eclipse.daanse.cwm.model.daanse.orm.Column;
-import org.eclipse.daanse.cwm.model.daanse.orm.ColumnResult;
-import org.eclipse.daanse.cwm.model.daanse.orm.ConstructorResult;
-import org.eclipse.daanse.cwm.model.daanse.orm.Convert;
-import org.eclipse.daanse.cwm.model.daanse.orm.Converter;
-import org.eclipse.daanse.cwm.model.daanse.orm.ElementCollection;
-import org.eclipse.daanse.cwm.model.daanse.orm.Embeddable;
-import org.eclipse.daanse.cwm.model.daanse.orm.Embedded;
-import org.eclipse.daanse.cwm.model.daanse.orm.EmbeddedId;
-import org.eclipse.daanse.cwm.model.daanse.orm.Entity;
-import org.eclipse.daanse.cwm.model.daanse.orm.EntityListener;
-import org.eclipse.daanse.cwm.model.daanse.orm.EntityMappings;
-import org.eclipse.daanse.cwm.model.daanse.orm.EntityResult;
-import org.eclipse.daanse.cwm.model.daanse.orm.FieldResult;
-import org.eclipse.daanse.cwm.model.daanse.orm.GeneratedValue;
-import org.eclipse.daanse.cwm.model.daanse.orm.Generator;
-import org.eclipse.daanse.cwm.model.daanse.orm.Id;
-import org.eclipse.daanse.cwm.model.daanse.orm.IdentifiableType;
-import org.eclipse.daanse.cwm.model.daanse.orm.Join;
-import org.eclipse.daanse.cwm.model.daanse.orm.JoinTable;
-import org.eclipse.daanse.cwm.model.daanse.orm.LifecycleCallback;
-import org.eclipse.daanse.cwm.model.daanse.orm.ManagedType;
-import org.eclipse.daanse.cwm.model.daanse.orm.ManyToMany;
-import org.eclipse.daanse.cwm.model.daanse.orm.ManyToOne;
-import org.eclipse.daanse.cwm.model.daanse.orm.MapKey;
-import org.eclipse.daanse.cwm.model.daanse.orm.MappedSuperclass;
-import org.eclipse.daanse.cwm.model.daanse.orm.NamedAttributeNode;
-import org.eclipse.daanse.cwm.model.daanse.orm.NamedEntityGraph;
-import org.eclipse.daanse.cwm.model.daanse.orm.NamedNativeQuery;
-import org.eclipse.daanse.cwm.model.daanse.orm.NamedQuery;
-import org.eclipse.daanse.cwm.model.daanse.orm.NamedStoredProcedureQuery;
-import org.eclipse.daanse.cwm.model.daanse.orm.NamedSubgraph;
-import org.eclipse.daanse.cwm.model.daanse.orm.OneToMany;
-import org.eclipse.daanse.cwm.model.daanse.orm.OneToOne;
-import org.eclipse.daanse.cwm.model.daanse.orm.Ordering;
-import org.eclipse.daanse.cwm.model.daanse.orm.OrmElement;
-import org.eclipse.daanse.cwm.model.daanse.orm.OverrideHost;
-import org.eclipse.daanse.cwm.model.daanse.orm.OwnableRelationship;
-import org.eclipse.daanse.cwm.model.daanse.orm.PersistenceUnitDefaults;
-import org.eclipse.daanse.cwm.model.daanse.orm.PersistenceUnitMetadata;
-import org.eclipse.daanse.cwm.model.daanse.orm.Query;
-import org.eclipse.daanse.cwm.model.daanse.orm.QueryHint;
-import org.eclipse.daanse.cwm.model.daanse.orm.RelationshipMapping;
-import org.eclipse.daanse.cwm.model.daanse.orm.SecondaryTable;
-import org.eclipse.daanse.cwm.model.daanse.orm.SequenceGenerator;
-import org.eclipse.daanse.cwm.model.daanse.orm.SimpleBase;
-import org.eclipse.daanse.cwm.model.daanse.orm.SqlResultSetMapping;
-import org.eclipse.daanse.cwm.model.daanse.orm.TableGenerator;
-import org.eclipse.daanse.cwm.model.daanse.orm.Transient;
-import org.eclipse.daanse.cwm.model.daanse.orm.Version;
-import org.eclipse.daanse.cwm.model.daanse.orm.util.OrmBindings;
-import org.eclipse.daanse.cwm.model.daanse.orm.util.OrmBindings.JoinPair;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.AssociationOverride;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.AttributeMapping;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.AttributeOverride;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.Base;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.Basic;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.CascadeKind;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.CollectionSupport;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.CollectionTable;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.Column;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.ColumnResult;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.ConstructorResult;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.Convert;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.Converter;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.ElementCollection;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.Embeddable;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.Embedded;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.EmbeddedId;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.Entity;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.EntityListener;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.EntityMappings;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.EntityResult;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.FieldResult;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.GeneratedValue;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.Generator;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.Id;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.IdentifiableType;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.Join;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.JoinTable;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.LifecycleCallback;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.ManagedType;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.ManyToMany;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.ManyToOne;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.MapKey;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.MappedSuperclass;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.NamedAttributeNode;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.NamedEntityGraph;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.NamedNativeQuery;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.NamedQuery;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.NamedStoredProcedureQuery;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.NamedSubgraph;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.OneToMany;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.OneToOne;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.Ordering;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.OrmElement;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.OverrideHost;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.OwnableRelationship;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.PersistenceUnitDefaults;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.PersistenceUnitMetadata;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.Query;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.QueryHint;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.RelationshipMapping;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.SecondaryTable;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.SequenceGenerator;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.SimpleBase;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.SqlResultSetMapping;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.TableGenerator;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.Transient;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.Version;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.util.OrmBindings;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.util.OrmBindings.JoinPair;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
@@ -702,7 +702,7 @@ final class EormConversion {
         if (enumType != null) {
             out.setEnumerated(enumType);
         }
-        if (sb.isSetEnumerated() && sb.getEnumerated() == org.eclipse.daanse.cwm.model.daanse.orm.EnumType.STRING) {
+        if (sb.isSetEnumerated() && sb.getEnumerated() == org.eclipse.daanse.cwm.model.daanse.mapping.relational.EnumType.STRING) {
             notes.add(Note.warning(EormNotes.ENUM_STRING, path(sb), "enumerated STRING: EORM's enumerated names only"
                     + " the EEnum, the storage as name cannot be expressed"));
         }
@@ -1234,7 +1234,7 @@ final class EormConversion {
                 + " — is its package part of the converted Ecore?"));
     }
 
-    private static AccessType access(org.eclipse.daanse.cwm.model.daanse.orm.AccessType a) {
+    private static AccessType access(org.eclipse.daanse.cwm.model.daanse.mapping.relational.AccessType a) {
         return AccessType.getByName(a.getName());
     }
 

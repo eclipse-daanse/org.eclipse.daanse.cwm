@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Bidirectional n:1 relationship.">
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.mapping.relational" xmi:id="EntityMappings_library" name="library" description="Bidirectional n:1 relationship.">
   <entity xmi:id="Entity_library.Publisher" name="Publisher">
     <cwmClass href="objects.xmi#Class_library.Publisher"/>
     <basic xmi:id="Basic_library.Publisher.name" name="name">

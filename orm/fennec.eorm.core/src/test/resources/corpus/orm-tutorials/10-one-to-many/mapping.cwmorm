@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Unidirectional 1:n relationship.">
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.mapping.relational" xmi:id="EntityMappings_library" name="library" description="Unidirectional 1:n relationship.">
   <entity xmi:id="Entity_library.Publisher" name="Publisher">
     <cwmClass href="objects.xmi#Class_library.Publisher"/>
     <oneToMany xmi:id="OneToMany_library.Publisher.notes" name="notes" description="Unidirectional OneToMany: the join columns sit on the TARGET table NOTE (JPA @OneToMany + @JoinColumn, without mappedBy). owningSide stays at the default true — there is no opposite side. orphanRemoval: notes removed from the list get deleted." orphanRemoval="true">

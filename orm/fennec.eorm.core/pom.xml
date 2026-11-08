@@ -22,7 +22,7 @@
   </parent>
   <artifactId>org.eclipse.daanse.cwm.orm.fennec.eorm.core</artifactId>
   <name>Daanse CWM ORM — CWM-ORM to Fennec EORM</name>
-  <description>Converts a CWM-ORM mapping (org.eclipse.daanse.cwm.model.daanse.orm, explicit
+  <description>Converts a CWM-ORM mapping (org.eclipse.daanse.cwm.model.daanse.mapping.relational, explicit
     profile) into the EntityMappings model of Eclipse Fennec Persistence (.eorm). Classes and
     features are referenced as Ecore elements of the given .ecore files of the class model, found
     by names.</description>
@@ -45,7 +45,7 @@
   <dependencies>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.model.daanse.orm</artifactId>
+      <artifactId>org.eclipse.daanse.cwm.model.daanse.mapping.relational</artifactId>
       <version>${project.version}</version>
     </dependency>
     <!-- the class model side, read by names -->

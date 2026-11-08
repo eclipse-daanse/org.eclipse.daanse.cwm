@@ -22,7 +22,7 @@
   <name>Daanse CWM Models</name>
 
   <modules>
-    <module>orm</module>
+    <module>mapping.relational</module>
     <module>sensinact</module>
     <module>units</module>
   <!--

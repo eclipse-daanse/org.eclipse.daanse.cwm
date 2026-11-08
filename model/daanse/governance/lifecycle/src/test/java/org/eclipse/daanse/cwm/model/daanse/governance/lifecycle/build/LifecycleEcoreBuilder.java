@@ -47,7 +47,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
  * schedule contains what is its own — the start of its periods, its stages, its limits; every
  * other reference is one-way with an opposite role name.</p>
  *
- * <p>Construction and serialization follow {@code model/daanse/orm/.../OrmEcoreBuilder}.</p>
+ * <p>Construction and serialization follow {@code model/daanse/mapping.relational/.../OrmEcoreBuilder}.</p>
  */
 public final class LifecycleEcoreBuilder {
 

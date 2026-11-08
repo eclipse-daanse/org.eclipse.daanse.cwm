@@ -261,7 +261,7 @@ writes the `.eorm` and logs every finding of the explicit profile as a note `VAL
 JPA fills gaps silently (every attribute persistent, column named like the attribute, join column
 `<attribute>_<pk>`, `SINGLE_TABLE` with `DTYPE`, …). The CWM-ORM model is meant to say everything,
 so before converting, the mapping set is checked by `OrmModelValidator` of the module
-`model/daanse/orm`:
+`model/daanse/mapping.relational`:
 
 | Rule | Checks |
 | --- | --- |

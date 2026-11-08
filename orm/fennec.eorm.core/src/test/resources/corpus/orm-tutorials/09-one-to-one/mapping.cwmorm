@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Both 1:1 forms side by side.">
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.mapping.relational" xmi:id="EntityMappings_library" name="library" description="Both 1:1 forms side by side.">
   <entity xmi:id="Entity_library.Member" name="Member">
     <cwmClass href="objects.xmi#Class_library.Member"/>
     <oneToOne xmi:id="OneToOne_library.Member.card" name="card" description="Inverse view of variant A (owningSide=false)." owningSide="false">

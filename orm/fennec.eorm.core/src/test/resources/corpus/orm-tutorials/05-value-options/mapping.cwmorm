@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="All value mapping options on one entity.">
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.mapping.relational" xmi:id="EntityMappings_library" name="library" description="All value mapping options on one entity.">
   <entity xmi:id="Entity_library.Member" name="Member">
     <cwmClass href="objects.xmi#Class_library.Member"/>
     <basic xmi:id="Basic_library.Member.birthDate" name="birthDate" description="Date only, no time of day: the SQL type DATE of BIRTH_DATE says so — the former temporal flag repeated it (JPA @Temporal(DATE)).">

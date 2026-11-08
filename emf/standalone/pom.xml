@@ -163,7 +163,7 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.model.daanse.orm</artifactId>
+      <artifactId>org.eclipse.daanse.cwm.model.daanse.mapping.relational</artifactId>
       <version>${project.version}</version>
       <scope>runtime</scope>
     </dependency>

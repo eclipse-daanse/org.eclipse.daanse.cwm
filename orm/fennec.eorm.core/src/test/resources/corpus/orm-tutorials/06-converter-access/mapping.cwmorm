@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Converter registration + application + access type." access="FIELD">
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.mapping.relational" xmi:id="EntityMappings_library" name="library" description="Converter registration + application + access type." access="FIELD">
   <entity xmi:id="Entity_library.Book" name="Book" description="Book with access=PROPERTY as an override of the set's FIELD default." access="PROPERTY">
     <cwmClass href="objects.xmi#Class_library.Book"/>
     <basic xmi:id="Basic_library.Book.isbn" name="isbn" description="The value object lands in ISBN as a VARCHAR; the conversion is done by the converter.">

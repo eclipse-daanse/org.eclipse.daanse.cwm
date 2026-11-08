@@ -17,11 +17,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-import org.eclipse.daanse.cwm.model.daanse.orm.util.Basics;
-import org.eclipse.daanse.cwm.model.daanse.orm.util.Entities;
-import org.eclipse.daanse.cwm.model.daanse.orm.util.Ids;
-import org.eclipse.daanse.cwm.model.daanse.orm.util.OrmModelValidator;
-import org.eclipse.daanse.cwm.model.daanse.orm.util.Transients;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.util.Basics;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.util.Entities;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.util.Ids;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.util.OrmModelValidator;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.util.Transients;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
