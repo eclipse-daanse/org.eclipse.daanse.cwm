@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sensinactMapping:MappingProfile xmi:version="2.0" 
+    xmlns:xmi="http://www.omg.org/XMI" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:sensinactMapping="https://fennec.eclipse.org/event.atlas/mapping/1.0"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xsi:schemaLocation="https://fennec.eclipse.org/event.atlas/mapping/1.0 ../sensinact-mapping.ecore"
+    profileId="temperature-sensor"
+    name="Temperature Sensor Profile"
+    description="Standard profile for temperature sensor devices that provide current, minimum, and maximum temperature readings with location information."
+    version="1.0">
+    
+    <provider providerId="temperature-sensor">
+        <admin serviceId="admin" serviceName="Admin" required="true" 
+               requiresLocation="true" requiresFriendlyName="true">
+            <resources resourceId="friendlyName" resourceName="Device Name" required="true">
+                <expectedType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+            </resources>
+            <resources resourceId="location" resourceName="Location" required="true">
+                <expectedType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+            </resources>
+        </admin>
+        
+        <services serviceId="temperature" serviceName="Temperature" required="true">
+            <resources resourceId="current" resourceName="Current Temperature" required="true" 
+                       expectedUnit="°C">
+                <expectedType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+            </resources>
+            <resources resourceId="minimum" resourceName="Minimum Temperature" required="false" 
+                       expectedUnit="°C">
+                <expectedType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+            </resources>
+            <resources resourceId="maximum" resourceName="Maximum Temperature" required="false" 
+                       expectedUnit="°C">
+                <expectedType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+            </resources>
+        </services>
+        
+        <services serviceId="status" serviceName="Device Status" required="false">
+            <resources resourceId="battery" resourceName="Battery Level" required="false" 
+                       expectedUnit="%">
+                <expectedType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+            </resources>
+            <resources resourceId="signal" resourceName="Signal Strength" required="false" 
+                       expectedUnit="dBm">
+                <expectedType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+            </resources>
+        </services>
+    </provider>
+</sensinactMapping:MappingProfile>

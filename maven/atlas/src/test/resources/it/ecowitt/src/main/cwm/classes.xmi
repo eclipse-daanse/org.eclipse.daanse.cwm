@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core"
+    xmi:id="_weatherstation" name="weatherstation">
+  <ownedElement xsi:type="core:Package" xmi:id="_ecore" name="ecore">
+    <ownedElement xsi:type="core:DataType" xmi:id="_EString" name="EString"/>
+    <ownedElement xsi:type="core:DataType" xmi:id="_EDate" name="EDate"/>
+    <ownedElement xsi:type="core:DataType" xmi:id="_EDouble" name="EDouble"/>
+    <ownedElement xsi:type="core:DataType" xmi:id="_EInt" name="EInt"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="_ecowitt" name="ecowitt">
+    <ownedElement xsi:type="core:Class" xmi:id="_EcoWittWeather" name="EcoWittWeather">
+      <feature xsi:type="core:Attribute" xmi:id="_EcoWittWeather.passkey" name="passkey" type="_EString"/>
+      <feature xsi:type="core:Attribute" xmi:id="_EcoWittWeather.stationType" name="stationType" type="_EString"/>
+      <feature xsi:type="core:Attribute" xmi:id="_EcoWittWeather.dateUTC" name="dateUTC" type="_EDate"/>
+      <feature xsi:type="core:Attribute" xmi:id="_EcoWittWeather.temperaturOutdoor" name="temperaturOutdoor" type="_EDouble"/>
+      <feature xsi:type="core:Attribute" xmi:id="_EcoWittWeather.humidityOutdoor" name="humidityOutdoor" type="_EInt"/>
+      <feature xsi:type="core:Attribute" xmi:id="_EcoWittWeather.rainRate" name="rainRate" type="_EDouble"/>
+      <feature xsi:type="core:Attribute" xmi:id="_EcoWittWeather.temperaturIndoor" name="temperaturIndoor" type="_EDouble"/>
+      <feature xsi:type="core:Attribute" xmi:id="_EcoWittWeather.barometerRel" name="barometerRel" type="_EDouble"/>
+      <feature xsi:type="core:Attribute" xmi:id="_EcoWittWeather.windSpeedMph" name="windSpeedMph" type="_EDouble"/>
+    </ownedElement>
+  </ownedElement>
+</core:Model>

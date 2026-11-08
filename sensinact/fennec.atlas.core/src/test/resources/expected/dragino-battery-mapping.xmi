@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping:ProviderMapping
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:mapping="https://fennec.eclipse.org/event.atlas/mapping/1.0"
+    xsi:schemaLocation="https://fennec.eclipse.org/event.atlas/mapping/1.0"
+    mid="dragino-battery-sensor">
+  <timestamp>
+    <featurePath
+        xsi:type="ecore:EReference"
+        href="https://eclipse.org/fennec/lorawan#//UplinkMessage/rxInfo"/>
+    <featurePath
+        xsi:type="ecore:EAttribute"
+        href="https://eclipse.org/fennec/lorawan#//RxInfo/time"/>
+  </timestamp>
+  <name name="Dragino LSE01 Battery Sensor">
+    <featurePath
+        xsi:type="ecore:EAttribute"
+        href="https://eclipse.org/fennec/lorawan#//UplinkMessage/deduplicationId"/>
+  </name>
+  <providerClasses
+      href="https://eclipse.org/fennec/lorawan/dragino#//DraginoLSE01Uplink"/>
+  <services
+      mid="battery">
+    <name name="Battery"/>
+    <resources
+        name="Battery Level"
+        unit="V"
+        timestamp="//@timestamp"
+        mid="level">
+      <eType
+          xsi:type="ecore:EDataType"
+          href="http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <valueFeature
+          xsi:type="ecore:EReference"
+          href="https://eclipse.org/fennec/lorawan/dragino#//DraginoLSE01Uplink/object"/>
+      <valueFeature
+          xsi:type="ecore:EAttribute"
+          href="https://eclipse.org/fennec/lorawan/dragino#//DecodedObject/batV"/>
+    </resources>
+  </services>
+  <admin mid="admin">
+    <name name="Admin"/>
+    <friendlyNameFeature
+        xsi:type="ecore:EReference"
+        href="https://eclipse.org/fennec/lorawan#//UplinkMessage/deviceInfo"/>
+    <friendlyNameFeature
+        xsi:type="ecore:EAttribute"
+        href="https://eclipse.org/fennec/lorawan#//DeviceInfo/deviceProfileName"/>
+    <providerPackage
+        href="https://eclipse.org/fennec/lorawan/dragino#/"/>
+  </admin>
+  <profile href="battery-sensor-profile.xmi#battery-sensor"/>
+</mapping:ProviderMapping>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sensinactMapping:ProviderMapping
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:sensinactMapping="https://fennec.eclipse.org/event.atlas/mapping/1.0"
+    xsi:schemaLocation="https://fennec.eclipse.org/event.atlas/mapping/1.0 sensinact-mapping.ecore"
+    mid="dwd-weather-reports"
+    providerTimestamp="false">
+
+  <!-- Provider name extracted from first report's weather station ID -->
+  <name>
+    <featurePath
+        xsi:type="ecore:EReference"
+        href="http://cdc.dwd.de/common/weather#//WeatherReports/reports"/>
+    <featurePath
+        xsi:type="ecore:EReference"
+        href="http://cdc.dwd.de/common/weather#//WeatherReport/weatherStation"/>
+    <featurePath
+        xsi:type="ecore:EAttribute"
+        href="http://cdc.dwd.de/common/weather#//WeatherStation/id"/>
+  </name>
+
+  <!-- Source type is WeatherReports container -->
+  <providerClasses
+      href="http://cdc.dwd.de/common/weather#//WeatherReports"/>
+
+  <!-- Admin service - uses first report (index 0) -->
+  <admin
+      xsi:type="sensinactMapping:AdminMapping"
+      mid="admin">
+    <timestamp
+        strategy="FEATURE">
+        <featurePath
+          xsi:type="ecore:EReference"
+          href="http://cdc.dwd.de/common/weather#//WeatherReports/reports"/>
+      <featurePath
+          xsi:type="ecore:EAttribute"
+          href="http://cdc.dwd.de/common/weather#//WeatherReport/timestamp"/>
+    </timestamp>
+    <name name="Admin"/>
+    <friendlyNameFeature
+        xsi:type="ecore:EReference"
+        href="http://cdc.dwd.de/common/weather#//WeatherReports/reports"/>
+    <friendlyNameFeature
+        xsi:type="ecore:EReference"
+        href="http://cdc.dwd.de/common/weather#//WeatherReport/station"/>
+    <friendlyNameFeature
+        xsi:type="ecore:EAttribute"
+        href="http://cdc.dwd.de/common/weather#//Station/name"/>
+    <providerPackage
+        href="http://cdc.dwd.de/common/weather#/"/>
+    <latitudeRef
+        xsi:type="ecore:EReference"
+        href="http://cdc.dwd.de/common/weather#//WeatherReports/reports"/>
+    <latitudeRef
+        xsi:type="ecore:EReference"
+        href="http://cdc.dwd.de/common/weather#//WeatherReport/station"/>
+    <latitudeRef
+        xsi:type="ecore:EReference"
+        href="http://cdc.dwd.de/common/weather#//Station/location"/>
+    <latitudeRef
+        xsi:type="ecore:EAttribute"
+        href="http://cdc.dwd.de/common/weather#//GeoPosition/latitude"/>
+    <longitudeRef
+        xsi:type="ecore:EReference"
+        href="http://cdc.dwd.de/common/weather#//WeatherReports/reports"/>
+    <longitudeRef
+        xsi:type="ecore:EReference"
+        href="http://cdc.dwd.de/common/weather#//WeatherReport/station"/>
+    <longitudeRef
+        xsi:type="ecore:EReference"
+        href="http://cdc.dwd.de/common/weather#//Station/location"/>
+    <longitudeRef
+        xsi:type="ecore:EAttribute"
+        href="http://cdc.dwd.de/common/weather#//GeoPosition/longitude"/>
+  </admin>
+
+  <!-- Current Weather service - uses automatic resource mapping from ReferenceMapping -->
+  <services
+      mid="currentWeather">
+    <timestamp
+        strategy="FEATURE">
+      <featurePath
+          xsi:type="ecore:EAttribute"
+          href="http://cdc.dwd.de/common/weather#//WeatherReport/timestamp"/>
+    </timestamp>
+    <name name="Current Weather"/>
+
+    <!-- ReferenceMapping: automatically creates resources from reports[0] attributes -->
+    <!-- targetEClass specifies to use MOSMIXSWeatherReport instead of base WeatherReport -->
+    <referencedResource
+        xsi:type="sensinactMapping:ReferenceMapping"
+        collectionIndex="0"
+        exclude="true">
+      <!-- Feature path points to the reports collection -->
+      <featurePath
+          xsi:type="ecore:EReference"
+          href="http://cdc.dwd.de/common/weather#//WeatherReports/reports"/>
+
+      <!-- Explicitly specify the concrete EClass to use for generating resources -->
+      <targetEClass
+          href="http://cdc.dwd.de/common/weather#//MOSMIXSWeatherReport"/>
+
+      <!-- Filter: exclude these attributes (so we map everything else) -->
+      <filter
+          xsi:type="ecore:EAttribute"
+          href="http://cdc.dwd.de/common/weather#//WeatherReport/id"/>
+      <filter
+          xsi:type="ecore:EAttribute"
+          href="http://cdc.dwd.de/common/weather#//WeatherReport/timestamp"/>
+
+
+      <!-- Nested ReferenceMapping for W1W2 reference -->
+      <referenceMappings
+          xsi:type="sensinactMapping:ReferenceMapping">
+        <!-- Feature path points to the station reference -->
+        <featurePath
+            xsi:type="ecore:EReference"
+            href="http://cdc.dwd.de/common/weather#//MOSMIXSWeatherReport/significantWeather6Hours"/>
+      </referenceMappings>
+
+      <!--
+        Persistence rules for the generated resources. A resource generated from a
+        ReferenceMapping exists in no XMI, so its rule comes from a binding: each binding names
+        the attributes it applies to, and the binding with no attributes is the default for
+        everything else generated here (nested references included).
+
+        Rules are contained, so each is written inline and needs an xsi:type - ChangeRule is
+        abstract. The first value of a resource is always stored; only later ones are measured.
+      -->
+      <bindings>
+        <attributes href="http://cdc.dwd.de/common/weather#//MOSMIXSWeatherReport/windSpeed"/>
+        <changeRule xsi:type="sensinactMapping:PercentageChangeRule" id="pct-10" percentage="10.0"/>
+      </bindings>
+      <bindings>
+        <attributes href="http://cdc.dwd.de/common/weather#//MOSMIXSWeatherReport/tempAboveSurface5"/>
+        <changeRule xsi:type="sensinactMapping:TimeThrottleChangeRule" id="throttle-5m" interval="5" intervalUnit="MINUTES"/>
+      </bindings>
+      <bindings>
+        <attributes href="http://cdc.dwd.de/common/weather#//MOSMIXSWeatherReport/cloudCoverTotal"/>
+        <changeRule xsi:type="sensinactMapping:CountChangeRule" id="every-3" n="3"/>
+      </bindings>
+
+      <!--
+        The default. A time throttle is deliberate: it is scale-free and type-agnostic, so it
+        suits a binding that covers resources of mixed units - and it also applies cleanly to
+        the enum-valued w1/w2 of the nested significantWeather6Hours reference, which a
+        percentage or absolute rule could not be evaluated against.
+      -->
+      <bindings>
+        <changeRule xsi:type="sensinactMapping:TimeThrottleChangeRule" id="throttle-1m" interval="1" intervalUnit="MINUTES"/>
+        <deletionRule id="keep-90d" retention="90" retentionUnit="DAYS" cleanupInterval="1" cleanupIntervalUnit="DAYS"/>
+      </bindings>
+    </referencedResource>
+  </services>
+
+  <!-- 3H Forecast service - no rules at all, so it stays a rule-free comparison -->
+  <services
+      mid="forecast3H">
+    <timestamp
+        strategy="FEATURE">
+      <featurePath
+          xsi:type="ecore:EAttribute"
+          href="http://cdc.dwd.de/common/weather#//WeatherReport/timestamp"/>
+    </timestamp>
+    <name name="3H Forecast"/>
+
+    <!-- ReferenceMapping: automatically creates resources from reports[1] attributes -->
+    <!-- targetEClass specifies to use MOSMIXSWeatherReport instead of base WeatherReport -->
+    <referencedResource
+        xsi:type="sensinactMapping:ReferenceMapping"
+        collectionIndex="1"
+        exclude="true">
+      <!-- Feature path points to the reports collection -->
+      <featurePath
+          xsi:type="ecore:EReference"
+          href="http://cdc.dwd.de/common/weather#//WeatherReports/reports"/>
+
+      <!-- Explicitly specify the concrete EClass to use for generating resources -->
+      <targetEClass
+          href="http://cdc.dwd.de/common/weather#//MOSMIXSWeatherReport"/>
+
+      <!-- Filter: exclude these attributes -->
+      <filter
+          xsi:type="ecore:EAttribute"
+          href="http://cdc.dwd.de/common/weather#//WeatherReport/id"/>
+      <filter
+          xsi:type="ecore:EAttribute"
+          href="http://cdc.dwd.de/common/weather#//WeatherReport/timestamp"/>
+          
+          <!-- Nested ReferenceMapping for W1W2 reference -->
+      <referenceMappings
+          xsi:type="sensinactMapping:ReferenceMapping">
+        <!-- Feature path points to the station reference -->
+        <featurePath
+            xsi:type="ecore:EReference"
+            href="http://cdc.dwd.de/common/weather#//MOSMIXSWeatherReport/significantWeather6Hours"/>
+      </referenceMappings>
+      
+    </referencedResource>
+  </services>
+</sensinactMapping:ProviderMapping>

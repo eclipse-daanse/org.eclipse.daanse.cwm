@@ -56,7 +56,18 @@ public final class CwmPackages {
             "org.eclipse.daanse.cwm.model.cwm.management.warehouseprocess.events.EventsPackage",
             "org.eclipse.daanse.cwm.model.cwm.management.warehouseprocess.datatype.DatatypePackage",
             "org.eclipse.daanse.cwm.model.cwm.management.warehouseoperation.WarehouseoperationPackage",
-            "org.eclipse.daanse.cwm.model.daanse.mapping.relational.CWMORMPackage");
+            "org.eclipse.daanse.cwm.model.daanse.mapping.relational.CWMORMPackage",
+            "org.eclipse.daanse.cwm.model.daanse.resource.sensinact.SensinactPackage",
+            "org.eclipse.daanse.cwm.model.daanse.mapping.sensinact.SensinactMappingPackage",
+            "org.eclipse.daanse.cwm.model.daanse.governance.lifecycle.LifecyclePackage",
+            "org.eclipse.daanse.cwm.model.daanse.governance.recording.RecordingPackage",
+            "org.eclipse.daanse.cwm.model.daanse.governance.obligations.ObligationsPackage",
+            "org.eclipse.daanse.cwm.model.daanse.governance.deidentification.DeidentificationPackage",
+            "org.eclipse.daanse.cwm.model.daanse.governance.gdpr.processing.ProcessingPackage",
+            "org.eclipse.daanse.cwm.model.daanse.governance.gdpr.assessment.AssessmentPackage",
+            "org.eclipse.daanse.cwm.model.daanse.governance.transparency.TransparencyPackage",
+            "org.eclipse.daanse.cwm.model.daanse.governance.criticality.CriticalityPackage",
+            "org.eclipse.daanse.cwm.model.daanse.units.UnitsPackage");
 
     private CwmPackages() {
     }

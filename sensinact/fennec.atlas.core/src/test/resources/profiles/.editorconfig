@@ -1,0 +1,6 @@
+# Verbatim copies of Eclipse Fennec event.atlas files (see ../README.md): their whitespace stays as
+# published.
+[*.xmi]
+indent_size = unset
+trim_trailing_whitespace = unset
+insert_final_newline = unset

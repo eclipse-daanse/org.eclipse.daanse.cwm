@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sensinactMapping:ProviderMapping
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:sensinactMapping="https://fennec.eclipse.org/event.atlas/mapping/1.0"
+    xsi:schemaLocation="https://fennec.eclipse.org/event.atlas/mapping/1.0 ../sensinact-mapping.ecore"
+    mid="vendor-b-temperature-sensor">
+    
+  <!-- Reference to the same temperature sensor profile -->
+  <profile href="../profiles/temperature-sensor-profile.xmi#/"/>
+  
+  <timestamp strategy="FEATURE">
+    <featurePath
+        xsi:type="ecore:EAttribute"
+        href="http://vendorb.com/iot#//VendorBSensor/timestamp"/>
+  </timestamp>
+  
+  <name name="Vendor B Temperature Sensor"/>
+  
+  <!-- Fictional vendor B sensor model with different structure -->
+  <providerClasses
+      href="http://vendorb.com/iot#//VendorBSensor"/>
+      
+  <services
+      xsi:type="sensinactMapping:AdminMapping"
+      mid="admin">
+    <!-- Maps to vendor B's nested device info -->
+    <friendlyNameFeature
+        xsi:type="ecore:EReference"
+        href="http://vendorb.com/iot#//VendorBSensor/deviceInfo"/>
+    <friendlyNameFeature
+        xsi:type="ecore:EAttribute"
+        href="http://vendorb.com/iot#//DeviceInfo/name"/>
+    <providerPackage
+        href="http://vendorb.com/iot#/"/>
+    <!-- Maps to vendor B's GPS coordinates -->
+    <latitudeRef
+        xsi:type="ecore:EReference"
+        href="http://vendorb.com/iot#//VendorBSensor/gps"/>
+    <latitudeRef
+        xsi:type="ecore:EAttribute"
+        href="http://vendorb.com/iot#//GPSCoordinate/latitude"/>
+    <longitudeRef
+        xsi:type="ecore:EReference"
+        href="http://vendorb.com/iot#//VendorBSensor/gps"/>
+    <longitudeRef
+        xsi:type="ecore:EAttribute"
+        href="http://vendorb.com/iot#//GPSCoordinate/longitude"/>
+  </services>
+  
+  <!-- Temperature service conforming to same profile -->
+  <services mid="temperature">
+    <name name="Temperature"/>
+    <resources
+        name="Current Temperature"
+        unit="°C"
+        mid="current">
+      <eType
+          xsi:type="ecore:EDataType"
+          href="http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <valueFeature
+          xsi:type="ecore:EReference"
+          href="http://vendorb.com/iot#//VendorBSensor/readings"/>
+      <valueFeature
+          xsi:type="ecore:EAttribute"
+          href="http://vendorb.com/iot#//SensorReadings/temperature"/>
+    </resources>
+    <resources
+        name="Minimum Temperature"
+        unit="°C"
+        mid="minimum">
+      <eType
+          xsi:type="ecore:EDataType"
+          href="http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <valueFeature
+          xsi:type="ecore:EReference"
+          href="http://vendorb.com/iot#//VendorBSensor/readings"/>
+      <valueFeature
+          xsi:type="ecore:EAttribute"
+          href="http://vendorb.com/iot#//SensorReadings/minTemperature"/>
+    </resources>
+    <resources
+        name="Maximum Temperature"
+        unit="°C"
+        mid="maximum">
+      <eType
+          xsi:type="ecore:EDataType"
+          href="http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <valueFeature
+          xsi:type="ecore:EReference"
+          href="http://vendorb.com/iot#//VendorBSensor/readings"/>
+      <valueFeature
+          xsi:type="ecore:EAttribute"
+          href="http://vendorb.com/iot#//SensorReadings/maxTemperature"/>
+    </resources>
+  </services>
+  
+  <!-- Optional status service with different field mapping -->
+  <services mid="status">
+    <name name="Device Status"/>
+    <resources
+        name="Battery Level"
+        unit="%"
+        mid="battery">
+      <eType
+          xsi:type="ecore:EDataType"
+          href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <valueFeature
+          xsi:type="ecore:EReference"
+          href="http://vendorb.com/iot#//VendorBSensor/status"/>
+      <valueFeature
+          xsi:type="ecore:EAttribute"
+          href="http://vendorb.com/iot#//DeviceStatus/batteryPercent"/>
+    </resources>
+    <resources
+        name="Signal Strength"
+        unit="dBm"
+        mid="signal">
+      <eType
+          xsi:type="ecore:EDataType"
+          href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <valueFeature
+          xsi:type="ecore:EReference"
+          href="http://vendorb.com/iot#//VendorBSensor/status"/>
+      <valueFeature
+          xsi:type="ecore:EAttribute"
+          href="http://vendorb.com/iot#//DeviceStatus/signalStrength"/>
+    </resources>
+  </services>
+  
+</sensinactMapping:ProviderMapping>
