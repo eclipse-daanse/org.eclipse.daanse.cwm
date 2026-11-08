@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="One embeddable, two usages — each embedding names the columns of its table.">
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.mapping.relational" xmi:id="EntityMappings_library" name="library" description="One embeddable, two usages — each embedding names the columns of its table.">
   <entity xmi:id="Entity_library.Publisher" name="Publisher" description="The publisher stores its address in STREET/CITY.">
     <cwmClass href="objects.xmi#Class_library.Publisher"/>
     <embedded xmi:id="Embedded_library.Publisher.address" name="address" description="Embedding with overrides onto the plain column names STREET and CITY.">

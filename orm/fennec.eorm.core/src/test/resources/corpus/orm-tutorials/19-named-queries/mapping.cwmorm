@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Entity plus named queries.">
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.mapping.relational" xmi:id="EntityMappings_library" name="library" description="Entity plus named queries.">
   <namedQuery xmi:id="NamedQuery_library.Loan.findOverdue" name="Loan.findOverdue" description="Overdue loans: JPQL speaks about ENTITIES and attributes, never about tables — which is why the query needs no catalog anchors. The query name is the inherited ModelElement.name." query="SELECT l FROM Loan l WHERE l.returned = false AND l.dueDate &lt; :today ORDER BY l.dueDate" lockMode="PESSIMISTIC_READ">
     <hint xmi:id="QueryHint_library.Loan.findOverdue.jakarta.persistence.query.timeout" name="jakarta.persistence.query.timeout" description="Provider hint as a name/value pair." value="5000"/>
   </namedQuery>

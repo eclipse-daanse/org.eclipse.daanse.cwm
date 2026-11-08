@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="SINGLE_TABLE hierarchy.">
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.mapping.relational" xmi:id="EntityMappings_library" name="library" description="SINGLE_TABLE hierarchy.">
   <entity xmi:id="Entity_library.Media" name="Media" description="The root entity carries the strategy, the discriminator column (a catalog reference; its SQL type VARCHAR makes the discriminator type STRING) and the shared table. Media is abstract and needs no value." inheritanceStrategy="SINGLE_TABLE">
     <cwmClass href="objects.xmi#Class_library.Media"/>
     <basic xmi:id="Basic_library.Media.title" name="title">

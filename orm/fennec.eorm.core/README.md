@@ -1,6 +1,6 @@
 # org.eclipse.daanse.cwm.orm.fennec.eorm.core
 
-Converts a CWM-ORM mapping set (`org.eclipse.daanse.cwm.model.daanse.orm`) into the
+Converts a CWM-ORM mapping set (`org.eclipse.daanse.cwm.model.daanse.mapping.relational`) into the
 `EntityMappings` model of [Eclipse Fennec Persistence](https://github.com/eclipse-fennec/emf.persistence-jpa)
 and writes it as a `.eorm` file — the file Fennec loads instead of deriving a mapping from the
 Ecore model by its naming rules.

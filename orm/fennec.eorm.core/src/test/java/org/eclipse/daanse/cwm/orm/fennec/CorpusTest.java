@@ -20,8 +20,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import org.eclipse.daanse.cwm.model.daanse.orm.ManagedType;
-import org.eclipse.daanse.cwm.model.daanse.orm.util.OrmBindings;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.ManagedType;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.util.OrmBindings;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;

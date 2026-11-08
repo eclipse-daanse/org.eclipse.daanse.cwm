@@ -11,7 +11,7 @@ package org.eclipse.daanse.cwm.orm.fennec;
 
 import java.util.List;
 
-import org.eclipse.daanse.cwm.model.daanse.orm.util.OrmModelValidator;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.util.OrmModelValidator;
 
 /**
  * A CWM-ORM mapping that breaks the explicit profile ({@link OrmModelValidator}): the conversion

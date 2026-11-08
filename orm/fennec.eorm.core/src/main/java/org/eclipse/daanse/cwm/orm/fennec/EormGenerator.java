@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.daanse.cwm.emf.standalone.EcoreIndex;
-import org.eclipse.daanse.cwm.model.daanse.orm.EntityMappings;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.EntityMappings;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;

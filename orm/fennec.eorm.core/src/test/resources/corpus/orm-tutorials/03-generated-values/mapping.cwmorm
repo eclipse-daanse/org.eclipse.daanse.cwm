@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Four entities, four generation strategies; sequence and table generator are defined globally on the mapping set.">
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.mapping.relational" xmi:id="EntityMappings_library" name="library" description="Four entities, four generation strategies; sequence and table generator are defined globally on the mapping set.">
   <generator xsi:type="orm:SequenceGenerator" xmi:id="SequenceGenerator_library.loanSeq" name="loanSeq" description="Sequence generator: CWM 1.1 has no sequence class, which is why sequenceName remains a string; cwmSchema anchors only the location." allocationSize="50" sequenceName="SEQ_LOAN">
     <cwmSchema href="catalog.xmi#Schema_LIBRARYDB.LIB"/>
   </generator>

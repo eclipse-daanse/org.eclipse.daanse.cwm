@@ -56,7 +56,7 @@ public final class CwmPackages {
             "org.eclipse.daanse.cwm.model.cwm.management.warehouseprocess.events.EventsPackage",
             "org.eclipse.daanse.cwm.model.cwm.management.warehouseprocess.datatype.DatatypePackage",
             "org.eclipse.daanse.cwm.model.cwm.management.warehouseoperation.WarehouseoperationPackage",
-            "org.eclipse.daanse.cwm.model.daanse.orm.CWMORMPackage");
+            "org.eclipse.daanse.cwm.model.daanse.mapping.relational.CWMORMPackage");
 
     private CwmPackages() {
     }

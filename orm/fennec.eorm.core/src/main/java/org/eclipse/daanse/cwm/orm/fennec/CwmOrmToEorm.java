@@ -14,14 +14,14 @@ import java.util.List;
 
 import org.eclipse.daanse.cwm.emf.standalone.CwmPath;
 import org.eclipse.daanse.cwm.emf.standalone.EcoreIndex;
-import org.eclipse.daanse.cwm.model.daanse.orm.EntityMappings;
-import org.eclipse.daanse.cwm.model.daanse.orm.util.OrmModelValidator;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.EntityMappings;
+import org.eclipse.daanse.cwm.model.daanse.mapping.relational.util.OrmModelValidator;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * Converts a CWM-ORM mapping ({@code org.eclipse.daanse.cwm.model.daanse.orm}) into the
+ * Converts a CWM-ORM mapping ({@code org.eclipse.daanse.cwm.model.daanse.mapping.relational}) into the
  * {@code EntityMappings} model of Eclipse Fennec Persistence.
  *
  * <p>The mapping must satisfy the explicit profile of {@link OrmModelValidator}: every column,

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.orm" xmi:id="EntityMappings_library" name="library" description="Native SQL report with result mapping.">
+<orm:EntityMappings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:orm="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.mapping.relational" xmi:id="EntityMappings_library" name="library" description="Native SQL report with result mapping.">
   <namedNativeQuery xmi:id="NamedNativeQuery_library.Book.loanStatistics" name="Book.loanStatistics" description="Native SQL over the stored query BOOK_LOAN_STATISTICS (cwmQuery) — the SQL text lives once, in the catalog; resultSetMapping is a TYPED reference to the mapping (a name string in the XSD model)." resultSetMapping="SqlResultSetMapping_library.BookWithLoanCount">
     <cwmQuery href="catalog.xmi#QueryColumnSet_LIBRARYDB.LIB.BOOK_LOAN_STATISTICS"/>
   </namedNativeQuery>
