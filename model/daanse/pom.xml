@@ -23,6 +23,7 @@
 
   <modules>
     <module>orm</module>
+    <module>sensinact</module>
     <module>units</module>
   <!--
     <module>resource.r</module>
