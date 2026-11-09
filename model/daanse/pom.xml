@@ -28,9 +28,7 @@
     <module>units</module>
     <module>resource.json</module>
     <module>resource.r</module>
-  <!--
     <module>resource.calc</module>
-  -->
     <module>governance</module>
     <module>resource.relational.privilege</module>
     <module>dcat</module>

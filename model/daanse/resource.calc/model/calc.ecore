@@ -1,0 +1,766 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="calc" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.calc"
+    nsPrefix="calc">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The Calc package describes the structure of spreadsheets - OpenDocument Calc (OASIS ODF, ISO 26300) and OOXML SpreadsheetML (Excel) - and of the data held in them.&#xA;&#xA;What separates a spreadsheet from a CSV file. Both carry column-shaped data, and the individual column is an objectmodel/core::Attribute in either case. Three things are added, though. First, one file contains several sheets. Second, a sheet is a two-dimensional grid on which several mutually independent regions of quite different shape may lie side by side or one below the other - a header block, a table below it, a cross tabulation beside it. Third, position is therefore part of the structure rather than incidental: only the row and column number says which region is meant. A stream of records needs none of this, which is why nothing here inherits from resource/record::RecordDef - its mandatory attributes fieldDelimiter and textDelimiter describe delimiters, whereas in a spreadsheet the grid itself does the separating.&#xA;&#xA;Open-ended regions. A region need not have an end. A database or list table grows downwards as rows are appended, and its last row is not fixed at description time. That is why lastRow and lastColumn on CellRange are unsettable and default to -1: where the value is unset, the region is open in that direction. firstRow and firstColumn, by contrast, are always fixed - a region always has a beginning.&#xA;&#xA;Cell contents. In ODF, table:table-cell carries the content through office:value-type and office:value, the formula through table:formula, and the merging of several cells through table:number-columns-spanned and table:number-rows-spanned; covered cells appear as table:covered-table-cell. In SpreadsheetML the cell stands as c with the A1 address in r and the type code in t, the value in v and the formula in f. Named regions are held by ODF as table:named-range or table:named-expression, and by SpreadsheetML as definedName. Structured regions are called table:database-range in ODF and table (a ListObject) with ref, headerRowCount and totalsRowCount in SpreadsheetML.&#xA;&#xA;Formulas are kept here as text, in the notation of the source file; which notation that is is stated by formulaLanguage on the Workbook. A parsed representation belongs in foundation/expressions rather than here.&#xA;&#xA;Mapping onto CWM. The Workbook is an objectmodel/core::Package and so is the sheet - both are namespaces and carry their content through the inherited ownedElement. A region is an objectmodel/core::Class and carries its columns through the inherited, ordered containment reference Classifier::feature. A row is an objectmodel/instance::Object and a cell an objectmodel/instance::DataSlot - the same pair with which resource/relational maps Row and ColumnValue.&#xA;&#xA;Sources: OASIS Open Document Format for Office Applications v1.2/v1.3 Part 1 (Schema) and Part 4 (OpenFormula); ECMA-376 Office Open XML, Part 1, SpreadsheetML."/>
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse.resource"/>
+    <details key="prefix" value="Calc"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="literalsInterface" value="true"/>
+    <details key="loadInitialization" value="false"/>
+    <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EEnum" name="WorkbookFormat">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The file format of the spreadsheet."/>
+    </eAnnotations>
+    <eLiterals name="calc_ods">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="OpenDocument Spreadsheet (.ods), OASIS ODF / ISO 26300."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_xlsx" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Office Open XML Spreadsheet (.xlsx), ECMA-376."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_xlsm" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Office Open XML Spreadsheet with macros (.xlsm)."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_xlsb" value="3">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Office Open XML in a binary container (.xlsb)."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_xls" value="4">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The older binary Excel format (.xls, BIFF)."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_other" value="5">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Some other or unknown format."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="SheetVisibility">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Whether and how a sheet appears in the user interface."/>
+    </eAnnotations>
+    <eLiterals name="calc_visible">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Visible."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_hidden" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Hidden, but can be shown again through the user interface."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_veryHidden" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Can be shown again only through program code. Excel calls this state veryHidden."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="CellValueType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The value type of a cell. The literals unify office:value-type from ODF and the type code t from SpreadsheetML."/>
+    </eAnnotations>
+    <eLiterals name="calc_empty">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Empty - the cell carries no value."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_string" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Text."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_float" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A number."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_percentage" value="3">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A number to be read as a proportion."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_currency" value="4">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A monetary amount; the currency is part of the formatting."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_date" value="5">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A date, possibly with a time of day."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_time" value="6">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A duration or time of day."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_boolean" value="7">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A truth value."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_error" value="8">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An error value such as #DIV/0! or #N/A, arising from the evaluation of a formula."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="SectionKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Where a region takes its delimitation from. This matters for how dependable its bounds are: a region declared in the file is binding, a detected one is merely the reading tool's conjecture."/>
+    </eAnnotations>
+    <eLiterals name="calc_databaseRange">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Declared in ODF as table:database-range. Grows as rows are appended and therefore often has no fixed end."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_listObject" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Declared in SpreadsheetML as a separate table part (a ListObject), with ref, headerRowCount and totalsRowCount."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_namedRange" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Delimited through a named range."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_pivotTable" value="3">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The result of a pivot or data-pilot evaluation."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_labelRange" value="4">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Declared in ODF as table:label-range: labels that let formulas address rows or columns."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_plainRegion" value="5">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Not declared in the file but detected by the reading tool from contiguously occupied cells."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_freeform" value="6">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A region without column-shaped structure - a header block, a note field. Only its position is described."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Orientation">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The direction in which the like-kinded values of a region lie."/>
+    </eAnnotations>
+    <eLiterals name="calc_columnwise">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Column-wise: one attribute per column, one record per row. The regular case and the shape a CSV file has as well."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_rowwise" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Row-wise: one attribute per row, one record per column. The transposed case, declared in ODF through table:orientation."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="TotalsFunction">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The function with which a column is aggregated in the totals row; in SpreadsheetML the attribute totalsRowFunction."/>
+    </eAnnotations>
+    <eLiterals name="calc_none">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="No aggregation."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_sum" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Sum."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_min" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Smallest value."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_max" value="3">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Largest value."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_average" value="4">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Mean."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_count" value="5">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Number of occupied cells."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_countNums" value="6">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Number of cells holding numbers."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_stdDev" value="7">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Standard deviation."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_var" value="8">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Variance."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_custom" value="9">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A custom formula; it is held in totalsFormula."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FormulaLanguage">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The notation in which the formulas of the file are written."/>
+    </eAnnotations>
+    <eLiterals name="calc_openFormula">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="OpenFormula per ODF Part 4, with addresses of the shape [Sheet1.A1:.B5]."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_excelA1" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Excel in A1 notation, for example Sheet1!$A$1:$B$5."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_excelR1C1" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Excel in R1C1 notation, with references relative to the cell."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="DateSystem">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The epoch against which date numbers are to be computed. Confusing the two shifts every date in the file by four years."/>
+    </eAnnotations>
+    <eLiterals name="calc_date1900">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The count from 30 December 1899. The default of Excel on Windows and of ODF; for compatibility it includes the 29th of February 1900, a day that never existed."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_date1904" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The count from 1 January 1904. The default of the former Excel for Macintosh."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="NameScope">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The scope in which a named range is valid."/>
+    </eAnnotations>
+    <eLiterals name="calc_workbook">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Valid throughout the file."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="calc_sheet" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Valid on one sheet only. The same name may then denote something else on other sheets."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CellRange">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="LastRowNotBeforeFirst LastColumnNotBeforeFirst OriginNotNegative"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="LastRowNotBeforeFirst" value="self.lastRow &lt; 0 or self.lastRow >= self.firstRow"/>
+      <details key="LastColumnNotBeforeFirst" value="self.lastColumn &lt; 0 or self.lastColumn >= self.firstColumn"/>
+      <details key="OriginNotNegative" value="self.firstRow >= 0 and self.firstColumn >= 0"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.calc/constraints">
+      <details key="LastRowNotBeforeFirst.name" value="Last Row Not Before First"/>
+      <details key="LastRowNotBeforeFirst.description" value="Where the region has a lower end, it does not lie above its beginning."/>
+      <details key="LastRowNotBeforeFirst.level" value="error"/>
+      <details key="LastColumnNotBeforeFirst.name" value="Last Column Not Before First"/>
+      <details key="LastColumnNotBeforeFirst.description" value="Where the region has a right-hand end, it does not lie left of its beginning."/>
+      <details key="LastColumnNotBeforeFirst.level" value="error"/>
+      <details key="OriginNotNegative.name" value="Origin Not Negative"/>
+      <details key="OriginNotNegative.description" value="The top left corner of a region lies within the grid."/>
+      <details key="OriginNotNegative.level" value="error"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A rectangular section of a sheet, given by its top left corner and, where present, its bottom right one. The end may be absent: a database table grows downwards, and its last row is not fixed at description time. Where lastRow is unset, the region extends open-ended downwards; where lastColumn is unset, to the right.&#xA;&#xA;Inherits from objectmodel/core::Element rather than ModelElement: a section has no name and belongs to no namespace, it is contained by whatever needs it."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="firstRow" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The zero-based number of the first row. A region always has a beginning."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="firstColumn" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The zero-based number of the first column."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastRow" defaultValueLiteral="-1" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The zero-based number of the last row. Unset (isSetLastRow() returns false, the getter returns -1) when the region is open-ended downwards."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastColumn" defaultValueLiteral="-1" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The zero-based number of the last column. Unset (isSetLastColumn() returns false, the getter returns -1) when the region is open-ended to the right."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sheetName" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The sheet on which the region lies, where it is not the enclosing one. A named range may point across sheet boundaries."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="address" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The address in the notation of the source file, that is, [Sheet1.A1:.D100] in ODF or Sheet1!$A$1:$D$100 in SpreadsheetML. It is carried along so that the original notation can be restored when writing back."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Workbook">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A spreadsheet file. It is the namespace of its sheets and its named ranges; both are the inherited ownedElement. There is deliberately no separate containment reference for the sheets - an object can have only one container, and the order of the sheet tabs is carried by Sheet::position."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="format" lowerBound="1" eType="//WorkbookFormat">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The file format."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="formulaLanguage" lowerBound="1" eType="//FormulaLanguage">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The notation in which the formulas of this file are written."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dateSystem" lowerBound="1" eType="//DateSystem">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The epoch for date numbers."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isProtected" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the structure of the file is protected and sheets can neither be created nor removed nor renamed."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="producer" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The producing program and its version, as far as the file records it."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Sheet">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A single sheet: a two-dimensional grid of rows and columns. The regions lie on it, and there may well be several of quite different shape. They are the inherited ownedElement; their position is held in their respective CellRange."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="position" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The zero-based position in the tab bar. It is carried as an attribute rather than through an ordered containment reference, because the content is already held through the inherited, unordered ownedElement."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sheetVisibility" lowerBound="1" eType="//SheetVisibility">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Whether the sheet appears in the user interface. Deliberately not called visibility: that name is already taken by the inherited mandatory attribute ModelElement::visibility, which means visibility in the sense of the namespace and not that of the sheet tab."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isProtected" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the sheet is protected against changes."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="usedRowCount" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of rows up to the last occupied one, where known."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="usedColumnCount" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of columns up to the last occupied one, where known."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mergedRegion" ordered="false" upperBound="-1"
+        eType="//CellRange" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The merged cell ranges of the sheet. The value of such a range is held in its top left cell; the remaining ones are covered and appear in ODF as table:covered-table-cell."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Section" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A contiguous region of a sheet with a uniform structure. The region is the reason a spreadsheet cannot be mapped as a single table: several regions of differing structure may lie on one sheet, and only their position says which one is meant."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="range" lowerBound="1" eType="//CellRange"
+        containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The position of the region on the sheet. Its end may be left open."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1" eType="//SectionKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Where the delimitation comes from and how dependable it is."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isProtected" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the region is protected against changes."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TableSection" eSuperTypes="//Section">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="HeaderFitsRange"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="HeaderFitsRange" value="self.range.lastRow &lt; 0 or self.range.firstRow + self.headerRowCount + self.totalsRowCount &lt;= self.range.lastRow + 1"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.calc/constraints">
+      <details key="HeaderFitsRange.name" value="Header Fits Range"/>
+      <details key="HeaderFitsRange.description" value="Where the region has a lower end, the header and totals rows fit into it together."/>
+      <details key="HeaderFitsRange.level" value="error"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A column-shaped region: like-kinded rows below a header row. This is the structure a CSV file has as well, and the most frequent case. The columns are the inherited, ordered features."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="orientation" lowerBound="1" eType="//Orientation">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Whether the attributes sit in the columns or in the rows."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="containsHeader" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the region carries a header row holding the column names."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="headerRowCount" defaultValueLiteral="1"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of header rows. In SpreadsheetML the default is one header row; multi-row headers occur in hand-maintained sheets."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="totalsRowCount" defaultValueLiteral="0"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of totals rows at the lower edge. In SpreadsheetML the default is zero."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hasFilterButtons" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the header carries filter buttons."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MatrixSection" eSuperTypes="//Section">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A cross tabulation: labels sit both at the left and at the top edge, with the values between them. The structure cannot be read column-wise, because a column here is not an attribute but a value of one. In ODF the two label regions are declared as table:label-range."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rowLabelRange" eType="//CellRange" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The region holding the row labels."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="columnLabelRange" eType="//CellRange" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The region holding the column labels."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rowLabelColumnCount" lowerBound="1" defaultValueLiteral="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of columns at the left edge that carry labels."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="columnLabelRowCount" lowerBound="1" defaultValueLiteral="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of rows at the top edge that carry labels."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PivotSection" eSuperTypes="//Section">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An aggregated region the application computes from other data - a table:data-pilot-table in ODF, a PivotTable in SpreadsheetML. Its content is derived and is rewritten on refresh; whoever reads it as a source reads a result and not base data."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceRange" eType="//CellRange" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The region aggregated from, where the source lies in the same file."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceSection" eType="//Section">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="pivotSection"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="pivotSection"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The region aggregated from, where it is described as such. The opposite end is not a feature: navigating from base data to the evaluations computed from it is not needed."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceDescription" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A description of the source when it lies elsewhere - a database query, another file."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ignoresEmptyRows" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when empty rows of the source are skipped."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SheetColumn">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A column of a column-shaped region - or, with transposed orientation, a row. This is the counterpart of resource/relational::Column and resource/record::Field. The type is held by the inherited reference StructuralFeature::type; the order follows from the ordered containment reference Classifier::feature."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="columnIndex" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The zero-based position within the region, not within the sheet. The sheet column follows by adding range.firstColumn."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="header" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The label from the header row. It may differ from the inherited mandatory attribute name where that has been normalised into a valid identifier."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="valueType" eType="//CellValueType" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value type the cells of this column carry. In a spreadsheet this is an observation and not a guarantee: a column may be occupied by mixed types."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberFormat" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The formatting code of the column, for example 0.00 or YYYY-MM-DD. It does not decide the value, but it does decide how the value is read - a date number without a format is a number."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="formula" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The formula of a calculated column, in the notation of the source file."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="totalsFunction" eType="//TotalsFunction"
+        unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The aggregation in the totals row."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="totalsFormula" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The custom formula of the totals row, where totalsFunction is calc_custom."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isNullable" lowerBound="1" defaultValueLiteral="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when cells of this column may be left empty."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NamedRange">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A named range or expression - table:named-range or table:named-expression in ODF, definedName in SpreadsheetML. It belongs to the Workbook or to a sheet and is frequently the only place where a region is delimited bindingly at all."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="range" eType="//CellRange" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The designated region. Unset when the name denotes an expression rather than a region."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="expression" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The expression, where the name denotes a formula or a constant value rather than a region."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isNamedExpression" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the name denotes an expression, false for a region."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="scope" lowerBound="1" eType="//NameScope">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Whether the name is valid throughout the file or on one sheet only."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="baseCellAddress" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The cell against which relative references of the name are resolved; table:base-cell-address in ODF. Without it a name holding relative references cannot be evaluated."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="designatedSection" eType="//Section">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="namedRange"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="namedRange"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The region this name denotes, where it is described as such. The opposite end is not a feature: a region need not know the names pointing at it."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SheetData">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The actually occupied cells of a sheet. The rows are the inherited ownedElement."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//Extent"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sheet" lowerBound="1" eType="//Sheet">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="data"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="data"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The sheet whose content is held here. The opposite end is not a feature: the description of a sheet stays independent of whether and how often it is populated with data."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Row">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An occupied row within a column-shaped region. The describing region is held by the inherited reference Instance::classifier, the cells by the inherited containment reference Object::slot."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//Object"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rowIndex" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The zero-based row number on the sheet, not within the region."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isHidden" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the row is hidden - by hand or by a filter."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Cell">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="SpansArePositive"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="SpansArePositive" value="self.columnsSpanned >= 1 and self.rowsSpanned >= 1"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.calc/constraints">
+      <details key="SpansArePositive.name" value="Spans Are Positive"/>
+      <details key="SpansArePositive.description" value="A cell extends across at least one row and one column."/>
+      <details key="SpansArePositive.level" value="error"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A single cell. The column it belongs to is held by the inherited mandatory reference Slot::feature, the value by DataSlot::dataValue - the same pair with which resource/relational maps a ColumnValue. A cell outside a column-shaped region is not carried as a Cell: for such a region only the position is described."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//DataSlot"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rowIndex" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The zero-based row number on the sheet."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="columnIndex" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The zero-based column number on the sheet."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="valueType" lowerBound="1" eType="//CellValueType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value type of this cell. It sits on the cell and not only on the column, because a column may be occupied by mixed types."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="formula" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The formula of the cell in the notation of the source file. The value held in dataValue is then the result computed last and may be stale."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="formattedText" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The displayed text as the formatting produces it. It may differ considerably from the value - a date number appears as a date, a rounded number with fewer digits."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="columnsSpanned" lowerBound="1" defaultValueLiteral="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of columns this cell is merged across; one for an unmerged cell."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rowsSpanned" lowerBound="1" defaultValueLiteral="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of rows this cell is merged across; one for an unmerged cell."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isCovered" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the cell is covered by a merged cell and carries no value itself; table:covered-table-cell in ODF."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="annotation" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The text of a comment attached to the cell."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
