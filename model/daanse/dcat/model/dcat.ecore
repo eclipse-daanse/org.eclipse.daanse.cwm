@@ -1,0 +1,973 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="dcat" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat"
+    nsPrefix="dcat">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="W3C DCAT 3 (Data Catalog Vocabulary, REC 2024) as a CWM-anchored Daanse extension: catalogs describe datasets whose content already exists as a CWM model — Dataset.subject references arbitrary core::ModelElements (relational::Schema, json::ObjectType, single tables), distributions describe the physical access forms, data services the APIs. Agents are businessinformation::ResponsibleParty, themes point at businessnomenclature::Concept and/or EU vocabulary IRIs. Controlled vocabularies (data-theme, frequency, access-right, ...) are deliberately flattened to IRI strings (suffix Iri). DCAT inverses (seriesMember, inCatalog, nextVersion, ...) are the Property.oppositeRoleName annotations of the hidden reverse directions — backward navigation via InverseReferences."/>
+    <details key="documentation.de" value="W3C DCAT 3 (Data Catalog Vocabulary, REC 2024) als CWM-verankerte Daanse-Erweiterung: Kataloge beschreiben Datensaetze, deren Inhalt bereits als CWM-Modell vorliegt — Dataset.subject referenziert beliebige core::ModelElements (relational::Schema, json::ObjectType, einzelne Tabellen), Distributionen beschreiben die physischen Zugriffsformen, DataServices die APIs. Agenten sind businessinformation::ResponsibleParty, Themen verweisen auf businessnomenclature::Concept und/oder EU-Vokabular-IRIs. Kontrollierte Vokabulare (data-theme, frequency, access-right, ...) sind bewusst als IRI-Strings verflacht (Suffix Iri). DCAT-Inverse (seriesMember, inCatalog, nextVersion, ...) sind die Property.oppositeRoleName-Annotationen der versteckten Gegenrichtungen — Rueckwaertsnavigation ueber InverseReferences."/>
+    <details key="caption.de" value="Datenkatalog (DCAT)"/>
+    <details key="caption.en" value="Data Catalog (DCAT)"/>
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse"/>
+    <details key="prefix" value="Dcat"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="literalsInterface" value="true"/>
+    <details key="loadInitialization" value="false"/>
+    <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EEnum" name="AgentRole">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Role of a ResponsibleParty towards a cataloged resource. Covers dcterms:publisher/creator/contributor, dcat:contactPoint, dcterms:rightsHolder and prov:qualifiedAttribution+dcat:hadRole; ORIGINATOR/CUSTODIAN (geodcatap) and MAINTAINER are already in the base enum for future profiles (EEnums cannot be extended later). OTHER + Attribution.roleIri is the open end for arbitrary prov roles."/>
+      <details key="documentation.de" value="Rolle einer ResponsibleParty gegenueber einer katalogisierten Ressource. Deckt dcterms:publisher/creator/contributor, dcat:contactPoint, dcterms:rightsHolder sowie prov:qualifiedAttribution+dcat:hadRole ab; ORIGINATOR/CUSTODIAN (geodcatap) und MAINTAINER liegen fuer kommende Profile bereits im Basis-Enum (EEnums sind nicht nachtraeglich erweiterbar). OTHER + Attribution.roleIri ist das offene Ende fuer beliebige prov-Rollen."/>
+      <details key="caption.de" value="Agentenrolle"/>
+      <details key="caption.en" value="Agent Role"/>
+    </eAnnotations>
+    <eLiterals name="PUBLISHER" literal="PUBLISHER"/>
+    <eLiterals name="CREATOR" value="1" literal="CREATOR"/>
+    <eLiterals name="CONTRIBUTOR" value="2" literal="CONTRIBUTOR"/>
+    <eLiterals name="CONTACT_POINT" value="3" literal="CONTACT_POINT"/>
+    <eLiterals name="RIGHTS_HOLDER" value="4" literal="RIGHTS_HOLDER"/>
+    <eLiterals name="ORIGINATOR" value="5" literal="ORIGINATOR"/>
+    <eLiterals name="CUSTODIAN" value="6" literal="CUSTODIAN"/>
+    <eLiterals name="MAINTAINER" value="7" literal="MAINTAINER"/>
+    <eLiterals name="OTHER" value="8" literal="OTHER"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ChecksumAlgorithm">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Checksum algorithm per SPDX (spdx:ChecksumAlgorithm) as referenced by DCAT 3 for spdx:Checksum."/>
+      <details key="documentation.de" value="Pruefsummen-Algorithmus nach SPDX (spdx:ChecksumAlgorithm), wie von DCAT 3 fuer spdx:Checksum referenziert."/>
+      <details key="caption.de" value="Pruefsummen-Algorithmus"/>
+      <details key="caption.en" value="Checksum Algorithm"/>
+    </eAnnotations>
+    <eLiterals name="SHA1" literal="SHA1"/>
+    <eLiterals name="SHA224" value="1" literal="SHA224"/>
+    <eLiterals name="SHA256" value="2" literal="SHA256"/>
+    <eLiterals name="SHA384" value="3" literal="SHA384"/>
+    <eLiterals name="SHA512" value="4" literal="SHA512"/>
+    <eLiterals name="SHA3_256" value="5" literal="SHA3_256"/>
+    <eLiterals name="SHA3_384" value="6" literal="SHA3_384"/>
+    <eLiterals name="SHA3_512" value="7" literal="SHA3_512"/>
+    <eLiterals name="MD5" value="8" literal="MD5"/>
+    <eLiterals name="BLAKE2B_256" value="9" literal="BLAKE2B_256"/>
+    <eLiterals name="BLAKE2B_384" value="10" literal="BLAKE2B_384"/>
+    <eLiterals name="BLAKE2B_512" value="11" literal="BLAKE2B_512"/>
+    <eLiterals name="BLAKE3" value="12" literal="BLAKE3"/>
+    <eLiterals name="ADLER32" value="13" literal="ADLER32"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DcatElement" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Abstract local root of the catalog world (SqlElement pattern): the metadata shared by CatalogedResource, Distribution and CatalogRecord — description, lifecycle dates, license and rights. The title (dcterms:title) is the inherited name (core::ModelElement.name); description carries the primary language; further language versions attach as businessinformation::Description (type=title|description, language set), further documentation pages as businessinformation::Document."/>
+      <details key="documentation.de" value="Abstrakte lokale Wurzel der Katalogwelt (Muster SqlElement): die von CatalogedResource, Distribution und CatalogRecord geteilten Metadaten — Beschreibung, Lebenszyklusdaten, Lizenz und Rechte. Der Titel (dcterms:title) ist der geerbte name (core::ModelElement.name); description traegt die Primaersprache; weitere Sprachfassungen haengen als businessinformation::Description (type=title|description, language gesetzt) am Element, weitere Dokumentationsseiten als businessinformation::Document."/>
+      <details key="caption.de" value="DCAT-Element"/>
+      <details key="caption.en" value="DCAT Element"/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:description in the primary language; further languages as businessinformation::Description (type=description)."/>
+        <details key="documentation.de" value="dcterms:description in der Primaersprache; weitere Sprachen als businessinformation::Description (type=description)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="issued">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:issued — release date (ISO 8601); for a CatalogRecord the listing date."/>
+        <details key="documentation.de" value="dcterms:issued — Veroeffentlichungsdatum (ISO 8601); beim CatalogRecord das Listungsdatum."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="modified">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:modified — date of last change (ISO 8601)."/>
+        <details key="documentation.de" value="dcterms:modified — Datum der letzten Aenderung (ISO 8601)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="licenseIri">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:license as IRI (e.g. EU license vocabulary, dcat-ap.de/def/licenses). CWM has no licensing anchor; full texts attach as businessinformation::Document."/>
+        <details key="documentation.de" value="dcterms:license als IRI (z. B. EU-Lizenzvokabular, dcat-ap.de/def/licenses). CWM kennt keine Lizenzverankerung; Volltexte haengen als businessinformation::Document am Element."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="accessRightsIri">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:accessRights as IRI (EU access-right: PUBLIC/RESTRICTED/NON_PUBLIC)."/>
+        <details key="documentation.de" value="dcterms:accessRights als IRI (EU access-right: PUBLIC/RESTRICTED/NON_PUBLIC)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rights">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:rights — rights statement as free text or IRI of a RightsStatement."/>
+        <details key="documentation.de" value="dcterms:rights — Rechtehinweis als Freitext oder IRI eines RightsStatement."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="policyIri" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="odrl:hasPolicy — IRIs of ODRL usage policies."/>
+        <details key="documentation.de" value="odrl:hasPolicy — IRIs von ODRL-Nutzungsrichtlinien."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="conformsToIri" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:conformsTo — IRIs of the standards/schemata/profiles the content follows; for a CatalogRecord the metadata profile of the entry."/>
+        <details key="documentation.de" value="dcterms:conformsTo — IRIs der Standards/Schemata/Profile, denen der Inhalt folgt; beim CatalogRecord das Metadatenprofil des Eintrags."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CatalogedResource" abstract="true" eSuperTypes="//DcatElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="dcat:Resource — a cataloged resource (dataset, data service, catalog). Carries identification, vocabulary IRIs, keywords/themes, attributions, qualified relations and the DCAT 3 versioning and ordering links. Reverse directions (inCatalog, nextVersion, seriesMember, ...) are hidden roles — navigate via InverseReferences."/>
+      <details key="documentation.de" value="dcat:Resource — eine katalogisierte Ressource (Dataset, DataService, Katalog). Traegt Identifikation, Vokabular-IRIs, Schlagworte/Themen, Attributionen, qualifizierte Relationen sowie die DCAT-3-Versions- und Ordnungsbezuege. Die Gegenrichtungen (inCatalog, nextVersion, seriesMember, ...) sind versteckte Rollen — Navigation ueber InverseReferences."/>
+      <details key="caption.de" value="Katalogisierte Ressource"/>
+      <details key="caption.en" value="Cataloged Resource"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="SinglePublisher"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="SinglePublisher" value="self.attribution->select(a | a.role = AgentRole::PUBLISHER)->size() &lt;= 1"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
+      <details key="SinglePublisher.name" value="SinglePublisher"/>
+      <details key="SinglePublisher.description" value="A resource has at most one publisher attribution."/>
+      <details key="SinglePublisher.level" value="error"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="identifier" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:identifier — primary identifiers (URN, DOI, portal id, ...)."/>
+        <details key="documentation.de" value="dcterms:identifier — Hauptbezeichner (URN, DOI, Portal-ID, ...)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="otherIdentifier" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="adms:identifier flattened to the notation — further identifiers from other systems."/>
+        <details key="documentation.de" value="adms:identifier, verflacht auf die Notation — weitere Bezeichner aus anderen Systemen."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="language" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:language — EU language IRI or ISO 639 code of the content."/>
+        <details key="documentation.de" value="dcterms:language — EU-Sprach-IRI oder ISO-639-Code des Inhalts."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeIri" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:type — genre/kind of the resource as IRI (e.g. EU dataset-type)."/>
+        <details key="documentation.de" value="dcterms:type — Genre/Art der Ressource als IRI (z. B. EU dataset-type)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="statusIri">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="adms:status as IRI (EU distribution-status or ADMS status list)."/>
+        <details key="documentation.de" value="adms:status als IRI (EU distribution-status bzw. ADMS-Statusliste)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:version (new in DCAT 3) — version designator of this resource."/>
+        <details key="documentation.de" value="dcat:version (neu in DCAT 3) — Versionsbezeichner dieser Ressource."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="versionNotes" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="adms:versionNotes — change notes for this version."/>
+        <details key="documentation.de" value="adms:versionNotes — Aenderungsnotizen zu dieser Version."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="keyword" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:keyword — free-text keywords."/>
+        <details key="documentation.de" value="dcat:keyword — freie Schlagworte."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="landingPage" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:landingPage — web page(s) giving access to the resource; further foaf:pages as businessinformation::Document."/>
+        <details key="documentation.de" value="dcat:landingPage — Webseite(n) mit Zugang zur Ressource; weitere foaf:pages als businessinformation::Document."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="themeIri" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:theme as IRI of the EU data-theme vocabulary (or another skos:ConceptScheme) — the form exporters and portals need."/>
+        <details key="documentation.de" value="dcat:theme als IRI des EU-data-theme-Vokabulars (bzw. eines anderen skos:ConceptScheme) — die Form, die Exporter und Portale brauchen."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="theme" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:theme as in-repo SKOS anchor: businessnomenclature::Concept of a local taxonomy."/>
+        <details key="documentation.de" value="dcat:theme als repo-interne SKOS-Verankerung: businessnomenclature::Concept einer lokalen Taxonomie."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="themedResource"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="themedResource"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/analysis/businessnomenclature#//Concept"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attribution" ordered="false" upperBound="-1"
+        eType="//Attribution" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Responsibilities: publisher/creator/contactPoint/... as (agent, role) pairs."/>
+        <details key="documentation.de" value="Zustaendigkeiten: publisher/creator/contactPoint/... als (agent, role)-Paare."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="qualifiedRelation" ordered="false" upperBound="-1"
+        eType="//Relationship" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:qualifiedRelation — qualified relations to other resources."/>
+        <details key="documentation.de" value="dcat:qualifiedRelation — qualifizierte Beziehungen zu anderen Ressourcen."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relation" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:relation — generic link to related elements."/>
+        <details key="documentation.de" value="dcterms:relation — generischer Bezug auf verwandte Elemente."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="relatedResource"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="relatedResource"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hasPart" ordered="false" upperBound="-1"
+        eType="//CatalogedResource">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:hasPart — contained part resources (loose collection, no containment)."/>
+        <details key="documentation.de" value="dcterms:hasPart — enthaltene Teilressourcen (lose Kollektion, kein Containment)."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="isPartOf"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="isPartOf"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="isReferencedBy" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:isReferencedBy — publications/elements citing this resource (data citation)."/>
+        <details key="documentation.de" value="dcterms:isReferencedBy — Publikationen/Elemente, die diese Ressource zitieren (Datenzitation)."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="references"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="references"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="previousVersion" eType="//CatalogedResource">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:previousVersion (new in DCAT 3) — the immediate predecessor in the version lineage (not the series position, that is prev)."/>
+        <details key="documentation.de" value="dcat:previousVersion (neu in DCAT 3) — der unmittelbare Vorgaenger in der Versionslinie (nicht die Serienposition, das ist prev)."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="nextVersion"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="nextVersion"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hasVersion" ordered="false" upperBound="-1"
+        eType="//CatalogedResource">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:hasVersion (new in DCAT 3) — versions of this resource."/>
+        <details key="documentation.de" value="dcat:hasVersion (neu in DCAT 3) — Versionen dieser Ressource."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="isVersionOf"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="isVersionOf"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hasCurrentVersion" eType="//CatalogedResource">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:hasCurrentVersion (new in DCAT 3) — the current version."/>
+        <details key="documentation.de" value="dcat:hasCurrentVersion (neu in DCAT 3) — die aktuelle Version."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="isCurrentVersionOf"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="isCurrentVersionOf"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="replaces" ordered="false" upperBound="-1"
+        eType="//CatalogedResource">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:replaces — resources this one supersedes."/>
+        <details key="documentation.de" value="dcterms:replaces — Ressourcen, die diese abloest."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="isReplacedBy"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="isReplacedBy"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="first" eType="//CatalogedResource">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:first — first member of the ordered collection/series."/>
+        <details key="documentation.de" value="dcat:first — erstes Mitglied der geordneten Kollektion/Serie."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="isFirstOf"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="isFirstOf"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="last" eType="//CatalogedResource">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:last — last member of the ordered collection/series."/>
+        <details key="documentation.de" value="dcat:last — letztes Mitglied der geordneten Kollektion/Serie."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="isLastOf"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="isLastOf"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="prev" eType="//CatalogedResource">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:prev — predecessor in the ordered collection/series (position, not version lineage)."/>
+        <details key="documentation.de" value="dcat:prev — Vorgaenger in der geordneten Kollektion/Serie (Position, nicht Versionslinie)."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="next"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="next"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Dataset" eSuperTypes="//CatalogedResource">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="dcat:Dataset — a collection of data published as a unit. The core of the CWM anchoring: subject references the already-modeled CWM elements (relational::Schema, a single Table, json::ObjectType, calc::Sheet, ...) this dataset publishes — &quot;I publish this class as a dataset with this description&quot;. Physical access forms are owned Distribution children."/>
+      <details key="documentation.de" value="dcat:Dataset — eine als Einheit publizierte Datensammlung. Der Kern der CWM-Verankerung: subject referenziert die bereits modellierten CWM-Elemente (relational::Schema, eine einzelne Table, json::ObjectType, calc::Sheet, ...), die dieser Datensatz publiziert — &quot;diese Klasse publiziere ich als Datensatz mit dieser Beschreibung&quot;. Physische Zugriffsformen sind eigene Distribution-Kinder."/>
+      <details key="caption.de" value="Datensatz"/>
+      <details key="caption.en" value="Dataset"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="SpatialResolutionPositive"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="SpatialResolutionPositive" value="self.spatialResolutionInMeters &lt;> null implies self.spatialResolutionInMeters.toReal() > 0"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
+      <details key="SpatialResolutionPositive.name" value="SpatialResolutionPositive"/>
+      <details key="SpatialResolutionPositive.description" value="The spatial resolution, when given, is positive (core::Float is a decimal literal)."/>
+      <details key="SpatialResolutionPositive.level" value="error"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subject" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The CWM anchor: the already-modeled elements this dataset publishes (relational::Schema, a Table, json::ObjectType, calc::Sheet, ...). Reverse role dataset via InverseReferences: &quot;as which datasets is this element published?&quot;."/>
+        <details key="documentation.de" value="Der CWM-Anker: die bereits modellierten Elemente, die dieser Datensatz publiziert (relational::Schema, eine Table, json::ObjectType, calc::Sheet, ...). Rueckrichtung dataset via InverseReferences: &quot;als welche Datensaetze ist dieses Element publiziert?&quot;."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="dataset"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="dataset"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="distribution" ordered="false" upperBound="-1"
+        eType="//Distribution" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:distribution — the physical access forms; dcat:isDistributionOf is the container."/>
+        <details key="documentation.de" value="dcat:distribution — die physischen Zugriffsformen; dcat:isDistributionOf ist der Container."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="accrualPeriodicityIri">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:accrualPeriodicity — update frequency as IRI of the EU frequency vocabulary."/>
+        <details key="documentation.de" value="dcterms:accrualPeriodicity — Aktualisierungsfrequenz als IRI des EU-frequency-Vokabulars."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inSeries" ordered="false" upperBound="-1"
+        eType="//DatasetSeries">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:inSeries (new in DCAT 3) — series this dataset belongs to; reverse role seriesMember."/>
+        <details key="documentation.de" value="dcat:inSeries (neu in DCAT 3) — Serien, zu denen dieser Datensatz gehoert; Gegenrolle seriesMember."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="seriesMember"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="seriesMember"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="spatial" ordered="false" upperBound="-1"
+        eType="//Location" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:spatial — spatial coverage."/>
+        <details key="documentation.de" value="dcterms:spatial — raeumliche Abdeckung."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="spatialResolutionInMeters">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:spatialResolutionInMeters — minimum resolvable distance in meters."/>
+        <details key="documentation.de" value="dcat:spatialResolutionInMeters — kleinster aufgeloester Abstand in Metern."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Float"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="temporal" ordered="false" upperBound="-1"
+        eType="//PeriodOfTime" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:temporal — temporal coverage."/>
+        <details key="documentation.de" value="dcterms:temporal — zeitliche Abdeckung."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="temporalResolution">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:temporalResolution — minimum resolvable time period as an xsd:duration literal (core::Time is an instant, not a duration)."/>
+        <details key="documentation.de" value="dcat:temporalResolution — kleinster aufgeloester Zeitabstand als xsd:duration-Literal (core::Time ist ein Zeitpunkt, keine Dauer)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="wasGeneratedBy" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="prov:wasGeneratedBy — the generating activity. Deliberately generically typed; canonical targets are transformation::TransformationActivity and warehouseoperation::TransformationExecution (keeping their module hull out of consumers' poms)."/>
+        <details key="documentation.de" value="prov:wasGeneratedBy — die erzeugende Aktivitaet. Bewusst generisch typisiert; kanonische Ziele sind transformation::TransformationActivity und warehouseoperation::TransformationExecution (so bleibt deren Modul-Huelle aus dem pom der Konsumenten)."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="generated"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="generated"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DatasetSeries" eSuperTypes="//Dataset">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="dcat:DatasetSeries (new in DCAT 3) — a dataset that groups other datasets into a series (time series, map series). No own features; members point here via inSeries (reverse role seriesMember), their order via first/prev/last. A series should not carry distributions itself (SeriesHasNoDistribution)."/>
+      <details key="documentation.de" value="dcat:DatasetSeries (neu in DCAT 3) — ein Datensatz, der andere Datensaetze als Serie buendelt (Zeitreihen, Kartenwerke). Keine eigenen Merkmale; Mitglieder zeigen per inSeries hierher (Gegenrolle seriesMember), ihre Ordnung ueber first/prev/last. Eine Serie soll selbst keine Distributionen tragen (SeriesHasNoDistribution)."/>
+      <details key="caption.de" value="Datensatzserie"/>
+      <details key="caption.en" value="Dataset Series"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="SeriesHasNoDistribution"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="SeriesHasNoDistribution" value="self.distribution->isEmpty()"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
+      <details key="SeriesHasNoDistribution.name" value="SeriesHasNoDistribution"/>
+      <details key="SeriesHasNoDistribution.description" value="A dataset series should not carry distributions itself (DCAT 3 SHOULD)."/>
+      <details key="SeriesHasNoDistribution.level" value="warning"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Catalog">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="dcat:Catalog — a curated collection of metadata about resources. Faithful to DCAT it is a Dataset and at the same time a core::Package (precedent core::Subsystem): as a Package the catalog may own homeless datasets and support objects (ResponsibleParties, taxonomies) as ownedElement; canonical membership however is the resource reference — datasets usually live next to the resource models they describe. The dataset/service/catalog subsets are derivable (util filters), not separate features."/>
+      <details key="documentation.de" value="dcat:Catalog — eine kuratierte Sammlung von Metadaten ueber Ressourcen. DCAT-treu ein Dataset und zugleich core::Package (Vorbild core::Subsystem): als Package kann der Katalog heimatlose Datensaetze und Traegerobjekte (ResponsibleParties, Taxonomien) als ownedElement besitzen; die kanonische Mitgliedschaft ist aber die Referenz resource — Datensaetze leben in der Regel bei den Ressourcenmodellen, die sie beschreiben. dataset/service/catalog-Teilmengen sind ableitbar (Util-Filter), keine eigenen Features."/>
+      <details key="caption.de" value="Katalog"/>
+      <details key="caption.en" value="Catalog"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="RecordTopicIsListed NotOwnMember"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="RecordTopicIsListed" value="self.record->forAll(r | self.resource->includes(r.primaryTopic) or self.ownedElement->includes(r.primaryTopic))"/>
+      <details key="NotOwnMember" value="not self.resource->includes(self)"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
+      <details key="RecordTopicIsListed.name" value="RecordTopicIsListed"/>
+      <details key="RecordTopicIsListed.description" value="Every catalog record describes a resource the catalog lists or owns."/>
+      <details key="RecordTopicIsListed.level" value="error"/>
+      <details key="NotOwnMember.name" value="NotOwnMember"/>
+      <details key="NotOwnMember.description" value="A catalog does not list itself as a member."/>
+      <details key="NotOwnMember.level" value="error"/>
+    </eAnnotations>
+    <eSuperTypes href="#//Dataset"/>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="homepage">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="foaf:homepage — the catalog's home page."/>
+        <details key="documentation.de" value="foaf:homepage — die Startseite des Katalogs."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="themeTaxonomy" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:themeTaxonomy as in-repo anchor: businessnomenclature::Taxonomy whose concepts provide the themes."/>
+        <details key="documentation.de" value="dcat:themeTaxonomy als repo-interne Verankerung: businessnomenclature::Taxonomy, deren Concepts die Themen liefern."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="catalog"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="catalog"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/analysis/businessnomenclature#//Taxonomy"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="themeTaxonomyIri" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:themeTaxonomy as IRI of an external skos:ConceptScheme (e.g. EU data-theme)."/>
+        <details key="documentation.de" value="dcat:themeTaxonomy als IRI eines externen skos:ConceptScheme (z. B. EU data-theme)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="resource" ordered="false" upperBound="-1"
+        eType="//CatalogedResource">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:resource — canonical membership: the catalog lists resources that structurally live next to their resource models; reverse role inCatalog. The dataset/service/catalog subsets via util filters."/>
+        <details key="documentation.de" value="dcat:resource — die kanonische Mitgliedschaft: der Katalog listet Ressourcen, die strukturell bei ihren Ressourcenmodellen leben; Gegenrolle inCatalog. dataset/service/catalog-Teilmengen per Util-Filter."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="inCatalog"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="inCatalog"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="record" ordered="false" upperBound="-1"
+        eType="//CatalogRecord" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:record — the catalog records; records are bound to the catalog's lifecycle (containment)."/>
+        <details key="documentation.de" value="dcat:record — die Katalogeintraege; Eintraege sind an den Lebenszyklus des Katalogs gebunden (Containment)."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataService" eSuperTypes="//CatalogedResource">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="dcat:DataService — a service/API offering access to datasets. endpointUrl/endpointDescription are own features (CWM SoftwareDeployment has no URL anywhere); provider optionally links the deployed component (softwaredeployment::DataProvider) for the operations view."/>
+      <details key="documentation.de" value="dcat:DataService — ein Dienst/API, der Zugriff auf Datensaetze bietet. endpointUrl/endpointDescription sind eigene Merkmale (CWM SoftwareDeployment kennt keine URL); provider verlinkt optional die deployte Komponente (softwaredeployment::DataProvider) fuer die Betriebssicht."/>
+      <details key="caption.de" value="Datendienst"/>
+      <details key="caption.en" value="Data Service"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="EndpointUrlNotEmpty"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="EndpointUrlNotEmpty" value="self.endpointUrl->forAll(u | u.size() > 0)"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
+      <details key="EndpointUrlNotEmpty.name" value="EndpointUrlNotEmpty"/>
+      <details key="EndpointUrlNotEmpty.description" value="Endpoint URLs are non-empty strings."/>
+      <details key="EndpointUrlNotEmpty.level" value="error"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="endpointUrl" ordered="false" lowerBound="1"
+        upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:endpointURL — root endpoint(s) of the service."/>
+        <details key="documentation.de" value="dcat:endpointURL — Wurzel-Endpunkt(e) des Dienstes."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="endpointDescription" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:endpointDescription — machine-readable description (OpenAPI, OGC GetCapabilities, SPARQL service description, WSDL) as URL or inline."/>
+        <details key="documentation.de" value="dcat:endpointDescription — maschinenlesbare Beschreibung (OpenAPI, OGC GetCapabilities, SPARQL Service Description, WSDL) als URL oder inline."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="servesDataset" ordered="false" upperBound="-1"
+        eType="//Dataset">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:servesDataset — the datasets this service serves; reverse role dataService."/>
+        <details key="documentation.de" value="dcat:servesDataset — die Datensaetze, die dieser Dienst ausliefert; Gegenrolle dataService."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="dataService"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="dataService"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="provider">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Optional bridge to the operations view: the deployed access component (softwaredeployment::DataProvider with its ProviderConnections)."/>
+        <details key="documentation.de" value="Optionale Bruecke zur Betriebssicht: die deployte Zugriffskomponente (softwaredeployment::DataProvider mit ProviderConnections)."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="catalogedService"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="catalogedService"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/softwaredeployment#//DataProvider"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Distribution" eSuperTypes="//DcatElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="dcat:Distribution — a concrete access form of a dataset (file download, API view, media type, size, checksum). Exists only as a child of its dataset (Dataset.distribution); dcat:isDistributionOf is the container."/>
+      <details key="documentation.de" value="dcat:Distribution — eine konkrete Zugriffsform eines Datensatzes (Datei-Download, API-Sicht, Medientyp, Groesse, Pruefsumme). Existiert nur als Kind seines Datensatzes (Dataset.distribution); dcat:isDistributionOf ist der Container."/>
+      <details key="caption.de" value="Distribution"/>
+      <details key="caption.en" value="Distribution"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="ByteSizeNonNegative SpatialResolutionPositive"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="ByteSizeNonNegative" value="self.byteSize >= 0"/>
+      <details key="SpatialResolutionPositive" value="self.spatialResolutionInMeters &lt;> null implies self.spatialResolutionInMeters.toReal() > 0"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
+      <details key="ByteSizeNonNegative.name" value="ByteSizeNonNegative"/>
+      <details key="ByteSizeNonNegative.description" value="The byte size is not negative (core::Integer is a primitive long; unset = 0)."/>
+      <details key="ByteSizeNonNegative.level" value="error"/>
+      <details key="SpatialResolutionPositive.name" value="SpatialResolutionPositive"/>
+      <details key="SpatialResolutionPositive.description" value="The spatial resolution, when given, is positive (core::Float is a decimal literal)."/>
+      <details key="SpatialResolutionPositive.level" value="error"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="accessUrl" ordered="false" lowerBound="1"
+        upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:accessURL — access point(s): download page, API entry, form. For direct file access also set downloadUrl."/>
+        <details key="documentation.de" value="dcat:accessURL — Zugangspunkt(e): Downloadseite, API-Einstieg, Formular. Bei direktem Dateizugriff zusaetzlich downloadUrl setzen."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="downloadUrl" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:downloadURL — direct download address(es) of the file."/>
+        <details key="documentation.de" value="dcat:downloadURL — direkte Download-Adresse(n) der Datei."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mediaType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:mediaType — IANA media type (e.g. text/csv)."/>
+        <details key="documentation.de" value="dcat:mediaType — IANA-Medientyp (z. B. text/csv)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="formatIri">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:format — file format as IRI (EU file-type) when no IANA media type fits."/>
+        <details key="documentation.de" value="dcterms:format — Dateiformat als IRI (EU file-type), wenn kein IANA-Medientyp passt."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="compressFormat">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:compressFormat — media type of the compression (e.g. application/gzip)."/>
+        <details key="documentation.de" value="dcat:compressFormat — Medientyp der Kompression (z. B. application/gzip)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="packageFormat">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:packageFormat — media type of the packaging (e.g. application/zip) when several files are bundled."/>
+        <details key="documentation.de" value="dcat:packageFormat — Medientyp der Paketierung (z. B. application/zip), wenn mehrere Dateien gebuendelt sind."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="byteSize">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:byteSize — size in bytes (core::Integer = long)."/>
+        <details key="documentation.de" value="dcat:byteSize — Groesse in Bytes (core::Integer = long)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="spatialResolutionInMeters">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:spatialResolutionInMeters — minimum resolvable distance in meters."/>
+        <details key="documentation.de" value="dcat:spatialResolutionInMeters — kleinster aufgeloester Abstand in Metern."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Float"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="temporalResolution">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:temporalResolution — minimum resolvable time period as an xsd:duration literal."/>
+        <details key="documentation.de" value="dcat:temporalResolution — kleinster aufgeloester Zeitabstand als xsd:duration-Literal."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="checksum" eType="//Checksum" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="spdx:checksum (new in DCAT 3) — checksum, related to downloadUrl."/>
+        <details key="documentation.de" value="spdx:checksum (neu in DCAT 3) — Pruefsumme, bezogen auf downloadUrl."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="accessService" ordered="false" upperBound="-1"
+        eType="//DataService">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:accessService — services serving this distribution; reverse role servedDistribution."/>
+        <details key="documentation.de" value="dcat:accessService — Dienste, die diese Distribution ausliefern; Gegenrolle servedDistribution."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="servedDistribution"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="servedDistribution"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CatalogRecord" eSuperTypes="//DcatElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="dcat:CatalogRecord — the catalog entry as its own object: metadata about the registration (listing date = issued, modification date, metadata profile = conformsToIri), separate from the metadata of the resource itself. Child of the catalog (Catalog.record)."/>
+      <details key="documentation.de" value="dcat:CatalogRecord — der Katalogeintrag als eigenes Objekt: Metadaten ueber die Registrierung (Listungsdatum = issued, Aenderungsdatum, Metadatenprofil = conformsToIri), getrennt von den Metadaten der Ressource selbst. Kind des Katalogs (Catalog.record)."/>
+      <details key="caption.de" value="Katalogeintrag"/>
+      <details key="caption.en" value="Catalog Record"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryTopic" lowerBound="1" eType="//CatalogedResource">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="foaf:primaryTopic — the single resource this record describes; reverse role isPrimaryTopicOf."/>
+        <details key="documentation.de" value="foaf:primaryTopic — die eine Ressource, die dieser Eintrag beschreibt; Gegenrolle isPrimaryTopicOf."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="isPrimaryTopicOf"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="isPrimaryTopicOf"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Attribution">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Responsibility of a ResponsibleParty for a resource in exactly one role — unifies dcterms:publisher/creator/contributor, dcat:contactPoint, dcterms:rightsHolder and prov:qualifiedAttribution+dcat:hadRole in one shape (agent, role). Contact data (email, telephone, URL) comes with the ResponsibleParty via businessinformation::Contact."/>
+      <details key="documentation.de" value="Zustaendigkeit einer ResponsibleParty fuer eine Ressource in genau einer Rolle — vereinigt dcterms:publisher/creator/contributor, dcat:contactPoint, dcterms:rightsHolder und prov:qualifiedAttribution+dcat:hadRole in einer Form (agent, role). Kontaktdaten (E-Mail, Telefon, URL) bringt die ResponsibleParty ueber businessinformation::Contact mit."/>
+      <details key="caption.de" value="Attribution"/>
+      <details key="caption.en" value="Attribution"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="OtherRoleNeedsIri"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="OtherRoleNeedsIri" value="self.role = AgentRole::OTHER implies self.roleIri &lt;> null"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
+      <details key="OtherRoleNeedsIri.name" value="OtherRoleNeedsIri"/>
+      <details key="OtherRoleNeedsIri.description" value="The open role OTHER requires a refining role IRI."/>
+      <details key="OtherRoleNeedsIri.level" value="error"/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="agent" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The responsible businessinformation::ResponsibleParty (person, role or organization); reverse role attribution."/>
+        <details key="documentation.de" value="Die zustaendige businessinformation::ResponsibleParty (Person, Rolle oder Organisation); Gegenrolle attribution."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="attribution"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="attribution"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation#//ResponsibleParty"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="role" lowerBound="1" eType="//AgentRole">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The agent's role towards the resource."/>
+        <details key="documentation.de" value="Die Rolle des Agenten gegenueber der Ressource."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="roleIri">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Refining role IRI (prov/ISO 19115); mandatory for role=OTHER."/>
+        <details key="documentation.de" value="Praezisierende Rollen-IRI (prov/ISO 19115); Pflicht bei role=OTHER."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Relationship">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="dcat:Relationship — qualified relation to other resources when no dcterms property fits: target(s) plus role as IRI (ISO 19115, DataCite, IANA link relations) and/or businessnomenclature::Concept."/>
+      <details key="documentation.de" value="dcat:Relationship — qualifizierte Beziehung zu anderen Ressourcen, wenn keine dcterms-Property passt: Ziel(e) plus Rolle als IRI (ISO 19115, DataCite, IANA Link Relations) und/oder businessnomenclature::Concept."/>
+      <details key="caption.de" value="Qualifizierte Beziehung"/>
+      <details key="caption.en" value="Qualified Relationship"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="RelationshipHasRole"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="RelationshipHasRole" value="self.roleIri->notEmpty() or self.role->notEmpty()"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
+      <details key="RelationshipHasRole.name" value="RelationshipHasRole"/>
+      <details key="RelationshipHasRole.description" value="A qualified relationship names at least one role (IRI or concept)."/>
+      <details key="RelationshipHasRole.level" value="error"/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relation" ordered="false" lowerBound="1"
+        upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:relation — target(s) of the qualified relationship."/>
+        <details key="documentation.de" value="dcterms:relation — Ziel(e) der qualifizierten Beziehung."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="qualifiedRelationOf"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="qualifiedRelationOf"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="roleIri" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:hadRole as IRI (ISO 19115, DataCite, IANA link relations)."/>
+        <details key="documentation.de" value="dcat:hadRole als IRI (ISO 19115, DataCite, IANA Link Relations)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="role" ordered="false" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:hadRole as in-repo anchor: businessnomenclature::Concept."/>
+        <details key="documentation.de" value="dcat:hadRole als repo-interne Verankerung: businessnomenclature::Concept."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="relationshipRole"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="relationshipRole"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/analysis/businessnomenclature#//Concept"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PeriodOfTime">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="dcterms:PeriodOfTime — temporal coverage of a dataset; open intervals (start only or end only) are allowed."/>
+      <details key="documentation.de" value="dcterms:PeriodOfTime — zeitliche Abdeckung eines Datensatzes; offene Intervalle (nur Anfang oder nur Ende) sind erlaubt."/>
+      <details key="caption.de" value="Zeitraum"/>
+      <details key="caption.en" value="Period of Time"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="StartBeforeEnd"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="StartBeforeEnd" value="(self.startDate &lt;> null and self.endDate &lt;> null) implies self.startDate &lt;= self.endDate"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
+      <details key="StartBeforeEnd.name" value="StartBeforeEnd"/>
+      <details key="StartBeforeEnd.description" value="When both bounds are given, the period starts no later than it ends (lexical comparison of ISO 8601 values)."/>
+      <details key="StartBeforeEnd.level" value="error"/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="startDate">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:startDate — start of the period (ISO 8601)."/>
+        <details key="documentation.de" value="dcat:startDate — Beginn des Zeitraums (ISO 8601)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="endDate">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:endDate — end of the period (ISO 8601)."/>
+        <details key="documentation.de" value="dcat:endDate — Ende des Zeitraums (ISO 8601)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Time"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Location">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="dcterms:Location — spatial coverage: gazetteer IRI (Geonames, EU places) and/or geometry, bounding box and centroid as WKT literals (dcat:bbox, dcat:centroid, locn:geometry)."/>
+      <details key="documentation.de" value="dcterms:Location — raeumliche Abdeckung: Gazetteer-IRI (Geonames, EU-Orte) und/oder Geometrie, Begrenzungsrahmen und Zentroid als WKT-Literale (dcat:bbox, dcat:centroid, locn:geometry)."/>
+      <details key="caption.de" value="Ort"/>
+      <details key="caption.en" value="Location"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="LocationNotEmpty"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="LocationNotEmpty" value="self.iri &lt;> null or self.geometryWkt &lt;> null or self.bboxWkt &lt;> null or self.centroidWkt &lt;> null"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
+      <details key="LocationNotEmpty.name" value="LocationNotEmpty"/>
+      <details key="LocationNotEmpty.description" value="A location carries at least one of gazetteer IRI, geometry, bounding box or centroid."/>
+      <details key="LocationNotEmpty.level" value="error"/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="iri">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Gazetteer IRI of the place (Geonames, EU countries/places, ATU)."/>
+        <details key="documentation.de" value="Gazetteer-IRI des Ortes (Geonames, EU Countries/Places, ATU)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="geometryWkt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="locn:geometry as WKT literal."/>
+        <details key="documentation.de" value="locn:geometry als WKT-Literal."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="bboxWkt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:bbox — bounding box as WKT literal."/>
+        <details key="documentation.de" value="dcat:bbox — Begrenzungsrahmen als WKT-Literal."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="centroidWkt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcat:centroid — centroid as WKT literal (POINT)."/>
+        <details key="documentation.de" value="dcat:centroid — Zentroid als WKT-Literal (POINT)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Checksum">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="spdx:Checksum (new in DCAT 3) — integrity checksum of a distribution, related to its downloadUrl."/>
+      <details key="documentation.de" value="spdx:Checksum (neu in DCAT 3) — Integritaetspruefsumme einer Distribution, bezogen auf deren downloadUrl."/>
+      <details key="caption.de" value="Pruefsumme"/>
+      <details key="caption.en" value="Checksum"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="ChecksumValueNotEmpty"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="ChecksumValueNotEmpty" value="self.checksumValue.size() > 0"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
+      <details key="ChecksumValueNotEmpty.name" value="ChecksumValueNotEmpty"/>
+      <details key="ChecksumValueNotEmpty.description" value="The checksum value is a non-empty hex string."/>
+      <details key="ChecksumValueNotEmpty.level" value="error"/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="algorithm" lowerBound="1" eType="//ChecksumAlgorithm">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="spdx:algorithm — the checksum algorithm."/>
+        <details key="documentation.de" value="spdx:algorithm — der Pruefsummen-Algorithmus."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="checksumValue" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="spdx:checksumValue — lowercase hex value."/>
+        <details key="documentation.de" value="spdx:checksumValue — Hexwert in Kleinbuchstaben."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>

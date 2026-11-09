@@ -33,5 +33,6 @@
   -->
     <module>governance</module>
     <module>resource.relational.privilege</module>
+    <module>dcat</module>
   </modules>
 </project>
