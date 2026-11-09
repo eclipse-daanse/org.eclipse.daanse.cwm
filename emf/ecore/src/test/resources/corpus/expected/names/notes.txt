@@ -1,0 +1,6 @@
+WARNING NAME names.shop model: name 'shop model' is no Java identifier, 'shopModel' is used
+WARNING NAME names.shop model.2ndClass: name '2ndClass' is no Java identifier, '_2ndClass' is used
+WARNING NAME names.shop model.Order State: name 'Order State' is no Java identifier, 'OrderState' is used
+WARNING NAME names.shop model.Order State.in progress: name 'in progress' is no Java identifier, 'inProgress' is used
+WARNING NAME names.shop model.2ndClass.byte[]: name 'byte[]' is no Java identifier, 'byteArray' is used
+WARNING NAME names.shop model.2ndClass.first name: name 'first name' is no Java identifier, 'firstName' is used

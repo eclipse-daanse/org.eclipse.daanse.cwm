@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core"
+    xmlns:datatypes="http://www.omg.org/spec/CWM/1.1/foundation/datatypes" xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships"
+    xmi:id="Model_invalid" name="invalid">
+  <ownedElement xsi:type="core:Package" xmi:id="Package_invalid.invalid" name="invalid">
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_invalid.invalid.Unknown" name="Unknown"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_invalid.invalid.A" name="A">
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_invalid.invalid.A.value" name="value" type="DataType_invalid.invalid.Unknown"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_invalid.invalid.B" name="B"/>
+    <ownedElement xsi:type="relationships:Generalization" xmi:id="Generalization_invalid.invalid.A_is_a_B" name="A is a B"
+        child="Class_invalid.invalid.A" parent="Class_invalid.invalid.B"/>
+    <ownedElement xsi:type="relationships:Generalization" xmi:id="Generalization_invalid.invalid.B_is_a_A" name="B is a A"
+        child="Class_invalid.invalid.B" parent="Class_invalid.invalid.A"/>
+    <ownedElement xsi:type="datatypes:Enumeration" xmi:id="Enumeration_invalid.invalid.Kind" name="Kind">
+      <literal xmi:id="EnumerationLiteral_invalid.invalid.Kind.X" name="X"/>
+    </ownedElement>
+    <ownedElement xsi:type="datatypes:TypeAlias" xmi:id="TypeAlias_invalid.invalid.KindAlias" name="KindAlias" type="Enumeration_invalid.invalid.Kind"/>
+    <ownedElement xsi:type="datatypes:TypeAlias" xmi:id="TypeAlias_invalid.invalid.Loop" name="Loop" type="TypeAlias_invalid.invalid.Loop"/>
+  </ownedElement>
+</core:Model>

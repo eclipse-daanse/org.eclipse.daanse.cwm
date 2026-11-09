@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core"
+    xmlns:datatypes="http://www.omg.org/spec/CWM/1.1/foundation/datatypes" xmi:id="Model_names" name="names">
+  <ownedElement xsi:type="core:Package" xmi:id="Package_names.shop_model" name="shop model">
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_names.shop_model.String" name="String"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_names.shop_model.2ndClass" name="2ndClass">
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_names.shop_model.2ndClass.byte__" name="byte[]" type="DataType_names.shop_model.String"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_names.shop_model.2ndClass.first_name" name="first name" type="DataType_names.shop_model.String"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_names.shop_model.2ndClass.state" name="state" type="Enumeration_names.shop_model.Order_State"/>
+    </ownedElement>
+    <ownedElement xsi:type="datatypes:Enumeration" xmi:id="Enumeration_names.shop_model.Order_State" name="Order State">
+      <literal xmi:id="EnumerationLiteral_names.shop_model.Order_State.in_progress" name="in progress"/>
+      <literal xmi:id="EnumerationLiteral_names.shop_model.Order_State.done" name="done"/>
+    </ownedElement>
+  </ownedElement>
+</core:Model>

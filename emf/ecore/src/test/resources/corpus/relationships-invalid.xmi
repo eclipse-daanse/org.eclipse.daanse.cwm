@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core"
+    xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships" xmi:id="Model_trade" name="trade">
+  <ownedElement xsi:type="core:Package" xmi:id="Package_trade.sales" name="sales">
+    <ownedElement xsi:type="core:Class" xmi:id="Class_trade.sales.A" name="A"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_trade.sales.B" name="B"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_trade.sales.C" name="C"/>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_trade.sales.Ternary" name="Ternary">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.Ternary.a" name="a" type="Class_trade.sales.A"
+          isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.Ternary.a.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.Ternary.a.multiplicity.range" upper="1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.Ternary.b" name="b" type="Class_trade.sales.B"
+          isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.Ternary.b.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.Ternary.b.multiplicity.range" upper="1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.Ternary.c" name="c" type="Class_trade.sales.C"
+          isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.Ternary.c.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.Ternary.c.multiplicity.range" upper="1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_trade.sales.WithAttribute" name="WithAttribute">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.WithAttribute.a" name="a" type="Class_trade.sales.A"
+          isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.WithAttribute.a.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.WithAttribute.a.multiplicity.range" upper="1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.WithAttribute.b" name="b" type="Class_trade.sales.B"
+          isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.WithAttribute.b.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.WithAttribute.b.multiplicity.range" upper="1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_trade.sales.WithAttribute.since" name="since"/>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_trade.sales.BothAggregate" name="BothAggregate">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.BothAggregate.a" name="a" type="Class_trade.sales.A"
+          aggregation="ak_aggregate" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.BothAggregate.a.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.BothAggregate.a.multiplicity.range" upper="1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.BothAggregate.b" name="b" type="Class_trade.sales.B"
+          aggregation="ak_composite" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.BothAggregate.b.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.BothAggregate.b.multiplicity.range" upper="1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_trade.sales.ManyWholes" name="ManyWholes">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.ManyWholes.a" name="a" type="Class_trade.sales.A"
+          aggregation="ak_composite" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.ManyWholes.a.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.ManyWholes.a.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.ManyWholes.b" name="b" type="Class_trade.sales.B"
+          isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.ManyWholes.b.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.ManyWholes.b.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_trade.sales.ToElsewhere" name="ToElsewhere">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.ToElsewhere.x" name="x" type="Class_trade.elsewhere.X"
+          isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.ToElsewhere.x.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.ToElsewhere.x.multiplicity.range" upper="1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.ToElsewhere.a" name="a" type="Class_trade.sales.A"
+          isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.ToElsewhere.a.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.ToElsewhere.a.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="Package_trade.elsewhere" name="elsewhere">
+    <ownedElement xsi:type="core:Class" xmi:id="Class_trade.elsewhere.X" name="X"/>
+  </ownedElement>
+</core:Model>

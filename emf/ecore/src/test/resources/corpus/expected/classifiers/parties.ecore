@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="parties" nsURI="http://daanse.eclipse.org/cwm/ecore/parties/parties" nsPrefix="parties">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="prefix" value="Parties"/>
+  </eAnnotations>
+  <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+    <details key="id" value="Package_parties.parties"/>
+    <details key="path" value="parties.parties"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EDataType" name="Integer" instanceClassName="java.lang.Long">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="DataType_parties.parties.Integer"/>
+      <details key="path" value="parties.parties.Integer"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="String" instanceClassName="java.lang.String">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="DataType_parties.parties.String"/>
+      <details key="path" value="parties.parties.String"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Year" instanceClassName="java.time.Year">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="DataType_parties.parties.Year"/>
+      <details key="path" value="parties.parties.Year"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="javaTimeDuration" instanceClassName="java.time.Duration">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="DataType_parties.parties.java.time.Duration"/>
+      <details key="path" value="parties.parties.java.time.Duration"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Money" instanceClassName="java.math.BigDecimal">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="DataType_parties.parties.Money"/>
+      <details key="path" value="parties.parties.Money"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Amount" instanceClassName="java.math.BigDecimal">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="TypeAlias_parties.parties.Amount"/>
+      <details key="path" value="parties.parties.Amount"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Total" instanceClassName="java.math.BigDecimal">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="TypeAlias_parties.parties.Total"/>
+      <details key="path" value="parties.parties.Total"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Addressable" abstract="true" interface="true">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Interface_parties.parties.Addressable"/>
+      <details key="path" value="parties.parties.Addressable"/>
+    </eAnnotations>
+    <eOperations name="address" eType="#//String">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Operation_parties.parties.Addressable.address"/>
+        <details key="path" value="parties.parties.Addressable.address"/>
+      </eAnnotations>
+    </eOperations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Party" abstract="true">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Class_parties.parties.Party"/>
+      <details key="path" value="parties.parties.Party"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="since" eType="#//Year">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_parties.parties.Party.since"/>
+        <details key="path" value="parties.parties.Party.since"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Person" eSuperTypes="#//Party #//Addressable">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Class_parties.parties.Person"/>
+      <details key="path" value="parties.parties.Person"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="age" eType="#//Integer">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_parties.parties.Person.age"/>
+        <details key="path" value="parties.parties.Person.age"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeout" eType="#//javaTimeDuration">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_parties.parties.Person.timeout"/>
+        <details key="path" value="parties.parties.Person.timeout"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="status" eType="#//Status">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_parties.parties.Person.status"/>
+        <details key="path" value="parties.parties.Person.status"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="priority" eType="#//Priority">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_parties.parties.Person.priority"/>
+        <details key="path" value="parties.parties.Person.priority"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Company" eSuperTypes="#//Party">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Class_parties.parties.Company"/>
+      <details key="path" value="parties.parties.Company"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="revenue" eType="#//Amount">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_parties.parties.Company.revenue"/>
+        <details key="path" value="parties.parties.Company.revenue"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="total" eType="#//Total">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_parties.parties.Company.total"/>
+        <details key="path" value="parties.parties.Company.total"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Status">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Enumeration">
+      <details key="isOrdered" value="true"/>
+    </eAnnotations>
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Enumeration_parties.parties.Status"/>
+      <details key="path" value="parties.parties.Status"/>
+    </eAnnotations>
+    <eLiterals name="NEW" value="10" literal="NEW">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="EnumerationLiteral_parties.parties.Status.NEW"/>
+        <details key="path" value="parties.parties.Status.NEW"/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="PAID" value="11" literal="PAID">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="EnumerationLiteral_parties.parties.Status.PAID"/>
+        <details key="path" value="parties.parties.Status.PAID"/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="SHIPPED" value="2" literal="SHIPPED">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="EnumerationLiteral_parties.parties.Status.SHIPPED"/>
+        <details key="path" value="parties.parties.Status.SHIPPED"/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Priority">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Enumeration_parties.parties.Priority"/>
+      <details key="path" value="parties.parties.Priority"/>
+    </eAnnotations>
+    <eLiterals name="LOW" value="1" literal="LOW">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="EnumerationLiteral_parties.parties.Priority.LOW"/>
+        <details key="path" value="parties.parties.Priority.LOW"/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="MEDIUM" value="2" literal="MEDIUM">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="EnumerationLiteral_parties.parties.Priority.MEDIUM"/>
+        <details key="path" value="parties.parties.Priority.MEDIUM"/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="HIGH" value="3" literal="HIGH">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="EnumerationLiteral_parties.parties.Priority.HIGH"/>
+        <details key="path" value="parties.parties.Priority.HIGH"/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+</ecore:EPackage>

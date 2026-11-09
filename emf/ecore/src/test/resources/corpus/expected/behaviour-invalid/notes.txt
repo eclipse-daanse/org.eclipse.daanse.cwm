@@ -1,0 +1,6 @@
+ERROR METHOD store.store.A.second: a second OCL method for store.store.A.get in the same class (C-4-12)
+WARNING METHOD_LANGUAGE store.store.A.inSql: method in language 'SQL' is not converted; only OCL and Java bodies have an Ecore form
+WARNING METHOD store.store.A.empty: method without a body
+WARNING METHOD store.store.A.runInOcl: OCL body of an operation without pdk_return parameter is not converted: an OCL expression yields a value and changes nothing
+ERROR METHOD store.store.B.foreign: realizes store.store.A.get, which is no operation of its class or of an ancestor (C-4-10)
+ERROR METHOD store.store.C.redeclared: realizes store.store.A.get although its class declares the overriding operation get (C-4-11)

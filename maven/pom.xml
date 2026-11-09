@@ -24,10 +24,12 @@
   <packaging>pom</packaging>
   <name>Daanse CWM Maven Plugins (aggregator)</name>
   <description>The Maven plugins of the CWM tooling, one module per plugin. Each plugin is a thin
-    Maven front end of one core library and depends on nothing else: eorm (fennec-eorm:generate)
-    on orm/fennec.eorm.core, atlas (fennec-atlas:generate) on sensinact/fennec.atlas.core.</description>
+    Maven front end of one core library and depends on nothing else: ecore (cwm-ecore:generate)
+    on emf/ecore, eorm (fennec-eorm:generate) on orm/fennec.eorm.core, atlas (fennec-atlas:generate)
+    on sensinact/fennec.atlas.core.</description>
 
   <modules>
+    <module>ecore</module>
     <module>eorm</module>
     <module>atlas</module>
   </modules>

@@ -1,0 +1,2 @@
+WARNING NAME parties.parties.java.time.Duration: name 'java.time.Duration' is no Java identifier, 'javaTimeDuration' is used
+WARNING ENUM_VALUE parties.parties.Priority.HIGH: value 1 is taken, the next free value from the position on is used

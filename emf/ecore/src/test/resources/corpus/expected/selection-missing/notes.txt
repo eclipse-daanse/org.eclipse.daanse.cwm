@@ -1,0 +1,2 @@
+ERROR TYPE selection.a.A.b: type selection.b.B is not among the converted classifiers; its package selection.b is not converted: add it to the packages
+ERROR TYPE selection.a.A.text: type selection.types.String is not among the converted classifiers; its package selection.types is not converted: add it to the packages or reuse the Ecore data types

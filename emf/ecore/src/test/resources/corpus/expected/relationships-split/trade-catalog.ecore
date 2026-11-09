@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="catalog" nsURI="http://daanse.eclipse.org/cwm/ecore/trade/catalog" nsPrefix="catalog">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="prefix" value="Catalog"/>
+  </eAnnotations>
+  <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+    <details key="id" value="Package_trade.catalog"/>
+    <details key="path" value="trade.catalog"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Product">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Class_trade.catalog.Product"/>
+      <details key="path" value="trade.catalog.Product"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="tags" ordered="false" upperBound="-1" eType="#//Tag" eOpposite="#//Tag/product">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Aggregation">
+        <details key="kind" value="shared"/>
+      </eAnnotations>
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Association">
+        <details key="name" value="ProductTags"/>
+        <details key="endA" value="product"/>
+        <details key="endB" value="tags"/>
+      </eAnnotations>
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="AssociationEnd_trade.catalog.ProductTags.tags"/>
+        <details key="path" value="trade.catalog.ProductTags.tags"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Tag">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Class_trade.catalog.Tag"/>
+      <details key="path" value="trade.catalog.Tag"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="product" ordered="false" upperBound="-1" eType="#//Product" eOpposite="#//Product/tags">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Association">
+        <details key="name" value="ProductTags"/>
+        <details key="endA" value="product"/>
+        <details key="endB" value="tags"/>
+      </eAnnotations>
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="AssociationEnd_trade.catalog.ProductTags.product"/>
+        <details key="path" value="trade.catalog.ProductTags.product"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Warehouse">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Class_trade.catalog.Warehouse"/>
+      <details key="path" value="trade.catalog.Warehouse"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="shelves" ordered="false" upperBound="-1" eType="#//Shelf" containment="true"
+        resolveProxies="false" eOpposite="#//Shelf/warehouse">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Association">
+        <details key="name" value="WarehouseShelves"/>
+        <details key="endA" value="shelves"/>
+        <details key="endB" value="warehouse"/>
+      </eAnnotations>
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="AssociationEnd_trade.catalog.WarehouseShelves.shelves"/>
+        <details key="path" value="trade.catalog.WarehouseShelves.shelves"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Shelf">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Class_trade.catalog.Shelf"/>
+      <details key="path" value="trade.catalog.Shelf"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="warehouse" lowerBound="1" eType="#//Warehouse" eOpposite="#//Warehouse/shelves">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Association">
+        <details key="name" value="WarehouseShelves"/>
+        <details key="endA" value="shelves"/>
+        <details key="endB" value="warehouse"/>
+      </eAnnotations>
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="AssociationEnd_trade.catalog.WarehouseShelves.warehouse"/>
+        <details key="path" value="trade.catalog.WarehouseShelves.warehouse"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>

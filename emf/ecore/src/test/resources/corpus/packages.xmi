@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:behavioral="http://www.omg.org/spec/CWM/1.1/objectmodel/behavioral"
+    xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:datatypes="http://www.omg.org/spec/CWM/1.1/foundation/datatypes"
+    xmlns:instance="http://www.omg.org/spec/CWM/1.1/objectmodel/instance" xmlns:relational="http://www.omg.org/spec/CWM/1.1/resource/relational"
+    xmi:id="Model_shop" name="shop">
+  <ownedElement xsi:type="core:Package" xmi:id="Package_shop.types" name="types" importedElement="Class_shop.classes.Customer">
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_shop.types.Integer" name="Integer"/>
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_shop.types.Money" name="Money">
+      <taggedValue xmi:id="TaggedValue_shop.types.Money.taggedValue" tag="daanse.ecore.instanceClassName" value="java.math.BigDecimal"/>
+    </ownedElement>
+    <ownedElement xsi:type="datatypes:Union" xmi:id="Union_shop.types.Payment" name="Payment">
+      <feature xsi:type="datatypes:UnionMember" xmi:id="UnionMember_shop.types.Payment.cash" name="cash" type="DataType_shop.types.Money"/>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="Package_shop.classes" name="classes">
+    <ownedElement xsi:type="core:Class" xmi:id="Class_shop.classes.Customer" name="Customer" clientDependency="Dependency_shop.classes.CustomerUsesPrice"
+        importer="Package_shop.types">
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_shop.classes.Customer.number" name="number" type="DataType_shop.types.Integer"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_shop.classes.Customer.status" name="status" type="Enumeration_shop.classes.enumerations.Status"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Package" xmi:id="Package_shop.classes.enumerations" name="enumerations">
+      <ownedElement xsi:type="datatypes:Enumeration" xmi:id="Enumeration_shop.classes.enumerations.Status" name="Status">
+        <literal xmi:id="EnumerationLiteral_shop.classes.enumerations.Status.OPEN" name="OPEN"/>
+        <literal xmi:id="EnumerationLiteral_shop.classes.enumerations.Status.CLOSED" name="CLOSED"/>
+      </ownedElement>
+    </ownedElement>
+    <ownedElement xsi:type="core:Subsystem" xmi:id="Subsystem_shop.classes.pricing" name="pricing">
+      <ownedElement xsi:type="core:Class" xmi:id="Class_shop.classes.pricing.Price" name="Price">
+        <feature xsi:type="core:Attribute" xmi:id="Attribute_shop.classes.pricing.Price.amount" name="amount" type="DataType_shop.types.Money"/>
+      </ownedElement>
+    </ownedElement>
+    <ownedElement xsi:type="core:Dependency" xmi:id="Dependency_shop.classes.CustomerUsesPrice" name="CustomerUsesPrice" client="Class_shop.classes.Customer"
+        supplier="Class_shop.classes.pricing.Price"/>
+    <ownedElement xsi:type="behavioral:Event" xmi:id="Event_shop.classes.Ordered" name="Ordered"/>
+    <ownedElement xsi:type="instance:Object" xmi:id="Object_shop.classes.sampleCustomer" name="sampleCustomer"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="Package_shop.glue" name="glue">
+    <ownedElement xsi:type="core:Package" xmi:id="Package_shop.glue.inner" name="inner">
+      <ownedElement xsi:type="core:Class" xmi:id="Class_shop.glue.inner.Note" name="Note"/>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="Package_shop.storage" name="storage">
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_shop.storage.Code" name="Code"/>
+    <ownedElement xsi:type="relational:Catalog" xmi:id="Catalog_shop.storage.db" name="db">
+      <ownedElement xsi:type="relational:Schema" xmi:id="Schema_shop.storage.db.public" name="public">
+        <ownedElement xsi:type="relational:Table" xmi:id="Table_shop.storage.db.public.customer" name="customer">
+          <feature xsi:type="relational:Column" xmi:id="Column_shop.storage.db.public.customer.code" name="code" type="DataType_shop.storage.Code"/>
+        </ownedElement>
+      </ownedElement>
+    </ownedElement>
+  </ownedElement>
+</core:Model>

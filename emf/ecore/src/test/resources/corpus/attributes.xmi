@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core"
+    xmlns:datatypes="http://www.omg.org/spec/CWM/1.1/foundation/datatypes" xmi:id="Model_crm" name="crm">
+  <ownedElement xsi:type="core:Package" xmi:id="Package_crm.crm" name="crm">
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_crm.crm.String" name="String"/>
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_crm.crm.Integer" name="Integer"/>
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_crm.crm.Boolean" name="Boolean"/>
+    <ownedElement xsi:type="datatypes:Enumeration" xmi:id="Enumeration_crm.crm.Status" name="Status">
+      <literal xmi:id="EnumerationLiteral_crm.crm.Status.OPEN" name="OPEN"/>
+      <literal xmi:id="EnumerationLiteral_crm.crm.Status.CLOSED" name="CLOSED"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_crm.crm.Address" name="Address">
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_crm.crm.Address.street" name="street" type="DataType_crm.crm.String"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_crm.crm.Customer" name="Customer">
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_crm.crm.Customer.name" name="name" type="DataType_crm.crm.String">
+        <multiplicity xmi:id="Multiplicity_crm.crm.Customer.name.multiplicity">
+          <range xmi:id="MultiplicityRange_crm.crm.Customer.name.multiplicity.range" lower="1" upper="1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_crm.crm.Customer.tags" name="tags" ordering="ok_ordered" type="DataType_crm.crm.String">
+        <multiplicity xmi:id="Multiplicity_crm.crm.Customer.tags.multiplicity">
+          <range xmi:id="MultiplicityRange_crm.crm.Customer.tags.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_crm.crm.Customer.codes" name="codes" type="DataType_crm.crm.Integer">
+        <multiplicity xmi:id="Multiplicity_crm.crm.Customer.codes.multiplicity">
+          <range xmi:id="MultiplicityRange_crm.crm.Customer.codes.multiplicity.range" lower="2" upper="5"/>
+          <range xmi:id="MultiplicityRange_crm.crm.Customer.codes.multiplicity.range_2" lower="7" upper="-1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_crm.crm.Customer.legacy" name="legacy" type="DataType_crm.crm.String">
+        <multiplicity xmi:id="Multiplicity_crm.crm.Customer.legacy.multiplicity">
+          <range xmi:id="MultiplicityRange_crm.crm.Customer.legacy.multiplicity.range"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_crm.crm.Customer.createdAt" name="createdAt" changeability="ck_frozen"
+          type="DataType_crm.crm.Integer"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_crm.crm.Customer.history" name="history" changeability="ck_addOnly"
+          type="DataType_crm.crm.String">
+        <multiplicity xmi:id="Multiplicity_crm.crm.Customer.history.multiplicity">
+          <range xmi:id="MultiplicityRange_crm.crm.Customer.history.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_crm.crm.Customer.counter" name="counter" ownerScope="sk_classifier"
+          type="DataType_crm.crm.Integer"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_crm.crm.Customer.id" name="id" type="DataType_crm.crm.Integer">
+        <taggedValue xmi:id="TaggedValue_crm.crm.Customer.id.taggedValue" tag="daanse.ecore.id" value="true"/>
+      </feature>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_crm.crm.Customer.active" name="active" type="DataType_crm.crm.Boolean">
+        <initialValue xmi:id="Expression_crm.crm.Customer.active.initialValue" body="true"/>
+      </feature>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_crm.crm.Customer.rating" name="rating" type="DataType_crm.crm.Integer">
+        <initialValue xmi:id="Expression_crm.crm.Customer.rating.initialValue" body="3"/>
+      </feature>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_crm.crm.Customer.status" name="status" type="Enumeration_crm.crm.Status">
+        <initialValue xmi:id="Expression_crm.crm.Customer.status.initialValue" body="OPEN"/>
+      </feature>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_crm.crm.Customer.score" name="score" type="DataType_crm.crm.Integer">
+        <initialValue xmi:id="Expression_crm.crm.Customer.score.initialValue" body="self.rating * 2" language="OCL"/>
+      </feature>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_crm.crm.Customer.address" name="address" type="Class_crm.crm.Address"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_crm.crm.Customer.note" name="note" type="DataType_crm.crm.String"/>
+    </ownedElement>
+  </ownedElement>
+</core:Model>

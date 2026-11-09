@@ -1,0 +1,4 @@
+ERROR TYPE invalid.invalid.Unknown: data type 'Unknown' has no Java instance class: add it to the dataTypes option or tag it daanse.ecore.instanceClassName
+WARNING TYPE_ALIAS invalid.invalid.KindAlias: alias of invalid.invalid.Kind is not converted: only an alias of a data type becomes an EDataType
+ERROR TYPE_ALIAS invalid.invalid.Loop: the alias leads back to itself (C-4-1)
+ERROR CYCLE invalid.invalid.B is a A: generalization would make B its own super type

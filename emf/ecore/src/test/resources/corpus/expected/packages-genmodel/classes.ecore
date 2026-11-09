@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="classes" nsURI="http://daanse.eclipse.org/cwm/ecore/shop/classes" nsPrefix="classes">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="prefix" value="Classes"/>
+    <details key="basePackage" value="org.example"/>
+    <details key="copyrightText" value="Example"/>
+    <details key="loadInitialization" value="false"/>
+    <details key="oSGiCompatible" value="true"/>
+  </eAnnotations>
+  <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+    <details key="id" value="Package_shop.classes"/>
+    <details key="path" value="shop.classes"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Customer">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Class_shop.classes.Customer"/>
+      <details key="path" value="shop.classes.Customer"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="number" eType="ecore:EDataType types.ecore#//Integer">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_shop.classes.Customer.number"/>
+        <details key="path" value="shop.classes.Customer.number"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="status" eType="#//enumerations/Status">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_shop.classes.Customer.status"/>
+        <details key="path" value="shop.classes.Customer.status"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eSubpackages name="enumerations" nsURI="http://daanse.eclipse.org/cwm/ecore/shop/classes/enumerations" nsPrefix="enumerations">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="prefix" value="Enumerations"/>
+    </eAnnotations>
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Package_shop.classes.enumerations"/>
+      <details key="path" value="shop.classes.enumerations"/>
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EEnum" name="Status">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Enumeration_shop.classes.enumerations.Status"/>
+        <details key="path" value="shop.classes.enumerations.Status"/>
+      </eAnnotations>
+      <eLiterals name="OPEN" literal="OPEN">
+        <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+          <details key="id" value="EnumerationLiteral_shop.classes.enumerations.Status.OPEN"/>
+          <details key="path" value="shop.classes.enumerations.Status.OPEN"/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals name="CLOSED" value="1" literal="CLOSED">
+        <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+          <details key="id" value="EnumerationLiteral_shop.classes.enumerations.Status.CLOSED"/>
+          <details key="path" value="shop.classes.enumerations.Status.CLOSED"/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="pricing" nsURI="http://daanse.eclipse.org/cwm/ecore/shop/classes/pricing" nsPrefix="pricing">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="prefix" value="Pricing"/>
+    </eAnnotations>
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Subsystem_shop.classes.pricing"/>
+      <details key="path" value="shop.classes.pricing"/>
+    </eAnnotations>
+    <eClassifiers xsi:type="ecore:EClass" name="Price">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Class_shop.classes.pricing.Price"/>
+        <details key="path" value="shop.classes.pricing.Price"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="amount" eType="ecore:EDataType types.ecore#//Money">
+        <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+          <details key="id" value="Attribute_shop.classes.pricing.Price.amount"/>
+          <details key="path" value="shop.classes.pricing.Price.amount"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>

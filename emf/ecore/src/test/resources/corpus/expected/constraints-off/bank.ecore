@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="bank" nsURI="http://daanse.eclipse.org/cwm/ecore/bank/bank" nsPrefix="bank">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="prefix" value="Bank"/>
+  </eAnnotations>
+  <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+    <details key="id" value="Package_bank.bank"/>
+    <details key="path" value="bank.bank"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EDataType" name="Integer" instanceClassName="java.lang.Long">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="DataType_bank.bank.Integer"/>
+      <details key="path" value="bank.bank.Integer"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Account">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Class_bank.bank.Account"/>
+      <details key="path" value="bank.bank.Account"/>
+    </eAnnotations>
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Stereotype">
+      <details key="name" value="Audited"/>
+    </eAnnotations>
+    <eOperations name="close">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Operation_bank.bank.Account.close"/>
+        <details key="path" value="bank.bank.Account.close"/>
+      </eAnnotations>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="balance" eType="#//Integer">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_bank.bank.Account.balance"/>
+        <details key="path" value="bank.bank.Account.balance"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="owner" lowerBound="1" eType="#//Customer" eOpposite="#//Customer/accounts">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Association">
+        <details key="name" value="AccountOwner"/>
+        <details key="endA" value="owner"/>
+        <details key="endB" value="accounts"/>
+      </eAnnotations>
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="AssociationEnd_bank.bank.AccountOwner.owner"/>
+        <details key="path" value="bank.bank.AccountOwner.owner"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Savings" eSuperTypes="#//Account">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Class_bank.bank.Savings"/>
+      <details key="path" value="bank.bank.Savings"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Customer">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Class_bank.bank.Customer"/>
+      <details key="path" value="bank.bank.Customer"/>
+    </eAnnotations>
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Stereotype">
+      <details key="name" value="Audited"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="accounts" ordered="false" upperBound="-1" eType="#//Account" eOpposite="#//Account/owner">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Association">
+        <details key="name" value="AccountOwner"/>
+        <details key="endA" value="owner"/>
+        <details key="endB" value="accounts"/>
+      </eAnnotations>
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="AssociationEnd_bank.bank.AccountOwner.accounts"/>
+        <details key="path" value="bank.bank.AccountOwner.accounts"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>

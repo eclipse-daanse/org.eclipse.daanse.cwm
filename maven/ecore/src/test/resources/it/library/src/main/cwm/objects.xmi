@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships" xmi:id="Package_library" name="library">
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Publisher" name="Publisher">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Publisher.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Publisher.name" name="name" type="DataType_library.String"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.long" name="long"/>
+  <ownedElement xsi:type="core:DataType" xmi:id="DataType_library.String" name="String"/>
+  <ownedElement xsi:type="core:Class" xmi:id="Class_library.Book" name="Book">
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.id" name="id" type="DataType_library.long"/>
+    <feature xsi:type="core:Attribute" xmi:id="Attribute_library.Book.title" name="title" type="DataType_library.String"/>
+  </ownedElement>
+  <ownedElement xsi:type="relationships:Association" xmi:id="Association_library.BookPublisher" name="BookPublisher">
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_library.BookPublisher.Doc_BookPublisher" name="Doc_BookPublisher" body="The business relationship: many books belong to one publisher. ONE association, TWO ends — both mappings below reference the same ends." language="en" type="text/plain" modelElement="Association_library.BookPublisher"/>
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.BookPublisher.books" name="books" type="Class_library.Book" isNavigable="true">
+      <multiplicity xmi:id="Multiplicity_library.BookPublisher.books.multiplicity">
+        <range xmi:id="MultiplicityRange_library.BookPublisher.books.multiplicity.range" upper="-1"/>
+      </multiplicity>
+    </feature>
+    <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_library.BookPublisher.publisher" name="publisher" type="Class_library.Publisher" isNavigable="true">
+      <multiplicity xmi:id="Multiplicity_library.BookPublisher.publisher.multiplicity">
+        <range xmi:id="MultiplicityRange_library.BookPublisher.publisher.multiplicity.range" lower="1" upper="1"/>
+      </multiplicity>
+    </feature>
+  </ownedElement>
+</core:Package>
