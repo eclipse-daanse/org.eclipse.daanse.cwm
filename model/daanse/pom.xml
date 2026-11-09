@@ -27,8 +27,8 @@
     <module>mapping.sensinact</module>
     <module>units</module>
     <module>resource.json</module>
-  <!--
     <module>resource.r</module>
+  <!--
     <module>resource.calc</module>
   -->
     <module>governance</module>

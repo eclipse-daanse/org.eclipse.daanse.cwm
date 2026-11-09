@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="r" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.r"
+    nsPrefix="r">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="The R package describes the structure of data held in the native serialization formats of the R language: RDS (exactly one serialized object, without a name) and RData/.rda (a set of named bindings taken from an R environment, that is, a workspace image). Both use the same stream layout; they differ only in whether a single value or a list of names is written.&#xA;&#xA;Stream layout. The stream opens with a format byte - 'X' for the default binary XDR form (integers and doubles in big-endian order; byte quantities such as the contents of CHARSXP and RAWSXP are written as-is and are not padded to a multiple of four, which is why the format is not fully XDR as defined in RFC 1832), 'A' for the textual form, 'B' for native byte order - followed by three integers: the serialization version, the writing R version and the minimum R version able to read the file. Version 2 is the form used by R 1.4.0 through R 3.5.3; version 3 (from R 3.5.0) extends it with custom serialization of ALTREP objects and additionally records the native encoding in force at write time, so that unflagged strings can be converted when read under a different native encoding. A compression layer is normally wrapped around the whole stream; R detects it from magic bytes and supports gzip (the default), bzip2 and xz.&#xA;&#xA;Type system. Every value in R is a SEXP carrying one of 24 SEXPTYPEs in use; codes 0 to 10 and 13 to 25 are occupied, while codes 11 and 12 were assigned to internal factors and have been withdrawn. From this small set of base types R builds every higher structure exclusively by means of attributes. The attributes names, dim, dimnames, class, levels, row.names, tsp and comment receive special treatment from the interpreter; all others are free-form. A matrix is therefore an atomic vector carrying dim, a factor is an integer vector carrying levels and class=&quot;factor&quot;, and a data.frame is a generic vector (list) of equally long columns carrying names, row.names and class=&quot;data.frame&quot;.&#xA;&#xA;Mapping onto CWM. An RType is an objectmodel/core::Classifier, and a list component or data.frame column is an objectmodel/core::Attribute - exactly as resource/record::Field and resource/relational::Column are. Component order is carried by the inherited, ordered containment reference Classifier::feature; membership in a file is carried by Namespace::ownedElement. Deliberately, nothing inherits from resource/record::RecordDef: its mandatory attributes fieldDelimiter and textDelimiter describe a character stream and have no counterpart in a binary serialized R object.&#xA;&#xA;Sources: R Internals (R Core Team), sections 'R Internal Structures' and 'Serialization Formats'."/>
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse.resource"/>
+    <details key="prefix" value="R"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="literalsInterface" value="true"/>
+    <details key="loadInitialization" value="false"/>
+    <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EEnum" name="SexpType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The SEXPTYPEs R uses internally. The numeric values are exactly the codes the serialization stream carries in bits 0:7 of the header integer. Codes 11 and 12 are missing: they were assigned to internal factors and ordered factors and have since been withdrawn."/>
+    </eAnnotations>
+    <eLiterals name="r_nil">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="NILSXP - NULL."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_symbol" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="SYMSXP - a symbol (name)."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_pairlist" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="LISTSXP - a pairlist."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_closure" value="3">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="CLOSXP - a closure."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_environment" value="4">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="ENVSXP - an environment."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_promise" value="5">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="PROMSXP - a promise (deferred evaluation)."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_language" value="6">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="LANGSXP - a language object (an unevaluated call)."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_special" value="7">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="SPECIALSXP - a special function."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_builtin" value="8">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="BUILTINSXP - a builtin function."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_char" value="9">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="CHARSXP - an internal character string; carries the encoding flag."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_logical" value="10">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="LGLSXP - a logical vector."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_integer" value="13">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="INTSXP - an integer vector."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_real" value="14">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="REALSXP - a numeric (double) vector."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_complex" value="15">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="CPLXSXP - a complex vector."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_character" value="16">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="STRSXP - a character vector whose elements are CHARSXPs."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_dots" value="17">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="DOTSXP - the ... object."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_any" value="18">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="ANYSXP - a placeholder that makes 'any' arguments work."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_list" value="19">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="VECSXP - a generic vector, seen in R as a list."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_expression" value="20">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="EXPRSXP - an expression vector."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_bytecode" value="21">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="BCODESXP - byte code."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_externalptr" value="22">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="EXTPTRSXP - an external pointer."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_weakref" value="23">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="WEAKREFSXP - a weak reference."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_raw" value="24">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="RAWSXP - a raw byte vector."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_object" value="25">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="OBJSXP - an object not of a simple type (formerly S4SXP)."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="SerializationFormat">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The form in which the serialization stream is written; identified by the first byte of the stream."/>
+    </eAnnotations>
+    <eLiterals name="r_xdr">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="'X' - binary in big-endian order. The default of saveRDS and save."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_ascii" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="'A' - a textual form, readable independently of the platform."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_binary" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="'B' - binary in the native byte order of the writing machine."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="CompressionKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The compression wrapped around the whole serialization stream. R detects it from magic bytes when reading, so it is not part of the serialization header."/>
+    </eAnnotations>
+    <eLiterals name="r_none">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="No compression."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_gzip" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="gzip - the default of saveRDS and save."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_bzip2" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="bzip2."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_xz" value="3">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="xz."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="RowNamesKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The form in which a data.frame carries its row.names attribute."/>
+    </eAnnotations>
+    <eLiterals name="r_automatic">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The compact form c(NA, -n): the rows are simply numbered 1 to n and are not written out at all."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_integer" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="An integer vector written out in full."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_character" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A character vector carrying meaningful row names."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="StringEncoding">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The encoding flag of a CHARSXP. R keeps it in bits of the gp field. ASCII strings never carry a flag, because any flag would be ignored when the string is entered into the CHARSXP cache."/>
+    </eAnnotations>
+    <eLiterals name="r_native">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Unflagged - to be read in the native encoding."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_latin1" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Flagged as Latin-1."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_utf8" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Flagged as UTF-8."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_bytes" value="3">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Flagged as bytes, with no encoding implied."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_ascii" value="4">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Pure ASCII."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="SpecialAttributeKind">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Distinguishes the attributes the interpreter treats specially from the free-form ones. Only these eight are inspected and used deliberately by R's internal functions; every other attribute is a mere annotation."/>
+    </eAnnotations>
+    <eLiterals name="r_names">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="names - the element names of a vector or list."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_dim" value="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dim - the extents; turns a vector into a matrix or array."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_dimnames" value="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dimnames - names per extent; requires dim."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_class" value="3">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="class - the S3 class vector; sets the object bit."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_levels" value="4">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="levels - the levels of a factor, a character vector."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_rowNames" value="5">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="row.names - the row names of a data.frame."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_tsp" value="6">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="tsp - start, end and frequency of a time series."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_comment" value="7">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="comment - a remark suppressed when printing."/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="r_other" value="8">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A free-form attribute the interpreter does not treat specially."/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RType" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Common superclass of every described R structure. An RType describes the shape of an R value, not the value itself. Because every higher R structure consists of a base type with attributes attached, this superclass already carries the SEXPTYPE and the S3 class vector."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Classifier"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sexpType" lowerBound="1" eType="//SexpType">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The base type of the described value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rClass" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The content of the class attribute, in the order R keeps it: from the most specific to the most general class. Empty when the value carries no class attribute and its implicit class therefore applies. The order matters, because S3 method dispatch works through it from left to right."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isObject" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the object bit is set. R sets it exactly when a class attribute has been assigned; the serialization stream carries it as a separate bit in the header integer."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RVectorType" eSuperTypes="//RType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An atomic vector - logical, integer, double, complex, character or raw. R has no scalar: a single value is a vector of length one."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="length" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of elements, where it is known at description time. Left unset when the length only arises at run time."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hasNames" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the vector carries a names attribute and its elements can therefore be addressed by name."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="encoding" eType="//StringEncoding" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The encoding flag of the elements. Meaningful only for sexpType r_character; irrelevant for every other vector type."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="allowsNA" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the vector may contain missing values. R has a distinct NA value per base type; NA_real_ is a NaN with a special payload, which is what keeps it distinguishable from an ordinary NaN."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RArrayType" eSuperTypes="//RVectorType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="PositiveDimensions"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="PositiveDimensions" value="self.dim->forAll(d | d >= 0)"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.r/constraints">
+      <details key="PositiveDimensions.name" value="Positive Dimensions"/>
+      <details key="PositiveDimensions.description" value="Every extent of an array is non-negative."/>
+      <details key="PositiveDimensions.level" value="error"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An atomic vector carrying a dim attribute. Two extents make a matrix in R, more make an array; there is no separate matrix type. The elements are laid out column-major in the underlying vector."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dim" lowerBound="1" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The extents in the order of the dim attribute. The order matters: it determines which index varies fastest."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hasDimnames" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when a dimnames attribute is present. It is a list with as many elements as dim has entries; individual elements may be NULL."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RFactorType" eSuperTypes="//RVectorType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A factor: an integer vector whose values are positions into a character vector levels, carrying class=&quot;factor&quot; or class=c(&quot;ordered&quot;,&quot;factor&quot;). On the R side a factor is not a base type of its own but exactly this combination."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isOrdered" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True for an ordered factor, whose class vector additionally carries &quot;ordered&quot; and whose levels are comparable."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="levelSet" lowerBound="1">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="factorType"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="factorType"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The levels of the factor as a foundation/datatypes::Enumeration. The integer values of the vector are the positions of its literals. The Enumeration carries no opposite feature: it belongs to the CWM core, to which an extension may not add anything."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/foundation/datatypes#//Enumeration"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RListType" eSuperTypes="//RType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A generic vector (VECSXP). Its elements may be of any type and of differing types, which is what makes the list the carrier of every composite structure in R. The elements are the inherited, ordered features."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hasNames" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the list carries a names attribute. A list may be partially named; unnamed positions then carry an empty string."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RDataFrameType" eSuperTypes="//RListType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="ColumnsAreRTypes"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="ColumnsAreRTypes" value="self.feature->select(f | f.oclIsKindOf(core::StructuralFeature))->forAll(f | f.oclAsType(core::StructuralFeature).type.oclIsKindOf(RType))"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.r/constraints">
+      <details key="ColumnsAreRTypes.name" value="Columns Are R Types"/>
+      <details key="ColumnsAreRTypes.description" value="Every column of a data.frame is typed with an RType."/>
+      <details key="ColumnsAreRTypes.level" value="error"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A data.frame: a generic list of equally long columns carrying the attributes names, row.names and class=&quot;data.frame&quot;. R has no base type of its own for it - length yields the number of columns and names the column names, precisely because a data.frame is a list. This is the R counterpart of what resource/relational calls a Table and resource/record a RecordDef."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rowCount" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The number of rows, where known. All columns necessarily have the same length."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rowNamesKind" lowerBound="1" eType="//RowNamesKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The form in which the row.names attribute is present."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isTibble" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the class vector additionally carries &quot;tbl_df&quot; and &quot;tbl&quot;. A tibble remains a data.frame but changes the behaviour of printing and subsetting."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RS4Type" eSuperTypes="//RType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An S4 class. Its slots are the inherited features; unlike S3 they are declared with their types and are checked. In the stream such a value appears with the code OBJSXP."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="className" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The class name given to setClass."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="packageName" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The package holding the class definition. R keeps it as a package attribute on the class attribute, so that classes of the same name from different packages remain distinguishable."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ROpaqueType" eSuperTypes="//RType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A value whose internal structure is deliberately left undescribed here: closures, environments, promises, language objects, byte code, external pointers and weak references. They do occur in RDS files, but they are program text or run-time state rather than data; their base type stays visible through sexpType."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RComponent">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An element of a list, a column of a data.frame or a slot of an S4 class. The type is held by the inherited reference StructuralFeature::type, the owner by Feature::owner; the order follows from the ordered containment reference Classifier::feature."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="position" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The zero-based position within the owner. R addresses list elements through [[i]] one-based; converting is left to the reading tool."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isNamed" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the position carries a non-empty name in the names attribute. If it is unnamed, the inherited mandatory attribute name carries a substitute derived from the position."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RAttribute">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An attribute attached to an R value. Attributes are the only extension point of R's type system: everything beyond the base types - matrix, factor, data.frame, time series - arises solely from attaching attributes to a vector."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1" eType="//SpecialAttributeKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Whether this is one of the attributes the interpreter treats specially, and which one."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeValue" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The value of the attribute in printed form, where it is short enough to be held here. Larger values are described through the inherited type reference instead."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RFile" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Common superclass of the two file forms. It carries what both have in common: the layout of the serialization stream. The described types are the inherited ownedElement."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="serializationFormat" lowerBound="1" eType="//SerializationFormat">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The form, identified by the first byte of the stream."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="serializationVersion" lowerBound="1" defaultValueLiteral="2">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The serialization version from the header: 2 for the form used by R 1.4.0 through 3.5.3, 3 for the form from R 3.5.0 on with ALTREP support."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Integer"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="writerVersion" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The R version that wrote the file, from the second header integer."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minimumReaderVersion" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The oldest R version still able to read the file, from the third header integer."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nativeEncoding" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The native encoding in force at write time. Only version 3 records it, so that unflagged strings can be converted when read under a different native encoding."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="compression" lowerBound="1" eType="//CompressionKind">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The compression wrapped around the stream."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RdsFile" eSuperTypes="//RFile">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An RDS file written by saveRDS. It contains exactly one serialized object and no name - the reader assigns one when calling readRDS. That is the difference from RData and the reason RDS suits the exchange of individual datasets."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rootType" lowerBound="1" eType="//RType">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="rdsFile"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="rdsFile"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The type of the one stored object. It is at the same time one of the ownedElement of this file. The opposite end is not a feature: navigating from a type to its file is needed nowhere."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RDataFile" eSuperTypes="//RFile">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An RData or .rda file written by save or save.image. It contains named bindings taken from an R environment; load restores them under exactly those names and silently overwrites objects of the same name in the target. The bindings are the inherited ownedElement."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RBinding">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A named binding in an RData file: a symbol together with the value bound to it. The name is held by the inherited mandatory attribute name."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="//RType">
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="binding"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="binding"/>
+      </eAnnotations>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The type of the bound value."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isHidden" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the name begins with a dot. ls() hides such objects by default, but they are saved and loaded along with the rest."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="An actual R value. The describing RType is held by the inherited reference Instance::classifier."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//Object"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RValue">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A single element of an atomic vector."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//DataValue"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isNA" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="True when the element is the NA value of its base type. R has a distinct one per type: NA, NA_integer_, NA_real_, NA_character_. Because NA_real_ is a NaN with its own payload, the distinction is lost on a plain comparison and has to be carried along."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RWorkspace">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The totality of values of a loaded RData file, that is, the restored image of an R environment."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/instance#//Extent"/>
+  </eClassifiers>
+</ecore:EPackage>
