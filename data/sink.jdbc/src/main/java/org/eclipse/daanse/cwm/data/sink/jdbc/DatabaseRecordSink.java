@@ -73,6 +73,8 @@ public class DatabaseRecordSink implements RecordSink<RawRecord> {
      * Resolved once, from the dialect, because it holds for the whole table.
      */
     private boolean[] booleanAsNumber;
+    /** The type a NULL of each column is bound with (TypeConverter#nullType, or the database's for a binary). */
+    private int[] nullTypes;
 
     /**
      * Position of each of our columns in the incoming records, resolved from the
@@ -217,6 +219,28 @@ public class DatabaseRecordSink implements RecordSink<RawRecord> {
             booleanAsNumber[i] = numericBooleans
                     && (columnTypes[i] == JDBCType.BOOLEAN || columnTypes[i] == JDBCType.BIT);
         }
+        // A binary column, too, is what the dialect made of it: Derby has no VARBINARY and made a BLOB, whose NULL
+        // it takes only as a BLOB ("a data value of type 'BLOB' from a data value of type 'VARBINARY'"). For a binary
+        // the statement is asked; a driver that does not say keeps the model's type.
+        nullTypes = new int[count];
+        java.sql.ParameterMetaData parameters = null;
+        for (int i = 0; i < count; i++) {
+            nullTypes[i] = TypeConverter.nullType(columnTypes[i]);
+            if (columnTypes[i] == JDBCType.BINARY || columnTypes[i] == JDBCType.VARBINARY
+                    || columnTypes[i] == JDBCType.LONGVARBINARY || columnTypes[i] == JDBCType.BLOB) {
+                try {
+                    if (parameters == null) {
+                        parameters = preparedStatement.getParameterMetaData();
+                    }
+                    int said = parameters.getParameterType(i + 1);
+                    if (said != java.sql.Types.OTHER && said != java.sql.Types.NULL) {
+                        nullTypes[i] = said;
+                    }
+                } catch (SQLException | RuntimeException notSaid) {
+                    // the model's type
+                }
+            }
+        }
     }
 
     /**
@@ -321,14 +345,17 @@ public class DatabaseRecordSink implements RecordSink<RawRecord> {
         for (int i = 0; i < sourceFieldNames.length; i++) {
             String rawValue = item.field(sourceIndexes[i]);
             int index = base + i + 1;
-            if (booleanAsNumber[i] && converters[i] == null) {
+            if (nullTypes[i] != TypeConverter.nullType(columnTypes[i])
+                    && (rawValue == null || "NULL".equalsIgnoreCase(rawValue))) {
+                statement.setNull(index, nullTypes[i]);
+            } else if (booleanAsNumber[i] && converters[i] == null) {
                 TypeConverter.setBooleanAsNumber(statement, index, rawValue);
             } else if (converters[i] == null) {
                 TypeConverter.setTypedValue(statement, index, columnTypes[i], rawValue);
             } else {
                 Object converted = rawValue == null ? null : converters[i].apply(rawValue);
                 if (converted == null) {
-                    statement.setNull(index, columnTypes[i].getVendorTypeNumber());
+                    statement.setNull(index, nullTypes[i]);
                 } else {
                     statement.setObject(index, converted, columnTypes[i].getVendorTypeNumber());
                 }
