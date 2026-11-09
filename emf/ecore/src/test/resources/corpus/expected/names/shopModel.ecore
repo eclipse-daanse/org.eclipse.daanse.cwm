@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="shopModel" nsURI="http://daanse.eclipse.org/cwm/ecore/names/shop-model" nsPrefix="shopModel">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="prefix" value="ShopModel"/>
+  </eAnnotations>
+  <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+    <details key="id" value="Package_names.shop_model"/>
+    <details key="path" value="names.shop model"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EDataType" name="String" instanceClassName="java.lang.String">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="DataType_names.shop_model.String"/>
+      <details key="path" value="names.shop model.String"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="_2ndClass">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Class_names.shop_model.2ndClass"/>
+      <details key="path" value="names.shop model.2ndClass"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="byteArray" eType="#//String">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_names.shop_model.2ndClass.byte__"/>
+        <details key="path" value="names.shop model.2ndClass.byte[]"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="firstName" eType="#//String">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_names.shop_model.2ndClass.first_name"/>
+        <details key="path" value="names.shop model.2ndClass.first name"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="state" eType="#//OrderState">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_names.shop_model.2ndClass.state"/>
+        <details key="path" value="names.shop model.2ndClass.state"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="OrderState">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Enumeration_names.shop_model.Order_State"/>
+      <details key="path" value="names.shop model.Order State"/>
+    </eAnnotations>
+    <eLiterals name="inProgress" literal="in progress">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="EnumerationLiteral_names.shop_model.Order_State.in_progress"/>
+        <details key="path" value="names.shop model.Order State.in progress"/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="done" value="1" literal="done">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="EnumerationLiteral_names.shop_model.Order_State.done"/>
+        <details key="path" value="names.shop model.Order State.done"/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+</ecore:EPackage>

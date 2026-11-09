@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="crm" nsURI="http://daanse.eclipse.org/cwm/ecore/crm/crm" nsPrefix="crm">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="prefix" value="Crm"/>
+  </eAnnotations>
+  <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+    <details key="id" value="Package_crm.crm"/>
+    <details key="path" value="crm.crm"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EDataType" name="String" instanceClassName="java.lang.String">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="DataType_crm.crm.String"/>
+      <details key="path" value="crm.crm.String"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Integer" instanceClassName="java.lang.Long">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="DataType_crm.crm.Integer"/>
+      <details key="path" value="crm.crm.Integer"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Boolean" instanceClassName="java.lang.Boolean">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="DataType_crm.crm.Boolean"/>
+      <details key="path" value="crm.crm.Boolean"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Status">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Enumeration_crm.crm.Status"/>
+      <details key="path" value="crm.crm.Status"/>
+    </eAnnotations>
+    <eLiterals name="OPEN" literal="OPEN">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="EnumerationLiteral_crm.crm.Status.OPEN"/>
+        <details key="path" value="crm.crm.Status.OPEN"/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="CLOSED" value="1" literal="CLOSED">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="EnumerationLiteral_crm.crm.Status.CLOSED"/>
+        <details key="path" value="crm.crm.Status.CLOSED"/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Address">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Class_crm.crm.Address"/>
+      <details key="path" value="crm.crm.Address"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="street" eType="#//String">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_crm.crm.Address.street"/>
+        <details key="path" value="crm.crm.Address.street"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Customer">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Class_crm.crm.Customer"/>
+      <details key="path" value="crm.crm.Customer"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="#//String">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_crm.crm.Customer.name"/>
+        <details key="path" value="crm.crm.Customer.name"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tags" upperBound="-1" eType="#//String">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_crm.crm.Customer.tags"/>
+        <details key="path" value="crm.crm.Customer.tags"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="codes" ordered="false" lowerBound="2" upperBound="5" eType="#//Integer">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Multiplicity/Ranges">
+        <details key="extra" value="7..*"/>
+      </eAnnotations>
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_crm.crm.Customer.codes"/>
+        <details key="path" value="crm.crm.Customer.codes"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="legacy" eType="#//String">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_crm.crm.Customer.legacy"/>
+        <details key="path" value="crm.crm.Customer.legacy"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="createdAt" eType="#//Integer" changeable="false">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_crm.crm.Customer.createdAt"/>
+        <details key="path" value="crm.crm.Customer.createdAt"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="history" ordered="false" upperBound="-1" eType="#//String">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Changeability">
+        <details key="value" value="ck_addOnly"/>
+      </eAnnotations>
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_crm.crm.Customer.history"/>
+        <details key="path" value="crm.crm.Customer.history"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="counter" eType="#//Integer">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Scope">
+        <details key="ownerScope" value="sk_classifier"/>
+        <details key="targetScope" value="sk_instance"/>
+      </eAnnotations>
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_crm.crm.Customer.counter"/>
+        <details key="path" value="crm.crm.Customer.counter"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="#//Integer" iD="true">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_crm.crm.Customer.id"/>
+        <details key="path" value="crm.crm.Customer.id"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="active" eType="#//Boolean" defaultValueLiteral="true">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_crm.crm.Customer.active"/>
+        <details key="path" value="crm.crm.Customer.active"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rating" eType="#//Integer" defaultValueLiteral="3">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_crm.crm.Customer.rating"/>
+        <details key="path" value="crm.crm.Customer.rating"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="status" eType="#//Status" defaultValueLiteral="OPEN">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_crm.crm.Customer.status"/>
+        <details key="path" value="crm.crm.Customer.status"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="score" eType="#//Integer">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_crm.crm.Customer.score"/>
+        <details key="path" value="crm.crm.Customer.score"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="address" eType="#//Address" containment="true" resolveProxies="false">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_crm.crm.Customer.address"/>
+        <details key="path" value="crm.crm.Customer.address"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="note" eType="#//String">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_crm.crm.Customer.note"/>
+        <details key="path" value="crm.crm.Customer.note"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>

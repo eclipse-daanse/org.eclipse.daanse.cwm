@@ -1,0 +1,5 @@
+WARNING TAG mapping.mapping.Mapping: tag daanse.ecore.colour: EClass has no settable property 'colour'
+WARNING TAG mapping.mapping.Mapping: tag daanse.ecore.name: EClass has no settable property 'name'
+WARNING EXTERNAL mapping.ecore.EObject: stands for http://www.eclipse.org/emf/2002/Ecore#//EObject; its own features are not converted
+WARNING EXTERNAL mapping.mapping.EObject is a Mapping: EObject is a classifier of another metamodel and gets no super type
+WARNING EXTERNAL mapping.mapping.Target.mappings: no reference on EClass, a classifier of another metamodel: the end stays hidden

@@ -1,0 +1,3 @@
+WARNING MULTIPLICITY crm.crm.Customer.legacy: upper bound 0 read as 1
+WARNING SCOPE crm.crm.Customer.counter: classifier scope has no Ecore counterpart; the feature is an instance feature
+WARNING DEFAULT crm.crm.Customer.score: initial value 'self.rating * 2' is not converted: an expression in OCL is no literal

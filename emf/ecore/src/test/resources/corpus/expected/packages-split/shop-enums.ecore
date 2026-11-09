@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="enumerations" nsURI="http://daanse.eclipse.org/cwm/ecore/shop/classes/enumerations" nsPrefix="enumerations">
+  <eAnnotations source="http://daanse.eclipse.org/cwm/Package">
+    <details key="superPackage" value="classes"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="prefix" value="Enumerations"/>
+    <details key="basePackage" value="org.example.classes"/>
+  </eAnnotations>
+  <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+    <details key="id" value="Package_shop.classes.enumerations"/>
+    <details key="path" value="shop.classes.enumerations"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EEnum" name="Status">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Enumeration_shop.classes.enumerations.Status"/>
+      <details key="path" value="shop.classes.enumerations.Status"/>
+    </eAnnotations>
+    <eLiterals name="OPEN" literal="OPEN">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="EnumerationLiteral_shop.classes.enumerations.Status.OPEN"/>
+        <details key="path" value="shop.classes.enumerations.Status.OPEN"/>
+      </eAnnotations>
+    </eLiterals>
+    <eLiterals name="CLOSED" value="1" literal="CLOSED">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="EnumerationLiteral_shop.classes.enumerations.Status.CLOSED"/>
+        <details key="path" value="shop.classes.enumerations.Status.CLOSED"/>
+      </eAnnotations>
+    </eLiterals>
+  </eClassifiers>
+</ecore:EPackage>

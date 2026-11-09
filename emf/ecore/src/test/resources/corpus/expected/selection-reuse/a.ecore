@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="a" nsURI="http://daanse.eclipse.org/cwm/ecore/selection/a" nsPrefix="a">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="prefix" value="A"/>
+  </eAnnotations>
+  <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+    <details key="id" value="Package_selection.a"/>
+    <details key="path" value="selection.a"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="A">
+    <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+      <details key="id" value="Class_selection.a.A"/>
+      <details key="path" value="selection.a.A"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="b" eType="ecore:EClass b.ecore#//B" containment="true" resolveProxies="false">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_selection.a.A.b"/>
+        <details key="path" value="selection.a.A.b"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="text" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://daanse.eclipse.org/cwm/Element">
+        <details key="id" value="Attribute_selection.a.A.text"/>
+        <details key="path" value="selection.a.A.text"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>

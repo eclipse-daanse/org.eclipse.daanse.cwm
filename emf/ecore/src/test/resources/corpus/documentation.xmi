@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:businessinformation="http://www.omg.org/spec/CWM/1.1/foundation/businessinformation"
+    xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:datatypes="http://www.omg.org/spec/CWM/1.1/foundation/datatypes"
+    xmi:id="Model_docs" name="docs">
+  <ownedElement xsi:type="core:Package" xmi:id="Package_docs.docs" name="docs">
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_docs.docs.String" name="String"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_docs.docs.Customer" name="Customer" visibility="vk_private">
+      <taggedValue xmi:id="TaggedValue_docs.docs.Customer.taggedValue" tag="owner" value="crm-team"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_docs.docs.Customer.name" name="name" visibility="vk_protected"
+          type="DataType_docs.docs.String"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_docs.docs.Customer.code" name="code" visibility="vk_package" type="DataType_docs.docs.String"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_docs.docs.Customer.note" name="note" type="DataType_docs.docs.String"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_docs.docs.Customer.flag" name="flag" visibility="vk_notapplicable"
+          type="DataType_docs.docs.String"/>
+    </ownedElement>
+    <ownedElement xsi:type="datatypes:Enumeration" xmi:id="Enumeration_docs.docs.Status" name="Status">
+      <literal xmi:id="EnumerationLiteral_docs.docs.Status.OPEN" name="OPEN"/>
+      <literal xmi:id="EnumerationLiteral_docs.docs.Status.CLOSED" name="CLOSED"/>
+    </ownedElement>
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_docs.docs.Package" name="Package" body="The documentation package."
+        type="documentation" modelElement="Package_docs.docs"/>
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_docs.docs.PackageMore" name="PackageMore"
+        body="Its second paragraph." type="documentation" modelElement="Package_docs.docs"/>
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_docs.docs.CustomerLong" name="CustomerLong"
+        body="A customer of the shop, with name and code." type="documentation" modelElement="Class_docs.docs.Customer"/>
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_docs.docs.CustomerShort" name="CustomerShort"
+        body="A customer." type="remark" modelElement="Class_docs.docs.Customer"/>
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_docs.docs.Name" name="Name" body="The name the customer gives."
+        type="documentation" modelElement="Attribute_docs.docs.Customer.name"/>
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_docs.docs.Note" name="Note" body="Shown as plain text only."
+        type="text/plain" modelElement="Attribute_docs.docs.Customer.note"/>
+    <ownedElement xsi:type="businessinformation:Description" xmi:id="Description_docs.docs.Open" name="Open" body="Still in progress."
+        type="documentation" modelElement="EnumerationLiteral_docs.docs.Status.OPEN"/>
+    <ownedElement xsi:type="core:Stereotype" xmi:id="Stereotype_docs.docs.Entity" name="Entity" extendedElement="Class_docs.docs.Customer"/>
+    <ownedElement xsi:type="core:Stereotype" xmi:id="Stereotype_docs.docs.Audited" name="Audited" extendedElement="Class_docs.docs.Customer"/>
+  </ownedElement>
+</core:Model>

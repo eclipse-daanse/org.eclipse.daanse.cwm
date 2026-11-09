@@ -1,0 +1,6 @@
+WARNING NAME bank.bank.NotOverdrawn: a second invariant or operation 'NotOverdrawn' on Account, 'NotOverdrawn_2' is used
+WARNING CONSTRAINT bank.bank.OnOperation: constrains bank.bank.Account.close, which has no place for an invariant in Ecore (only classifiers and the features of classes have)
+WARNING CONSTRAINT bank.bank.TwoClasses: constrains several classifiers (Account, Customer); an OCL invariant has exactly one context, the constraint is not converted
+WARNING CONSTRAINT_LANGUAGE bank.bank.InSql: constraint in language 'SQL' is not converted; OCL and Java constraints become Ecore invariants
+WARNING CONSTRAINT bank.bank.Empty: constraint without a body
+WARNING CONSTRAINT bank.bank.OnDataType: Java constraint on the data type Integer is not converted: a Java invariant is an operation of a class

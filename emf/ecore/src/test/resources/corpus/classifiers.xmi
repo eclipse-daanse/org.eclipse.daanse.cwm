@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:behavioral="http://www.omg.org/spec/CWM/1.1/objectmodel/behavioral"
+    xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:datatypes="http://www.omg.org/spec/CWM/1.1/foundation/datatypes"
+    xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships" xmi:id="Model_parties" name="parties">
+  <ownedElement xsi:type="core:Package" xmi:id="Package_parties.parties" name="parties">
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_parties.parties.Integer" name="Integer"/>
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_parties.parties.String" name="String"/>
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_parties.parties.Year" name="Year">
+      <taggedValue xmi:id="TaggedValue_parties.parties.Year.taggedValue" tag="daanse.ecore.instanceClassName" value="java.time.Year"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_parties.parties.java.time.Duration" name="java.time.Duration"/>
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_parties.parties.Money" name="Money">
+      <taggedValue xmi:id="TaggedValue_parties.parties.Money.taggedValue" tag="daanse.ecore.instanceClassName" value="java.math.BigDecimal"/>
+    </ownedElement>
+    <ownedElement xsi:type="datatypes:TypeAlias" xmi:id="TypeAlias_parties.parties.Amount" name="Amount" type="DataType_parties.parties.Money"/>
+    <ownedElement xsi:type="datatypes:TypeAlias" xmi:id="TypeAlias_parties.parties.Total" name="Total" type="TypeAlias_parties.parties.Amount"/>
+    <ownedElement xsi:type="behavioral:Interface" xmi:id="Interface_parties.parties.Addressable" name="Addressable">
+      <feature xsi:type="behavioral:Operation" xmi:id="Operation_parties.parties.Addressable.address" name="address">
+        <parameter xmi:id="Parameter_parties.parties.Addressable.address.return" name="return" kind="pdk_return" type="DataType_parties.parties.String"/>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_parties.parties.Party" name="Party" isAbstract="true">
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_parties.parties.Party.since" name="since" type="DataType_parties.parties.Year"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_parties.parties.Person" name="Person">
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_parties.parties.Person.age" name="age" type="DataType_parties.parties.Integer"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_parties.parties.Person.timeout" name="timeout" type="DataType_parties.parties.java.time.Duration"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_parties.parties.Person.status" name="status" type="Enumeration_parties.parties.Status"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_parties.parties.Person.priority" name="priority" type="Enumeration_parties.parties.Priority"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_parties.parties.Company" name="Company">
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_parties.parties.Company.revenue" name="revenue" type="TypeAlias_parties.parties.Amount"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_parties.parties.Company.total" name="total" type="TypeAlias_parties.parties.Total"/>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Generalization" xmi:id="Generalization_parties.parties.Person_is_a_Party" name="Person is a Party"
+        child="Class_parties.parties.Person" parent="Class_parties.parties.Party"/>
+    <ownedElement xsi:type="relationships:Generalization" xmi:id="Generalization_parties.parties.Person_is_a_Addressable"
+        name="Person is a Addressable" child="Class_parties.parties.Person" parent="Interface_parties.parties.Addressable"/>
+    <ownedElement xsi:type="relationships:Generalization" xmi:id="Generalization_parties.parties.Company_is_a_Party" name="Company is a Party"
+        child="Class_parties.parties.Company" parent="Class_parties.parties.Party"/>
+    <ownedElement xsi:type="datatypes:Enumeration" xmi:id="Enumeration_parties.parties.Status" name="Status" isOrdered="true">
+      <literal xmi:id="EnumerationLiteral_parties.parties.Status.NEW" name="NEW">
+        <value xmi:id="Expression_parties.parties.Status.NEW.value" body="10" language="Java"/>
+      </literal>
+      <literal xmi:id="EnumerationLiteral_parties.parties.Status.PAID" name="PAID">
+        <value xmi:id="Expression_parties.parties.Status.PAID.value" body="11" language="Java"/>
+      </literal>
+      <literal xmi:id="EnumerationLiteral_parties.parties.Status.SHIPPED" name="SHIPPED"/>
+    </ownedElement>
+    <ownedElement xsi:type="datatypes:Enumeration" xmi:id="Enumeration_parties.parties.Priority" name="Priority">
+      <literal xmi:id="EnumerationLiteral_parties.parties.Priority.LOW" name="LOW">
+        <value xmi:id="Expression_parties.parties.Priority.LOW.value" body="1" language="Java"/>
+      </literal>
+      <literal xmi:id="EnumerationLiteral_parties.parties.Priority.MEDIUM" name="MEDIUM"/>
+      <literal xmi:id="EnumerationLiteral_parties.parties.Priority.HIGH" name="HIGH">
+        <value xmi:id="Expression_parties.parties.Priority.HIGH.value" body="1" language="Java"/>
+      </literal>
+    </ownedElement>
+  </ownedElement>
+</core:Model>

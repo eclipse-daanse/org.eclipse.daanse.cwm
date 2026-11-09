@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core"
+    xmi:id="Model_selection" name="selection">
+  <ownedElement xsi:type="core:Package" xmi:id="Package_selection.b" name="b">
+    <ownedElement xsi:type="core:Class" xmi:id="Class_selection.b.B" name="B"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="Package_selection.types" name="types">
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_selection.types.String" name="String"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="Package_selection.a" name="a">
+    <ownedElement xsi:type="core:Class" xmi:id="Class_selection.a.A" name="A">
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_selection.a.A.b" name="b" type="Class_selection.b.B"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_selection.a.A.text" name="text" type="DataType_selection.types.String"/>
+    </ownedElement>
+  </ownedElement>
+</core:Model>

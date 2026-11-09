@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:behavioral="http://www.omg.org/spec/CWM/1.1/objectmodel/behavioral"
+    xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships"
+    xmi:id="Model_store" name="store">
+  <ownedElement xsi:type="core:Package" xmi:id="Package_store.store" name="store">
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_store.store.Integer" name="Integer"/>
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_store.store.String" name="String"/>
+    <ownedElement xsi:type="behavioral:Interface" xmi:id="Interface_store.store.Priced" name="Priced">
+      <feature xsi:type="behavioral:Operation" xmi:id="Operation_store.store.Priced.price" name="price" isQuery="true" method="Method_store.store.Product.price Method_store.store.Book.price Method_store.store.Book.priceInJava">
+        <parameter xmi:id="Parameter_store.store.Priced.price.return" name="return" kind="pdk_return" type="DataType_store.store.Integer"/>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_store.store.Product" name="Product">
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_store.store.Product.quantity" name="quantity" type="DataType_store.store.Integer"/>
+      <feature xsi:type="behavioral:Method" xmi:id="Method_store.store.Product.price" name="price" specification="Operation_store.store.Priced.price">
+        <body xmi:id="ProcedureExpression_store.store.Product.price.body" body="self.quantity * 2" language="OCL"/>
+      </feature>
+      <feature xsi:type="behavioral:Operation" xmi:id="Operation_store.store.Product.describe" name="describe" isAbstract="true"
+          method="Method_store.store.Book.describe">
+        <parameter xmi:id="Parameter_store.store.Product.describe.return" name="return" kind="pdk_return" type="DataType_store.store.String"/>
+      </feature>
+      <feature xsi:type="behavioral:Operation" xmi:id="Operation_store.store.Product.label" name="label" method="Method_store.store.Product.label">
+        <parameter xmi:id="Parameter_store.store.Product.label.return" name="return" kind="pdk_return" type="DataType_store.store.String"/>
+        <parameter xmi:id="Parameter_store.store.Product.label.prefix" name="prefix" type="DataType_store.store.String">
+          <defaultValue xmi:id="Expression_store.store.Product.label.prefix.defaultValue" body="item"/>
+        </parameter>
+        <parameter xmi:id="Parameter_store.store.Product.label.count" name="count" kind="pdk_out" type="DataType_store.store.Integer"/>
+        <parameter xmi:id="Parameter_store.store.Product.label.buffer" name="buffer" kind="pdk_inout" type="DataType_store.store.String"/>
+      </feature>
+      <feature xsi:type="behavioral:Method" xmi:id="Method_store.store.Product.label" name="label" specification="Operation_store.store.Product.label">
+        <body xmi:id="ProcedureExpression_store.store.Product.label.body" body="return prefix + getQuantity();" language="Java"/>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Generalization" xmi:id="Generalization_store.store.Product_is_a_Priced" name="Product is a Priced"
+        child="Class_store.store.Product" parent="Interface_store.store.Priced"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_store.store.Book" name="Book">
+      <feature xsi:type="behavioral:Method" xmi:id="Method_store.store.Book.describe" name="describe" specification="Operation_store.store.Product.describe">
+        <body xmi:id="ProcedureExpression_store.store.Book.describe.body" body="'book'" language="OCL"/>
+      </feature>
+      <feature xsi:type="behavioral:Method" xmi:id="Method_store.store.Book.price" name="price" specification="Operation_store.store.Priced.price">
+        <body xmi:id="ProcedureExpression_store.store.Book.price.body" body="self.quantity * 3" language="OCL"/>
+      </feature>
+      <feature xsi:type="behavioral:Method" xmi:id="Method_store.store.Book.priceInJava" name="priceInJava" specification="Operation_store.store.Priced.price">
+        <body xmi:id="ProcedureExpression_store.store.Book.priceInJava.body" body="return getQuantity() * 3L;" language="Java"/>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Generalization" xmi:id="Generalization_store.store.Book_is_a_Product" name="Book is a Product"
+        child="Class_store.store.Book" parent="Class_store.store.Product"/>
+  </ownedElement>
+</core:Model>

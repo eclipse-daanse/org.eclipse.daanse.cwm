@@ -1,0 +1,1 @@
+INFO IMPORT shop.types: imports shop.classes.Customer; imports have no Ecore form, each element is converted where it is owned

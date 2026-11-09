@@ -1,0 +1,1 @@
+INFO NOT_NAVIGABLE trade.sales.OrderProduct: no end is navigable; only an annotation on Order records the association

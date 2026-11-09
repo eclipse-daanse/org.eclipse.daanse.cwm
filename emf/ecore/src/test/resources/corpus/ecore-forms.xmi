@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:behavioral="http://www.omg.org/spec/CWM/1.1/objectmodel/behavioral"
+    xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships"
+    xmi:id="Model_mapping" name="mapping">
+  <ownedElement xsi:type="core:Package" xmi:id="Package_mapping.mapping" name="mapping">
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_mapping.mapping.String" name="String"/>
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_mapping.mapping.StringFunction" name="StringFunction">
+      <taggedValue xmi:id="TaggedValue_mapping.mapping.StringFunction.taggedValue" tag="daanse.ecore.instanceClassName" value="java.util.function.Function&lt;org.eclipse.emf.ecore.EObject, java.lang.String>"/>
+      <taggedValue xmi:id="TaggedValue_mapping.mapping.StringFunction.taggedValue_2" tag="daanse.ecore.serializable" value="false"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_mapping.mapping.StringToStringMap" name="StringToStringMap">
+      <taggedValue xmi:id="TaggedValue_mapping.mapping.StringToStringMap.taggedValue" tag="daanse.ecore.instanceClassName"
+          value="java.util.Map$Entry"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_mapping.mapping.StringToStringMap.key" name="key" type="DataType_mapping.mapping.String"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_mapping.mapping.StringToStringMap.value" name="value" type="DataType_mapping.mapping.String"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_mapping.mapping.Mapping" name="Mapping">
+      <taggedValue xmi:id="TaggedValue_mapping.mapping.Mapping.taggedValue" tag="daanse.ecore.colour" value="red"/>
+      <taggedValue xmi:id="TaggedValue_mapping.mapping.Mapping.taggedValue_2" tag="daanse.ecore.name" value="Renamed"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_mapping.mapping.Mapping.mid" name="mid" type="DataType_mapping.mapping.String">
+        <taggedValue xmi:id="TaggedValue_mapping.mapping.Mapping.mid.taggedValue" tag="daanse.ecore.id" value="true"/>
+        <multiplicity xmi:id="Multiplicity_mapping.mapping.Mapping.mid.multiplicity">
+          <range xmi:id="MultiplicityRange_mapping.mapping.Mapping.mid.multiplicity.range" lower="1" upper="1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_mapping.mapping.Mapping.fqMid" name="fqMid" constraint="Constraint_mapping.mapping.fqMidDerivation"
+          type="DataType_mapping.mapping.String">
+        <taggedValue xmi:id="TaggedValue_mapping.mapping.Mapping.fqMid.taggedValue" tag="derived" value="true"/>
+      </feature>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_mapping.mapping.Mapping.shout" name="shout" constraint="Constraint_mapping.mapping.shoutDerivation"
+          type="DataType_mapping.mapping.String">
+        <taggedValue xmi:id="TaggedValue_mapping.mapping.Mapping.shout.taggedValue" tag="derived" value="true"/>
+      </feature>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_mapping.mapping.Mapping.extraMetadata" name="extraMetadata" type="Class_mapping.mapping.StringToStringMap">
+        <multiplicity xmi:id="Multiplicity_mapping.mapping.Mapping.extraMetadata.multiplicity">
+          <range xmi:id="MultiplicityRange_mapping.mapping.Mapping.extraMetadata.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="behavioral:Operation" xmi:id="Operation_mapping.mapping.Mapping.mapId" name="mapId" method="Method_mapping.mapping.Mapping.mapId">
+        <parameter xmi:id="Parameter_mapping.mapping.Mapping.mapId.idFunction" name="idFunction" type="DataType_mapping.mapping.StringFunction">
+          <taggedValue xmi:id="TaggedValue_mapping.mapping.Mapping.mapId.idFunction.taggedValue" tag="daanse.ecore.lowerBound"
+              value="1"/>
+        </parameter>
+        <parameter xmi:id="Parameter_mapping.mapping.Mapping.mapId.eobject" name="eobject" type="Class_mapping.ecore.EObject">
+          <taggedValue xmi:id="TaggedValue_mapping.mapping.Mapping.mapId.eobject.taggedValue" tag="daanse.ecore.lowerBound"
+              value="1"/>
+        </parameter>
+      </feature>
+      <feature xsi:type="behavioral:Method" xmi:id="Method_mapping.mapping.Mapping.mapId" name="mapId" specification="Operation_mapping.mapping.Mapping.mapId">
+        <body xmi:id="ProcedureExpression_mapping.mapping.Mapping.mapId.body" body="&lt;%java.util.Objects%>.requireNonNull(idFunction);&#xA;setMid(idFunction.apply(eobject));"
+            language="Java"/>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="core:Constraint" xmi:id="Constraint_mapping.mapping.fqMidDerivation" name="fqMidDerivation" constrainedElement="Attribute_mapping.mapping.Mapping.fqMid">
+      <body xmi:id="BooleanExpression_mapping.mapping.fqMidDerivation.body" body="return getMid();" language="Java"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Constraint" xmi:id="Constraint_mapping.mapping.shoutDerivation" name="shoutDerivation" constrainedElement="Attribute_mapping.mapping.Mapping.shout">
+      <body xmi:id="BooleanExpression_mapping.mapping.shoutDerivation.body" body="self.mid.concat('!')" language="OCL"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_mapping.mapping.ResourceMapping" name="ResourceMapping"/>
+    <ownedElement xsi:type="relationships:Generalization" xmi:id="Generalization_mapping.mapping.ResourceMapping_is_a_EAttribute"
+        name="ResourceMapping is a EAttribute" child="Class_mapping.mapping.ResourceMapping" parent="Class_mapping.ecore.EAttribute"/>
+    <ownedElement xsi:type="relationships:Generalization" xmi:id="Generalization_mapping.mapping.EObject_is_a_Mapping" name="EObject is a Mapping"
+        child="Class_mapping.ecore.EObject" parent="Class_mapping.mapping.Mapping"/>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_mapping.mapping.Temporaries" name="Temporaries">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_mapping.mapping.Temporaries.owner" name="owner"
+          type="Class_mapping.mapping.Mapping" aggregation="ak_composite">
+        <multiplicity xmi:id="Multiplicity_mapping.mapping.Temporaries.owner.multiplicity">
+          <range xmi:id="MultiplicityRange_mapping.mapping.Temporaries.owner.multiplicity.range" lower="1" upper="1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_mapping.mapping.Temporaries.temporaries" name="temporaries"
+          type="Class_mapping.mapping.ResourceMapping" isNavigable="true">
+        <taggedValue xmi:id="TaggedValue_mapping.mapping.Temporaries.temporaries.taggedValue" tag="daanse.ecore.transient"
+            value="true"/>
+        <multiplicity xmi:id="Multiplicity_mapping.mapping.Temporaries.temporaries.multiplicity">
+          <range xmi:id="MultiplicityRange_mapping.mapping.Temporaries.temporaries.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_mapping.mapping.Target" name="Target">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_mapping.mapping.Target.targetClass" name="targetClass"
+          type="Class_mapping.ecore.EClass" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_mapping.mapping.Target.targetClass.multiplicity">
+          <range xmi:id="MultiplicityRange_mapping.mapping.Target.targetClass.multiplicity.range" upper="1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_mapping.mapping.Target.mappings" name="mappings"
+          type="Class_mapping.mapping.ResourceMapping" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_mapping.mapping.Target.mappings.multiplicity">
+          <range xmi:id="MultiplicityRange_mapping.mapping.Target.mappings.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="Package_mapping.ecore" name="ecore">
+    <ownedElement xsi:type="core:Class" xmi:id="Class_mapping.ecore.EObject" name="EObject">
+      <taggedValue xmi:id="TaggedValue_mapping.ecore.EObject.taggedValue" tag="daanse.ecore.eClassifier" value="http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_mapping.ecore.EObject.ignored" name="ignored" type="DataType_mapping.mapping.String"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_mapping.ecore.EAttribute" name="EAttribute">
+      <taggedValue xmi:id="TaggedValue_mapping.ecore.EAttribute.taggedValue" tag="daanse.ecore.eClassifier" value="http://www.eclipse.org/emf/2002/Ecore#//EAttribute"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_mapping.ecore.EClass" name="EClass">
+      <taggedValue xmi:id="TaggedValue_mapping.ecore.EClass.taggedValue" tag="daanse.ecore.eClassifier" value="http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+    </ownedElement>
+  </ownedElement>
+</core:Model>

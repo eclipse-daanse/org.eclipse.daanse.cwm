@@ -1,0 +1,1 @@
+WARNING METHOD store.store.Book.priceInJava: a second method for store.store.Priced.price in the same class (C-4-12); both bodies are kept, the generated Java code uses the Java one

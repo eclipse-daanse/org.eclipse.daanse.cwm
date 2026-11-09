@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:behavioral="http://www.omg.org/spec/CWM/1.1/objectmodel/behavioral"
+    xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships"
+    xmi:id="Model_store" name="store">
+  <ownedElement xsi:type="core:Package" xmi:id="Package_store.store" name="store">
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_store.store.Integer" name="Integer"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_store.store.A" name="A">
+      <feature xsi:type="behavioral:Operation" xmi:id="Operation_store.store.A.get" name="get" method="Method_store.store.A.first Method_store.store.A.second Method_store.store.A.inSql Method_store.store.A.empty Method_store.store.B.foreign Method_store.store.C.redeclared">
+        <parameter xmi:id="Parameter_store.store.A.get.return" name="return" kind="pdk_return" type="DataType_store.store.Integer"/>
+      </feature>
+      <feature xsi:type="behavioral:Operation" xmi:id="Operation_store.store.A.run" name="run" method="Method_store.store.A.runInOcl"/>
+      <feature xsi:type="behavioral:Method" xmi:id="Method_store.store.A.first" name="first" specification="Operation_store.store.A.get">
+        <body xmi:id="ProcedureExpression_store.store.A.first.body" body="1" language="OCL"/>
+      </feature>
+      <feature xsi:type="behavioral:Method" xmi:id="Method_store.store.A.second" name="second" specification="Operation_store.store.A.get">
+        <body xmi:id="ProcedureExpression_store.store.A.second.body" body="2" language="OCL"/>
+      </feature>
+      <feature xsi:type="behavioral:Method" xmi:id="Method_store.store.A.inSql" name="inSql" specification="Operation_store.store.A.get">
+        <body xmi:id="ProcedureExpression_store.store.A.inSql.body" body="SELECT 1" language="SQL"/>
+      </feature>
+      <feature xsi:type="behavioral:Method" xmi:id="Method_store.store.A.empty" name="empty" specification="Operation_store.store.A.get">
+        <body xmi:id="ProcedureExpression_store.store.A.empty.body" body=" " language="OCL"/>
+      </feature>
+      <feature xsi:type="behavioral:Method" xmi:id="Method_store.store.A.runInOcl" name="runInOcl" specification="Operation_store.store.A.run">
+        <body xmi:id="ProcedureExpression_store.store.A.runInOcl.body" body="1" language="OCL"/>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_store.store.B" name="B">
+      <feature xsi:type="behavioral:Method" xmi:id="Method_store.store.B.foreign" name="foreign" specification="Operation_store.store.A.get">
+        <body xmi:id="ProcedureExpression_store.store.B.foreign.body" body="1" language="OCL"/>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_store.store.C" name="C">
+      <feature xsi:type="behavioral:Operation" xmi:id="Operation_store.store.C.get" name="get">
+        <parameter xmi:id="Parameter_store.store.C.get.return" name="return" kind="pdk_return" type="DataType_store.store.Integer"/>
+      </feature>
+      <feature xsi:type="behavioral:Method" xmi:id="Method_store.store.C.redeclared" name="redeclared" specification="Operation_store.store.A.get">
+        <body xmi:id="ProcedureExpression_store.store.C.redeclared.body" body="3" language="OCL"/>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Generalization" xmi:id="Generalization_store.store.C_is_a_A" name="C is a A" child="Class_store.store.C"
+        parent="Class_store.store.A"/>
+  </ownedElement>
+</core:Model>

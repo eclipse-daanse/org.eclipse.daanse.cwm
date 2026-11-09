@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core"
+    xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships" xmi:id="Model_trade" name="trade">
+  <ownedElement xsi:type="core:Package" xmi:id="Package_trade.sales" name="sales">
+    <ownedElement xsi:type="core:Class" xmi:id="Class_trade.sales.Order" name="Order"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_trade.sales.OrderLine" name="OrderLine"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_trade.sales.Customer" name="Customer"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_trade.sales.Invoice" name="Invoice"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_trade.sales.Employee" name="Employee"/>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_trade.sales.OrderCustomer" name="OrderCustomer">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.OrderCustomer.orders" name="orders"
+          type="Class_trade.sales.Order" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.OrderCustomer.orders.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.OrderCustomer.orders.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.OrderCustomer.customer" name="customer"
+          type="Class_trade.sales.Customer" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.OrderCustomer.customer.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.OrderCustomer.customer.multiplicity.range" lower="1" upper="1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_trade.sales.OrderInvoice" name="OrderInvoice">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.OrderInvoice.invoice" name="invoice"
+          type="Class_trade.sales.Invoice" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.OrderInvoice.invoice.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.OrderInvoice.invoice.multiplicity.range" upper="1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.OrderInvoice.order" name="order"
+          type="Class_trade.sales.Order">
+        <multiplicity xmi:id="Multiplicity_trade.sales.OrderInvoice.order.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.OrderInvoice.order.multiplicity.range" lower="1" upper="1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_trade.sales.OrderLines" name="OrderLines">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.OrderLines.order" name="order" type="Class_trade.sales.Order"
+          aggregation="ak_composite" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.OrderLines.order.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.OrderLines.order.multiplicity.range" lower="1" upper="1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.OrderLines.lines" name="lines" ordering="ok_ordered"
+          type="Class_trade.sales.OrderLine" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.OrderLines.lines.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.OrderLines.lines.multiplicity.range" lower="1" upper="-1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_trade.sales.Management" name="Management">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.Management.manager" name="manager"
+          type="Class_trade.sales.Employee" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.Management.manager.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.Management.manager.multiplicity.range" upper="1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.Management.reports" name="reports"
+          type="Class_trade.sales.Employee" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.Management.reports.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.Management.reports.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_trade.sales.LineProduct" name="LineProduct">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.LineProduct.product" name="product"
+          type="Class_trade.catalog.Product" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.sales.LineProduct.product.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.LineProduct.product.multiplicity.range" lower="1" upper="1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.LineProduct.lines" name="lines"
+          type="Class_trade.sales.OrderLine">
+        <multiplicity xmi:id="Multiplicity_trade.sales.LineProduct.lines.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.LineProduct.lines.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_trade.sales.OrderProduct" name="OrderProduct">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.OrderProduct.orders" name="orders"
+          type="Class_trade.sales.Order">
+        <multiplicity xmi:id="Multiplicity_trade.sales.OrderProduct.orders.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.OrderProduct.orders.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.sales.OrderProduct.products" name="products"
+          type="Class_trade.catalog.Product">
+        <multiplicity xmi:id="Multiplicity_trade.sales.OrderProduct.products.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.sales.OrderProduct.products.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+  </ownedElement>
+  <ownedElement xsi:type="core:Package" xmi:id="Package_trade.catalog" name="catalog">
+    <ownedElement xsi:type="core:Class" xmi:id="Class_trade.catalog.Product" name="Product"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_trade.catalog.Tag" name="Tag"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_trade.catalog.Warehouse" name="Warehouse"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_trade.catalog.Shelf" name="Shelf"/>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_trade.catalog.WarehouseShelves" name="WarehouseShelves">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.catalog.WarehouseShelves.shelves" name="shelves"
+          type="Class_trade.catalog.Shelf" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.catalog.WarehouseShelves.shelves.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.catalog.WarehouseShelves.shelves.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.catalog.WarehouseShelves.warehouse" name="warehouse"
+          type="Class_trade.catalog.Warehouse" aggregation="ak_composite" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.catalog.WarehouseShelves.warehouse.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.catalog.WarehouseShelves.warehouse.multiplicity.range" lower="1" upper="1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_trade.catalog.ProductTags" name="ProductTags">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.catalog.ProductTags.product" name="product"
+          type="Class_trade.catalog.Product" aggregation="ak_aggregate" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.catalog.ProductTags.product.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.catalog.ProductTags.product.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_trade.catalog.ProductTags.tags" name="tags"
+          type="Class_trade.catalog.Tag" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_trade.catalog.ProductTags.tags.multiplicity">
+          <range xmi:id="MultiplicityRange_trade.catalog.ProductTags.tags.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+  </ownedElement>
+</core:Model>

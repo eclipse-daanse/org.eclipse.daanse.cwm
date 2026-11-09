@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:behavioral="http://www.omg.org/spec/CWM/1.1/objectmodel/behavioral"
+    xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core" xmlns:relational="http://www.omg.org/spec/CWM/1.1/resource/relational"
+    xmlns:relationships="http://www.omg.org/spec/CWM/1.1/objectmodel/relationships" xmi:id="Model_bank" name="bank">
+  <ownedElement xsi:type="core:Package" xmi:id="Package_bank.bank" name="bank">
+    <ownedElement xsi:type="core:DataType" xmi:id="DataType_bank.bank.Integer" name="Integer" constraint="Constraint_bank.bank.OnDataType"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_bank.bank.Account" name="Account" constraint="Constraint_bank.bank.NotOverdrawn Constraint_bank.bank.BalanceSet Constraint_bank.bank.NotOverdrawn_2 Constraint_bank.bank.TwoClasses Constraint_bank.bank.InSql Constraint_bank.bank.Empty">
+      <feature xsi:type="core:Attribute" xmi:id="Attribute_bank.bank.Account.balance" name="balance" constraint="Constraint_bank.bank.BalanceKnown"
+          type="DataType_bank.bank.Integer"/>
+      <feature xsi:type="behavioral:Operation" xmi:id="Operation_bank.bank.Account.close" name="close" constraint="Constraint_bank.bank.OnOperation"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_bank.bank.Savings" name="Savings"/>
+    <ownedElement xsi:type="relationships:Generalization" xmi:id="Generalization_bank.bank.Savings_is_a_Account" name="Savings is a Account"
+        child="Class_bank.bank.Savings" parent="Class_bank.bank.Account"/>
+    <ownedElement xsi:type="core:Class" xmi:id="Class_bank.bank.Customer" name="Customer" constraint="Constraint_bank.bank.TwoClasses"/>
+    <ownedElement xsi:type="relationships:Association" xmi:id="Association_bank.bank.AccountOwner" name="AccountOwner">
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_bank.bank.AccountOwner.owner" name="owner" constraint="Constraint_bank.bank.HasOwner"
+          type="Class_bank.bank.Customer" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_bank.bank.AccountOwner.owner.multiplicity">
+          <range xmi:id="MultiplicityRange_bank.bank.AccountOwner.owner.multiplicity.range" lower="1" upper="1"/>
+        </multiplicity>
+      </feature>
+      <feature xsi:type="relationships:AssociationEnd" xmi:id="AssociationEnd_bank.bank.AccountOwner.accounts" name="accounts"
+          type="Class_bank.bank.Account" isNavigable="true">
+        <multiplicity xmi:id="Multiplicity_bank.bank.AccountOwner.accounts.multiplicity">
+          <range xmi:id="MultiplicityRange_bank.bank.AccountOwner.accounts.multiplicity.range" upper="-1"/>
+        </multiplicity>
+      </feature>
+    </ownedElement>
+    <ownedElement xsi:type="core:Constraint" xmi:id="Constraint_bank.bank.NotOverdrawn" name="NotOverdrawn" constrainedElement="Class_bank.bank.Account">
+      <body xmi:id="BooleanExpression_bank.bank.NotOverdrawn.body" body="self.balance >= 0" language="OCL"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Constraint" xmi:id="Constraint_bank.bank.BalanceKnown" name="BalanceKnown" constrainedElement="Attribute_bank.bank.Account.balance">
+      <body xmi:id="BooleanExpression_bank.bank.BalanceKnown.body" body="not self.balance.oclIsUndefined()" language="OCL"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Constraint" xmi:id="Constraint_bank.bank.HasOwner" name="HasOwner" constrainedElement="AssociationEnd_bank.bank.AccountOwner.owner">
+      <body xmi:id="BooleanExpression_bank.bank.HasOwner.body" body="not self.owner.oclIsUndefined()" language="OCL"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Stereotype" xmi:id="Stereotype_bank.bank.Audited" name="Audited" extendedElement="Class_bank.bank.Account Class_bank.bank.Customer">
+      <stereotypeConstraint xmi:id="Constraint_bank.bank.Audited.Audited" name="Audited">
+        <body xmi:id="BooleanExpression_bank.bank.Audited.Audited.body" body="true" language="OCL"/>
+      </stereotypeConstraint>
+    </ownedElement>
+    <ownedElement xsi:type="core:Constraint" xmi:id="Constraint_bank.bank.BalanceSet" name="BalanceSet" constrainedElement="Class_bank.bank.Account">
+      <body xmi:id="BooleanExpression_bank.bank.BalanceSet.body" body="getBalance() != null" language="Java"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Constraint" xmi:id="Constraint_bank.bank.NotOverdrawn_2" name="NotOverdrawn" constrainedElement="Class_bank.bank.Account">
+      <body xmi:id="BooleanExpression_bank.bank.NotOverdrawn.body_2" body="self.balance > -1" language="OCL"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Constraint" xmi:id="Constraint_bank.bank.OnOperation" name="OnOperation" constrainedElement="Operation_bank.bank.Account.close">
+      <body xmi:id="BooleanExpression_bank.bank.OnOperation.body" body="true" language="OCL"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Constraint" xmi:id="Constraint_bank.bank.TwoClasses" name="TwoClasses" constrainedElement="Class_bank.bank.Account Class_bank.bank.Customer">
+      <body xmi:id="BooleanExpression_bank.bank.TwoClasses.body" body="true" language="OCL"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Constraint" xmi:id="Constraint_bank.bank.InSql" name="InSql" constrainedElement="Class_bank.bank.Account">
+      <body xmi:id="BooleanExpression_bank.bank.InSql.body" body="balance >= 0" language="SQL"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Constraint" xmi:id="Constraint_bank.bank.Empty" name="Empty" constrainedElement="Class_bank.bank.Account">
+      <body xmi:id="BooleanExpression_bank.bank.Empty.body" body=" " language="OCL"/>
+    </ownedElement>
+    <ownedElement xsi:type="core:Constraint" xmi:id="Constraint_bank.bank.OnDataType" name="OnDataType" constrainedElement="DataType_bank.bank.Integer">
+      <body xmi:id="BooleanExpression_bank.bank.OnDataType.body" body="true" language="Java"/>
+    </ownedElement>
+    <ownedElement xsi:type="relational:Catalog" xmi:id="Catalog_bank.bank.db" name="db">
+      <ownedElement xsi:type="relational:Schema" xmi:id="Schema_bank.bank.db.public" name="public">
+        <ownedElement xsi:type="relational:Table" xmi:id="Table_bank.bank.db.public.account" name="account" constraint="Constraint_bank.bank.db.public.TableCheck"/>
+        <ownedElement xsi:type="core:Constraint" xmi:id="Constraint_bank.bank.db.public.TableCheck" name="TableCheck" constrainedElement="Table_bank.bank.db.public.account">
+          <body xmi:id="BooleanExpression_bank.bank.db.public.TableCheck.body" body="balance >= 0" language="SQL"/>
+        </ownedElement>
+      </ownedElement>
+    </ownedElement>
+  </ownedElement>
+</core:Model>

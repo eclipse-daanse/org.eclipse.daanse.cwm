@@ -49,6 +49,8 @@ header:
     - '**/src/test/resources/**/*.xmi'
     - '**/src/test/resources/**/*.cwmorm'
     - '**/src/test/resources/**/*.ecore'
+    - '**/src/test/resources/**/*.genmodel'
+    - '**/src/test/resources/**/*.txt'
     - '**/org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlGeneratorFactory'
 
   comment: always
