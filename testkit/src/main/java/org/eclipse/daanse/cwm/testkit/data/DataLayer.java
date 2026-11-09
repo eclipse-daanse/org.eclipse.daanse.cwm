@@ -370,7 +370,15 @@ public final class DataLayer {
 
             @Override
             public void onNext(RawRecord r) {
-                sink.onNext(r);
+                try {
+                    sink.onNext(r);
+                } catch (RuntimeException e) {
+                    // The sink cancels its subscription before it throws, and a publisher signals nothing after a
+                    // cancel: the latch waited the whole timeout and the SQL error was lost behind "timed out".
+                    error[0] = e;
+                    latch.countDown();
+                    throw e;
+                }
             }
 
             @Override

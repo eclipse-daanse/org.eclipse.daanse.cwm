@@ -30,6 +30,24 @@ public class TypeConverter {
     }
 
     /**
+     * The type a NULL is bound with: a national character type as its plain one. pgjdbc's {@code setNull} knows no
+     * NCHAR, NVARCHAR, LONGNVARCHAR or NCLOB and throws "Unknown Types value." in the driver, before anything reaches
+     * the server; every driver takes the plain type for a national column, and the NULL is the same.
+     *
+     * @param jdbcType the type of the column
+     * @return the type code to bind a NULL of that column with
+     */
+    public static int nullType(JDBCType jdbcType) {
+        return switch (jdbcType) {
+        case NCHAR -> JDBCType.CHAR.getVendorTypeNumber();
+        case NVARCHAR -> JDBCType.VARCHAR.getVendorTypeNumber();
+        case LONGNVARCHAR -> JDBCType.LONGVARCHAR.getVendorTypeNumber();
+        case NCLOB -> JDBCType.CLOB.getVendorTypeNumber();
+        default -> jdbcType.getVendorTypeNumber();
+        };
+    }
+
+    /**
      * Sets a typed value on a PreparedStatement at the given index.
      *
      * @param ps       the prepared statement
@@ -43,7 +61,7 @@ public class TypeConverter {
         if (value == null || "NULL".equalsIgnoreCase(value)) {
             // With a type code: an untyped null binds as "unspecified" on pgjdbc,
             // which the server cannot resolve when a column is null in every tuple.
-            ps.setNull(index, jdbcType.getVendorTypeNumber());
+            ps.setNull(index, nullType(jdbcType));
             return;
         }
             // parseX, not valueOf: valueOf boxes and unboxes again for the
