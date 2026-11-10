@@ -57,16 +57,17 @@
       <artifactId>org.eclipse.emf.ecore</artifactId>
       <scope>compile</scope>
     </dependency>
+    <!-- The JSqlParser version JSQLTranspiler is built against: change the two together. -->
     <dependency>
       <groupId>com.manticore-projects.jsqlformatter</groupId>
       <artifactId>jsqlparser</artifactId>
-      <version>5.3.167</version>
+      <version>5.4.162</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>ai.starlake.jsqltranspiler</groupId>
       <artifactId>jsqltranspiler</artifactId>
-      <version>1.8</version>
+      <version>1.16</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
