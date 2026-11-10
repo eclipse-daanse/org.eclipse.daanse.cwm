@@ -51,14 +51,14 @@
           <dependency>
             <groupId>biz.aQute.bnd</groupId>
             <artifactId>biz.aQute.bndlib</artifactId>
-            <version>7.2.0</version>
+            <version>${bnd.version}</version>
           </dependency>
         </dependencies>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.6.0</version>
+        <version>3.8.0</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>

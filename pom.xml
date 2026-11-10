@@ -36,6 +36,9 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <jdbc-db.version>0.0.1-SNAPSHOT</jdbc-db.version>
+
+    <!-- Newer than the parent pom manages. -->
+    <bnd.version>7.4.0</bnd.version>
   </properties>
 
   <repositories>
