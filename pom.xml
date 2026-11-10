@@ -39,6 +39,12 @@
 
     <!-- Newer than the parent pom manages. -->
     <bnd.version>7.4.0</bnd.version>
+    <!-- One EMF release: each of these names the others in exactly these versions. -->
+    <emf.common.version>2.46.0</emf.common.version>
+    <emf.ecore.version>2.43.0</emf.ecore.version>
+    <emf.xmi.version>2.41.0</emf.xmi.version>
+    <emf.codegen.version>2.29.0</emf.codegen.version>
+    <emf.codegen.ecore.version>2.47.0</emf.codegen.ecore.version>
   </properties>
 
   <repositories>
