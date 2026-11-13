@@ -260,6 +260,7 @@ public final class MigrationEmitterImpl implements MigrationEmitter {
 
                 //  comments
                 case ChangeOp.SetComment o -> ddl.comment(o.element(), o.comment()).ifPresent(out::add);
+                case ChangeOp.SetViewComment o -> ddl.comment(o.element(), o.comment()).ifPresent(out::add);
             }
         }
 

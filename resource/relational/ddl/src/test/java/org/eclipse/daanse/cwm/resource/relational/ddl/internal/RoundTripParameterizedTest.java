@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.TaggedValues;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndexColumn;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.DeferrabilityType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalRules;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlGenerator;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.DialectProfile;
@@ -27,6 +28,7 @@ import org.eclipse.daanse.jdbc.datasource.testkit.api.ActiveDatabase;
 import org.eclipse.daanse.sql.dialect.api.Dialect;
 import org.eclipse.daanse.sql.jdbc.api.DatabaseService;
 import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
+import org.eclipse.daanse.sql.jdbc.api.schema.ImportedKey;
 import org.eclipse.daanse.sql.jdbc.impl.DatabaseServiceImpl;
 import org.eclipse.daanse.sql.model.schema.TableReference;
 import org.junit.jupiter.api.Assumptions;
@@ -202,6 +204,33 @@ class RoundTripParameterizedTest {
                         .filter(item -> item.indexName().orElse("").equals("IDX_CUSTOMERS_NAME"))
                         .map(item -> item.ascending().orElse(true)))
                         .as("the order of the index column").containsExactly(false);
+            } finally {
+                profile.cleanup(c, f.schema, dialect);
+            }
+        }
+    }
+
+    /**
+     * Where the dialect has deferrable foreign keys, a deferrable key is created so, and the database
+     * reports it deferred.
+     */
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("dialects")
+    void aDeferrableForeignKeyStaysDeferrableWhereTheDatabaseHasThem(DialectProfile profile) throws Exception {
+        ActiveDatabase db = activateOrSkip(profile);
+        Dialect dialect = db.dialect();
+        Assumptions.assumeTrue(dialect.ddlGenerator().supportsDeferrableForeignKeys(),
+                profile + " checks every key at once");
+        try (Connection c = db.dataSource().getConnection()) {
+            SqlGenFixture f = SqlGenFixture.build(profile.schemaName(), dialect);
+            f.ordersFk.setDeferrability(DeferrabilityType.INITIALLY_DEFERRED);
+            try {
+                executeAll(c, new DdlGeneratorFactoryImpl().create(dialect, profile.settings().withStrict(true))
+                        .createSchema(f.schema));
+                profile.prepareForMetadata(c);
+                assertThat(profile.snapshot(DB_SERVICE, c, dialect).structureInfo().importedKeys().stream()
+                        .filter(key -> "FK_ORDERS_CUSTOMERS".equals(key.name())).map(key -> key.deferrability()))
+                        .as("the deferrability of the key").containsOnly(ImportedKey.Deferrability.INITIALLY_DEFERRED);
             } finally {
                 profile.cleanup(c, f.schema, dialect);
             }

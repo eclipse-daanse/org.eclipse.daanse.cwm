@@ -14,16 +14,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
-import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ConditionTimingType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.EventManipulationType;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
+import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.jdbc.datasource.testkit.api.ActiveDatabase;
 import org.eclipse.daanse.jdbc.datasource.testkit.api.DatabaseProvider;
+import org.eclipse.daanse.sql.dialect.api.Dialect;
 import org.eclipse.daanse.sql.jdbc.api.DatabaseService;
 import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
-import org.eclipse.daanse.sql.dialect.api.Dialect;
 
 /**
  * One row of cross-dialect test parameterization: the {@code DatabaseProvider}
@@ -117,11 +117,12 @@ public enum DialectProfile {
     }
 
     /**
-     * Whether the DDL writes the comments on a view and its columns: where the dialect names a view a
-     * view in the statement of its comment, as SQL Server's does.
+     * Whether the database keeps a comment on a column of a view where its dialect writes comments on
+     * views: H2 takes {@code COMMENT ON VIEW} and rejects {@code COMMENT ON COLUMN} for a column of a
+     * view.
      */
-    public boolean commentsOnViews() {
-        return this == MSSQL;
+    public boolean keepsCommentsOnViewColumns() {
+        return this != H2;
     }
 
     /**

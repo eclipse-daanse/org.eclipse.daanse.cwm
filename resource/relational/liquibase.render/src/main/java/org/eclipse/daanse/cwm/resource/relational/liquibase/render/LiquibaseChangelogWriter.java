@@ -465,6 +465,17 @@ public final class LiquibaseChangelogWriter {
                 }
                 x.closeChangeSet();
             }
+            case ChangeOp.SetViewComment o -> {
+                // Liquibase writes the remarks of a table only; the dialects write those of a view
+                x.openChangeSet(settings.author(), "SetViewComment|" + qualified(o.view()) + "|"
+                        + (o.element() instanceof Column c ? c.getName() + "|" : "")
+                        + (o.comment() == null ? "" : o.comment()));
+                dbmsSql(x, o);
+                if (settings.includeRollback()) {
+                    x.emptyRollback(); // the previous comment is not carried on the op
+                }
+                x.closeChangeSet();
+            }
         }
     }
 

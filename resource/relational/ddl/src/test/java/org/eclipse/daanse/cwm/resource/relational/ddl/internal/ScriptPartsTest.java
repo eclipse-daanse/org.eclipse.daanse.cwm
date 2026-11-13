@@ -40,6 +40,7 @@ import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlStatement;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.Unwritable;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.UnwritableException;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.SqlGenFixture;
+import org.eclipse.daanse.sql.dialect.db.duckdb.DuckDbDialect;
 import org.eclipse.daanse.sql.dialect.db.mssqlserver.MicrosoftSqlServerDialect;
 import org.eclipse.daanse.sql.dialect.db.postgresql.PostgreSqlDialect;
 import org.eclipse.daanse.sql.model.schema.TableReference;
@@ -125,24 +126,51 @@ class ScriptPartsTest {
                         + " ON \"sales\".\"CUSTOMERS\" (\"EMAIL\" DESC)"));
     }
 
+    /**
+     * A key states its deferrability, not deferrable unless it says otherwise, as in SQL; PostgreSQL
+     * writes a deferrable one {@code DEFERRABLE}, DuckDB, which declares its foreign keys in
+     * {@code CREATE TABLE} and checks every key at once, not deferrable, a case it cannot write.
+     */
     @Test
-    void aDeferrableForeignKeyIsWrittenWithoutItsDeferrability() {
+    void aDeferrableForeignKeyIsWrittenDeferrableWhereTheDialectHasThem() {
         SqlGenFixture f = SqlGenFixture.build("sales", pg);
         ForeignKey fk = f.ordersFk;
-        fk.setDeferrability(DeferrabilityType.INITIALLY_IMMEDIATE);
+        assertThat(fk.getDeferrability()).as("nothing stated").isEqualTo(DeferrabilityType.NOT_DEFERRABLE);
+        fk.setDeferrability(DeferrabilityType.INITIALLY_DEFERRED);
 
-        List<DdlStatement> create = generator.create(List.of(f.schema));
-
-        assertThat(create).filteredOn(s -> s.element() == fk).singleElement()
-                .satisfies(s -> assertThat(s.sql()).doesNotContain("DEFERR"));
+        assertThat(generator.create(List.of(f.schema))).filteredOn(s -> s.element() == fk).singleElement()
+                .satisfies(s -> assertThat(s.sql()).endsWith("ON DELETE CASCADE ON UPDATE NO ACTION"
+                        + " DEFERRABLE INITIALLY DEFERRED"));
+        DuckDbDialect duckdb = new DuckDbDialect();
+        assertThat(new DdlGeneratorImpl(duckdb).create(List.of(f.schema))).filteredOn(s -> s.element() == f.orders)
+                .singleElement().satisfies(s -> assertThat(s.sql()).contains("FOREIGN KEY").doesNotContain("DEFERR"));
+        assertThatThrownBy(() -> new DdlGeneratorImpl(duckdb, DdlSettings.defaults().withStrict(true))
+                .create(List.of(f.schema))).isInstanceOfSatisfying(UnwritableException.class,
+                        e -> assertThat(e.cases()).extracting(Unwritable::what)
+                                .containsExactly("DEFERRABLE INITIALLY DEFERRED"));
     }
 
     /**
-     * SQL Server's dialect names a view a view in the statement of its comment, so the comments on a
-     * view and on its columns are written, after the view.
+     * PostgreSQL writes the comments on a view and on its columns, after the view, and so does a view
+     * created on its own; SQL Server's dialect too, in its own statement.
      */
     @Test
-    void theCommentsOnAViewAndItsColumnsAreWrittenWhereTheDialectNamesAViewAView() {
+    void theCommentsOnAViewAndItsColumnsAreWrittenWithTheView() {
+        SqlGenFixture pgFixture = SqlGenFixture.build("sales", pg);
+        Column pgName = Columns.create(pgFixture.view, "NAME",
+                ColumnSets.findColumn(pgFixture.customers, "NAME").orElseThrow().getType());
+        SqlGenFixture.comment(pgFixture.schema, pgFixture.view, "customers and their orders");
+        SqlGenFixture.comment(pgFixture.schema, pgName, "who orders");
+
+        assertThat(DdlStatement.sql(generator.createElement(pgFixture.view))).satisfiesExactly(
+                s -> assertThat(s).startsWith("CREATE VIEW \"sales\".\"CUSTOMER_ORDERS\""),
+                s -> assertThat(s).isEqualTo("COMMENT ON VIEW \"sales\".\"CUSTOMER_ORDERS\" IS"
+                        + " 'customers and their orders'"),
+                s -> assertThat(s)
+                        .isEqualTo("COMMENT ON COLUMN \"sales\".\"CUSTOMER_ORDERS\".\"NAME\" IS 'who orders'"));
+        assertThat(generator.comment(pgName, "the name")).contains(
+                "COMMENT ON COLUMN \"sales\".\"CUSTOMER_ORDERS\".\"NAME\" IS 'the name'");
+
         MicrosoftSqlServerDialect sqlServer = new MicrosoftSqlServerDialect();
         SqlGenFixture f = SqlGenFixture.build("sales", sqlServer);
         Column name = Columns.create(f.view, "NAME",

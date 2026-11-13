@@ -104,8 +104,9 @@ public interface DdlGenerator {
      * where the create script leaves it out, as for such an index where the dialect has no partial
      * indexes, or for any where it has no index DDL;</li>
      * <li>a view: {@code CREATE VIEW}, or {@code CREATE MATERIALIZED VIEW} for a materialized one
-     * ({@link #materialized(View)}); a trigger: its procedure, where the dialect keeps the body in
-     * one, and the trigger;</li>
+     * ({@link #materialized(View)}), and the comments on it and its columns, as a migration that
+     * creates a view again would lose them; a trigger: its procedure, where the dialect keeps the
+     * body in one, and the trigger;</li>
      * <li>a description of the comment type: the comment on the table or column it describes.</li>
      * </ul>
      * A table of another schema the element refers to is qualified also without
@@ -142,15 +143,16 @@ public interface DdlGenerator {
     boolean inCreateTable(ModelElement constraint);
 
     /**
-     * The statement that sets the comment of a table, or of a column of one, to {@code text};
-     * {@code null} removes it. Empty where the dialect writes no comment on the element: a case it
-     * cannot write, which the log names, where {@code text} is a comment.
+     * The statement that sets the comment of a table or view, or of a column of one, to
+     * {@code text}; {@code null} removes it. Empty where the dialect writes no comment on the
+     * element, as on a view where it keeps none on a view: a case it cannot write, which the log
+     * names, where {@code text} is a comment.
      *
-     * @throws IllegalArgumentException for an element that is no table or column
+     * @throws IllegalArgumentException for an element that is no table or view or column of one
      * @throws UnwritableException      where the settings are strict and the dialect writes no comment
      *                                  on the element
      */
-    Optional<String> comment(ModelElement tableOrColumn, String text);
+    Optional<String> comment(ModelElement element, String text);
 
     /**
      * The dialect {@link TableReference} for a CWM table or view, qualified as the settings say: by its

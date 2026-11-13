@@ -358,7 +358,9 @@ public final class CwmLoaderImpl implements CwmLoader {
                     relation = table;
                 }
                 if (place(key, relation) && comments) {
+                    // MySQL and MariaDB keep no comment on a view and report the word VIEW for every one
                     td.tableMetaData().remarks().filter(r -> !r.isBlank())
+                            .filter(r -> !(relation instanceof View && "VIEW".equals(r)))
                             .ifPresent(r -> describe(relation, relation, r));
                 }
             }

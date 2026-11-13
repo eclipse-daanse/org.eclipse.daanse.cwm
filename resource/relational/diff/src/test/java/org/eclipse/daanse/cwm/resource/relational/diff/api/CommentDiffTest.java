@@ -14,15 +14,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.sql.Types;
 import java.util.List;
 
-import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.BusinessinformationFactory;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Description;
+import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Columns;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.cwm.resource.relational.diff.internal.MigrationEmitterImpl;
 import org.eclipse.daanse.cwm.resource.relational.diff.internal.SchemaDifferImpl;
@@ -86,6 +89,35 @@ class CommentDiffTest {
         assertThat(sql).containsExactly(
                 "COMMENT ON TABLE \"sales\".\"customers\" IS 'it''s'",
                 "COMMENT ON COLUMN \"sales\".\"customers\".\"id\" IS 'key'");
+    }
+
+    /**
+     * A changed comment on a view or on a column of one is set by the view variant of the change;
+     * PostgreSQL writes it {@code COMMENT ON VIEW}.
+     */
+    @Test
+    void aChangedCommentOnAViewIsSetOnTheView() {
+        SchemaDiff diff = differ.diff(viewSchema("old", null), viewSchema("new", "the id"));
+
+        assertThat(diff.lines()).containsExactlyInAnyOrder(
+                "comment of view sales.v_customers: text \"old\" left, \"new\" right",
+                "comment of column sales.v_customers.id: text none left, \"the id\" right");
+        List<ChangeOp> ops = ChangePlanner.create().plan(diff);
+        assertThat(ops).hasSize(2).allMatch(ChangeOp.SetViewComment.class::isInstance);
+        assertThat(new MigrationEmitterImpl(new DdlGeneratorFactoryImpl()).emit(ops, new PostgreSqlDialect()))
+                .containsExactlyInAnyOrder("COMMENT ON VIEW \"sales\".\"v_customers\" IS 'new'",
+                        "COMMENT ON COLUMN \"sales\".\"v_customers\".\"id\" IS 'the id'");
+    }
+
+    /** The schema of {@link #schema} with the view {@code v_customers(id)} on its table, commented. */
+    private static Schema viewSchema(String viewComment, String columnComment) {
+        Schema s = schema(null, null);
+        Table customers = (Table) s.getOwnedElement().get(0);
+        View view = Views.create(s, "v_customers", "SELECT id FROM sales.customers");
+        Column id = Columns.create(view, "id", ((Column) customers.getFeature().get(0)).getType());
+        comment(s, view, viewComment);
+        comment(s, id, columnComment);
+        return s;
     }
 
     private static Schema schema(String tableComment, String columnComment) {

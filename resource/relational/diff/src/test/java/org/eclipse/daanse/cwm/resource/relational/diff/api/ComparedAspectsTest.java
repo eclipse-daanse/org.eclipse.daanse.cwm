@@ -30,12 +30,15 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndexColumn;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.DeferrabilityType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ProcedureType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ReferentialRuleType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ForeignKeys;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.PrimaryKeys;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalNames;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SQLIndexes;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Tables;
 import org.eclipse.daanse.cwm.resource.relational.diff.internal.SchemaDifferImpl;
 import org.junit.jupiter.api.Test;
 
@@ -70,6 +73,22 @@ class ComparedAspectsTest {
         assertThat(diff.tablesChanged()).singleElement().satisfies(td -> {
             assertThat(td.foreignKeysDropped()).hasSize(1);
             assertThat(td.foreignKeysAdded()).hasSize(1);
+        });
+    }
+
+    @Test
+    void aForeignKeyThatBecomesDeferrableIsDroppedAndAdded() {
+        Schema oldSchema = orders("sales", ReferentialRuleType.IMPORTED_KEY_NO_ACTION);
+        Schema newSchema = orders("sales", ReferentialRuleType.IMPORTED_KEY_NO_ACTION);
+        Schemas.findTable(newSchema, "orders").map(Tables::foreignKeys).orElseThrow().get(0)
+                .setDeferrability(DeferrabilityType.INITIALLY_DEFERRED);
+
+        SchemaDiff diff = differ.diff(oldSchema, newSchema);
+
+        assertThat(diff.tablesChanged()).singleElement().satisfies(td -> {
+            assertThat(td.foreignKeysDropped()).hasSize(1);
+            assertThat(td.foreignKeysAdded()).singleElement()
+                    .satisfies(fk -> assertThat(fk.getDeferrability()).isEqualTo(DeferrabilityType.INITIALLY_DEFERRED));
         });
     }
 
