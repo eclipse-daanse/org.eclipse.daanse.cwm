@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SQLSimpleTypes;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Feature;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.StructuralFeature;
@@ -29,18 +28,23 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLDataType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ActionOrientationType;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ConditionTimingType;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.EventManipulationType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
-import org.eclipse.daanse.sql.model.schema.ColumnDefinition;
-import org.eclipse.daanse.sql.model.schema.ColumnMetaData;
-import org.eclipse.daanse.sql.model.schema.ColumnReference;
-import org.eclipse.daanse.sql.model.schema.TableReference;
-import org.eclipse.daanse.sql.model.schema.Trigger.TriggerTiming;
-import org.eclipse.daanse.sql.model.schema.Trigger.TriggerScope;
-import org.eclipse.daanse.sql.model.schema.Trigger.TriggerEvent;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalNames;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SQLSimpleTypes;
 import org.eclipse.daanse.sql.dialect.api.Dialect;
 import org.eclipse.daanse.sql.jdbc.record.schema.ColumnDefinitionRecord;
 import org.eclipse.daanse.sql.jdbc.record.schema.ColumnMetaDataRecord;
 import org.eclipse.daanse.sql.jdbc.record.schema.PrimaryKeyRecord;
+import org.eclipse.daanse.sql.model.schema.ColumnDefinition;
+import org.eclipse.daanse.sql.model.schema.ColumnMetaData;
+import org.eclipse.daanse.sql.model.schema.ColumnReference;
+import org.eclipse.daanse.sql.model.schema.TableReference;
+import org.eclipse.daanse.sql.model.schema.Trigger.TriggerEvent;
+import org.eclipse.daanse.sql.model.schema.Trigger.TriggerScope;
+import org.eclipse.daanse.sql.model.schema.Trigger.TriggerTiming;
 
 /**
  * Pure, stateless bridge from individual CWM elements ({@link Column},
@@ -68,12 +72,18 @@ public final class CwmSchemaMapper {
         return out;
     }
 
-    public static org.eclipse.daanse.sql.model.schema.PrimaryKey primaryKey(TableReference table, PrimaryKey cwmPk) {
+    /**
+     * The primary key record of {@code cwmPk} on {@code table}, named
+     * {@code name}; give the name {@link RelationalNames#of} gives, so a later
+     * drop finds the key.
+     */
+    public static org.eclipse.daanse.sql.model.schema.PrimaryKey primaryKey(TableReference table, PrimaryKey cwmPk,
+            String name) {
         List<ColumnReference> cols = new ArrayList<>();
         for (StructuralFeature sf : cwmPk.getFeature()) {
             cols.add(new ColumnReference(Optional.of(table), sf.getName()));
         }
-        return new PrimaryKeyRecord(table, cols, Optional.ofNullable(cwmPk.getName()));
+        return new PrimaryKeyRecord(table, cols, Optional.ofNullable(name));
     }
 
     public static ColumnMetaData columnMetaData(Column col) {
@@ -142,45 +152,145 @@ public final class CwmSchemaMapper {
     // triggers
 
     /**
-     * CREATE statements for one trigger on {@code table}: for dialects with
-     * separate trigger procedures the procedure {@code <trigger>_fn} plus the
+     * CREATE statements for one trigger on {@code table}, named as
+     * {@link RelationalNames#of} names it: for dialects with separate trigger
+     * procedures its own procedure, {@link #triggerFunctionName}, plus the
      * trigger calling it, otherwise the trigger with its inline body. Empty
-     * when the trigger has no body, timing or event.
+     * when the trigger has no body.
      */
     public static List<String> createTrigger(Dialect dialect, TableReference table, Trigger trigger) {
+        return createTrigger(dialect, table, trigger, RelationalNames.of(trigger));
+    }
+
+    /** As {@link #createTrigger(Dialect, TableReference, Trigger)}, the trigger named {@code name}. */
+    public static List<String> createTrigger(Dialect dialect, TableReference table, Trigger trigger, String name) {
         String body = triggerBody(trigger);
-        TriggerTiming timing = triggerTiming(trigger);
-        TriggerEvent event = triggerEvent(trigger);
-        if (body == null || timing == null || event == null) {
+        if (body == null) {
             return List.of();
         }
-        String name = triggerName(trigger, table);
+        return createTrigger(dialect, table, name, body, triggerTiming(trigger), triggerScope(trigger),
+                triggerWhen(trigger), triggerEvent(trigger));
+    }
+
+    /**
+     * Whether the dialect writes {@code trigger}, a row trigger in the model, as a statement trigger:
+     * it writes the same statements for it as for a statement trigger, so it writes no orientation,
+     * and a trigger without one fires once per statement, {@code FOR EACH STATEMENT} being the
+     * default of SQL. SQL Server, whose triggers fire once per statement, is such a dialect.
+     * {@code false} for a statement trigger and for a trigger without body.
+     */
+    public static boolean rowTriggerWrittenPerStatement(Dialect dialect, TableReference table, Trigger trigger,
+            String name) {
+        String body = triggerBody(trigger);
+        if (body == null || triggerScope(trigger) != TriggerScope.ROW) {
+            return false;
+        }
+        TriggerTiming timing = triggerTiming(trigger);
+        String when = triggerWhen(trigger);
+        TriggerEvent event = triggerEvent(trigger);
+        return createTrigger(dialect, table, name, body, timing, TriggerScope.ROW, when, event)
+                .equals(createTrigger(dialect, table, name, body, timing, TriggerScope.STATEMENT, when, event));
+    }
+
+    /**
+     * Whether the dialect writes {@code trigger}, a {@code BEFORE} trigger in the model, as an
+     * {@code AFTER} trigger: it writes the same statements for it as for one that fires after the
+     * statement. SQL Server, which has no {@code BEFORE} triggers, is such a dialect. {@code false} for
+     * an {@code AFTER} trigger and for a trigger without body.
+     */
+    public static boolean beforeTriggerWrittenAfter(Dialect dialect, TableReference table, Trigger trigger,
+            String name) {
+        String body = triggerBody(trigger);
+        if (body == null || triggerTiming(trigger) != TriggerTiming.BEFORE) {
+            return false;
+        }
+        TriggerScope scope = triggerScope(trigger);
+        String when = triggerWhen(trigger);
+        TriggerEvent event = triggerEvent(trigger);
+        return createTrigger(dialect, table, name, body, TriggerTiming.BEFORE, scope, when, event)
+                .equals(createTrigger(dialect, table, name, body, TriggerTiming.AFTER, scope, when, event));
+    }
+
+    /**
+     * Whether the dialect leaves out the {@code WHEN} condition of {@code trigger}: it writes the same
+     * statements for it as for the trigger without one, so the trigger fires for every row or
+     * statement. {@code false} for a trigger without condition and for a trigger without body.
+     */
+    public static boolean triggerConditionLeftOut(Dialect dialect, TableReference table, Trigger trigger,
+            String name) {
+        String body = triggerBody(trigger);
+        String when = triggerWhen(trigger);
+        if (body == null || when == null) {
+            return false;
+        }
+        TriggerTiming timing = triggerTiming(trigger);
+        TriggerScope scope = triggerScope(trigger);
+        TriggerEvent event = triggerEvent(trigger);
+        return createTrigger(dialect, table, name, body, timing, scope, when, event)
+                .equals(createTrigger(dialect, table, name, body, timing, scope, null, event));
+    }
+
+    /** The statements of a trigger named {@code name}, with the timing, orientation, condition and event given. */
+    private static List<String> createTrigger(Dialect dialect, TableReference table, String name, String body,
+            TriggerTiming timing, TriggerScope scope, String when, TriggerEvent event) {
         String schemaName = table.schema().map(s -> s.name()).orElse(null);
         List<String> out = new ArrayList<>();
-        Optional<String> proc = dialect.ddlGenerator().createTriggerProcedure(name + "_fn", schemaName, body);
+        Optional<String> proc = dialect.ddlGenerator().createTriggerProcedure(triggerFunctionName(name), schemaName,
+                body);
         if (proc.isPresent()) {
             out.add(proc.get());
-            out.add(dialect.ddlGenerator().createTriggerUsingProcedure(name, schemaName, timing, event, table,
-                    triggerScope(trigger), triggerWhen(trigger), name + "_fn"));
+            out.add(dialect.ddlGenerator().createTriggerUsingProcedure(name, schemaName, timing, event, table, scope,
+                    when, triggerFunctionName(name)));
         } else {
-            out.add(dialect.ddlGenerator().createTrigger(name, timing, event, table, triggerScope(trigger),
-                    triggerWhen(trigger), body));
+            out.add(dialect.ddlGenerator().createTrigger(name, timing, event, table, scope, when, body));
         }
         return out;
     }
 
-    /** DROP statements for one trigger on {@code table}: the trigger and its {@code <trigger>_fn} procedure. */
+    /**
+     * DROP statements for one trigger on {@code table}, the reverse of
+     * {@link #createTrigger(Dialect, TableReference, Trigger)}: the trigger,
+     * then its own procedure where the dialect has one. Empty when the trigger
+     * has no body, as nothing was created for it.
+     */
     public static List<String> dropTrigger(Dialect dialect, TableReference table, Trigger trigger) {
-        String name = triggerName(trigger, table);
+        return dropTrigger(dialect, table, trigger, RelationalNames.of(trigger), true);
+    }
+
+    /**
+     * As {@link #dropTrigger(Dialect, TableReference, Trigger)}, the trigger
+     * named {@code name}, with {@code IF EXISTS} where the dialect has it and
+     * {@code ifExists} asks for it.
+     */
+    public static List<String> dropTrigger(Dialect dialect, TableReference table, Trigger trigger, String name,
+            boolean ifExists) {
+        if (triggerBody(trigger) == null) {
+            return List.of();
+        }
         String schemaName = table.schema().map(s -> s.name()).orElse(null);
-        List<String> out = new ArrayList<>(dialect.ddlGenerator().dropTriggerOnTable(name, table, true));
-        dialect.ddlGenerator().dropProcedure(name + "_fn", schemaName, true).ifPresent(out::add);
+        List<String> out = new ArrayList<>(dialect.ddlGenerator().dropTriggerOnTable(name, table, ifExists));
+        if (dialect.ddlGenerator().createTriggerProcedure(triggerFunctionName(name), schemaName,
+                triggerBody(trigger)).isPresent()) {
+            dialect.ddlGenerator().dropProcedure(triggerFunctionName(name), schemaName, ifExists).ifPresent(out::add);
+        }
         return out;
     }
 
-    private static String triggerName(Trigger trigger, TableReference table) {
-        String n = trigger.getName();
-        return n == null || n.isBlank() ? "trg_" + table.name() : n;
+    /**
+     * The procedure a trigger named {@code triggerName} calls, where the
+     * dialect keeps the body of a trigger in a procedure of its own:
+     * {@link RelationalNames#triggerProcedure(String)}.
+     */
+    public static String triggerFunctionName(String triggerName) {
+        return RelationalNames.triggerProcedure(triggerName);
+    }
+
+    /**
+     * The procedure {@code trigger} calls: {@link #triggerFunctionName(String)} of
+     * its {@link RelationalNames name}.
+     */
+    public static String triggerFunctionName(Trigger trigger) {
+        return triggerFunctionName(RelationalNames.of(trigger));
     }
 
     /** The trigger body, or {@code null} when it is missing or blank. */
@@ -201,57 +311,23 @@ public final class CwmSchemaMapper {
         return (cond == null || cond.isBlank()) ? null : cond;
     }
 
-    /** BEFORE / AFTER / INSTEAD OF, or {@code null} when not set. */
+    /** BEFORE or AFTER, the only timings CWM knows. */
     public static TriggerTiming triggerTiming(Trigger t) {
-        if (t.getConditionTiming() == null) {
-            return null;
-        }
-        String name = t.getConditionTiming().getName();
-        if (name == null) {
-            return null;
-        }
-        return switch (stripEnumPrefix(name).toUpperCase()) {
-        case "BEFORE" -> TriggerTiming.BEFORE;
-        case "AFTER" -> TriggerTiming.AFTER;
-        case "INSTEAD", "INSTEADOF" -> TriggerTiming.INSTEAD_OF;
-        default -> null;
-        };
+        return t.getConditionTiming() == ConditionTimingType.AFTER ? TriggerTiming.AFTER : TriggerTiming.BEFORE;
     }
 
-    /** INSERT / UPDATE / DELETE, or {@code null} when not set. */
+    /** INSERT, UPDATE or DELETE. */
     public static TriggerEvent triggerEvent(Trigger t) {
-        if (t.getEventManipulation() == null) {
-            return null;
-        }
-        String name = t.getEventManipulation().getName();
-        if (name == null) {
-            return null;
-        }
-        return switch (stripEnumPrefix(name).toUpperCase()) {
-        case "INSERT" -> TriggerEvent.INSERT;
-        case "UPDATE" -> TriggerEvent.UPDATE;
-        case "DELETE" -> TriggerEvent.DELETE;
-        default -> null;
+        EventManipulationType event = t.getEventManipulation();
+        return switch (event == null ? EventManipulationType.INSERT : event) {
+        case INSERT -> TriggerEvent.INSERT;
+        case UPDATE -> TriggerEvent.UPDATE;
+        case DELETE -> TriggerEvent.DELETE;
         };
     }
 
-    /** ROW or STATEMENT (the default). */
+    /** ROW or STATEMENT. */
     public static TriggerScope triggerScope(Trigger t) {
-        if (t.getActionOrientation() == null) {
-            return TriggerScope.STATEMENT;
-        }
-        String name = t.getActionOrientation().getName();
-        return switch (stripEnumPrefix(name == null ? "" : name).toUpperCase()) {
-        case "ROW" -> TriggerScope.ROW;
-        default -> TriggerScope.STATEMENT;
-        };
-    }
-
-    private static String stripEnumPrefix(String literal) {
-        if (literal == null) {
-            return "";
-        }
-        int us = literal.lastIndexOf('_');
-        return us >= 0 ? literal.substring(us + 1) : literal;
+        return t.getActionOrientation() == ActionOrientationType.ROW ? TriggerScope.ROW : TriggerScope.STATEMENT;
     }
 }

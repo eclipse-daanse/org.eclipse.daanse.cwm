@@ -14,7 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Description;
@@ -24,10 +23,11 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.Feature;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Selection;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Selections;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalRules;
 import org.eclipse.daanse.cwm.resource.relational.load.jdbc.api.JdbcToCwmConfig;
-import org.eclipse.daanse.cwm.resource.relational.load.jdbc.api.CwmLoader;
 import org.eclipse.daanse.cwm.resource.relational.load.jdbc.internal.CwmLoaderImpl;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Catalogs;
@@ -84,8 +84,7 @@ class JdbcToCwmLoaderRoundTripH2Test {
         Schema fixture = RoundTripFixture.build(schemaName, RoundTripFixture.Options.standard());
 
         // 1. Emit DDL (no triggers — H2 triggers need Java class bodies) and run it.
-        List<String> ddl = new DdlGeneratorFactoryImpl().create(dialect).createSchema(fixture,
-                EnumSet.complementOf(EnumSet.of(Feature.TRIGGER)));
+        List<String> ddl = new DdlGeneratorFactoryImpl().create(dialect).createSchema(fixture);
         RoundTripFixture.executeAll(connection, ddl);
 
         // 1a. Out-of-band: table and column comments — the loader turns JDBC
@@ -105,7 +104,8 @@ class JdbcToCwmLoaderRoundTripH2Test {
 
             // 3. Load into a fresh CWM Catalog, scoped to the test schema.
             Catalog catalog = new CwmLoaderImpl().load(info,
-                    JdbcToCwmConfig.builder().schemas(schemaName).catalogName("RT").build());
+                    JdbcToCwmConfig.defaults().withCatalogName("RT")
+                            .withSelection(Selection.parse(RelationalRules.VOCABULARY, "schema:" + schemaName)));
 
             // 4. Structural assertions vs the original fixture.
             assertThat(catalog.getName()).isEqualTo("RT");
@@ -138,8 +138,8 @@ class JdbcToCwmLoaderRoundTripH2Test {
             assertThat(custStatus.getInitialValue().getBody()).contains("NEW");
 
             // JDBC REMARKS land as typed CWM Descriptions on the elements.
-            assertThat(Descriptions.find(customers, CwmLoader.DESCRIPTION_TYPE_JDBC_REMARKS)).get().extracting(Description::getBody).isEqualTo("Customer master data");
-            assertThat(Descriptions.find(custEmail, CwmLoader.DESCRIPTION_TYPE_JDBC_REMARKS)).get().extracting(Description::getBody).isEqualTo("Unique customer email");
+            assertThat(Descriptions.find(customers, Descriptions.JDBC_REMARKS)).get().extracting(Description::getBody).isEqualTo("Customer master data");
+            assertThat(Descriptions.find(custEmail, Descriptions.JDBC_REMARKS)).get().extracting(Description::getBody).isEqualTo("Unique customer email");
 
             // View round-trips as a relation (H2's snapshot doesn't expose the
             // view body, so we only assert the view itself was loaded).
@@ -152,8 +152,10 @@ class JdbcToCwmLoaderRoundTripH2Test {
             loaded.setName(reSchemaName);
             // The loaded view has no body (H2 doesn't expose it), so re-emit only
             // tables — enough to prove the loaded model is structurally usable.
-            List<String> reDdl = new DdlGeneratorFactoryImpl().create(dialect).createSchema(loaded,
-                    EnumSet.complementOf(EnumSet.of(Feature.TRIGGER, Feature.VIEW)));
+            Schema tablesOnly = Selections.copy(loaded,
+                    Selection.parse(RelationalRules.VOCABULARY, "!is:view", "!is:trigger"),
+                    RelationalRules.CONSEQUENCES).model();
+            List<String> reDdl = new DdlGeneratorFactoryImpl().create(dialect).createSchema(tablesOnly);
             RoundTripFixture.executeAll(connection, reDdl);
             MetaInfo reInfo = DB_SERVICE.createMetaInfo(connection, new H2MetadataProvider());
             assertThat(reInfo.structureInfo().tables().stream().map(td -> td.table())

@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.BusinessinformationFactory;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Description;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
@@ -23,7 +24,6 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.DialectProfile;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
@@ -56,8 +56,7 @@ class DiffCommentParameterizedTest {
             Schema second = schema(profile, "all customers", null);
             MigrationEmitterImpl emitter = new MigrationEmitterImpl(new DdlGeneratorFactoryImpl());
             try {
-                executeAll(c, new DdlGeneratorFactoryImpl().create(dialect).createSchema(none,
-                        profile.nonTriggerFeatures()));
+                executeAll(c, profile.create(dialect, none));
 
                 List<ChangeOp> set = ChangePlanner.create().plan(new SchemaDifferImpl().diff(none, first));
                 assertThat(set).hasSize(2).allMatch(ChangeOp.SetComment.class::isInstance);
@@ -67,7 +66,7 @@ class DiffCommentParameterizedTest {
                 assertThat(change).hasSize(2).allMatch(ChangeOp.SetComment.class::isInstance);
                 executeAll(c, emitter.emit(change, dialect));
             } finally {
-                profile.cleanup(c, none, dialect, profile.allFeatures());
+                profile.cleanup(c, none, dialect);
             }
         }
     }
@@ -85,7 +84,7 @@ class DiffCommentParameterizedTest {
             return;
         }
         Description d = BusinessinformationFactory.eINSTANCE.createDescription();
-        d.setType(DdlSettings.COMMENT_TYPE_JDBC_REMARKS);
+        d.setType(Descriptions.JDBC_REMARKS);
         d.setBody(body);
         d.getModelElement().add(element);
         owner.getOwnedElement().add(d);

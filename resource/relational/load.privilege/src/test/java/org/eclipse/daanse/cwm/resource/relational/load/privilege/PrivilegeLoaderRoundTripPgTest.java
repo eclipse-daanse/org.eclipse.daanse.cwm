@@ -22,10 +22,8 @@ import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.Procedu
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.RolePrivilege;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.TablePrivilege;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.TablePrivilegeAction;
-import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.util.PrivilegeModelValidator;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.util.PrivilegeStereotypes;
-import org.eclipse.daanse.cwm.resource.relational.load.privilege.api.PrivilegeLoadResult;
 import org.eclipse.daanse.cwm.resource.relational.load.jdbc.api.JdbcToCwmConfig;
 import org.eclipse.daanse.cwm.resource.relational.load.jdbc.internal.CwmLoaderImpl;
 import org.eclipse.daanse.cwm.resource.relational.load.privilege.internal.PrivilegeLoaderImpl;
@@ -48,7 +46,8 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
  * privilege parties (PrivilegeLoader) from the same snapshot and assert that
  * exactly the common core arrives: the table SELECT, the function EXECUTE and
  * the role membership resolve, while the column grant and the sequence grant
- * are skipped.
+ * are skipped. Of two overloads of a function, the grant on one reaches that
+ * one only.
  */
 @TestInstance(Lifecycle.PER_CLASS)
 class PrivilegeLoaderRoundTripPgTest {
@@ -89,16 +88,21 @@ class PrivilegeLoaderRoundTripPgTest {
             // Spaltenprivileg — kommt als spalteneingeschraenktes TablePrivilege an.
             s.execute("GRANT UPDATE (\"EMAIL\") ON \"" + schemaName + "\".\"CUSTOMERS\" TO \"" + roleName + "\"");
             s.execute("GRANT EXECUTE ON FUNCTION \"" + schemaName + "\".fn_answer() TO \"" + roleName + "\"");
+            // two overloads, the grant on one of them
+            s.execute("CREATE FUNCTION \"" + schemaName + "\".fn_over(v integer) RETURNS integer LANGUAGE sql "
+                    + "AS 'SELECT 1'");
+            s.execute("CREATE FUNCTION \"" + schemaName + "\".fn_over(v text) RETURNS integer LANGUAGE sql "
+                    + "AS 'SELECT 2'");
+            s.execute("GRANT EXECUTE ON FUNCTION \"" + schemaName + "\".fn_over(text) TO \"" + roleName + "\"");
             // Sequenzprivileg — kein Routine-EXECUTE, darf nicht ankommen.
             s.execute("GRANT USAGE ON SEQUENCE \"" + schemaName + "\".\"SEQ_ORDERS\" TO \"" + roleName + "\"");
         }
 
         // Die Connection bleibt im Schema public: der Snapshot liest die Privilegien jedes Schemas seiner Tabellen.
         MetaInfo info = DB_SERVICE.createMetaInfo(connection, new PostgreSqlMetadataProvider());
-        Catalog catalog = new CwmLoaderImpl().load(info, JdbcToCwmConfig.all());
-        PrivilegeLoadResult result = new PrivilegeLoaderImpl().load(info, catalog);
-        List<ResponsibleParty> parties = result.parties();
-        Package loaded = LoadedParties.holding(result);
+        Catalog catalog = new CwmLoaderImpl(List.of(new PrivilegeLoaderImpl())).load(info, JdbcToCwmConfig.defaults());
+        List<ResponsibleParty> parties = CatalogParties.of(catalog);
+        Catalog loaded = catalog;
 
         assertThat(PrivilegeModelValidator.validateAll(parties)).isEmpty();
 
@@ -132,8 +136,10 @@ class PrivilegeLoaderRoundTripPgTest {
 
         List<ProcedurePrivilege> procedurePrivileges = reader.getOwnedElement().stream()
                 .filter(ProcedurePrivilege.class::isInstance).map(ProcedurePrivilege.class::cast).toList();
-        assertThat(procedurePrivileges).hasSize(1);
-        assertThat(procedurePrivileges.get(0).getProcedure().getName()).isEqualTo("fn_answer");
+        assertThat(procedurePrivileges).extracting(p -> p.getProcedure().getName() + "("
+                + p.getProcedure().getParameter().stream().map(v -> v.getType().getName()).toList() + ")")
+                .as("the overload the grant is on, not the other").containsExactlyInAnyOrder("fn_answer([])",
+                        "fn_over([text])");
 
         // Mitgliedschaft aus pg_auth_members: MEMBER OF grant_rt_parent mit ADMIN OPTION.
         List<RolePrivilege> memberships = reader.getOwnedElement().stream()
@@ -145,6 +151,6 @@ class PrivilegeLoaderRoundTripPgTest {
         assertThat(memberOf.getGrantor()).isNotNull();
 
         // Sequenz-USAGE wurde uebersprungen: keine weiteren Privilegien.
-        assertThat(reader.getOwnedElement()).hasSize(4);
+        assertThat(reader.getOwnedElement()).hasSize(5);
     }
 }

@@ -16,24 +16,31 @@ package org.eclipse.daanse.cwm.resource.relational.diff.internal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.eclipse.daanse.cwm.model.cwm.resource.relational.CheckConstraint;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.QualifiedNames;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
-import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
-import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ForeignKeys;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalRules;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SQLIndexes;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Tables;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.CreateOrder;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeMarkers;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangePlanner;
@@ -42,15 +49,21 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.SchemaDiff;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableDiff;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableMerge;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableSplit;
-import org.eclipse.daanse.cwm.resource.relational.diff.api.ViewBodyChange;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.ViewChange;
 
 /**
  * Orders a {@link SchemaDiff} into an executable {@link ChangeOp} list. The
  * phase topology: drops before adds, renames (tables, columns, indexes,
  * constraints) before structural alters, FKs around PK rebuilds, tables
  * before FKs, then views and triggers, comments last. A PK change on a table
- * with inbound foreign keys drops and re-adds the referencing FKs around the
- * rebuild.
+ * with inbound foreign keys, of any schema of the model, drops and re-adds
+ * the referencing FKs around the rebuild. Tables that go are dropped those
+ * referring to others first, foreign keys on a cycle between them before.
+ * Views that read a table losing, retyping or resizing a column, or a table
+ * that goes, are dropped before and created again after, with the views that
+ * read them; views are created each after the views it reads. A table the
+ * plan creates gets its unique constraints, checks, indexes, foreign keys and
+ * triggers as operations of their own.
  */
 public final class ChangePlannerImpl implements ChangePlanner {
 
@@ -78,31 +91,49 @@ public final class ChangePlannerImpl implements ChangePlanner {
             if (td.pkChange() == null || td.pkChange().oldPk() == null) {
                 continue;
             }
-            for (ForeignKey fk : inboundForeignKeys(diff.oldSchema(), td.pkChange().oldPk())) {
-                if (!droppedFks.contains(fk)) {
-                    droppedFks.add(fk);
+            for (ForeignKey fk : inboundForeignKeys(td.pkChange().oldPk())) {
+                if (droppedFks.add(fk)) {
                     p.dropFk.add(new ChangeOp.DropForeignKey(tableOf(fk), fk));
                 }
             }
         }
 
-        // drop views (removed ones and old bodies of changed ones)
-        diff.viewsDropped().forEach(v -> p.dropView.add(new ChangeOp.DropView(v)));
-        boolean tablesLoseColumns = losesColumns(diff);
-        List<ViewBodyChange> replaced = new ArrayList<>();
-        for (ViewBodyChange vc : diff.viewsChanged()) {
-            if (!tablesLoseColumns && replaceable(vc)) {
+        // the tables to drop: those that refer to others first, foreign keys on a cycle dropped before
+        List<Table> tablesToDrop = droppingOrder(diff.tablesDropped(), droppedFks, p);
+
+        // views: those that go, those whose body changes, and those that read a table losing,
+        // retyping or resizing columns or going itself, with the views that read them
+        List<View> touched = viewsReadingChangedTables(diff);
+        List<ViewChange> replaced = new ArrayList<>();
+        List<View> oldViewsToDrop = new ArrayList<>(diff.viewsDropped());
+        List<View> newViewsToCreate = new ArrayList<>(diff.viewsAdded());
+        for (ViewChange vc : diff.viewsChanged()) {
+            if (!touched.contains(vc.oldView()) && replaceable(vc)) {
                 replaced.add(vc);
+                newViewsToCreate.add(vc.newView());
             } else {
-                p.dropView.add(new ChangeOp.DropView(vc.oldView()));
+                oldViewsToDrop.add(vc.oldView());
+                newViewsToCreate.add(vc.newView());
             }
+        }
+        Set<View> changedOld = Collections.newSetFromMap(new IdentityHashMap<>());
+        diff.viewsChanged().forEach(vc -> changedOld.add(vc.oldView()));
+        for (View view : touched) {
+            if (changedOld.contains(view) || diff.viewsDropped().contains(view)) {
+                continue;
+            }
+            oldViewsToDrop.add(view);
+            counterpart(view, diff.newSchema()).ifPresent(newViewsToCreate::add);
+        }
+        for (View view : inCreateOrder(oldViewsToDrop).reversed()) {
+            p.dropView.add(new ChangeOp.DropView(view));
         }
 
         // drop triggers, indexes / unique constraints / checks
         for (TableDiff td : diff.tablesChanged()) {
             td.triggersDropped().forEach(t -> p.dropMinor.add(new ChangeOp.DropTrigger(td.oldTable(), t)));
         }
-        for (Table t : diff.tablesDropped()) {
+        for (Table t : tablesToDrop) {
             // DROP TABLE takes its triggers along, but not their procedures
             t.getTrigger().forEach(trg -> p.dropMinor.add(new ChangeOp.DropTrigger(t, trg)));
         }
@@ -125,7 +156,7 @@ public final class ChangePlannerImpl implements ChangePlanner {
         for (TableDiff td : diff.tablesChanged()) {
             td.columnsDropped().forEach(c -> p.dropColumn.add(new ChangeOp.DropColumn(td.oldTable(), c)));
         }
-        diff.tablesDropped().forEach(t -> p.dropTable.add(new ChangeOp.DropTable(t)));
+        tablesToDrop.forEach(t -> p.dropTable.add(new ChangeOp.DropTable(t)));
 
         // splits and merges: structural only, no row data moved (see warnings)
         diff.tablesSplit().forEach(s -> p.splitMerge.add(new ChangeOp.SplitTable(s.oldTable(), s.newTables())));
@@ -161,11 +192,16 @@ public final class ChangePlannerImpl implements ChangePlanner {
             }
         }
 
-        // add columns, create tables
+        // add columns, create tables: those referred to first
         for (TableDiff td : diff.tablesChanged()) {
             td.columnsAdded().forEach(c -> p.addColumn.add(new ChangeOp.AddColumn(td.newTable(), c)));
         }
-        diff.tablesAdded().forEach(t -> p.createTable.add(new ChangeOp.CreateTable(t)));
+        creationOrder(diff.tablesAdded()).forEach(t -> p.createTable.add(new ChangeOp.CreateTable(t)));
+
+        // every table the plan creates gets what its CREATE TABLE does not hold: unique
+        // constraints, checks, indexes, foreign keys and triggers; where a dialect declares a
+        // constraint in CREATE TABLE, the emitter writes it there instead
+        List<Table> created = createdTables(diff);
 
         // re-add PK, add unique/check/index
         for (TableDiff td : diff.tablesChanged()) {
@@ -178,17 +214,23 @@ public final class ChangePlannerImpl implements ChangePlanner {
                     .forEach(ck -> p.addMinor.add(new ChangeOp.AddCheckConstraint(td.newTable(), ck)));
             td.indexesAdded().forEach(i -> p.addMinor.add(new ChangeOp.CreateIndex(i)));
         }
+        for (Table t : created) {
+            Tables.uniqueConstraints(t).stream().filter(uc -> !(uc instanceof PrimaryKey))
+                    .forEach(uc -> p.addMinor.add(new ChangeOp.AddUniqueConstraint(t, uc)));
+            Tables.checkConstraints(t).forEach(ck -> p.addMinor.add(new ChangeOp.AddCheckConstraint(t, ck)));
+            SQLIndexes.spanning(t).forEach(i -> p.addMinor.add(new ChangeOp.CreateIndex(i)));
+        }
 
-        // FKs after all tables exist — explicit adds, FKs of new tables,
+        // FKs after all tables exist — explicit adds, FKs of created tables,
         // and inbound FKs re-attached after a PK rebuild
         for (TableDiff td : diff.tablesChanged()) {
             for (ForeignKey fk : td.foreignKeysAdded()) {
                 p.addFk.add(new ChangeOp.AddForeignKey(td.newTable(), fk));
             }
         }
-        for (Table t : diff.tablesAdded()) {
+        for (Table t : created) {
             for (ForeignKey fk : Tables.foreignKeys(t)) {
-                if (!addedFks.contains(fk)) {
+                if (addedFks.add(fk)) {
                     p.addFk.add(new ChangeOp.AddForeignKey(t, fk));
                 }
             }
@@ -197,24 +239,23 @@ public final class ChangePlannerImpl implements ChangePlanner {
             if (td.pkChange() == null || td.pkChange().newPk() == null) {
                 continue;
             }
-            for (ForeignKey fk : inboundForeignKeys(diff.newSchema(), td.pkChange().newPk())) {
-                if (!addedFks.contains(fk)) {
-                    addedFks.add(fk);
+            for (ForeignKey fk : inboundForeignKeys(td.pkChange().newPk())) {
+                if (addedFks.add(fk)) {
                     p.addFk.add(new ChangeOp.AddForeignKey(tableOf(fk), fk));
                 }
             }
         }
 
-        // views, then triggers (their bodies may use anything created above)
-        for (ViewBodyChange vc : diff.viewsChanged()) {
-            p.createView.add(replaced.contains(vc) ? new ChangeOp.ReplaceView(vc.oldView(), vc.newView())
-                    : new ChangeOp.CreateView(vc.newView()));
+        // views, each after the views it reads, then triggers (their bodies may use anything created above)
+        for (View view : inCreateOrder(newViewsToCreate)) {
+            ViewChange replace = replaced.stream().filter(vc -> vc.newView() == view).findFirst().orElse(null);
+            p.createView.add(replace != null ? new ChangeOp.ReplaceView(replace.oldView(), replace.newView())
+                    : new ChangeOp.CreateView(view));
         }
-        diff.viewsAdded().forEach(v -> p.createView.add(new ChangeOp.CreateView(v)));
         for (TableDiff td : diff.tablesChanged()) {
             td.triggersAdded().forEach(t -> p.createView.add(new ChangeOp.CreateTrigger(td.newTable(), t)));
         }
-        for (Table t : diff.tablesAdded()) {
+        for (Table t : created) {
             t.getTrigger().forEach(trg -> p.createView.add(new ChangeOp.CreateTrigger(t, trg)));
         }
 
@@ -248,23 +289,161 @@ public final class ChangePlannerImpl implements ChangePlanner {
     // helpers
 
     /**
-     * A view blocks dropping or retyping the columns it reads, so any such
-     * change in the plan keeps views on drop + create around it.
+     * The views of the old schema a change of a table reaches: a view blocks dropping, retyping or
+     * resizing the columns it reads and dropping the table, so those that read a table losing,
+     * retyping or resizing a column, or a table that goes, are dropped before and created again
+     * after, changed or not; and so are the views that read such a view. What a view reads is found
+     * as the DDL generator orders views: by {@code core::Dependency} where the model has them, else by
+     * the names in its query.
      */
-    private static boolean losesColumns(SchemaDiff diff) {
-        return !diff.tablesDropped().isEmpty() || diff.tablesChanged().stream()
-                .anyMatch(td -> !td.columnsDropped().isEmpty() || td.columnsChanged().stream()
-                        .anyMatch(cc -> cc.aspects().contains(ColumnChange.Aspect.TYPE)));
+    private static List<View> viewsReadingChangedTables(SchemaDiff diff) {
+        Set<NamedColumnSet> reached = Collections.newSetFromMap(new IdentityHashMap<>());
+        reached.addAll(diff.tablesDropped());
+        diff.tablesSplit().forEach(s -> reached.add(s.oldTable()));
+        diff.tablesMerged().forEach(m -> reached.addAll(m.oldTables()));
+        for (TableDiff td : diff.tablesChanged()) {
+            boolean narrowed = !td.columnsDropped().isEmpty() || td.columnsChanged().stream()
+                    .anyMatch(cc -> cc.aspects().contains(ColumnChange.Aspect.TYPE)
+                            || cc.aspects().contains(ColumnChange.Aspect.SIZE));
+            if (narrowed) {
+                reached.add(td.oldTable());
+            }
+        }
+        Set<View> touched = Collections.newSetFromMap(new IdentityHashMap<>());
+        List<View> views = Schemas.views(diff.oldSchema());
+        if (reached.isEmpty()) {
+            return List.of();
+        }
+        boolean grew = true;
+        while (grew) {
+            grew = false;
+            for (View view : views) {
+                if (!touched.contains(view) && !CreateOrder.reads(view, List.copyOf(reached)).isEmpty()) {
+                    touched.add(view);
+                    reached.add(view);
+                    grew = true;
+                }
+            }
+        }
+        // in the order of the model, so the same diff gives the same plan
+        return views.stream().filter(touched::contains).toList();
+    }
+
+    /** The view of {@code schema} with the name of {@code view}, exactly or else in another case. */
+    private static Optional<View> counterpart(View view, Schema schema) {
+        Optional<View> same = Schemas.findView(schema, view.getName());
+        if (same.isPresent()) {
+            return same;
+        }
+        return Schemas.views(schema).stream().filter(v -> v.getName() != null && v.getName().equalsIgnoreCase(
+                view.getName())).findFirst();
+    }
+
+    /** {@code views}, each after those of them it reads; in the order given where they read each other in a cycle. */
+    private static List<View> inCreateOrder(List<View> views) {
+        List<View> distinct = new ArrayList<>(new LinkedHashSet<>(views));
+        try {
+            return CreateOrder.views(distinct);
+        } catch (IllegalStateException cycle) {
+            return distinct;
+        }
+    }
+
+    /** {@code tables}, each after those of them it refers to; in the order given where they refer to each other in a cycle. */
+    private static List<Table> creationOrder(List<Table> tables) {
+        Map<Table, Set<Table>> needs = new LinkedHashMap<>();
+        for (Table table : tables) {
+            Set<Table> referenced = new LinkedHashSet<>();
+            for (ForeignKey fk : Tables.foreignKeys(table)) {
+                ForeignKeys.targetTable(fk).filter(t -> t != table && tables.contains(t)).ifPresent(referenced::add);
+            }
+            needs.put(table, referenced);
+        }
+        try {
+            return CreateOrder.ordered(needs, Cycle::new);
+        } catch (Cycle cycle) {
+            return tables;
+        }
+    }
+
+    /**
+     * {@code tables} in the order they can be dropped in: a table that refers to another of them
+     * before it. Where they refer to each other in a cycle, the foreign keys between the tables of the
+     * cycle are dropped first, added to {@code p}.
+     */
+    private static List<Table> droppingOrder(List<Table> tables, Set<ForeignKey> droppedFks, Phases p) {
+        Map<Table, Set<Table>> needs = new LinkedHashMap<>();
+        tables.forEach(t -> needs.put(t, new LinkedHashSet<>()));
+        Map<ForeignKey, Table[]> edges = new LinkedHashMap<>();
+        for (Table table : tables) {
+            for (ForeignKey fk : Tables.foreignKeys(table)) {
+                ForeignKeys.targetTable(fk).filter(t -> t != table && needs.containsKey(t)).ifPresent(target -> {
+                    needs.get(target).add(table);
+                    edges.put(fk, new Table[] { table, target });
+                });
+            }
+        }
+        while (true) {
+            try {
+                return CreateOrder.ordered(needs, Cycle::new);
+            } catch (Cycle cycle) {
+                Set<Object> onCycle = Collections.newSetFromMap(new IdentityHashMap<>());
+                onCycle.addAll(cycle.members);
+                int before = edges.size();
+                for (Map.Entry<ForeignKey, Table[]> edge : List.copyOf(edges.entrySet())) {
+                    Table from = edge.getValue()[0];
+                    Table to = edge.getValue()[1];
+                    if (onCycle.contains(from) && onCycle.contains(to)) {
+                        if (droppedFks.add(edge.getKey())) {
+                            p.dropFk.add(new ChangeOp.DropForeignKey(from, edge.getKey()));
+                        }
+                        edges.remove(edge.getKey());
+                        boolean stillReferenced = edges.values().stream()
+                                .anyMatch(e -> e[0] == from && e[1] == to);
+                        if (!stillReferenced) {
+                            needs.get(to).remove(from);
+                        }
+                    }
+                }
+                if (edges.size() == before) {
+                    return tables;
+                }
+            }
+        }
+    }
+
+    /** The tables the plan creates: added ones and those of splits and merges. */
+    private static List<Table> createdTables(SchemaDiff diff) {
+        List<Table> created = new ArrayList<>(diff.tablesAdded());
+        diff.tablesSplit().forEach(s -> created.addAll(s.newTables()));
+        diff.tablesMerged().forEach(m -> created.add(m.newTable()));
+        return created;
+    }
+
+    /** Elements that need each other in a cycle. */
+    private static final class Cycle extends RuntimeException {
+
+        private static final long serialVersionUID = 1L;
+
+        private final transient List<?> members;
+
+        Cycle(List<?> members) {
+            super(null, null, false, false);
+            this.members = members;
+        }
     }
 
     /**
      * {@code CREATE OR REPLACE VIEW} keeps grants and dependent views, but
      * PostgreSQL only accepts it when the old columns stay, same name, same
      * type, same position; new columns may only be appended. A view without
-     * modelled columns cannot be checked and is not replaced.
+     * modelled columns cannot be checked and is not replaced. A materialized
+     * view has no {@code OR REPLACE}, and a view becomes materialized or ceases
+     * to be only by being dropped and created again.
      */
-    private static boolean replaceable(ViewBodyChange vc) {
-        if (!Objects.equals(vc.oldView().getName(), vc.newView().getName())) {
+    private static boolean replaceable(ViewChange vc) {
+        if (!Objects.equals(vc.oldView().getName(), vc.newView().getName())
+                || RelationalRules.MATERIALIZED.test(vc.oldView()) || RelationalRules.MATERIALIZED.test(vc.newView())) {
             return false;
         }
         List<Column> oldCols = ColumnSets.columns(vc.oldView());
@@ -286,17 +465,13 @@ public final class ChangePlannerImpl implements ChangePlanner {
         return c.getType() == null ? null : c.getType().getName();
     }
 
-    /** All FKs in {@code schema} whose referenced unique key is {@code pk} (identity). */
-    private static List<ForeignKey> inboundForeignKeys(Schema schema, PrimaryKey pk) {
-        List<ForeignKey> out = new ArrayList<>();
-        for (Table t : Schemas.tables(schema)) {
-            for (ForeignKey fk : Tables.foreignKeys(t)) {
-                if (fk.getUniqueKey() == pk) {
-                    out.add(fk);
-                }
-            }
-        }
-        return out;
+    /**
+     * The foreign keys that refer to {@code pk}, in whatever schema of its model they lie: those
+     * {@code UniqueKey.keyRelationship} names.
+     */
+    private static List<ForeignKey> inboundForeignKeys(PrimaryKey pk) {
+        return pk.getKeyRelationship().stream().filter(ForeignKey.class::isInstance).map(ForeignKey.class::cast)
+                .filter(fk -> fk.getNamespace() instanceof Table).toList();
     }
 
     @Override
@@ -326,6 +501,10 @@ public final class ChangePlannerImpl implements ChangePlanner {
                     + " merged into " + m.newTable().getName()
                     + " — row data is not migrated automatically");
         }
+        diff.proceduresAdded().forEach(r -> out.add(QualifiedNames.of(r) + " added — routines are not migrated"));
+        diff.proceduresDropped().forEach(r -> out.add(QualifiedNames.of(r) + " dropped — routines are not migrated"));
+        diff.proceduresChanged().forEach(r -> out.add(QualifiedNames.of(r.oldProcedure())
+                + " changed — routines are not migrated"));
         return out;
     }
 

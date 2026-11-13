@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.sql.Types;
 import java.util.List;
 
+import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.BusinessinformationFactory;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Description;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
@@ -22,7 +23,6 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.cwm.resource.relational.diff.internal.MigrationEmitterImpl;
 import org.eclipse.daanse.cwm.resource.relational.diff.internal.SchemaDifferImpl;
@@ -112,7 +112,7 @@ class CommentDiffTest {
             return;
         }
         Description d = BusinessinformationFactory.eINSTANCE.createDescription();
-        d.setType(DdlSettings.COMMENT_TYPE_JDBC_REMARKS);
+        d.setType(Descriptions.JDBC_REMARKS);
         d.setBody(body);
         d.getModelElement().add(element);
         owner.getOwnedElement().add(d);

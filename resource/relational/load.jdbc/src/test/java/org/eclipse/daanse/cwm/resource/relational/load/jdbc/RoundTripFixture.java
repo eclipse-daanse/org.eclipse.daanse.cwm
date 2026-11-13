@@ -193,6 +193,7 @@ final class RoundTripFixture {
         for (Column c : cols) {
             SQLIndexColumn ic = RF.createSQLIndexColumn();
             ic.setFeature(c);
+            ic.setIsAscending(true);
             idx.getIndexedFeature().add(ic);
         }
         schema.getOwnedElement().add(idx);

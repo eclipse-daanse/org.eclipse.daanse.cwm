@@ -16,8 +16,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import org.eclipse.daanse.sql.jdbc.api.meta.IndexInfo;
+import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
 import org.eclipse.daanse.sql.jdbc.api.meta.StructureInfo;
+import org.eclipse.daanse.sql.model.schema.ColumnReference;
 import org.eclipse.daanse.sql.model.schema.SchemaReference;
 import org.eclipse.daanse.sql.jdbc.api.schema.TableDefinition;
 import org.eclipse.daanse.sql.model.schema.TableReference;
@@ -58,6 +62,50 @@ public final class SqlGenAssertions {
     public static void assertTableExists(StructureInfo si, String schema, String tableName, String type) {
         assertThat(tableNamesIn(si, schema, type)).as("tables in schema=%s of type=%s", schema, type)
                 .contains(tableName);
+    }
+
+    /**
+     * The keys, constraints and index of the fixture, as the snapshot reports them: names compared
+     * without regard to case, and constraint names not at all, as some databases rename them.
+     */
+    public static void assertKeysConstraintsAndIndex(MetaInfo info, String schema) {
+        StructureInfo si = info.structureInfo();
+        assertThat(si.primaryKeys()).as("primary keys").anySatisfy(pk -> {
+            assertThat(is(pk.table(), schema, "CUSTOMERS")).isTrue();
+            assertThat(names(pk.columns())).containsExactly("ID");
+        }).anySatisfy(pk -> {
+            assertThat(is(pk.table(), schema, "ORDERS")).isTrue();
+            assertThat(names(pk.columns())).containsExactly("ID");
+        });
+        assertThat(si.importedKeys()).as("foreign keys").anySatisfy(fk -> {
+            assertThat(is(fk.foreignKeyColumn(), schema, "ORDERS", "CUSTOMER_ID")).isTrue();
+            assertThat(is(fk.primaryKeyColumn(), schema, "CUSTOMERS", "ID")).isTrue();
+        });
+        assertThat(si.uniqueConstraints()).as("unique constraints").anySatisfy(uc -> {
+            assertThat(is(uc.table(), schema, "CUSTOMERS")).isTrue();
+            assertThat(names(uc.columns())).containsExactly("EMAIL");
+        });
+        assertThat(si.checkConstraints()).as("checks").anySatisfy(ck -> {
+            assertThat(is(ck.table(), schema, "CUSTOMERS")).isTrue();
+            assertThat(ck.checkClause()).containsIgnoringCase("ID");
+        });
+        assertThat(info.indexInfos()).as("indexes").filteredOn(ii -> is(ii.tableReference(), schema, "CUSTOMERS"))
+                .flatMap(IndexInfo::indexInfoItems)
+                .filteredOn(item -> item.indexName().filter("IDX_CUSTOMERS_NAME"::equalsIgnoreCase).isPresent())
+                .singleElement().satisfies(item -> assertThat(item.column()).map(ColumnReference::name)
+                        .hasValueSatisfying(name -> assertThat(name).isEqualToIgnoringCase("NAME")));
+    }
+
+    private static boolean is(TableReference table, String schema, String name) {
+        return table.name().equalsIgnoreCase(name) && matchesSchema(schema, table);
+    }
+
+    private static boolean is(ColumnReference column, String schema, String table, String name) {
+        return column.name().equalsIgnoreCase(name) && column.table().filter(t -> is(t, schema, table)).isPresent();
+    }
+
+    private static List<String> names(List<ColumnReference> columns) {
+        return columns.stream().map(c -> c.name().toUpperCase(Locale.ROOT)).toList();
     }
 
     private static boolean matchesType(String expected, String actual) {

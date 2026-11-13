@@ -11,10 +11,10 @@ package org.eclipse.daanse.cwm.resource.relational.ddl.internal.support;
 
 import java.sql.Types;
 
+import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.BusinessinformationFactory;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Description;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
 import org.eclipse.daanse.cwm.model.cwm.foundation.datatypes.DatatypesFactory;
 import org.eclipse.daanse.cwm.model.cwm.foundation.datatypes.QueryExpression;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.BooleanExpression;
@@ -106,6 +106,7 @@ public final class SqlGenFixture {
         idx.setSpannedClass(customers);
         SQLIndexColumn ifc = RF.createSQLIndexColumn();
         ifc.setFeature(cName);
+        ifc.setIsAscending(true);
         idx.getIndexedFeature().add(ifc);
         schema.getOwnedElement().add(idx);
 
@@ -181,7 +182,7 @@ public final class SqlGenFixture {
     /** Attaches {@code body} as the database comment of {@code element}. */
     public static void comment(Schema owner, ModelElement element, String body) {
         Description d = BusinessinformationFactory.eINSTANCE.createDescription();
-        d.setType(DdlSettings.COMMENT_TYPE_JDBC_REMARKS);
+        d.setType(Descriptions.JDBC_REMARKS);
         d.setBody(body);
         d.getModelElement().add(element);
         owner.getOwnedElement().add(d);

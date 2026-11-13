@@ -12,9 +12,9 @@
  *   Stefan Bischof (bipolis.org) - initial
  */
 /**
- * JDBC privileges &rarr; CWM privilege load API. A {@link PrivilegeLoader}
- * builds the common core of database grants (responsible parties owning table,
- * routine and role-membership privileges) from a JDBC metadata snapshot.
+ * JDBC privileges &rarr; CWM privilege load API. A {@link PrivilegeLoader} is
+ * the part of a catalog's load that adds the common core of database grants:
+ * responsible parties owning table, routine and role-membership privileges.
  */
 @org.osgi.annotation.bundle.Export
 @org.osgi.annotation.versioning.Version("0.0.1")

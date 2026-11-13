@@ -19,7 +19,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.daanse.cwm.resource.relational.diff.internal.support.MigrationVerifier;
@@ -34,7 +33,6 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ReferentialRuleType;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.Feature;
 import org.eclipse.daanse.sql.jdbc.api.DatabaseService;
 import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
 import org.eclipse.daanse.sql.jdbc.api.meta.StructureInfo;
@@ -100,11 +98,9 @@ class CwmDiffCompositeKeyPgTest {
         Schema newSchema = build(schemaName, 500); // widen NOTES.NOTE VARCHAR(200) -> (500)
 
         try {
-            executeAll(new DdlGeneratorFactoryImpl().create(dialect).createSchema(oldSchema,
-                    EnumSet.complementOf(EnumSet.of(Feature.TRIGGER))));
+            executeAll(new DdlGeneratorFactoryImpl().create(dialect).createSchema(oldSchema));
 
             // Composite PK + composite FK survive emit.
-            connection.setSchema(schemaName);
             MetaInfo before = DB_SERVICE.createMetaInfo(connection, new org.eclipse.daanse.sql.jdbc.metadata.PostgreSqlMetadataProvider());
             assertThat(MigrationVerifier.primaryKeyColumns(before.structureInfo(), schemaName, "ORDER_LINES"))
                     .containsExactly("ORDER_ID", "LINE_NO");

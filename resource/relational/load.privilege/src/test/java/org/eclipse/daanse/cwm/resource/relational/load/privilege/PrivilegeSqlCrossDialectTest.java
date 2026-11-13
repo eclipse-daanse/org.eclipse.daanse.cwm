@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.BusinessinformationFactory;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.ResponsibleParty;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Selection;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Catalog;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
@@ -30,6 +31,7 @@ import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.RolePri
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.TablePrivilege;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.TablePrivilegeAction;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.util.PrivilegeStereotypes;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlStatement;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.PrivilegeSqlGenerator;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.PrivilegeSqlGeneratorImpl;
 import org.eclipse.daanse.cwm.resource.relational.load.jdbc.api.JdbcToCwmConfig;
@@ -127,7 +129,7 @@ class PrivilegeSqlCrossDialectTest {
 
             // Katalog laden; Ziele referenzieren die geladenen CWM-Objekte.
             Catalog catalog = new CwmLoaderImpl().load(DB_SERVICE.createMetaInfo(connection),
-                    JdbcToCwmConfig.all());
+                    JdbcToCwmConfig.defaults());
             Table customers = (Table) find(catalog, db.schemaName, "customers");
 
             ResponsibleParty reader = party("xd_reader");
@@ -156,31 +158,29 @@ class PrivilegeSqlCrossDialectTest {
             PrivilegeSqlGenerator generator = new PrivilegeSqlGeneratorImpl(db.dialect.get());
 
             try (Statement s = connection.createStatement()) {
-                for (String sql : generator.createRoleStatements(List.of(reader, parent))) {
+                for (String sql : DdlStatement.sql(generator.createRoleStatements(List.of(reader, parent)))) {
                     s.execute(sql);
                 }
-                for (String sql : generator.grantStatements(privileges)) {
+                for (String sql : DdlStatement.sql(generator.grantStatements(privileges))) {
                     s.execute(sql);
                 }
             }
 
             if (db.metadataProvider.get() != null) {
                 MetaInfo info = DB_SERVICE.createMetaInfo(connection, db.metadataProvider.get());
-                var loaded = new PrivilegeLoaderImpl().load(info, catalog);
+                new PrivilegeLoaderImpl().load(info, catalog, Selection.all());
                 if (db.reloadMembershipsAndPrincipals) {
-                    ResponsibleParty loadedReader = loaded.parties().stream()
-                            .filter(p -> "xd_reader".equals(p.getName())).findFirst().orElseThrow();
+                    ResponsibleParty loadedReader = CatalogParties.named(catalog, "xd_reader");
                     assertThat(loadedReader.getOwnedElement().stream()
                             .filter(RolePrivilege.class::isInstance).map(RolePrivilege.class::cast)
                             .map(rp -> rp.getRole().getName()))
                             .contains("xd_parent");
-                    assertThat(PrivilegeStereotypes.databaseRoles(LoadedParties.holding(loaded)).stream()
+                    assertThat(PrivilegeStereotypes.databaseRoles(catalog).stream()
                             .map(ResponsibleParty::getName))
                             .contains("xd_reader", "xd_parent");
                 }
                 if (db.reloadTablePrivileges) {
-                    ResponsibleParty loadedReader = loaded.parties().stream()
-                            .filter(p -> "xd_reader".equals(p.getName())).findFirst().orElseThrow();
+                    ResponsibleParty loadedReader = CatalogParties.named(catalog, "xd_reader");
                     assertThat(loadedReader.getOwnedElement().stream()
                             .filter(TablePrivilege.class::isInstance).map(TablePrivilege.class::cast)
                             .filter(tp -> tp.getAction() == TablePrivilegeAction.SELECT)
@@ -191,10 +191,10 @@ class PrivilegeSqlCrossDialectTest {
 
             // Gegenprobe und Aufraeumen ueber den Generator.
             try (Statement s = connection.createStatement()) {
-                for (String sql : generator.revokeStatements(privileges)) {
+                for (String sql : DdlStatement.sql(generator.revokeStatements(privileges))) {
                     s.execute(sql);
                 }
-                for (String sql : generator.dropRoleStatements(List.of(reader, parent))) {
+                for (String sql : DdlStatement.sql(generator.dropRoleStatements(List.of(reader, parent)))) {
                     s.execute(sql);
                 }
             }

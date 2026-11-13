@@ -110,8 +110,23 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Test: round-trip the same CWM fixture against H2 (in-process),
-        PostgreSQL, MariaDB, SQL Server and Oracle via Testcontainers. -->
+    <!-- Test: read a database back into CWM, with its roles and privileges, to compare it with the
+        model its DDL came from. -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.resource.relational.load.jdbc</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.resource.relational.load.privilege</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Test: round-trip the same CWM fixture against H2 and DuckDB (in-process),
+        PostgreSQL, MariaDB, MySQL, SQL Server and Oracle via Testcontainers. -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.sql.jdbc.impl</artifactId>
@@ -142,6 +157,20 @@
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.jdbc.datasource.testkit.postgresql</artifactId>
       <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- DuckDB (in-process) -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.sql.dialect.db.duckdb</artifactId>
+      <version>${jdbc-db.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.duckdb</groupId>
+      <artifactId>duckdb_jdbc</artifactId>
+      <version>2.0.0.1</version>
       <scope>test</scope>
     </dependency>
 
@@ -187,6 +216,32 @@
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.jdbc.datasource.testkit.mariadb</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- MySQL -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.sql.dialect.db.mysql</artifactId>
+      <version>${jdbc-db.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <version>9.7.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>mysql</artifactId>
+      <version>1.21.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.jdbc.datasource.testkit.mysql</artifactId>
       <version>0.0.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>

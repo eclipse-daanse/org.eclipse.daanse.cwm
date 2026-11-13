@@ -13,9 +13,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.TaggedValues;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalRules;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.cwm.resource.relational.diff.internal.MigrationEmitterImpl;
@@ -67,6 +69,40 @@ class ViewReplaceTest {
         assertThat(emitter.emit(ops, new MicrosoftSqlServerDialect()))
                 .satisfiesExactly(s -> assertThat(s).startsWith("DROP VIEW"),
                         s -> assertThat(s).startsWith("CREATE VIEW"));
+    }
+
+    /**
+     * A view that becomes materialized is a difference of its own, and as neither has
+     * {@code OR REPLACE} for the other, the view is dropped and created again, materialized.
+     */
+    @Test
+    void aViewThatBecomesMaterializedIsDroppedAndCreatedAgain() {
+        Schema newSchema = view("ID", "EMAIL");
+        TaggedValues.set(Schemas.views(newSchema).get(0), RelationalRules.MATERIALIZED_TAG, "true");
+
+        SchemaDiff diff = differ.diff(view("ID", "EMAIL"), newSchema);
+        List<ChangeOp> ops = ChangePlanner.create().plan(diff);
+
+        assertThat(diff.lines()).containsExactly("view sales.CUSTOMER_V: materialized no left, yes right");
+        assertThat(ops).extracting(op -> op.getClass().getSimpleName()).containsExactly("DropView", "CreateView");
+        assertThat(new MigrationEmitterImpl(new DdlGeneratorFactoryImpl()).emit(ops, PG)).satisfiesExactly(
+                s -> assertThat(s).startsWith("DROP VIEW"), s -> assertThat(s).startsWith("CREATE MATERIALIZED VIEW"));
+    }
+
+    /** A materialized view with a new query has no {@code OR REPLACE} either. */
+    @Test
+    void aMaterializedViewWithANewQueryIsDroppedAndCreatedAgain() {
+        Schema oldSchema = view("ID", "EMAIL");
+        Schema newSchema = view("ID", "EMAIL", "NAME");
+        TaggedValues.set(Schemas.views(oldSchema).get(0), RelationalRules.MATERIALIZED_TAG, "true");
+        TaggedValues.set(Schemas.views(newSchema).get(0), RelationalRules.MATERIALIZED_TAG, "true");
+
+        List<ChangeOp> ops = plan(oldSchema, newSchema);
+
+        assertThat(ops).extracting(op -> op.getClass().getSimpleName()).containsExactly("DropView", "CreateView");
+        assertThat(new MigrationEmitterImpl(new DdlGeneratorFactoryImpl()).emit(ops, PG)).satisfiesExactly(
+                s -> assertThat(s).startsWith("DROP MATERIALIZED VIEW"),
+                s -> assertThat(s).startsWith("CREATE MATERIALIZED VIEW"));
     }
 
     private List<ChangeOp> plan(Schema oldSchema, Schema newSchema) {

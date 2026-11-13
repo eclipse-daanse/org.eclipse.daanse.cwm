@@ -13,10 +13,13 @@
  */
 /**
  * CWM &rarr; SQL DDL generation API. A {@link DdlGenerator} (obtained from a
- * {@link DdlGeneratorFactory}) emits ordered {@code CREATE}/{@code DROP}
- * statements for a CWM relational {@code Schema} via the jdbc.db dialect,
- * configured by {@link DdlSettings} and scoped per {@link Feature}.
- * {@link CwmSchemaMapper} is the pure element-to-record bridge it builds on.
+ * {@link DdlGeneratorFactory}) writes ordered {@code CREATE}/{@code DROP}
+ * statements for what CWM relational {@code Schema}s hold, via the jdbc.db
+ * dialect, configured by {@link DdlSettings}; a {@link PrivilegeSqlGenerator}
+ * writes the roles and grants. Each {@link DdlStatement} names the model
+ * element it is written for. What is written is chosen before, by cutting the
+ * model to a selection. {@link CwmSchemaMapper} is the pure element-to-record
+ * bridge it builds on.
  */
 @org.osgi.annotation.bundle.Export
 @org.osgi.annotation.versioning.Version("0.0.1")

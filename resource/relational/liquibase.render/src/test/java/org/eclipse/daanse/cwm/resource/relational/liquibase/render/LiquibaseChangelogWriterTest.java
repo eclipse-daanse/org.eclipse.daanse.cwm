@@ -13,13 +13,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.Types;
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.BusinessinformationFactory;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Description;
+import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CoreFactory;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ProcedureExpression;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.TaggedValues;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
@@ -27,11 +32,16 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ActionOrientationType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ConditionTimingType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.EventManipulationType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ReferentialRuleType;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ForeignKeys;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.PrimaryKeys;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalRules;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.MigrationEmitter;
@@ -198,6 +208,22 @@ class LiquibaseChangelogWriterTest {
         assertThat(snapshot.indexOf("CREATE TRIGGER")).isGreaterThan(snapshot.indexOf("<createTable"));
     }
 
+    /**
+     * Liquibase writes plain views only: a materialized view is written by the dialects that have
+     * them, a plain view where they have none.
+     */
+    @Test
+    void aMaterializedViewIsWrittenPerDialect() {
+        Table customer = customerTable();
+        View view = Views.create((Schema) customer.getNamespace(), "mv_customer", "SELECT id FROM sales.customer");
+        TaggedValues.set(view, RelationalRules.MATERIALIZED_TAG, "true");
+
+        String xml = writer.write(List.of(new ChangeOp.CreateView(view)));
+
+        assertThat(xml).doesNotContain("<createView").contains("<sql dbms=\"postgresql\" splitStatements=\"false\">"
+                + "CREATE MATERIALIZED VIEW").contains("CREATE VIEW");
+    }
+
     @Test
     void commentsBecomeRemarks() {
         Table customer = customerTable();
@@ -217,13 +243,39 @@ class LiquibaseChangelogWriterTest {
         Table customer = customerTable();
         Schema schema = (Schema) customer.getNamespace();
         Description d = BusinessinformationFactory.eINSTANCE.createDescription();
-        d.setType(DdlSettings.COMMENT_TYPE_JDBC_REMARKS);
+        d.setType(Descriptions.JDBC_REMARKS);
         d.setBody("customers");
         d.getModelElement().add(customer);
         schema.getOwnedElement().add(d);
 
         assertThat(new LiquibaseSnapshotWriter(EMITTER).write(schema))
                 .contains("<setTableRemarks schemaName=\"sales\" tableName=\"customer\" remarks=\"customers\"/>");
+    }
+
+    /**
+     * The rules of a foreign key are written in a Turkish default locale too, where {@code "i"}
+     * upper-cases to a dotted {@code "İ"} and {@code importedKeyRestrict} no longer holds
+     * {@code RESTRICT} once upper-cased.
+     */
+    @Test
+    void foreignKeyRulesAreWrittenInATurkishLocaleToo() {
+        Table customer = simpleTable("customer");
+        PrimaryKey key = PrimaryKeys.create(customer, "pk_customer", (Column) customer.getFeature().get(0));
+        Table orders = simpleTable("orders");
+        SQLSimpleType integer = (SQLSimpleType) ((Column) orders.getFeature().get(0)).getType();
+        Column customerId = column(orders, "customer_id", integer);
+        ForeignKey fk = ForeignKeys.create(orders, "fk_orders_customer", key, customerId);
+        fk.setDeleteRule(ReferentialRuleType.IMPORTED_KEY_RESTRICT);
+        fk.setUpdateRule(ReferentialRuleType.IMPORTED_KEY_NO_ACTION);
+        Locale before = Locale.getDefault();
+        Locale.setDefault(Locale.forLanguageTag("tr-TR"));
+        try {
+            String xml = writer.write(List.of(new ChangeOp.AddForeignKey(orders, fk)));
+
+            assertThat(xml).contains("onDelete=\"RESTRICT\"").contains("onUpdate=\"NO ACTION\"");
+        } finally {
+            Locale.setDefault(before);
+        }
     }
 
     // fixture

@@ -14,19 +14,21 @@ import static org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.Sq
 
 import java.sql.Connection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.Feature;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.TaggedValues;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndexColumn;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalRules;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlGenerator;
+import org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.DialectProfile;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.SqlGenAssertions;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.SqlGenFixture;
-import org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.DialectProfile;
 import org.eclipse.daanse.jdbc.datasource.testkit.api.ActiveDatabase;
+import org.eclipse.daanse.sql.dialect.api.Dialect;
 import org.eclipse.daanse.sql.jdbc.api.DatabaseService;
 import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
-import org.eclipse.daanse.sql.model.schema.TableReference;
-import org.eclipse.daanse.sql.dialect.api.Dialect;
 import org.eclipse.daanse.sql.jdbc.impl.DatabaseServiceImpl;
+import org.eclipse.daanse.sql.model.schema.TableReference;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -56,9 +58,8 @@ class RoundTripParameterizedTest {
         try (Connection c = db.dataSource().getConnection()) {
             Dialect dialect = db.dialect();
             SqlGenFixture f = SqlGenFixture.build(profile.schemaName(), dialect);
-            Set<Feature> features = profile.nonTriggerFeatures();
             try {
-                executeAll(c, new DdlGeneratorFactoryImpl().create(dialect).createSchema(f.schema, features));
+                executeAll(c, profile.create(dialect, f.schema));
 
                 profile.prepareForMetadata(c);
                 MetaInfo info = profile.snapshot(DB_SERVICE, c, dialect);
@@ -68,8 +69,9 @@ class RoundTripParameterizedTest {
                         TableReference.TYPE_TABLE);
                 SqlGenAssertions.assertTableExists(info.structureInfo(), profile.schemaName(), "CUSTOMER_ORDERS",
                         TableReference.TYPE_VIEW);
+                SqlGenAssertions.assertKeysConstraintsAndIndex(info, profile.schemaName());
             } finally {
-                profile.cleanup(c, f.schema, dialect, features);
+                profile.cleanup(c, f.schema, dialect);
             }
         }
     }
@@ -83,19 +85,17 @@ class RoundTripParameterizedTest {
             SqlGenFixture f = SqlGenFixture.build(profile.schemaName(), dialect);
             SqlGenFixture.comment(f.schema, f.customers, "all customers");
             SqlGenFixture.comment(f.schema, f.customers.getFeature().stream().filter(x -> "NAME".equals(x.getName())).findFirst().orElseThrow(), "it's the name");
-            Set<Feature> features = profile.nonTriggerFeatures();
             try {
-                List<String> ddl = new DdlGeneratorFactoryImpl().create(dialect).createSchema(f.schema, features);
-                executeAll(c, ddl);
+                executeAll(c, profile.create(dialect, f.schema));
             } finally {
-                profile.cleanup(c, f.schema, dialect, features);
+                profile.cleanup(c, f.schema, dialect);
             }
         }
     }
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("triggerDialects")
-    void shared_trigger_body_emits_one_procedure_for_two_triggers(DialectProfile profile) throws Exception {
+    void each_trigger_has_its_own_procedure_also_where_two_share_a_body(DialectProfile profile) throws Exception {
         ActiveDatabase db = activateOrSkip(profile);
         try (Connection c = db.dataSource().getConnection()) {
             Dialect dialect = db.dialect();
@@ -104,11 +104,11 @@ class RoundTripParameterizedTest {
                     profile.triggerEvent());
             f.attachTrigger(f.orders, "trg_audit_ord", profile.triggerBody(), profile.triggerTiming(),
                     profile.triggerEvent());
-            Set<Feature> features = profile.allFeatures();
             try {
-                List<String> ddl = new DdlGeneratorFactoryImpl().create(dialect).createSchema(f.schema, features);
+                List<String> ddl = profile.create(dialect, f.schema);
                 assertThat(ddl.stream().filter(s -> s.startsWith(profile.triggerProcPrefix())).count())
-                        .as("one shared procedure/function for two triggers with the same body").isEqualTo(1);
+                        .as("a procedure/function of its own for each trigger, so a drop of one leaves the other")
+                        .isEqualTo(2);
                 assertThat(ddl.stream().filter(s -> s.startsWith("CREATE TRIGGER")).count())
                         .as("two CREATE TRIGGER statements").isEqualTo(2);
                 if (profile.triggerCallSnippet() != null) {
@@ -118,9 +118,103 @@ class RoundTripParameterizedTest {
                 // Lands on a real engine.
                 executeAll(c, ddl);
             } finally {
-                profile.cleanup(c, f.schema, dialect, features);
+                profile.cleanup(c, f.schema, dialect);
             }
         }
+    }
+
+    /**
+     * Where the dialect writes materialized views, a view the model says is one is created as one, and
+     * the drop script drops it as one.
+     */
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("dialects")
+    void aMaterializedViewIsCreatedAndDroppedAsOneWhereTheDatabaseHasThem(DialectProfile profile) throws Exception {
+        ActiveDatabase db = activateOrSkip(profile);
+        Dialect dialect = db.dialect();
+        Assumptions.assumeTrue(dialect.ddlGenerator().supportsMaterializedViews(),
+                profile + " has no materialized views");
+        try (Connection c = db.dataSource().getConnection()) {
+            SqlGenFixture f = SqlGenFixture.build(profile.schemaName(), dialect);
+            TaggedValues.set(f.view, RelationalRules.MATERIALIZED_TAG, "true");
+            DdlGenerator generator = new DdlGeneratorFactoryImpl().create(dialect, profile.settings());
+            try {
+                executeAll(c, generator.createSchema(f.schema));
+                profile.prepareForMetadata(c);
+                assertThat(materializedViews(profile, dialect, c)).containsExactly("CUSTOMER_ORDERS");
+
+                executeAll(c, generator.dropSchema(f.schema));
+                assertThat(materializedViews(profile, dialect, c)).isEmpty();
+            } finally {
+                profile.cleanup(c, f.schema, dialect);
+            }
+        }
+    }
+
+    /**
+     * Where the dialect has partial indexes, an index over part of the rows is created with its
+     * filter, and the database reports the filter.
+     */
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("dialects")
+    void anIndexOverPartOfTheRowsKeepsItsFilterWhereTheDatabaseHasThem(DialectProfile profile) throws Exception {
+        ActiveDatabase db = activateOrSkip(profile);
+        Dialect dialect = db.dialect();
+        Assumptions.assumeTrue(dialect.ddlGenerator().supportsFilteredIndexes(), profile + " has no partial indexes");
+        try (Connection c = db.dataSource().getConnection()) {
+            SqlGenFixture f = SqlGenFixture.build(profile.schemaName(), dialect);
+            f.nameIndex.setFilterCondition(dialect.quoteIdentifier("NAME") + " IS NOT NULL");
+            try {
+                executeAll(c, new DdlGeneratorFactoryImpl().create(dialect, profile.settings().withStrict(true))
+                        .createSchema(f.schema));
+                profile.prepareForMetadata(c);
+                assertThat(profile.snapshot(DB_SERVICE, c, dialect).indexInfos().stream()
+                        .flatMap(ii -> ii.indexInfoItems().stream())
+                        .filter(item -> item.indexName().orElse("").equals("IDX_CUSTOMERS_NAME"))
+                        .map(item -> item.filterCondition().orElse("")))
+                        .as("the filter of the index").isNotEmpty().allMatch(filter -> filter.contains("NAME"));
+            } finally {
+                profile.cleanup(c, f.schema, dialect);
+            }
+        }
+    }
+
+    /**
+     * Where the dialect keeps the order of an index column, a descending column is created
+     * {@code DESC}, and the database reports it descending.
+     */
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("dialects")
+    void aDescendingIndexColumnKeepsItsOrderWhereTheDatabaseKeepsIt(DialectProfile profile) throws Exception {
+        ActiveDatabase db = activateOrSkip(profile);
+        Dialect dialect = db.dialect();
+        Assumptions.assumeTrue(dialect.ddlGenerator().supportsDescendingIndexColumns(),
+                profile + " keeps no order in an index");
+        try (Connection c = db.dataSource().getConnection()) {
+            SqlGenFixture f = SqlGenFixture.build(profile.schemaName(), dialect);
+            ((SQLIndexColumn) f.nameIndex.getIndexedFeature().get(0)).setIsAscending(false);
+            try {
+                executeAll(c, new DdlGeneratorFactoryImpl().create(dialect, profile.settings().withStrict(true))
+                        .createSchema(f.schema));
+                profile.prepareForMetadata(c);
+                assertThat(profile.snapshot(DB_SERVICE, c, dialect).indexInfos().stream()
+                        .flatMap(ii -> ii.indexInfoItems().stream())
+                        .filter(item -> item.indexName().orElse("").equals("IDX_CUSTOMERS_NAME"))
+                        .map(item -> item.ascending().orElse(true)))
+                        .as("the order of the index column").containsExactly(false);
+            } finally {
+                profile.cleanup(c, f.schema, dialect);
+            }
+        }
+    }
+
+    /** The names of the materialized views of the test's schema. */
+    private static List<String> materializedViews(DialectProfile profile, Dialect dialect, Connection c)
+            throws Exception {
+        return profile.snapshot(DB_SERVICE, c, dialect).structureInfo().materializedViews().stream()
+                .map(mv -> mv.view()).filter(v -> v.schema().map(s -> s.name()).orElse("")
+                        .equalsIgnoreCase(profile.schemaName()))
+                .map(TableReference::name).toList();
     }
 
     private static ActiveDatabase activateOrSkip(DialectProfile profile) {

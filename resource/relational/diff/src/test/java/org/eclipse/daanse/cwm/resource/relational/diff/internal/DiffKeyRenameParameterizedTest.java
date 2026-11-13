@@ -18,11 +18,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.Feature;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.DialectProfile;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
@@ -43,8 +41,9 @@ import org.junit.jupiter.params.provider.MethodSource;
  */
 class DiffKeyRenameParameterizedTest {
 
+    /** A constraint is renamed by dropping it and adding it again, which needs ALTER TABLE for it. */
     static Stream<DialectProfile> dialects() {
-        return Stream.of(DialectProfile.values());
+        return Stream.of(DialectProfile.values()).filter(DialectProfile::altersConstraints);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -57,9 +56,8 @@ class DiffKeyRenameParameterizedTest {
             String check = dialect.quoteIdentifier("ID") + " > 0";
             Schema oldSchema = KeyRenameFixtures.build(schemaName, "", check);
             Schema newSchema = KeyRenameFixtures.build(schemaName, "_V2", check);
-            Set<Feature> features = profile.nonTriggerFeatures();
             try {
-                executeAll(c, new DdlGeneratorFactoryImpl().create(dialect).createSchema(oldSchema, features));
+                executeAll(c, profile.create(dialect, oldSchema));
 
                 SchemaDiff diff = new SchemaDifferImpl().diff(oldSchema, newSchema);
                 List<ChangeOp> ops = ChangePlanner.create().plan(diff);
@@ -70,7 +68,7 @@ class DiffKeyRenameParameterizedTest {
                 List<String> indexes = indexNames(c, profile, "CUSTOMERS");
                 assertThat(indexes).contains("IX_CUSTOMERS_NAME_V2").doesNotContain("IX_CUSTOMERS_NAME");
             } finally {
-                profile.cleanup(c, newSchema, dialect, features);
+                profile.cleanup(c, newSchema, dialect);
             }
         }
     }
@@ -78,7 +76,7 @@ class DiffKeyRenameParameterizedTest {
     private static List<String> indexNames(Connection c, DialectProfile profile, String table)
             throws SQLException {
         DatabaseMetaData md = c.getMetaData();
-        boolean catalogScoped = profile == DialectProfile.MARIADB;
+        boolean catalogScoped = profile.schemasAreCatalogs();
         String catalog = catalogScoped ? profile.schemaName() : null;
         String schema = catalogScoped ? null : profile.schemaName();
         List<String> out = new ArrayList<>();

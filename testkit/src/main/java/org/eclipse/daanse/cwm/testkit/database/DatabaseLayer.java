@@ -18,7 +18,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,10 +27,14 @@ import java.util.concurrent.Semaphore;
 import javax.sql.DataSource;
 
 import org.eclipse.daanse.cwm.testkit.DbTiming;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Selection;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Selections;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalRules;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlGeneratorFactory;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.Feature;
-import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlStatement;
 import org.eclipse.daanse.sql.dialect.api.Dialect;
 
 /**
@@ -44,39 +47,36 @@ public final class DatabaseLayer {
     }
 
     /**
-     * Creates the full schema (all features).
+     * Creates the full schema.
      */
     public static void apply(DataSource dataSource, Dialect dialect, Schema schema) throws SQLException {
-        apply(dataSource, dialect, schema, Feature.ALL);
+        apply(dataSource, dialect, schema, Selection.all(), DdlSettings.defaults());
     }
 
     /**
-     * Creates only the listed features, e.g. {@code SCHEMA, TABLE,
-     * PRIMARY_KEY} to skip indexes or foreign keys.
+     * Creates the part of the schema {@code selection} chooses, e.g. without
+     * {@code is:index} and {@code is:foreignKey} to load the data before them,
+     * with explicit {@link DdlSettings}, e.g. to drop schema qualification for
+     * connection-scoped databases. The schema is cut as a copy; the model is
+     * not touched.
      */
-    public static void apply(DataSource dataSource, Dialect dialect, Schema schema, Set<Feature> features)
-            throws SQLException {
-        apply(dataSource, dialect, schema, features, DdlSettings.defaults());
-    }
-
-    /**
-     * Creates the listed features with explicit {@link DdlSettings}, e.g. to drop
-     * schema qualification for connection-scoped databases.
-     */
-    public static void apply(DataSource dataSource, Dialect dialect, Schema schema, Set<Feature> features,
+    public static void apply(DataSource dataSource, Dialect dialect, Schema schema, Selection selection,
             DdlSettings settings) throws SQLException {
         DdlGeneratorFactory factory = ServiceLoader.load(DdlGeneratorFactory.class).findFirst()
                 .orElseThrow(() -> new IllegalStateException(
                         "No DdlGeneratorFactory on the classpath — add org.eclipse.daanse.cwm.resource.relational.ddl"));
-        List<String> ddl = factory.create(dialect, settings).createSchema(schema, features);
+        Schema part = selection.includes().isEmpty() && selection.excludes().isEmpty() ? schema
+                : Selections.copy(schema, selection, RelationalRules.CONSEQUENCES).model();
+        List<DdlStatement> ddl = factory.create(dialect, settings).create(List.of(part));
         if (ddl.isEmpty()) {
             return;
         }
         long t = System.nanoTime();
-        execute(dataSource, dialect, ddl);
+        execute(dataSource, dialect, DdlStatement.sql(ddl));
         // Two calls are the normal shape - tables before the data, keys and
         // indexes after it - so the phase says which of the two this was.
-        DbTiming.log(dialect, features.contains(Feature.TABLE) ? "ddl" : "index", t, "statements:" + ddl.size());
+        boolean tables = ddl.stream().anyMatch(s -> s.element() instanceof Table);
+        DbTiming.log(dialect, tables ? "ddl" : "index", t, "statements:" + ddl.size());
     }
 
     /**

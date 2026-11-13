@@ -24,10 +24,11 @@ import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.Procedu
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.RolePrivilege;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.TablePrivilege;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.TablePrivilegeAction;
-import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Selection;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.TaggedValues;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalNames;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.util.PrivilegeModelValidator;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.util.PrivilegeStereotypes;
-import org.eclipse.daanse.cwm.resource.relational.load.privilege.api.PrivilegeLoadResult;
 import org.eclipse.daanse.cwm.resource.relational.load.privilege.internal.PrivilegeLoaderImpl;
 import org.eclipse.daanse.sql.jdbc.api.meta.DatabaseInfo;
 import org.eclipse.daanse.sql.jdbc.api.meta.IdentifierInfo;
@@ -101,9 +102,8 @@ class PrivilegeLoaderImplTest {
                 // MySQL-Fall: strukturell nicht unterscheidbar -> kein Stereotype.
                 new DatabasePrincipalRecord("mystery", DatabasePrincipal.KIND_UNKNOWN));
 
-        PrivilegeLoadResult result = new PrivilegeLoaderImpl().load(
+        List<ResponsibleParty> parties = load(
                 metaInfo(tablePrivileges, columnPrivileges, objectPrivileges, memberships, principals), catalog);
-        List<ResponsibleParty> parties = result.parties();
 
         // Parties: die Principals (inkl. unprivilegierter Rolle), PUBLIC und die nur aus
         // Grant-Zeilen bekannte Rolle readonly; "intern" hatte nur die uebersprungene
@@ -115,8 +115,11 @@ class PrivilegeLoaderImplTest {
                 .filter(p -> "app_reader".equals(p.getName())).findFirst().orElseThrow();
         assertThat(appReader.getResponsibility()).isEqualTo(PrivilegeLoaderImpl.RESPONSIBILITY_DATABASE_ROLE);
 
-        // Stereotype-Marker: Entscheidungen laufen ueber sie, nicht ueber responsibility.
-        Package loaded = LoadedParties.holding(result);
+        // Stereotype-Marker: Entscheidungen laufen ueber sie, nicht ueber responsibility. Der Katalog
+        // haelt Parties und Marker, die Marker vor den Parties.
+        Catalog loaded = catalog;
+        assertThat(catalog.getOwnedElement()).extracting(e -> e.eClass().getName()).containsSubsequence(
+                "Schema", "Stereotype", "Stereotype", "ResponsibleParty");
         assertThat(PrivilegeStereotypes.databaseRoles(loaded).stream().map(ResponsibleParty::getName))
                 .containsExactlyInAnyOrder("app_reader", "unused_role");
         assertThat(PrivilegeStereotypes.databaseUsers(loaded).stream().map(ResponsibleParty::getName))
@@ -187,6 +190,84 @@ class PrivilegeLoaderImplTest {
         assertThat(PrivilegeModelValidator.validateAll(parties)).isEmpty();
     }
 
+    @Test
+    void rowsWithoutGranteeOrPrivilegeAreSkipped() {
+        Catalog catalog = cwmCatalog();
+        ColumnReference email = new ColumnReference(Optional.of(CUSTOMERS), "email");
+        List<org.eclipse.daanse.sql.jdbc.api.schema.TablePrivilege> tablePrivileges = List.of(
+                new TablePrivilegeRecord(CUSTOMERS, Optional.empty(), null, "SELECT", Optional.empty()),
+                new TablePrivilegeRecord(CUSTOMERS, Optional.empty(), "app_reader", null, Optional.empty()),
+                new TablePrivilegeRecord(CUSTOMERS, Optional.empty(), "app_reader", "SELECT", Optional.empty()));
+        List<ColumnPrivilege> columnPrivileges = List.of(
+                new ColumnPrivilegeRecord(email, Optional.empty(), null, "UPDATE", Optional.empty()),
+                new ColumnPrivilegeRecord(email, Optional.empty(), "app_reader", null, Optional.empty()));
+        List<ObjectPrivilege> objectPrivileges = List.of(
+                new ObjectPrivilegeRecord("FUNCTION", Optional.empty(), Optional.of("public"), "fn_answer",
+                        Optional.empty(), null, "EXECUTE", Optional.empty()),
+                new ObjectPrivilegeRecord("FUNCTION", Optional.empty(), Optional.of("public"), "fn_answer",
+                        Optional.empty(), "app_reader", null, Optional.empty()),
+                new ObjectPrivilegeRecord("FUNCTION", Optional.empty(), Optional.of("public"), null,
+                        Optional.empty(), "app_reader", "EXECUTE", Optional.empty()));
+        List<RoleMembership> memberships = List.of(
+                new RoleMembershipRecord(null, "readonly", Optional.empty(), Optional.empty()),
+                new RoleMembershipRecord("app_reader", null, Optional.empty(), Optional.empty()));
+        List<DatabasePrincipal> principals = List.of(new DatabasePrincipalRecord(null, DatabasePrincipal.KIND_ROLE),
+                new DatabasePrincipalRecord("app_reader", DatabasePrincipal.KIND_ROLE));
+
+        List<ResponsibleParty> parties = load(
+                metaInfo(tablePrivileges, columnPrivileges, objectPrivileges, memberships, principals), catalog);
+
+        assertThat(parties).extracting(ResponsibleParty::getName).containsExactly("app_reader");
+        assertThat(parties.get(0).getOwnedElement()).singleElement()
+                .isInstanceOfSatisfying(TablePrivilege.class,
+                        p -> assertThat(p.getAction()).isEqualTo(TablePrivilegeAction.SELECT));
+    }
+
+    /**
+     * PostgreSQL names the overload a routine privilege is on by its specific name, the name and the
+     * oid; the loader keeps it on the routine. Each row reaches its overload, whatever their order,
+     * with its own grant option; a row on one of two overloads reaches that one only.
+     */
+    @Test
+    void eachRowReachesTheOverloadItsSpecificNameNames() {
+        Catalog catalog = cwmCatalog();
+        Procedure first = fnAnswer(catalog);
+        TaggedValues.set(first, RelationalNames.SPECIFIC_NAME_TAG, "fn_answer_101");
+        Procedure second = overload(first);
+        TaggedValues.set(second, RelationalNames.SPECIFIC_NAME_TAG, "fn_answer_102");
+
+        List<ResponsibleParty> parties = load(metaInfo(List.of(), List.of(),
+                List.of(execute("app_writer", "fn_answer_102", "YES"), execute("app_reader", "fn_answer_102", "NO"),
+                        execute("app_writer", "fn_answer_101", "NO")),
+                List.of(), List.of()), catalog);
+
+        assertThat(privileges(parties, "app_reader")).extracting(ProcedurePrivilege::getProcedure)
+                .containsExactly(second);
+        assertThat(privileges(parties, "app_writer"))
+                .extracting(p -> p.getProcedure() == first ? "first " + p.getGrantable() : "second " + p.getGrantable())
+                .containsExactlyInAnyOrder("first false", "second true");
+    }
+
+    /**
+     * A row that names no overload by its specific name reaches the routine of its name where the
+     * schema holds one, and is left out where it holds several, rather than given to an arbitrary one.
+     */
+    @Test
+    void aRowWithoutTheSpecificNameOfAnOverloadIsNotGivenToAnArbitraryOne() {
+        Catalog catalog = cwmCatalog();
+        Procedure first = fnAnswer(catalog);
+        ObjectPrivilege byName = new ObjectPrivilegeRecord("FUNCTION", Optional.empty(), Optional.of("public"),
+                "fn_answer", Optional.empty(), "app_reader", "EXECUTE", Optional.empty());
+
+        assertThat(privileges(load(metaInfo(List.of(), List.of(), List.of(byName), List.of(), List.of()), catalog),
+                "app_reader")).extracting(ProcedurePrivilege::getProcedure).containsExactly(first);
+
+        Catalog withOverloads = cwmCatalog();
+        overload(fnAnswer(withOverloads));
+        assertThat(load(metaInfo(List.of(), List.of(), List.of(byName, execute("app_reader", "fn_answer_9", "NO")),
+                List.of(), List.of()), withOverloads)).allSatisfy(p -> assertThat(p.getOwnedElement()).isEmpty());
+    }
+
     // ------------------------------------------------------------------
     // Hilfen
     // ------------------------------------------------------------------
@@ -210,6 +291,38 @@ class PrivilegeLoaderImplTest {
         fnAnswer.setName("fn_answer");
         schema.getOwnedElement().add(fnAnswer);
         return catalog;
+    }
+
+    /** Loads the privileges of {@code info} into {@code catalog}, all of them, and gives its parties. */
+    private static List<ResponsibleParty> load(MetaInfo info, Catalog catalog) {
+        new PrivilegeLoaderImpl().load(info, catalog, Selection.all());
+        return CatalogParties.of(catalog);
+    }
+
+    private static Procedure fnAnswer(Catalog catalog) {
+        return (Procedure) catalog.getOwnedElement().stream().filter(Schema.class::isInstance)
+                .map(Schema.class::cast).findFirst().orElseThrow().getOwnedElement().stream()
+                .filter(Procedure.class::isInstance).findFirst().orElseThrow();
+    }
+
+    /** {@code EXECUTE} on the overload of {@code public.fn_answer} with the specific name {@code specificName}. */
+    private static ObjectPrivilege execute(String grantee, String specificName, String grantable) {
+        return new ObjectPrivilegeRecord("FUNCTION", Optional.empty(), Optional.of("public"), "fn_answer",
+                Optional.empty(), grantee, "EXECUTE", Optional.of(grantable), specificName);
+    }
+
+    /** The routine privileges of the party {@code name}. */
+    private static List<ProcedurePrivilege> privileges(List<ResponsibleParty> parties, String name) {
+        return parties.stream().filter(p -> name.equals(p.getName())).findFirst().orElseThrow().getOwnedElement()
+                .stream().map(ProcedurePrivilege.class::cast).toList();
+    }
+
+    /** A second routine of the same name next to {@code procedure}, as an overload with other parameters. */
+    private static Procedure overload(Procedure procedure) {
+        Procedure overload = RelationalFactory.eINSTANCE.createProcedure();
+        overload.setName(procedure.getName());
+        ((Schema) procedure.getNamespace()).getOwnedElement().add(overload);
+        return overload;
     }
 
     private static MetaInfo metaInfo(List<org.eclipse.daanse.sql.jdbc.api.schema.TablePrivilege> tablePrivileges,

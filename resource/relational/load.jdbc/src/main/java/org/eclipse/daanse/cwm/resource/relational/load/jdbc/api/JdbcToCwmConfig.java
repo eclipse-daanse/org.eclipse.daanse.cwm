@@ -13,175 +13,48 @@
  */
 package org.eclipse.daanse.cwm.resource.relational.load.jdbc.api;
 
-import java.util.Set;
-import java.util.function.BiPredicate;
+import java.util.Objects;
+
+import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Selection;
 
 /**
- * Filters and toggles for {@link CwmLoader}. Use {@link #all()} to import
- * every schema and table, or build via {@link Builder} to scope the load.
+ * What a {@link CwmLoader} reads and how it names it. Never changes; start from
+ * {@link #defaults()} and derive with the {@code with} methods.
+ *
+ * @param catalogName the name of the catalog; {@code null} or blank: the name of the database product
+ * @param selection   what is read, as {@link Selection} decides it on the catalog read: rules on schemas,
+ *                    tables and views, on kinds such as indexes or privileges, on tagged values. Write rule
+ *                    texts in the vocabulary of the model read, such as {@code RelationalRules.VOCABULARY}
+ * @param commentType the {@code type} of the descriptions the comments of the database are read into
  */
-public final class JdbcToCwmConfig {
+public record JdbcToCwmConfig(String catalogName, Selection selection, String commentType) {
 
-    private final String catalogName;
-    private final Set<String> schemaFilter;
-    private final BiPredicate<String, String> tableFilter;
-    private final boolean includeViews;
-    private final boolean includeIndexes;
-    private final boolean includeForeignKeys;
-    private final boolean includeUniqueConstraints;
-    private final boolean includeCheckConstraints;
-    private final boolean includeTriggers;
-    private final boolean includeProcedures;
-    private final boolean includeMaterializedViews;
-
-    private JdbcToCwmConfig(Builder b) {
-        this.catalogName = b.catalogName;
-        this.schemaFilter = Set.copyOf(b.schemaFilter);
-        this.tableFilter = b.tableFilter;
-        this.includeViews = b.includeViews;
-        this.includeIndexes = b.includeIndexes;
-        this.includeForeignKeys = b.includeForeignKeys;
-        this.includeUniqueConstraints = b.includeUniqueConstraints;
-        this.includeCheckConstraints = b.includeCheckConstraints;
-        this.includeTriggers = b.includeTriggers;
-        this.includeProcedures = b.includeProcedures;
-        this.includeMaterializedViews = b.includeMaterializedViews;
+    public JdbcToCwmConfig {
+        Objects.requireNonNull(selection, "selection");
+        Objects.requireNonNull(commentType, "commentType");
+        if (commentType.isBlank()) {
+            throw new IllegalArgumentException("commentType must not be blank; leave comments out with !is:comment");
+        }
     }
 
-    /** {@code null} (default) lets the loader pick the database name. */
-    public String catalogName() {
-        return catalogName;
+    /**
+     * The name of the database, everything, the comments as
+     * {@link Descriptions#JDBC_REMARKS}.
+     */
+    public static JdbcToCwmConfig defaults() {
+        return new JdbcToCwmConfig(null, Selection.all(), Descriptions.JDBC_REMARKS);
     }
 
-    /** Empty (default) means "every schema the snapshot reports". */
-    public Set<String> schemaFilter() {
-        return schemaFilter;
+    public JdbcToCwmConfig withCatalogName(String name) {
+        return new JdbcToCwmConfig(name, selection, commentType);
     }
 
-    /** Default accepts everything that survives the schema filter. */
-    public BiPredicate<String, String> tableFilter() {
-        return tableFilter;
+    public JdbcToCwmConfig withSelection(Selection value) {
+        return new JdbcToCwmConfig(catalogName, value, commentType);
     }
 
-    public boolean includeViews() {
-        return includeViews;
-    }
-
-    public boolean includeIndexes() {
-        return includeIndexes;
-    }
-
-    public boolean includeForeignKeys() {
-        return includeForeignKeys;
-    }
-
-    public boolean includeUniqueConstraints() {
-        return includeUniqueConstraints;
-    }
-
-    public boolean includeCheckConstraints() {
-        return includeCheckConstraints;
-    }
-
-    public boolean includeTriggers() {
-        return includeTriggers;
-    }
-
-    public boolean includeProcedures() {
-        return includeProcedures;
-    }
-
-    public boolean includeMaterializedViews() {
-        return includeMaterializedViews;
-    }
-
-    /** Import everything. */
-    public static JdbcToCwmConfig all() {
-        return new Builder().build();
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static final class Builder {
-        private String catalogName;
-        private Set<String> schemaFilter = Set.of();
-        private BiPredicate<String, String> tableFilter = (s, t) -> true;
-        private boolean includeViews = true;
-        private boolean includeIndexes = true;
-        private boolean includeForeignKeys = true;
-        private boolean includeUniqueConstraints = true;
-        private boolean includeCheckConstraints = true;
-        private boolean includeTriggers = true;
-        private boolean includeProcedures = true;
-        private boolean includeMaterializedViews = true;
-
-        private Builder() {
-        }
-
-        public Builder catalogName(String name) {
-            this.catalogName = name;
-            return this;
-        }
-
-        public Builder schemaFilter(Set<String> schemas) {
-            this.schemaFilter = schemas == null ? Set.of() : Set.copyOf(schemas);
-            return this;
-        }
-
-        public Builder schemas(String... schemas) {
-            this.schemaFilter = Set.of(schemas);
-            return this;
-        }
-
-        public Builder tableFilter(BiPredicate<String, String> filter) {
-            this.tableFilter = filter == null ? (s, t) -> true : filter;
-            return this;
-        }
-
-        public Builder includeViews(boolean include) {
-            this.includeViews = include;
-            return this;
-        }
-
-        public Builder includeIndexes(boolean include) {
-            this.includeIndexes = include;
-            return this;
-        }
-
-        public Builder includeForeignKeys(boolean include) {
-            this.includeForeignKeys = include;
-            return this;
-        }
-
-        public Builder includeUniqueConstraints(boolean include) {
-            this.includeUniqueConstraints = include;
-            return this;
-        }
-
-        public Builder includeCheckConstraints(boolean include) {
-            this.includeCheckConstraints = include;
-            return this;
-        }
-
-        public Builder includeTriggers(boolean include) {
-            this.includeTriggers = include;
-            return this;
-        }
-
-        public Builder includeProcedures(boolean include) {
-            this.includeProcedures = include;
-            return this;
-        }
-
-        public Builder includeMaterializedViews(boolean include) {
-            this.includeMaterializedViews = include;
-            return this;
-        }
-
-        public JdbcToCwmConfig build() {
-            return new JdbcToCwmConfig(this);
-        }
+    public JdbcToCwmConfig withCommentType(String type) {
+        return new JdbcToCwmConfig(catalogName, selection, type);
     }
 }

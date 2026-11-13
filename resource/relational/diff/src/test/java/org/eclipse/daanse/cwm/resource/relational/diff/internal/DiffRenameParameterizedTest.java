@@ -21,11 +21,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.Feature;
 import org.eclipse.daanse.cwm.resource.relational.diff.internal.support.RenameFixtures;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.DialectProfile;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
@@ -57,14 +55,13 @@ class DiffRenameParameterizedTest {
             String schemaName = profile.schemaName();
             Schema oldSchema = RenameFixtures.build(schemaName, "NAME");
             Schema newSchema = RenameFixtures.build(schemaName, "FULL_NAME");
-            Set<Feature> features = profile.nonTriggerFeatures();
 
             String custQ = dialect.quoteIdentifier(schemaName, "CUSTOMERS").toString();
             String idQ = dialect.quoteIdentifier("ID").toString();
             String nameQ = dialect.quoteIdentifier("NAME").toString();
             String fullQ = dialect.quoteIdentifier("FULL_NAME").toString();
             try {
-                executeAll(c, new DdlGeneratorFactoryImpl().create(dialect).createSchema(oldSchema, features));
+                executeAll(c, profile.create(dialect, oldSchema));
 
                 // Seed a row under the OLD column name.
                 try (PreparedStatement ps = c
@@ -95,7 +92,7 @@ class DiffRenameParameterizedTest {
                     assertThat(rs.getString(1)).isEqualTo("Alice");
                 }
             } finally {
-                profile.cleanup(c, newSchema, dialect, features);
+                profile.cleanup(c, newSchema, dialect);
             }
         }
     }

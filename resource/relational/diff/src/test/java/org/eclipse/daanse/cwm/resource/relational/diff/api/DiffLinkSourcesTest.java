@@ -12,6 +12,7 @@ package org.eclipse.daanse.cwm.resource.relational.diff.api;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.Types;
+import java.util.Set;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
@@ -74,7 +75,7 @@ class DiffLinkSourcesTest {
         ChangeMarkers.markRenamedFrom(table(newS, "kunde"), "customer");
 
         SchemaDiff diff = differ.diff(oldS, newS,
-                new DiffSettings(false, false, false, DiffSettings.Scope.FULL, null));
+                new DiffSettings(false, false, false, DiffSettings.Scope.FULL, null, Set.of()));
 
         assertThat(diff.tablesRenamed()).isEmpty();
         assertThat(diff.tablesDropped()).hasSize(1);

@@ -85,6 +85,14 @@
       <scope>compile</scope>
     </dependency>
 
+    <!-- Test: snapshots built from records, without a database. -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.sql.jdbc.record</artifactId>
+      <version>${jdbc-db.version}</version>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Test: generate DDL (ddl module), apply it, then load it back and
         compare — against PostgreSQL and Oracle via Testcontainers. -->
     <dependency>

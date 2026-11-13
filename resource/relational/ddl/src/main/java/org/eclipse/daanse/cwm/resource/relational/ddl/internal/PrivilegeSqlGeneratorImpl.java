@@ -19,6 +19,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.ResponsibleParty;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.Parameter;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.ParameterDirectionKind;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Namespace;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Procedure;
@@ -27,7 +29,11 @@ import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.Privile
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.ProcedurePrivilege;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.RolePrivilege;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.TablePrivilege;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlStatement;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.PrivilegeSqlGenerator;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.Unwritable;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.Unwritables;
 import org.eclipse.daanse.sql.dialect.api.Dialect;
 import org.osgi.service.component.annotations.Component;
 
@@ -36,20 +42,39 @@ import org.osgi.service.component.annotations.Component;
  * onto the dialect's grant rendering ({@code dialect.ddlGenerator()}). Table
  * targets are derived via the structural {@link DdlGeneratorImpl}
  * ({@code tableReference} — schema and TABLE/VIEW type from the namespace
- * chain); procedure targets take their schema from {@code getNamespace()} and
- * the FUNCTION/PROCEDURE keyword from {@code Procedure.getType()}.
+ * chain, the schema written as {@link DdlSettings#includeSchema()} says);
+ * procedure targets take their schema from {@code getNamespace()}, likewise,
+ * and the FUNCTION/PROCEDURE keyword from {@code Procedure.getType()}.
+ *
+ * <p>
+ * A routine is named by its name alone, as every dialect takes it. Where the
+ * model holds overloads of it — another procedure of the same name in the same
+ * schema — the name alone is ambiguous, and only a dialect that has overloads
+ * can hold them: there the types of its parameters follow the name,
+ * {@code "s"."f"(integer, OUT text)}, as PostgreSQL wants them. The return
+ * value is no parameter there; an {@code OUT} or {@code INOUT} parameter says
+ * so.
+ * </p>
  */
 public final class PrivilegeSqlGeneratorImpl implements PrivilegeSqlGenerator {
 
+    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PrivilegeSqlGeneratorImpl.class);
+
     private final Dialect dialect;
+    private final DdlSettings settings;
     private final DdlGeneratorImpl structural;
 
     public PrivilegeSqlGeneratorImpl(Dialect dialect) {
+        this(dialect, DdlSettings.defaults());
+    }
+
+    public PrivilegeSqlGeneratorImpl(Dialect dialect, DdlSettings settings) {
         if (dialect == null) {
             throw new IllegalArgumentException("dialect must not be null");
         }
         this.dialect = dialect;
-        this.structural = new DdlGeneratorImpl(dialect);
+        this.settings = settings == null ? DdlSettings.defaults() : settings;
+        this.structural = new DdlGeneratorImpl(dialect, this.settings);
     }
 
     /** Default {@code PrivilegeSqlGeneratorFactory}. */
@@ -61,23 +86,28 @@ public final class PrivilegeSqlGeneratorImpl implements PrivilegeSqlGenerator {
         public PrivilegeSqlGenerator create(Dialect dialect) {
             return new PrivilegeSqlGeneratorImpl(dialect);
         }
+
+        @Override
+        public PrivilegeSqlGenerator create(Dialect dialect, DdlSettings settings) {
+            return new PrivilegeSqlGeneratorImpl(dialect, settings);
+        }
     }
 
     @Override
-    public List<String> grantStatements(List<? extends Privilege> privileges) {
-        List<String> out = new ArrayList<>();
+    public List<DdlStatement> grantStatements(List<? extends Privilege> privileges) {
+        List<DdlStatement> out = new ArrayList<>();
         for (Privilege privilege : sorted(privileges)) {
-            out.add(grantStatement(privilege));
+            out.add(new DdlStatement(privilege, grantStatement(privilege)));
         }
         return List.copyOf(out);
     }
 
     @Override
-    public List<String> revokeStatements(List<? extends Privilege> privileges) {
+    public List<DdlStatement> revokeStatements(List<? extends Privilege> privileges) {
         List<Privilege> ordered = sorted(privileges);
-        List<String> out = new ArrayList<>();
+        List<DdlStatement> out = new ArrayList<>();
         for (int i = ordered.size() - 1; i >= 0; i--) {
-            out.add(revokeStatement(ordered.get(i)));
+            out.add(new DdlStatement(ordered.get(i), revokeStatement(ordered.get(i))));
         }
         return List.copyOf(out);
     }
@@ -92,8 +122,8 @@ public final class PrivilegeSqlGeneratorImpl implements PrivilegeSqlGenerator {
         }
         if (privilege instanceof ProcedurePrivilege pp) {
             Procedure procedure = pp.getProcedure();
-            return dialect.ddlGenerator().grantExecute(schemaName(procedure), procedure.getName(),
-                    isFunction(procedure), grantee, grantable);
+            return withSignature(dialect.ddlGenerator().grantExecute(schemaName(procedure), procedure.getName(),
+                    isFunction(procedure), grantee, grantable), procedure);
         }
         if (privilege instanceof RolePrivilege rp) {
             return dialect.ddlGenerator().grantRole(rp.getRole().getName(), grantee, grantable);
@@ -110,8 +140,8 @@ public final class PrivilegeSqlGeneratorImpl implements PrivilegeSqlGenerator {
         }
         if (privilege instanceof ProcedurePrivilege pp) {
             Procedure procedure = pp.getProcedure();
-            return dialect.ddlGenerator().revokeExecute(schemaName(procedure), procedure.getName(),
-                    isFunction(procedure), grantee);
+            return withSignature(dialect.ddlGenerator().revokeExecute(schemaName(procedure), procedure.getName(),
+                    isFunction(procedure), grantee), procedure);
         }
         if (privilege instanceof RolePrivilege rp) {
             return dialect.ddlGenerator().revokeRole(rp.getRole().getName(), grantee);
@@ -120,15 +150,53 @@ public final class PrivilegeSqlGeneratorImpl implements PrivilegeSqlGenerator {
     }
 
     @Override
-    public List<String> createRoleStatements(Collection<? extends ResponsibleParty> roles) {
-        return roles.stream().map(ResponsibleParty::getName).sorted()
-                .map(dialect.ddlGenerator()::createRole).toList();
+    public List<DdlStatement> createRoleStatements(Collection<? extends ResponsibleParty> roles) {
+        return roles.stream().sorted(Comparator.comparing(ResponsibleParty::getName))
+                .map(role -> new DdlStatement(role, dialect.ddlGenerator().createRole(role.getName()))).toList();
     }
 
     @Override
-    public List<String> dropRoleStatements(Collection<? extends ResponsibleParty> roles) {
-        return roles.stream().map(ResponsibleParty::getName).sorted(Comparator.reverseOrder())
-                .map(dialect.ddlGenerator()::dropRole).toList();
+    public List<DdlStatement> dropRoleStatements(Collection<? extends ResponsibleParty> roles) {
+        return roles.stream().sorted(Comparator.comparing(ResponsibleParty::getName).reversed())
+                .map(role -> new DdlStatement(role, dialect.ddlGenerator().dropRole(role.getName()))).toList();
+    }
+
+    @Override
+    public List<DdlStatement> createUserStatements(Collection<? extends ResponsibleParty> users) {
+        if (!usersWritten(users, Unwritables.forCreate(settings))) {
+            return List.of();
+        }
+        List<DdlStatement> out = new ArrayList<>();
+        users.stream().sorted(Comparator.comparing(ResponsibleParty::getName))
+                .forEach(user -> dialect.ddlGenerator().createUser(user.getName(), settings.ifNotExists())
+                        .ifPresent(sql -> out.add(new DdlStatement(user, sql))));
+        return List.copyOf(out);
+    }
+
+    @Override
+    public List<DdlStatement> dropUserStatements(Collection<? extends ResponsibleParty> users) {
+        if (!usersWritten(users, Unwritables.forDrop(settings))) {
+            return List.of();
+        }
+        List<DdlStatement> out = new ArrayList<>();
+        users.stream().sorted(Comparator.comparing(ResponsibleParty::getName).reversed())
+                .forEach(user -> dialect.ddlGenerator().dropUser(user.getName(), settings.ifNotExists())
+                        .ifPresent(sql -> out.add(new DdlStatement(user, sql))));
+        return List.copyOf(out);
+    }
+
+    /**
+     * Whether the dialect writes users; where not, each of {@code users} is a case the dialect cannot
+     * write, and the run ends with them ({@link Unwritables#finish()}).
+     */
+    private boolean usersWritten(Collection<? extends ResponsibleParty> users, Unwritables found) {
+        if (dialect.ddlGenerator().supportsUsers()) {
+            return true;
+        }
+        users.stream().map(ResponsibleParty::getName).sorted()
+                .forEach(name -> found.add(new Unwritable(dialect.name(), "user " + name, "a user", "left out")));
+        found.finish();
+        return false;
     }
 
     /** Sortierte Spalteneinschraenkung; leer = ganze Tabelle. */
@@ -146,9 +214,49 @@ public final class PrivilegeSqlGeneratorImpl implements PrivilegeSqlGenerator {
         return grantee.getName();
     }
 
-    private static String schemaName(Procedure procedure) {
+    /** The schema a routine is named with: its own with {@link DdlSettings#includeSchema()}, else none. */
+    private String schemaName(Procedure procedure) {
         ModelElement namespace = procedure.getNamespace();
-        return namespace == null ? null : namespace.getName();
+        return settings.includeSchema() && namespace != null ? namespace.getName() : null;
+    }
+
+    /**
+     * {@code statement} with the parameter types after the routine's name,
+     * where the model holds overloads of {@code procedure}; otherwise as it is.
+     */
+    private String withSignature(String statement, Procedure procedure) {
+        Namespace owner = procedure.getNamespace();
+        boolean overloaded = owner != null && owner.getOwnedElement().stream()
+                .anyMatch(e -> e != procedure && e instanceof Procedure other
+                        && java.util.Objects.equals(other.getName(), procedure.getName()));
+        if (!overloaded) {
+            return statement;
+        }
+        List<String> types = new ArrayList<>();
+        for (Parameter parameter : procedure.getParameter()) {
+            if (parameter.getKind() == ParameterDirectionKind.PDK_RETURN) {
+                continue;
+            }
+            if (parameter.getType() == null || parameter.getType().getName() == null
+                    || parameter.getType().getName().isBlank()) {
+                LOGGER.warn("db={} — routine {} has overloads, but parameter {} has no type: named without its"
+                        + " parameters", dialect.name(), procedure.getName(), parameter.getName());
+                return statement;
+            }
+            String mode = switch (parameter.getKind()) {
+            case PDK_OUT -> "OUT ";
+            case PDK_INOUT -> "INOUT ";
+            default -> "";
+            };
+            types.add(mode + parameter.getType().getName());
+        }
+        String routine = dialect.ddlGenerator().qualifiedRoutine(schemaName(procedure), procedure.getName());
+        int at = statement.indexOf(routine);
+        if (at < 0) {
+            return statement;
+        }
+        int end = at + routine.length();
+        return statement.substring(0, end) + "(" + String.join(", ", types) + ")" + statement.substring(end);
     }
 
     private static boolean isFunction(Procedure procedure) {

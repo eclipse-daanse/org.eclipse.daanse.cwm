@@ -27,6 +27,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ForeignKeys;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalRules;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.UniqueConstraints;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
 import org.eclipse.daanse.cwm.resource.relational.ddl.render.Dialects;
@@ -369,6 +370,17 @@ public final class LiquibaseChangelogWriter {
                 }
                 x.closeChangeSet();
             }
+            case ChangeOp.CreateView o when RelationalRules.MATERIALIZED.test(o.view()) -> {
+                // Liquibase writes plain views only; the dialects write a materialized one
+                x.openChangeSet(settings.author(), "CreateView|" + qualified(o.view()));
+                dbmsSql(x, o);
+                if (settings.includeRollback()) {
+                    x.startElement("rollback");
+                    dbmsSql(x, new ChangeOp.DropView(o.view()));
+                    x.endElement("rollback");
+                }
+                x.closeChangeSet();
+            }
             case ChangeOp.CreateView o -> {
                 x.openChangeSet(settings.author(), "CreateView|" + qualified(o.view()));
                 x.textElement("createView", Views.queryBody(o.view()).orElse(""),
@@ -379,6 +391,14 @@ public final class LiquibaseChangelogWriter {
                     x.emptyElement("dropView", "schemaName", schemaNameOf(o.view()),
                             "viewName", o.view().getName());
                     x.endElement("rollback");
+                }
+                x.closeChangeSet();
+            }
+            case ChangeOp.DropView o when RelationalRules.MATERIALIZED.test(o.view()) -> {
+                x.openChangeSet(settings.author(), "DropView|" + qualified(o.view()));
+                dbmsSql(x, o);
+                if (settings.includeRollback()) {
+                    x.emptyRollback();
                 }
                 x.closeChangeSet();
             }
@@ -518,8 +538,8 @@ public final class LiquibaseChangelogWriter {
                 "referencedTableSchemaName", schemaNameOf(target),
                 "referencedTableName", target.getName(),
                 "referencedColumnNames", featureCsv(fk.getUniqueKey().getFeature()),
-                "onDelete", referentialAction(fk.getDeleteRule() == null ? null : fk.getDeleteRule().getName()),
-                "onUpdate", referentialAction(fk.getUpdateRule() == null ? null : fk.getUpdateRule().getName()));
+                "onDelete", ForeignKeys.referentialAction(fk.getDeleteRule()).orElse(null),
+                "onUpdate", ForeignKeys.referentialAction(fk.getUpdateRule()).orElse(null));
         if (settings.includeRollback()) {
             x.startElement("rollback");
             x.emptyElement("dropForeignKeyConstraint",
@@ -626,19 +646,6 @@ public final class LiquibaseChangelogWriter {
             case "H2" -> "h2";
             default -> null; // ANSI has no dbms id — it is everyone's fallback anyway
         };
-    }
-
-    private static String referentialAction(String literal) {
-        if (literal == null) {
-            return null;
-        }
-        String upper = literal.toUpperCase();
-        if (upper.contains("CASCADE")) return "CASCADE";
-        if (upper.contains("SET_NULL") || upper.contains("SETNULL")) return "SET NULL";
-        if (upper.contains("SET_DEFAULT") || upper.contains("SETDEFAULT")) return "SET DEFAULT";
-        if (upper.contains("RESTRICT")) return "RESTRICT";
-        if (upper.contains("NO_ACTION") || upper.contains("NOACTION")) return "NO ACTION";
-        return null;
     }
 
     private static String qualified(org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet ncs) {

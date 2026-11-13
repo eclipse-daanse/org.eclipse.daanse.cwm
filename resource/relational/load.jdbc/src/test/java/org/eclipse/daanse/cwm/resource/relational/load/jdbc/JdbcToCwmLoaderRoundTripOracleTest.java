@@ -14,7 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,10 +32,11 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.Conditi
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.EventManipulationType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ReferentialRuleType;
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.Feature;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Selection;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalRules;
 import org.eclipse.daanse.cwm.resource.relational.load.jdbc.api.JdbcToCwmConfig;
-import org.eclipse.daanse.cwm.resource.relational.load.jdbc.api.CwmLoader;
 import org.eclipse.daanse.cwm.resource.relational.load.jdbc.internal.CwmLoaderImpl;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Catalogs;
@@ -68,9 +68,9 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
  * the PL/SQL body in {@code actionStatement}.
  *
  * <p>
- * Oracle's JDBC driver only reports table/column comments (REMARKS) when
- * {@code remarksReporting} is enabled — the test switches it on via
- * {@code OracleConnection.setRemarksReporting(true)}.
+ * The comments of tables and columns come from the metadata provider, which
+ * reads them from {@code ALL_TAB_COMMENTS} and {@code ALL_COL_COMMENTS}; the
+ * connection need not ask the driver for {@code remarksReporting}.
  *
  * <p>
  * Image is ~3 GB and takes ~20–30 s on first run.
@@ -104,9 +104,9 @@ class JdbcToCwmLoaderRoundTripOracleTest {
         String schemaName = "RT";
         Schema fixture = RoundTripFixture.build(schemaName, RoundTripFixture.Options.oracle());
 
-        // Skip Feature.SCHEMA — Oracle schemas are users, not CREATE SCHEMA targets.
-        List<String> ddl = new DdlGeneratorFactoryImpl().create(dialect).createSchema(fixture,
-                EnumSet.complementOf(EnumSet.of(Feature.TRIGGER, Feature.SCHEMA)));
+        // No CREATE SCHEMA — Oracle schemas are users, not CREATE SCHEMA targets.
+        List<String> ddl = new DdlGeneratorFactoryImpl()
+                .create(dialect, DdlSettings.defaults().withCreateSchema(false)).createSchema(fixture);
         RoundTripFixture.executeAll(connection, ddl);
 
         // Install a multi-event trigger out-of-band — the CWM serializer only
@@ -122,11 +122,10 @@ class JdbcToCwmLoaderRoundTripOracleTest {
         }
 
         try {
-            // Oracle only exposes comments as JDBC REMARKS when asked to.
-            connection.unwrap(oracle.jdbc.OracleConnection.class).setRemarksReporting(true);
             MetaInfo info = DB_SERVICE.createMetaInfo(connection, new OracleMetadataProvider());
             Catalog catalog = new CwmLoaderImpl().load(info,
-                    JdbcToCwmConfig.builder().schemas(schemaName).catalogName("RT").build());
+                    JdbcToCwmConfig.defaults().withCatalogName("RT")
+                            .withSelection(Selection.parse(RelationalRules.VOCABULARY, "schema:" + schemaName)));
 
             assertThat(catalog.getName()).isEqualTo("RT");
             List<Schema> schemas = Catalogs.schemas(catalog);
@@ -155,8 +154,8 @@ class JdbcToCwmLoaderRoundTripOracleTest {
             assertThat(custStatus.getInitialValue().getBody()).contains("NEW");
 
             // JDBC REMARKS land as typed CWM Descriptions on the elements.
-            assertThat(Descriptions.find(customers, CwmLoader.DESCRIPTION_TYPE_JDBC_REMARKS)).get().extracting(Description::getBody).isEqualTo("Customer master data");
-            assertThat(Descriptions.find(custEmail, CwmLoader.DESCRIPTION_TYPE_JDBC_REMARKS)).get().extracting(Description::getBody).isEqualTo("Unique customer email");
+            assertThat(Descriptions.find(customers, Descriptions.JDBC_REMARKS)).get().extracting(Description::getBody).isEqualTo("Customer master data");
+            assertThat(Descriptions.find(custEmail, Descriptions.JDBC_REMARKS)).get().extracting(Description::getBody).isEqualTo("Unique customer email");
 
             assertThat(PrimaryKeys.columns(Tables.findPrimaryKey(customers).orElseThrow())).extracting(Column::getName)
                     .containsExactly("ID");
@@ -198,6 +197,7 @@ class JdbcToCwmLoaderRoundTripOracleTest {
                     .extracting(t -> t.getName()).containsExactlyInAnyOrder("TRG_AUDIT_INSERT", "TRG_AUDIT_UPDATE");
             org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger loadedTrg = triggersForCustomers.stream()
                     .filter(t -> "TRG_AUDIT_INSERT".equals(t.getName())).findFirst().orElseThrow();
+            assertThat(loadedTrg.eContainer()).as("the schema owns the trigger").isSameAs(customers.getNamespace());
             assertThat(loadedTrg.getConditionTiming()).isEqualTo(ConditionTimingType.BEFORE);
             assertThat(loadedTrg.getEventManipulation()).isEqualTo(EventManipulationType.INSERT);
             assertThat(loadedTrg.getActionStatement()).isNotNull();

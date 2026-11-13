@@ -15,11 +15,9 @@ import static org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.Sq
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.Feature;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.DialectProfile;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
@@ -54,10 +52,9 @@ class DiffTriggerParameterizedTest {
             Schema without = TriggerFixtures.build(schemaName, null, profile.triggerTiming(), profile.triggerEvent());
             Schema with = TriggerFixtures.build(schemaName, profile.triggerBody(), profile.triggerTiming(),
                     profile.triggerEvent());
-            Set<Feature> features = profile.nonTriggerFeatures();
             MigrationEmitterImpl emitter = new MigrationEmitterImpl(new DdlGeneratorFactoryImpl());
             try {
-                executeAll(c, new DdlGeneratorFactoryImpl().create(dialect).createSchema(without, features));
+                executeAll(c, profile.create(dialect, without));
 
                 List<ChangeOp> add = ChangePlanner.create().plan(new SchemaDifferImpl().diff(without, with));
                 assertThat(add).singleElement().isInstanceOf(ChangeOp.CreateTrigger.class);
@@ -74,7 +71,7 @@ class DiffTriggerParameterizedTest {
                 assertThat(drop).singleElement().isInstanceOf(ChangeOp.DropTrigger.class);
                 executeAll(c, emitter.emit(drop, dialect));
             } finally {
-                profile.cleanup(c, with, dialect, profile.allFeatures());
+                profile.cleanup(c, with, dialect);
             }
         }
     }

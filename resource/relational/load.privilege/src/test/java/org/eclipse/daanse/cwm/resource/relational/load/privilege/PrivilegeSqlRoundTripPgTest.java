@@ -20,6 +20,7 @@ import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Responsib
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Catalog;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Procedure;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalNames;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.Privilege;
@@ -30,11 +31,11 @@ import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.TablePr
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.TablePrivilegeAction;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.util.PrivilegeModelValidator;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.util.PrivilegeStereotypes;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlStatement;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.PrivilegeSqlGenerator;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.PrivilegeSqlGeneratorImpl;
 import org.eclipse.daanse.cwm.resource.relational.load.jdbc.api.JdbcToCwmConfig;
 import org.eclipse.daanse.cwm.resource.relational.load.jdbc.internal.CwmLoaderImpl;
-import org.eclipse.daanse.cwm.resource.relational.load.privilege.api.PrivilegeLoadResult;
 import org.eclipse.daanse.cwm.resource.relational.load.privilege.internal.PrivilegeLoaderImpl;
 import org.eclipse.daanse.jdbc.datasource.testkit.api.ActiveDatabase;
 import org.eclipse.daanse.jdbc.datasource.testkit.postgresql.PostgresDatabaseProvider;
@@ -93,7 +94,7 @@ class PrivilegeSqlRoundTripPgTest {
 
         // Katalog laden; die Privilegien-Ziele referenzieren die geladenen CWM-Objekte.
         Catalog catalog = new CwmLoaderImpl().load(
-                DB_SERVICE.createMetaInfo(connection, new PostgreSqlMetadataProvider()), JdbcToCwmConfig.all());
+                DB_SERVICE.createMetaInfo(connection, new PostgreSqlMetadataProvider()), JdbcToCwmConfig.defaults());
         Table customers = (Table) find(catalog, schemaName, "customers");
         Procedure fnAnswer = (Procedure) find(catalog, schemaName, "fn_answer");
 
@@ -129,18 +130,18 @@ class PrivilegeSqlRoundTripPgTest {
 
         // Provisionieren: CREATE ROLE + GRANTs.
         try (Statement s = connection.createStatement()) {
-            for (String sql : generator.createRoleStatements(List.of(reader, parent))) {
+            for (String sql : DdlStatement.sql(generator.createRoleStatements(List.of(reader, parent)))) {
                 s.execute(sql);
             }
-            for (String sql : generator.grantStatements(privileges)) {
+            for (String sql : DdlStatement.sql(generator.grantStatements(privileges))) {
                 s.execute(sql);
             }
         }
 
         // Zurueckladen und vergleichen (grantor ignorieren).
-        PrivilegeLoadResult loaded = reload();
-        assertThat(PrivilegeModelValidator.validateAll(loaded.parties())).isEmpty();
-        assertThat(PrivilegeStereotypes.databaseRoles(LoadedParties.holding(loaded)).stream()
+        Catalog loaded = reload();
+        assertThat(PrivilegeModelValidator.validateAll(CatalogParties.of(loaded))).isEmpty();
+        assertThat(PrivilegeStereotypes.databaseRoles(loaded).stream()
                 .map(ResponsibleParty::getName)).contains("gen_reader", "gen_parent");
         ResponsibleParty loadedReader = partyByName(loaded, "gen_reader");
         assertThat(loadedReader.getOwnedElement()).hasSize(4);
@@ -162,32 +163,95 @@ class PrivilegeSqlRoundTripPgTest {
 
         // Gegenprobe: dieselben Privilegien als REVOKEs — alles weg.
         try (Statement s = connection.createStatement()) {
-            for (String sql : generator.revokeStatements(privileges)) {
+            for (String sql : DdlStatement.sql(generator.revokeStatements(privileges))) {
                 s.execute(sql);
             }
         }
-        PrivilegeLoadResult afterRevoke = reload();
+        Catalog afterRevoke = reload();
         assertThat(partyByName(afterRevoke, "gen_reader").getOwnedElement()).isEmpty();
 
         // Aufraeumen ueber den Generator: DROP ROLE.
         try (Statement s = connection.createStatement()) {
-            for (String sql : generator.dropRoleStatements(List.of(reader, parent))) {
+            for (String sql : DdlStatement.sql(generator.dropRoleStatements(List.of(reader, parent)))) {
                 s.execute(sql);
             }
         }
-        PrivilegeLoadResult afterDrop = reload();
-        assertThat(PrivilegeStereotypes.databaseRoles(LoadedParties.holding(afterDrop)).stream()
+        Catalog afterDrop = reload();
+        assertThat(PrivilegeStereotypes.databaseRoles(afterDrop).stream()
                 .map(ResponsibleParty::getName)).doesNotContain("gen_reader", "gen_parent");
     }
 
-    private PrivilegeLoadResult reload() throws Exception {
-        MetaInfo info = DB_SERVICE.createMetaInfo(connection, new PostgreSqlMetadataProvider());
-        Catalog catalog = new CwmLoaderImpl().load(info, JdbcToCwmConfig.all());
-        return new PrivilegeLoaderImpl().load(info, catalog);
+    /**
+     * Two overloads of a function, read from the database with their parameters: the grant on one,
+     * written with the types of its parameters, reaches that one only, and read back it is on that
+     * one, which its specific name tells.
+     */
+    @Test
+    void aGrantOnOneOverloadOfAFunctionReachesThatOneOnly() throws Exception {
+        String schemaName = "gen_overload";
+        try (Statement s = connection.createStatement()) {
+            s.execute("CREATE SCHEMA \"" + schemaName + "\"");
+            // the snapshot reads the routines of the schemas that hold a table and of the current one
+            s.execute("CREATE TABLE \"" + schemaName + "\".t (id integer)");
+            s.execute("CREATE FUNCTION \"" + schemaName + "\".fn_over(v integer) RETURNS integer LANGUAGE sql"
+                    + " AS 'SELECT 1'");
+            s.execute("CREATE FUNCTION \"" + schemaName + "\".fn_over(v text) RETURNS integer LANGUAGE sql"
+                    + " AS 'SELECT 2'");
+            s.execute("REVOKE EXECUTE ON ALL FUNCTIONS IN SCHEMA \"" + schemaName + "\" FROM PUBLIC");
+            s.execute("CREATE ROLE gen_over");
+        }
+        try {
+            Catalog catalog = reload();
+            Procedure byText = overloads(catalog, schemaName).stream()
+                    .filter(f -> "text".equals(f.getParameter().get(0).getType().getName())).findFirst()
+                    .orElseThrow();
+            ResponsibleParty role = partyByName(catalog, "gen_over");
+            ProcedurePrivilege execute = PF.createProcedurePrivilege();
+            execute.setProcedure(byText);
+            role.getOwnedElement().add(execute);
+
+            try (Statement s = connection.createStatement()) {
+                s.execute(new PrivilegeSqlGeneratorImpl(new PostgreSqlDialect()).grantStatement(execute));
+                try (var rs = s.executeQuery("SELECT has_function_privilege('gen_over', '" + schemaName
+                        + ".fn_over(text)', 'EXECUTE'), has_function_privilege('gen_over', '" + schemaName
+                        + ".fn_over(integer)', 'EXECUTE')")) {
+                    rs.next();
+                    assertThat(rs.getBoolean(1)).as("the overload meant").isTrue();
+                    assertThat(rs.getBoolean(2)).as("the other overload").isFalse();
+                }
+            }
+
+            Catalog back = reload();
+            assertThat(partyByName(back, "gen_over").getOwnedElement()).singleElement()
+                    .isInstanceOfSatisfying(ProcedurePrivilege.class, p -> {
+                        assertThat(p.getProcedure().getParameter()).extracting(v -> v.getType().getName())
+                                .containsExactly("text");
+                        assertThat(RelationalNames.specificName(p.getProcedure()))
+                                .isEqualTo(RelationalNames.specificName(byText));
+                    });
+        } finally {
+            try (Statement s = connection.createStatement()) {
+                s.execute("DROP SCHEMA \"" + schemaName + "\" CASCADE");
+                s.execute("DROP ROLE gen_over");
+            }
+        }
     }
 
-    private static ResponsibleParty partyByName(PrivilegeLoadResult result, String name) {
-        return result.parties().stream().filter(p -> name.equals(p.getName())).findFirst().orElseThrow();
+    /** The overloads of {@code fn_over} in {@code schemaName}, as read from the database. */
+    private static List<Procedure> overloads(Catalog catalog, String schemaName) {
+        return catalog.getOwnedElement().stream().filter(Schema.class::isInstance).map(Schema.class::cast)
+                .filter(s -> schemaName.equals(s.getName())).flatMap(s -> s.getOwnedElement().stream())
+                .filter(Procedure.class::isInstance).map(Procedure.class::cast)
+                .filter(f -> "fn_over".equals(f.getName())).toList();
+    }
+
+    private Catalog reload() throws Exception {
+        MetaInfo info = DB_SERVICE.createMetaInfo(connection, new PostgreSqlMetadataProvider());
+        return new CwmLoaderImpl(List.of(new PrivilegeLoaderImpl())).load(info, JdbcToCwmConfig.defaults());
+    }
+
+    private static ResponsibleParty partyByName(Catalog catalog, String name) {
+        return CatalogParties.named(catalog, name);
     }
 
     private static <T> T firstOf(ResponsibleParty party, Class<T> type) {

@@ -14,6 +14,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.JDBCType;
 import java.util.HexFormat;
+import java.util.Locale;
 
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
@@ -221,7 +222,7 @@ final class LiquibaseXml {
     static String[] defaultAttribute(String value) {
         String v = value.trim();
         if (v.equalsIgnoreCase("TRUE") || v.equalsIgnoreCase("FALSE")) {
-            return new String[] { "defaultValueBoolean", v.toLowerCase() };
+            return new String[] { "defaultValueBoolean", v.toLowerCase(Locale.ROOT) };
         }
         try {
             new java.math.BigDecimal(v);
@@ -229,7 +230,7 @@ final class LiquibaseXml {
         } catch (NumberFormatException notNumeric) {
             // fall through
         }
-        String upper = v.toUpperCase();
+        String upper = v.toUpperCase(Locale.ROOT);
         if (v.endsWith(")") || upper.startsWith("CURRENT_") || upper.equals("NOW")) {
             return new String[] { "defaultValueComputed", v };
         }
