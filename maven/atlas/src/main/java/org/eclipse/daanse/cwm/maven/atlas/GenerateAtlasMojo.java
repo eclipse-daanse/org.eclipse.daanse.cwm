@@ -24,7 +24,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.daanse.cwm.emf.standalone.CwmPackages;
-import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.InverseReferences;
 import org.eclipse.daanse.cwm.model.daanse.mapping.sensinact.ProviderMapping;
 import org.eclipse.daanse.cwm.sensinact.fennec.AtlasGenerator;
 import org.eclipse.daanse.cwm.sensinact.fennec.AtlasNotes;
@@ -32,8 +31,6 @@ import org.eclipse.daanse.cwm.sensinact.fennec.CwmToAtlas;
 import org.eclipse.daanse.cwm.sensinact.fennec.InvalidMappingException;
 import org.eclipse.daanse.cwm.sensinact.fennec.Note;
 import org.eclipse.daanse.cwm.sensinact.fennec.Options;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * Converts the CWM sensiNact mappings of a CWM XMI, with the recording and retention rules and the
@@ -104,6 +101,10 @@ public class GenerateAtlasMojo extends AbstractMojo {
     @Parameter(property = "fennec-atlas.attachResource", defaultValue = "true")
     private boolean attachResource;
 
+    /** Skips the goal. */
+    @Parameter(property = "fennec-atlas.skip", defaultValue = "false")
+    private boolean skip;
+
     /** Interfaces of further generated EPackages to register before loading. */
     @Parameter
     private List<String> extraPackages;
@@ -113,19 +114,12 @@ public class GenerateAtlasMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (skip) {
+            getLog().info("fennec-atlas: skipped");
+            return;
+        }
         if (modelFile == null || !modelFile.isFile()) {
             throw new MojoFailureException("modelFile does not exist: " + modelFile);
-        }
-        ClassLoader loader = getClass().getClassLoader();
-        CwmPackages.registerKnown(loader);
-        if (extraPackages != null) {
-            for (String name : extraPackages) {
-                try {
-                    CwmPackages.register(name, loader);
-                } catch (IllegalArgumentException e) {
-                    throw new MojoExecutionException(e.getMessage(), e);
-                }
-            }
         }
         List<Path> given = ecoreFiles();
         List<ProviderMapping> chosen = chosenMappings();
@@ -174,13 +168,10 @@ public class GenerateAtlasMojo extends AbstractMojo {
     }
 
     private List<ProviderMapping> chosenMappings() throws MojoExecutionException, MojoFailureException {
-        ResourceSet rs = CwmPackages.newResourceSet();
         List<ProviderMapping> all;
         try {
-            all = CwmToAtlas.mappingsIn(CwmPackages.load(rs, modelFile.toPath()));
-            EcoreUtil.resolveAll(rs);
-            // the quantity and the description of a resource name it; the index finds them at once
-            InverseReferences.install(rs);
+            all = CwmToAtlas.mappingsIn(
+                    CwmPackages.loadModel(modelFile.toPath(), getClass().getClassLoader(), extraPackages));
         } catch (RuntimeException e) {
             throw new MojoExecutionException("cannot load " + modelFile + ": " + e.getMessage(), e);
         }

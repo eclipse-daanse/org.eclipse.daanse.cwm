@@ -23,8 +23,8 @@
   <artifactId>org.eclipse.daanse.cwm.emf</artifactId>
   <packaging>pom</packaging>
   <name>Daanse CWM EMF (aggregator)</name>
-  <description>Support for using the CWM EMF models: standalone loads CWM XMI outside OSGi, ecore
-    converts a CWM class model into Ecore.</description>
+  <description>Support for using the CWM EMF models: standalone loads and writes CWM XMI outside
+    OSGi, ecore converts a CWM class model into Ecore.</description>
 
   <modules>
     <module>standalone</module>

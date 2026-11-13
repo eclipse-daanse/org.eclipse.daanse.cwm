@@ -31,8 +31,6 @@ import org.eclipse.daanse.cwm.orm.fennec.EormNotes;
 import org.eclipse.daanse.cwm.emf.standalone.CwmPackages;
 import org.eclipse.daanse.cwm.orm.fennec.InvalidMappingException;
 import org.eclipse.daanse.cwm.orm.fennec.Note;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * Converts the CWM-ORM mapping set of a CWM XMI into a Fennec {@code .eorm} file, written next to
@@ -93,6 +91,10 @@ public class GenerateEormMojo extends AbstractMojo {
     @Parameter(property = "fennec-eorm.attachResource", defaultValue = "true")
     private boolean attachResource;
 
+    /** Skips the goal. */
+    @Parameter(property = "fennec-eorm.skip", defaultValue = "false")
+    private boolean skip;
+
     /** Interfaces of further generated EPackages to register before loading. */
     @Parameter
     private List<String> extraPackages;
@@ -102,19 +104,12 @@ public class GenerateEormMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (skip) {
+            getLog().info("fennec-eorm: skipped");
+            return;
+        }
         if (modelFile == null || !modelFile.isFile()) {
             throw new MojoFailureException("modelFile does not exist: " + modelFile);
-        }
-        ClassLoader loader = getClass().getClassLoader();
-        CwmPackages.registerKnown(loader);
-        if (extraPackages != null) {
-            for (String name : extraPackages) {
-                try {
-                    CwmPackages.register(name, loader);
-                } catch (IllegalArgumentException e) {
-                    throw new MojoExecutionException(e.getMessage(), e);
-                }
-            }
         }
         EntityMappings cwm = mappingSet();
         String name = eormName != null && !eormName.isBlank() ? eormName : baseName(modelFile) + ".eorm";
@@ -160,11 +155,10 @@ public class GenerateEormMojo extends AbstractMojo {
     }
 
     private EntityMappings mappingSet() throws MojoExecutionException, MojoFailureException {
-        ResourceSet rs = CwmPackages.newResourceSet();
         List<EntityMappings> all;
         try {
-            all = CwmOrmToEorm.mappingsIn(CwmPackages.load(rs, modelFile.toPath()));
-            EcoreUtil.resolveAll(rs);
+            all = CwmOrmToEorm.mappingsIn(
+                    CwmPackages.loadModel(modelFile.toPath(), getClass().getClassLoader(), extraPackages));
         } catch (RuntimeException e) {
             throw new MojoExecutionException("cannot load " + modelFile + ": " + e.getMessage(), e);
         }
