@@ -22,11 +22,12 @@
   </parent>
   <artifactId>org.eclipse.daanse.cwm.emf.standalone</artifactId>
   <name>Daanse CWM EMF — standalone</name>
-  <description>Loads CWM XMI outside OSGi: CwmPackages registers the generated EPackages of CWM 1.1
-    and of the Daanse extensions by name and creates resource sets that read XMI under any file
-    extension; EcoreIndex finds the Ecore element of a CWM class model element by names. Brings
-    every CWM package at run time, so any CWM XMI loads; used wherever CWM XMI is read outside
-    OSGi, in particular by the Maven plugins.</description>
+  <description>Loads and writes CWM XMI outside OSGi: CwmPackages registers the generated EPackages
+    of CWM 1.1 and of the Daanse extensions by name, creates resource sets that read XMI under any
+    file extension, and saves model elements with readable ids; EcoreIndex finds the Ecore element
+    of a CWM class model element by names. Brings every CWM package at run time, so any CWM XMI
+    loads; used wherever CWM XMI is read or written outside OSGi, in particular by the Maven
+    plugins.</description>
 
   <dependencies>
     <dependency>

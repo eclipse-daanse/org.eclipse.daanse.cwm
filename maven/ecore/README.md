@@ -124,6 +124,7 @@ line or from `<properties>`.
 | `splitPackages` | `cwm-ecore.splitPackages` | boolean | `false` | `true`: every converted package becomes a root EPackage with a file of its own, instead of a sub-package inside the file of the package around it. Names, namespace URIs and the Java packages of the genmodel stay what they are when nested. |
 | `fileNames` | — | map | — | File name per written package. Key: the package's qualified name or a trailing part of it, or the name of the root EPackage; value: the file name, `.ecore` is appended when it has no extension. Packages without entry are named `<package name>.ecore`. A key that names no written package or several, or one file name for two packages, fails the build. |
 | `attachResource` | `cwm-ecore.attachResource` | boolean | `true` | Add `outputDirectory` as a resource directory, so the files land in the jar. `false` for a second, private execution. |
+| `skip` | `cwm-ecore.skip` | boolean | `false` | Do nothing, e.g. `-Dcwm-ecore.skip` for one build. |
 
 ### Types and names
 

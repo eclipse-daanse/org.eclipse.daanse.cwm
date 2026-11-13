@@ -28,8 +28,6 @@ import org.eclipse.daanse.cwm.emf.ecore.EcoreWriter;
 import org.eclipse.daanse.cwm.emf.ecore.Note;
 import org.eclipse.daanse.cwm.emf.ecore.Options;
 import org.eclipse.daanse.cwm.emf.ecore.Result;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * Converts the class model of a CWM XMI into {@code .ecore} files, one per root EPackage, and
@@ -140,31 +138,25 @@ public class GenerateEcoreMojo extends AbstractMojo {
     @Parameter(property = "cwm-ecore.attachResource", defaultValue = "true")
     private boolean attachResource;
 
+    /** Skips the goal. */
+    @Parameter(property = "cwm-ecore.skip", defaultValue = "false")
+    private boolean skip;
+
     @Parameter(defaultValue = "${project}", readonly = true)
     private MavenProject project;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (skip) {
+            getLog().info("cwm-ecore: skipped");
+            return;
+        }
         if (modelFile == null || !modelFile.isFile()) {
             throw new MojoFailureException("modelFile does not exist: " + modelFile);
         }
-        ClassLoader loader = getClass().getClassLoader();
-        CwmPackages.registerKnown(loader);
-        if (extraPackages != null) {
-            for (String name : extraPackages) {
-                try {
-                    CwmPackages.register(name, loader);
-                } catch (IllegalArgumentException e) {
-                    throw new MojoExecutionException(e.getMessage(), e);
-                }
-            }
-        }
-
-        ResourceSet rs = CwmPackages.newResourceSet();
         org.eclipse.emf.ecore.resource.Resource model;
         try {
-            model = CwmPackages.load(rs, modelFile.toPath());
-            EcoreUtil.resolveAll(rs);
+            model = CwmPackages.loadModel(modelFile.toPath(), getClass().getClassLoader(), extraPackages);
         } catch (RuntimeException e) {
             throw new MojoExecutionException("cannot load " + modelFile + ": " + e.getMessage(), e);
         }

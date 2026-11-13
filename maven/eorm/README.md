@@ -155,6 +155,7 @@ line or from `<properties>`.
 | `outputDirectory` | `fennec-eorm.outputDirectory` | file | `${project.build.directory}/generated-resources/eorm` | Where the `.eorm` and the `.ecore` files next to it are written. `.ecore` files from elsewhere are copied; all of them move together, so the relative `href`s between them stay valid. |
 | `eormName` | `fennec-eorm.eormName` | string | `<model file name>.eorm` | File name of the `.eorm`. |
 | `attachResource` | `fennec-eorm.attachResource` | boolean | `true` | Add `outputDirectory` as a resource directory, so the files land in the jar. |
+| `skip` | `fennec-eorm.skip` | boolean | `false` | Do nothing, e.g. `-Dfennec-eorm.skip` for one build. |
 
 ### Validation
 
