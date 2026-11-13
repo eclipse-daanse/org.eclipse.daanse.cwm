@@ -11,6 +11,8 @@ package org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Locale;
+
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Attribute;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Class;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CoreFactory;
@@ -103,6 +105,26 @@ class ShortIdsTest {
             assertThat(r.getID(it.next())).matches("_[A-Za-z0-9_.\\-]+");
         }
         assertThat(r.getID(m)).isEqualTo("_1st_model");
+    }
+
+    /**
+     * An unnamed root takes the name of its kind in lower case, alike in every default locale: in a
+     * Turkish one, {@code Index} lower-cased by the rules of the language is {@code ındex}, with a
+     * dotless i, which the id would turn into {@code _ndex}.
+     */
+    @Test
+    void anUnnamedRootTakesItsKind_alikeInATurkishLocale() {
+        EObject index = SpeakingIdsTest.unnamed("Index");
+        Locale before = Locale.getDefault();
+        Locale.setDefault(Locale.forLanguageTag("tr-TR"));
+        XMIResource r;
+        try {
+            r = assign(index);
+        } finally {
+            Locale.setDefault(before);
+        }
+
+        assertThat(r.getID(index)).isEqualTo("_index");
     }
 
     private static XMIResource assign(EObject root) {

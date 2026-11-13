@@ -16,6 +16,7 @@ package org.eclipse.daanse.cwm.model.cwm.resource.relational.util;
 import java.sql.JDBCType;
 import java.sql.Types;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -160,7 +161,7 @@ public final class SQLSimpleTypes {
         if (name == null) {
             return Optional.empty();
         }
-        String key = name.trim().toUpperCase().replaceAll("\\s+", " ");
+        String key = name.trim().toUpperCase(Locale.ROOT).replaceAll("\\s+", " ");
         Supplier<SQLSimpleType> s = BY_NAME.get(key);
         return s == null ? Optional.empty() : Optional.of(s.get());
     }
@@ -231,7 +232,7 @@ public final class SQLSimpleTypes {
         if (name == null) {
             return JDBCType.OTHER;
         }
-        return switch (name.trim().toUpperCase()) {
+        return switch (name.trim().toUpperCase(Locale.ROOT)) {
         case "BOOLEAN", "BOOL", "BIT" -> JDBCType.BOOLEAN;
         case "TINYINT" -> JDBCType.TINYINT;
         case "SMALLINT" -> JDBCType.SMALLINT;

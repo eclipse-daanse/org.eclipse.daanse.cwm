@@ -24,6 +24,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ReferentialRuleType;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Classifiers;
 
 public final class ForeignKeys {
@@ -70,5 +71,24 @@ public final class ForeignKeys {
     public static Optional<Table> targetTable(ForeignKey fk) {
         return targetUniqueKey(fk).flatMap(uk -> Classifiers.featureStream(uk.getFeature(), Column.class).findFirst())
                 .flatMap(Columns::tableOwner);
+    }
+
+    /**
+     * The SQL words of a referential action, as {@code ON DELETE} and
+     * {@code ON UPDATE} take them: {@code NO ACTION}, {@code CASCADE},
+     * {@code SET NULL}, {@code RESTRICT} or {@code SET DEFAULT}; empty for
+     * {@code null}.
+     */
+    public static Optional<String> referentialAction(ReferentialRuleType rule) {
+        if (rule == null) {
+            return Optional.empty();
+        }
+        return Optional.of(switch (rule) {
+        case IMPORTED_KEY_NO_ACTION -> "NO ACTION";
+        case IMPORTED_KEY_CASCADE -> "CASCADE";
+        case IMPORTED_KEY_SET_NULL -> "SET NULL";
+        case IMPORTED_KEY_RESTRICT -> "RESTRICT";
+        case IMPORTED_KEY_SET_DEFAULT -> "SET DEFAULT";
+        });
     }
 }

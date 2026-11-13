@@ -24,7 +24,7 @@ import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.Procedu
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.RolePrivilege;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.TablePrivilege;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.TablePrivilegeAction;
-import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Stereotype;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.util.PrivilegeModelValidator;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.util.PrivilegeStereotypes;
 import org.eclipse.daanse.cwm.resource.relational.load.privilege.api.PrivilegeLoadResult;
@@ -116,19 +116,19 @@ class PrivilegeLoaderImplTest {
         assertThat(appReader.getResponsibility()).isEqualTo(PrivilegeLoaderImpl.RESPONSIBILITY_DATABASE_ROLE);
 
         // Stereotype-Marker: Entscheidungen laufen ueber sie, nicht ueber responsibility.
-        List<Stereotype> stereotypes = result.stereotypes();
-        assertThat(PrivilegeStereotypes.databaseRoles(stereotypes).stream().map(ResponsibleParty::getName))
+        Package loaded = LoadedParties.holding(result);
+        assertThat(PrivilegeStereotypes.databaseRoles(loaded).stream().map(ResponsibleParty::getName))
                 .containsExactlyInAnyOrder("app_reader", "unused_role");
-        assertThat(PrivilegeStereotypes.databaseUsers(stereotypes).stream().map(ResponsibleParty::getName))
+        assertThat(PrivilegeStereotypes.databaseUsers(loaded).stream().map(ResponsibleParty::getName))
                 .containsExactlyInAnyOrder("alice");
-        assertThat(PrivilegeStereotypes.isDatabaseRole(appReader, stereotypes)).isTrue();
+        assertThat(PrivilegeStereotypes.isDatabaseRole(appReader)).isTrue();
         ResponsibleParty aliceParty = parties.stream()
                 .filter(p -> "alice".equals(p.getName())).findFirst().orElseThrow();
         assertThat(aliceParty.getResponsibility()).isEqualTo(PrivilegeLoaderImpl.RESPONSIBILITY_DATABASE_USER);
         // PUBLIC und die nur aus Grants bekannte readonly-Rolle tragen keinen Stereotype.
         ResponsibleParty publicPseudo = parties.stream()
                 .filter(p -> "PUBLIC".equals(p.getName())).findFirst().orElseThrow();
-        assertThat(PrivilegeStereotypes.isDatabaseRole(publicPseudo, stereotypes)).isFalse();
+        assertThat(PrivilegeStereotypes.isDatabaseRole(publicPseudo)).isFalse();
         assertThat(publicPseudo.getResponsibility()).isEqualTo(PrivilegeLoaderImpl.RESPONSIBILITY_PUBLIC);
         ResponsibleParty unusedRole = parties.stream()
                 .filter(p -> "unused_role".equals(p.getName())).findFirst().orElseThrow();
@@ -136,8 +136,8 @@ class PrivilegeLoaderImplTest {
         // KIND_UNKNOWN: Party erscheint, traegt aber keinen Marker.
         ResponsibleParty mystery = parties.stream()
                 .filter(p -> "mystery".equals(p.getName())).findFirst().orElseThrow();
-        assertThat(PrivilegeStereotypes.isDatabaseRole(mystery, stereotypes)).isFalse();
-        assertThat(PrivilegeStereotypes.databaseUsers(stereotypes)).doesNotContain(mystery);
+        assertThat(PrivilegeStereotypes.isDatabaseRole(mystery)).isFalse();
+        assertThat(PrivilegeStereotypes.databaseUsers(loaded)).doesNotContain(mystery);
         assertThat(mystery.getResponsibility()).isEqualTo(PrivilegeLoaderImpl.RESPONSIBILITY_DATABASE_ROLE);
 
         // app_reader: SELECT + INSERT auf der Tabelle, UPDATE (email, name) als
