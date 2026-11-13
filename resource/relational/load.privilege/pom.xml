@@ -23,8 +23,8 @@
   <artifactId>org.eclipse.daanse.cwm.resource.relational.load.privilege</artifactId>
   <name>Daanse CWM Relational Privilege Load</name>
   <description>Load the common core of JDBC privileges (roles, table and
-    routine privileges) from a MetaInfo snapshot into a privilege model
-    (PrivilegeLoader) — the authorization companion of the CwmLoader.</description>
+    routine privileges) from a MetaInfo snapshot into the catalog a CwmLoader
+    reads (PrivilegeLoader, a part of the catalog).</description>
 
   <dependencies>
     <dependency>
@@ -42,6 +42,13 @@
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <!-- the part a CwmLoader calls: the privileges are a part of the catalog it reads -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.resource.relational.load.jdbc</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
@@ -74,12 +81,6 @@
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.sql.jdbc.record</artifactId>
       <version>${jdbc-db.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.resource.relational.load.jdbc</artifactId>
-      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

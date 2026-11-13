@@ -18,11 +18,9 @@ import static org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.Sq
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.Feature;
 import org.eclipse.daanse.cwm.resource.relational.diff.internal.support.MigrationFixtures;
 import org.eclipse.daanse.cwm.resource.relational.diff.internal.support.MigrationVerifier;
 import org.eclipse.daanse.cwm.resource.relational.diff.internal.support.MigrationVerifier.ImportedKeyFacts;
@@ -50,8 +48,9 @@ class DiffMigrationParameterizedTest {
 
     private static final DatabaseService DB_SERVICE = new DatabaseServiceImpl();
 
+    /** The migration adds the foreign key of the new table with ALTER TABLE. */
     static Stream<DialectProfile> dialects() {
-        return Stream.of(DialectProfile.values());
+        return Stream.of(DialectProfile.values()).filter(DialectProfile::altersConstraints);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -63,9 +62,8 @@ class DiffMigrationParameterizedTest {
             String schemaName = profile.schemaName();
             Schema oldSchema = MigrationFixtures.buildOld(schemaName, dialect);
             Schema newSchema = MigrationFixtures.buildNew(schemaName, dialect);
-            Set<Feature> features = profile.nonTriggerFeatures();
             try {
-                executeAll(c, new DdlGeneratorFactoryImpl().create(dialect).createSchema(oldSchema, features));
+                executeAll(c, profile.create(dialect, oldSchema));
 
                 SchemaDiff diff = new SchemaDifferImpl().diff(oldSchema, newSchema);
                 assertThat(diff.isEmpty()).isFalse();
@@ -102,7 +100,7 @@ class DiffMigrationParameterizedTest {
 
                 assertThat(new SchemaDifferImpl().diff(newSchema, newSchema).isEmpty()).isTrue();
             } finally {
-                profile.cleanup(c, newSchema, dialect, features);
+                profile.cleanup(c, newSchema, dialect);
             }
         }
     }

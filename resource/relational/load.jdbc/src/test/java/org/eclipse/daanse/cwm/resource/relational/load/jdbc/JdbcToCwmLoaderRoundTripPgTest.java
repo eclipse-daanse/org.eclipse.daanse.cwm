@@ -14,7 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,9 +36,10 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.EventMa
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ProcedureType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ReferentialRuleType;
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.Feature;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
-import org.eclipse.daanse.cwm.resource.relational.load.jdbc.api.CwmLoader;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Selection;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalNames;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalRules;
 import org.eclipse.daanse.cwm.resource.relational.load.jdbc.api.JdbcToCwmConfig;
 import org.eclipse.daanse.cwm.resource.relational.load.jdbc.internal.CwmLoaderImpl;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
@@ -95,8 +95,7 @@ class JdbcToCwmLoaderRoundTripPgTest {
         Schema fixture = RoundTripFixture.build(schemaName, RoundTripFixture.Options.pg());
 
         // 1. Emit DDL and execute on Postgres.
-        List<String> ddl = new DdlGeneratorFactoryImpl().create(dialect).createSchema(fixture,
-                EnumSet.complementOf(EnumSet.of(Feature.TRIGGER)));
+        List<String> ddl = new DdlGeneratorFactoryImpl().create(dialect).createSchema(fixture);
         RoundTripFixture.executeAll(connection, ddl);
 
         // 1a. Out-of-band: install a PL/pgSQL function + trigger so the loader
@@ -128,20 +127,23 @@ class JdbcToCwmLoaderRoundTripPgTest {
             // Routines — load as CWM Procedure (type function/procedure).
             s.execute("CREATE FUNCTION \"" + schemaName + "\".fn_add(a integer, b integer) "
                     + "RETURNS integer LANGUAGE sql AS 'SELECT a + b'");
+            // an overload: a routine of its own, told apart by its parameters and its specific name
+            s.execute("CREATE FUNCTION \"" + schemaName + "\".fn_add(a text, b text) "
+                    + "RETURNS text LANGUAGE sql AS 'SELECT a || b'");
             s.execute("CREATE PROCEDURE \"" + schemaName + "\".prc_noop() LANGUAGE sql AS 'SELECT 1'");
         }
 
         try {
             // 2. Snapshot via DatabaseService — pass the dialect as MetadataProvider so
             // the snapshot includes UNIQUE/CHECK constraints (PG-specific catalogs).
-            // PG's bulk-metadata queries scope to connection.getSchema() (defaults
-            // to "public") so point it at the test schema first.
-            connection.setSchema(schemaName);
+            // The connection stays on its current schema, public: the snapshot reads
+            // the keys and constraints of every schema its tables lie in.
             MetaInfo info = DB_SERVICE.createMetaInfo(connection, new PostgreSqlMetadataProvider());
 
             // 3. Load into a fresh CWM Catalog, scoped to the test schema.
             Catalog catalog = new CwmLoaderImpl().load(info,
-                    JdbcToCwmConfig.builder().schemas(schemaName).catalogName("RT").build());
+                    JdbcToCwmConfig.defaults().withCatalogName("RT")
+                            .withSelection(Selection.parse(RelationalRules.VOCABULARY, "schema:" + schemaName)));
 
             // 4. Structural assertions vs the original fixture.
             assertThat(catalog.getName()).isEqualTo("RT");
@@ -181,8 +183,8 @@ class JdbcToCwmLoaderRoundTripPgTest {
             assertThat(((SQLSimpleType) custMeta.getType()).getName()).isEqualToIgnoringCase("jsonb");
 
             // JDBC REMARKS land as typed CWM Descriptions on the elements.
-            assertThat(Descriptions.find(customers, CwmLoader.DESCRIPTION_TYPE_JDBC_REMARKS)).get().extracting(Description::getBody).isEqualTo("Customer master data");
-            assertThat(Descriptions.find(custEmail, CwmLoader.DESCRIPTION_TYPE_JDBC_REMARKS)).get().extracting(Description::getBody).isEqualTo("Unique customer email");
+            assertThat(Descriptions.find(customers, Descriptions.JDBC_REMARKS)).get().extracting(Description::getBody).isEqualTo("Customer master data");
+            assertThat(Descriptions.find(custEmail, Descriptions.JDBC_REMARKS)).get().extracting(Description::getBody).isEqualTo("Unique customer email");
 
             // Primary keys
             assertThat(PrimaryKeys.columns(Tables.findPrimaryKey(customers).orElseThrow())).extracting(Column::getName)
@@ -245,6 +247,7 @@ class JdbcToCwmLoaderRoundTripPgTest {
             assertThat(customers.getTrigger()).extracting(t -> t.getName()).contains("trg_audit");
             org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger loadedTrg = customers.getTrigger().stream()
                     .filter(t -> "trg_audit".equals(t.getName())).findFirst().orElseThrow();
+            assertThat(loadedTrg.eContainer()).as("the schema owns the trigger").isSameAs(customers.getNamespace());
             assertThat(loadedTrg.getActionStatement()).isNotNull();
             assertThat(loadedTrg.getActionStatement().getBody())
                     .as("loader stores the procedural source from pg_proc.prosrc").contains("audit")
@@ -266,15 +269,26 @@ class JdbcToCwmLoaderRoundTripPgTest {
             // and the defining query.
             View mv = Schemas.findView(loaded, "MV_CUSTOMER_EMAILS").orElseThrow();
             assertThat(mv.isIsReadOnly()).isTrue();
-            assertThat(mv.getTaggedValue()).anyMatch(tv -> CwmLoader.TAG_MATERIALIZED.equals(tv.getTag()));
+            assertThat(mv.getTaggedValue()).anyMatch(tv -> RelationalRules.MATERIALIZED_TAG.equals(tv.getTag()));
             assertThat(mv.getQueryExpression()).isNotNull();
             assertThat(mv.getQueryExpression().getBody()).containsIgnoringCase("EMAIL");
 
             // Routines: CWM Procedure with type function/procedure and body.
             List<Procedure> routines = loaded.getOwnedElement().stream().filter(Procedure.class::isInstance)
                     .map(Procedure.class::cast).toList();
-            assertThat(routines).extracting(Procedure::getName).contains("fn_add", "prc_noop");
-            Procedure fnAdd = routines.stream().filter(p -> "fn_add".equals(p.getName())).findFirst().orElseThrow();
+            assertThat(routines).extracting(Procedure::getName).contains("fn_add", "prc_noop")
+                    .as("the functions of the triggers are their bodies, not routines of their own")
+                    .doesNotContain("trg_audit_fn", "trg_status_fn");
+            List<Procedure> fnAdds = routines.stream().filter(p -> "fn_add".equals(p.getName())).toList();
+            assertThat(fnAdds).as("both overloads, each with its parameters").hasSize(2)
+                    .allSatisfy(f -> assertThat(f.getParameter()).extracting(p -> p.getName())
+                            .containsExactly("a", "b"))
+                    .extracting(f -> f.getParameter().get(0).getType().getName())
+                    .containsExactlyInAnyOrder("int4", "text");
+            assertThat(fnAdds).extracting(RelationalNames::specificName).as("the specific names tell them apart")
+                    .allMatch(n -> n.startsWith("fn_add_")).doesNotHaveDuplicates();
+            Procedure fnAdd = fnAdds.stream().filter(f -> "int4".equals(f.getParameter().get(0).getType().getName()))
+                    .findFirst().orElseThrow();
             assertThat(fnAdd.getType()).isEqualTo(ProcedureType.FUNCTION);
             assertThat(fnAdd.getBody()).isNotNull();
             assertThat(fnAdd.getBody().getBody()).contains("a + b");
@@ -294,12 +308,10 @@ class JdbcToCwmLoaderRoundTripPgTest {
             // SQL so it survives the second round-trip.
             String reSchemaName = schemaName + "_re";
             loaded.setName(reSchemaName);
-            List<String> reDdl = new DdlGeneratorFactoryImpl().create(dialect).createSchema(loaded,
-                    EnumSet.complementOf(EnumSet.of(Feature.TRIGGER)));
+            List<String> reDdl = new DdlGeneratorFactoryImpl().create(dialect).createSchema(loaded);
             RoundTripFixture.executeAll(connection, reDdl);
             // Re-snapshot via the daanse API and assert the re-emitted schema
             // exposes the same shape — no raw JDBC metadata reads.
-            connection.setSchema(reSchemaName);
             MetaInfo reInfo = DB_SERVICE.createMetaInfo(connection, new PostgreSqlMetadataProvider());
             assertThat(reInfo.structureInfo().tables().stream().map(td -> td.table())
                     .filter(t -> reSchemaName.equals(

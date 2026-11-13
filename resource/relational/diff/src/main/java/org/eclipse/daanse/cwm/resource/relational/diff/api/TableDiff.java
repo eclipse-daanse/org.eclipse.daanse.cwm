@@ -13,6 +13,12 @@
  */
 package org.eclipse.daanse.cwm.resource.relational.diff.api;
 
+import static org.eclipse.daanse.cwm.resource.relational.diff.api.Lines.ONLY_LEFT;
+import static org.eclipse.daanse.cwm.resource.relational.diff.api.Lines.ONLY_RIGHT;
+import static org.eclipse.daanse.cwm.resource.relational.diff.api.Lines.differs;
+import static org.eclipse.daanse.cwm.resource.relational.diff.api.Lines.line;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.CheckConstraint;
@@ -89,6 +95,53 @@ public record TableDiff(Table oldTable, Table newTable,
         constraintsRenamed = List.copyOf(constraintsRenamed);
         triggersAdded = List.copyOf(triggersAdded);
         triggersDropped = List.copyOf(triggersDropped);
+    }
+
+    /**
+     * One readable line per difference of this table, as {@link SchemaDiff#lines()} writes them; a
+     * changed column gives a line per aspect.
+     */
+    public List<String> lines() {
+        List<String> lines = new ArrayList<>();
+        columnsDropped.forEach(c -> lines.add(line(c, ONLY_LEFT)));
+        columnsAdded.forEach(c -> lines.add(line(c, ONLY_RIGHT)));
+        columnsRenamed.forEach(r -> lines.add(line(r.oldColumn(),
+                differs("name", r.oldColumn().getName(), r.newColumn().getName()))));
+        for (ColumnChange change : columnsChanged) {
+            Column left = change.oldColumn();
+            Column right = change.newColumn();
+            for (ColumnChange.Aspect aspect : change.aspects()) {
+                lines.add(line(left, switch (aspect) {
+                case TYPE -> differs("type", Lines.type(left.getType()), Lines.type(right.getType()));
+                case SIZE -> differs("size", Lines.size(left), Lines.size(right));
+                case NULLABILITY -> differs("nullability", Lines.nullability(left), Lines.nullability(right));
+                case DEFAULT -> differs("default", defaultOf(left), defaultOf(right));
+                }));
+            }
+        }
+        if (pkChange != null) {
+            if (pkChange.newPk() == null) {
+                lines.add(line(pkChange.oldPk(), ONLY_LEFT));
+            } else if (pkChange.oldPk() == null) {
+                lines.add(line(pkChange.newPk(), ONLY_RIGHT));
+            } else {
+                lines.add(line(pkChange.oldPk(), differs("columns", Lines.columns(pkChange.oldPk().getFeature()),
+                        Lines.columns(pkChange.newPk().getFeature()))));
+            }
+        }
+        List.of(uniqueConstraintsDropped, checksDropped, foreignKeysDropped, indexesDropped, triggersDropped)
+                .forEach(dropped -> dropped.forEach(e -> lines.add(line(e, ONLY_LEFT))));
+        List.of(uniqueConstraintsAdded, checksAdded, foreignKeysAdded, indexesAdded, triggersAdded)
+                .forEach(added -> added.forEach(e -> lines.add(line(e, ONLY_RIGHT))));
+        indexesRenamed.forEach(r -> lines.add(line(r.oldIndex(),
+                differs("name", Lines.simpleName(r.oldIndex()), Lines.simpleName(r.newIndex())))));
+        constraintsRenamed.forEach(r -> lines.add(line(r.oldConstraint(),
+                differs("name", Lines.simpleName(r.oldConstraint()), Lines.simpleName(r.newConstraint())))));
+        return lines;
+    }
+
+    private static String defaultOf(Column column) {
+        return column.getInitialValue() == null ? null : column.getInitialValue().getBody();
     }
 
     /** {@code true} iff nothing about this table changed. */

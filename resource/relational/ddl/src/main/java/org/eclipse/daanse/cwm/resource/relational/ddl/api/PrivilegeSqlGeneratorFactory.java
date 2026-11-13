@@ -18,5 +18,9 @@ import org.eclipse.daanse.sql.dialect.api.Dialect;
 /** Creates {@link PrivilegeSqlGenerator}s for a dialect. Registered as an OSGi service. */
 public interface PrivilegeSqlGeneratorFactory {
 
+    /** Generator for {@code dialect} with default {@link DdlSettings}. */
     PrivilegeSqlGenerator create(Dialect dialect);
+
+    /** Generator for {@code dialect} that names tables and routines as {@code settings} say. */
+    PrivilegeSqlGenerator create(Dialect dialect, DdlSettings settings);
 }

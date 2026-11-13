@@ -12,11 +12,8 @@ package org.eclipse.daanse.cwm.resource.relational.ddl.internal.support;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.Feature;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
@@ -31,40 +28,53 @@ import org.eclipse.daanse.sql.dialect.api.Dialect;
 /**
  * One row of cross-dialect test parameterization: the {@code DatabaseProvider}
  * id plus the per-dialect knobs that the otherwise-identical test bodies need
- * (schema name + scoping, the feature subset that lands cleanly, and the
+ * (schema name + scoping, the settings a script lands with, and the
  * trigger profile). Activating yields a live {@link ActiveDatabase} from the
- * {@code jdbc.datasource.testkit} ServiceLoader; H2 needs no Docker, the
- * container ones throw on {@link #activate()} when Docker is unavailable so the
- * caller can skip.
+ * {@code jdbc.datasource.testkit} ServiceLoader, or for DuckDB a file of its
+ * own; H2 and DuckDB need no Docker, the container ones throw on
+ * {@link #activate()} when Docker is unavailable so the caller can skip.
  */
 public enum DialectProfile {
 
     /** In-process; no triggers (H2 wants Java class bodies). */
-    H2("h2", "RT_H2", true, true, false, null, null, null, null, null),
+    H2("h2", "RT_H2", true, false, null, null, null, null, null),
 
-    POSTGRES("postgres", "rt_pg", true, true, true,
+    POSTGRES("postgres", "rt_pg", true, true,
             "BEGIN RAISE NOTICE 'audit'; RETURN NEW; END;", "CREATE OR REPLACE FUNCTION", "EXECUTE FUNCTION",
             ConditionTimingType.BEFORE, EventManipulationType.INSERT),
 
     /** Schema == database "rt" (pre-created by the provider); never dropped. */
-    MARIADB("mariadb", "rt", false, false, true,
+    MARIADB("mariadb", "rt", false, true,
             "BEGIN SET @audit_count = COALESCE(@audit_count, 0) + 1; END", "CREATE PROCEDURE", "CALL ",
             ConditionTimingType.BEFORE, EventManipulationType.INSERT),
 
-    /** MSSQL has no BEFORE triggers — AFTER INSERT. createMetaInfo without dialect. */
-    MSSQL("mssql", "rt_mssql", true, false, true,
+    /**
+     * Schema == database: the provider binds its connection to a database of its own and lets the
+     * user create others, so the test schema is created and dropped as a database.
+     */
+    MYSQL("mysql", "rt_mysql", true, true,
+            "BEGIN SET @audit_count = COALESCE(@audit_count, 0) + 1; END", "CREATE PROCEDURE", "CALL ",
+            ConditionTimingType.BEFORE, EventManipulationType.INSERT),
+
+    /** MSSQL has no BEFORE triggers — AFTER INSERT. */
+    MSSQL("mssql", "rt_mssql", true, true,
             "BEGIN SET NOCOUNT ON; END", "CREATE OR ALTER PROCEDURE", "AS EXEC ",
             ConditionTimingType.AFTER, EventManipulationType.INSERT),
 
     /** Schema == user "RT"; CREATE SCHEMA is skipped (Oracle ties it to a user). */
-    ORACLE("oracle", "RT", false, false, true,
+    ORACLE("oracle", "RT", false, true,
             "BEGIN NULL; END;", "CREATE OR REPLACE PROCEDURE", null,
-            ConditionTimingType.BEFORE, EventManipulationType.INSERT);
+            ConditionTimingType.BEFORE, EventManipulationType.INSERT),
+
+    /**
+     * In-process, in a file; no triggers. Its foreign keys go into CREATE TABLE, as it cannot add
+     * one to an existing table.
+     */
+    DUCKDB("duckdb", "RT_DUCKDB", true, false, null, null, null, null, null);
 
     private final String providerId;
     private final String schemaName;
     private final boolean ownsSchemaNamespace; // can CREATE/DROP the schema as a namespace
-    private final boolean setSchemaBeforeMeta;
     private final boolean supportsTriggers;
     private final String triggerBody;
     private final String triggerProcPrefix;
@@ -72,13 +82,12 @@ public enum DialectProfile {
     private final ConditionTimingType triggerTiming;
     private final EventManipulationType triggerEvent;
 
-    DialectProfile(String providerId, String schemaName, boolean ownsSchemaNamespace, boolean setSchemaBeforeMeta,
-            boolean supportsTriggers, String triggerBody, String triggerProcPrefix, String triggerCallSnippet,
+    DialectProfile(String providerId, String schemaName, boolean ownsSchemaNamespace, boolean supportsTriggers,
+            String triggerBody, String triggerProcPrefix, String triggerCallSnippet,
             ConditionTimingType triggerTiming, EventManipulationType triggerEvent) {
         this.providerId = providerId;
         this.schemaName = schemaName;
         this.ownsSchemaNamespace = ownsSchemaNamespace;
-        this.setSchemaBeforeMeta = setSchemaBeforeMeta;
         this.supportsTriggers = supportsTriggers;
         this.triggerBody = triggerBody;
         this.triggerProcPrefix = triggerProcPrefix;
@@ -97,6 +106,30 @@ public enum DialectProfile {
 
     public boolean supportsTriggers() {
         return supportsTriggers;
+    }
+
+    /**
+     * Whether the database keeps a schema in the catalog slot of JDBC, as MariaDB and MySQL do: a
+     * schema there is a database.
+     */
+    public boolean schemasAreCatalogs() {
+        return this == MARIADB || this == MYSQL;
+    }
+
+    /**
+     * Whether the DDL writes the comments on a view and its columns: where the dialect names a view a
+     * view in the statement of its comment, as SQL Server's does.
+     */
+    public boolean commentsOnViews() {
+        return this == MSSQL;
+    }
+
+    /**
+     * Whether a migration can add a constraint to a table with ALTER TABLE or drop one. DuckDB can do
+     * neither: it declares its constraints in CREATE TABLE only.
+     */
+    public boolean altersConstraints() {
+        return this != DUCKDB;
     }
 
     public String triggerBody() {
@@ -121,44 +154,36 @@ public enum DialectProfile {
 
     /** Activate the underlying provider (throws when its Docker engine is absent). */
     public ActiveDatabase activate() {
+        if (this == DUCKDB) {
+            return DuckDbDatabase.activate();
+        }
         return DatabaseProvider.byId(providerId).activate();
     }
 
-    /** Features that create cleanly here: everything except triggers (+ SCHEMA where the dialect owns no namespace). */
-    public Set<Feature> nonTriggerFeatures() {
-        EnumSet<Feature> s = EnumSet.complementOf(EnumSet.of(Feature.TRIGGER));
-        if (!ownsSchemaNamespace) {
-            s.remove(Feature.SCHEMA);
-        }
-        return s;
+    /**
+     * The settings a script for this database is written with: no {@code CREATE SCHEMA} where the
+     * dialect owns no schema namespace (Oracle ties a schema to a user, MariaDB to a database).
+     */
+    public DdlSettings settings() {
+        return DdlSettings.defaults().withCreateSchema(ownsSchemaNamespace);
     }
 
-    /** Features for a triggered create: everything (minus SCHEMA where unsupported). */
-    public Set<Feature> allFeatures() {
-        EnumSet<Feature> s = EnumSet.allOf(Feature.class);
-        if (!ownsSchemaNamespace) {
-            s.remove(Feature.SCHEMA);
-        }
-        return s;
+    /** The create script of {@code model} for this database. */
+    public List<String> create(Dialect dialect, Schema model) {
+        return new DdlGeneratorFactoryImpl().create(dialect, settings()).createSchema(model);
     }
 
-    /** Point the connection at the test schema before metadata reads, where the dialect needs it. */
+    /** Scope the connection before metadata reads, where the dialect would list more than the test schema. */
     public void prepareForMetadata(Connection c) throws SQLException {
-        if (setSchemaBeforeMeta) {
-            c.setSchema(schemaName);
-        }
-        if (this == MARIADB) {
-            // MariaDB puts the database in the catalog slot; without scoping, the
-            // snapshot also returns performance_schema/information_schema tables.
+        if (schemasAreCatalogs()) {
+            // MariaDB and MySQL put the database in the catalog slot; without scoping,
+            // the snapshot also returns performance_schema/information_schema tables.
             c.setCatalog(schemaName);
         }
     }
 
-    /** Snapshot the live structure; SQL Server intentionally uses the plain DatabaseMetaData path. */
+    /** Snapshot the live structure through the database's metadata provider, as the CWM import does. */
     public MetaInfo snapshot(DatabaseService service, Connection c, Dialect dialect) throws SQLException {
-        if (this == MSSQL) {
-            return service.createMetaInfo(c);
-        }
         var provider = org.eclipse.daanse.sql.jdbc.metadata.MetadataProviders.forConnection(c);
         return provider.isPresent() ? service.createMetaInfo(c, provider.get()) : service.createMetaInfo(c);
     }
@@ -169,10 +194,10 @@ public enum DialectProfile {
      * All failures are swallowed — each dialect runs against its own database so
      * leftovers never cross-contaminate, and fixtures emit {@code IF NOT EXISTS}.
      */
-    public void cleanup(Connection c, Schema model, Dialect dialect, Set<Feature> features) {
+    public void cleanup(Connection c, Schema model, Dialect dialect) {
         try {
-            List<String> drop = new DdlGeneratorFactoryImpl().create(dialect, DdlSettings.defaults().withCascade(true))
-                    .dropSchema(model, features);
+            List<String> drop = new DdlGeneratorFactoryImpl().create(dialect, settings().withCascade(true))
+                    .dropSchema(model);
             try (Statement s = c.createStatement()) {
                 for (String stmt : drop) {
                     try {

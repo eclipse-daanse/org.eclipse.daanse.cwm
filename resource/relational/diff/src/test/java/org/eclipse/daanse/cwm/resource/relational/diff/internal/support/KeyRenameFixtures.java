@@ -68,6 +68,7 @@ public final class KeyRenameFixtures {
         ix.setSpannedClass(customers);
         SQLIndexColumn ixc = RF.createSQLIndexColumn();
         ixc.setFeature(cName);
+        ixc.setIsAscending(true);
         ix.getIndexedFeature().add(ixc);
         schema.getOwnedElement().add(ix);
 

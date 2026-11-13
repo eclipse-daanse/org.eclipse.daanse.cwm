@@ -13,7 +13,9 @@
  */
 /**
  * JDBC &rarr; CWM load API. A {@link CwmLoader} builds a CWM relational
- * {@code Catalog} from a JDBC metadata snapshot, scoped by {@link JdbcToCwmConfig}.
+ * {@code Catalog} from a JDBC metadata snapshot, cut to the selection of a
+ * {@link JdbcToCwmConfig}; {@link CatalogPartLoader}s add further parts of the
+ * catalog, such as the privileges.
  */
 @org.osgi.annotation.bundle.Export
 @org.osgi.annotation.versioning.Version("0.0.1")

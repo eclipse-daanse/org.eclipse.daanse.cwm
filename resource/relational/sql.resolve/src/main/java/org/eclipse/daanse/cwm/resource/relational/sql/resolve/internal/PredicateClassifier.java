@@ -18,6 +18,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -275,6 +276,6 @@ final class PredicateClassifier {
     }
 
     private static String lower(String s) {
-        return s == null || s.isBlank() ? null : s.toLowerCase();
+        return s == null || s.isBlank() ? null : s.toLowerCase(Locale.ROOT);
     }
 }

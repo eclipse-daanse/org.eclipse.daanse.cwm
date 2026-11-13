@@ -51,8 +51,7 @@ class DiffViewReplaceParameterizedTest {
             Schema before = ViewFixtures.build(schemaName, dialect, List.of("ID", "EMAIL"));
             Schema after = ViewFixtures.build(schemaName, dialect, List.of("ID", "EMAIL", "NAME"));
             try {
-                executeAll(c, new DdlGeneratorFactoryImpl().create(dialect).createSchema(before,
-                        profile.nonTriggerFeatures()));
+                executeAll(c, profile.create(dialect, before));
 
                 List<ChangeOp> ops = ChangePlanner.create().plan(new SchemaDifferImpl().diff(before, after));
                 assertThat(ops).singleElement().isInstanceOf(ChangeOp.ReplaceView.class);
@@ -64,7 +63,7 @@ class DiffViewReplaceParameterizedTest {
                     assertThat(rs.getMetaData().getColumnCount()).isEqualTo(3);
                 }
             } finally {
-                profile.cleanup(c, after, dialect, profile.allFeatures());
+                profile.cleanup(c, after, dialect);
             }
         }
     }

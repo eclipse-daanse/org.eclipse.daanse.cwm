@@ -19,7 +19,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.daanse.cwm.resource.relational.diff.internal.support.MigrationVerifier;
@@ -33,8 +32,8 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ReferentialRuleType;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.Feature;
 import org.eclipse.daanse.sql.jdbc.api.DatabaseService;
 import org.eclipse.daanse.sql.jdbc.api.meta.MetaInfo;
 import org.eclipse.daanse.sql.jdbc.impl.DatabaseServiceImpl;
@@ -91,10 +90,8 @@ class CwmDiffFkCyclePgTest {
 
         try {
             // Create both sides of the cycle.
-            executeAll(new DdlGeneratorFactoryImpl().create(dialect).createSchema(oldSchema,
-                    EnumSet.complementOf(EnumSet.of(Feature.TRIGGER))));
+            executeAll(new DdlGeneratorFactoryImpl().create(dialect).createSchema(oldSchema));
 
-            connection.setSchema(schemaName);
             MetaInfo before = DB_SERVICE.createMetaInfo(connection, new org.eclipse.daanse.sql.jdbc.metadata.PostgreSqlMetadataProvider());
             ImportedKeyFacts userFk = MigrationVerifier
                     .foreignKeysOf(before.structureInfo(), schemaName, "USERS").get(0);
@@ -103,10 +100,11 @@ class CwmDiffFkCyclePgTest {
                     .foreignKeysOf(before.structureInfo(), schemaName, "ROLES").get(0);
             assertThat(roleFk.referencedTable()).isEqualTo("USERS");
 
-            // Migration: drop ROLES (along with the cycle FKs). Cascade-on-drop is
+            // Migration: drop ROLES (along with the cycle FKs). Cascade on drop is
             // required because USERS still has the FK to ROLES.
             SchemaDiff diff = new SchemaDifferImpl().diff(oldSchema, newSchema);
-            List<String> migration = new MigrationEmitterImpl(new DdlGeneratorFactoryImpl()).emit(ChangePlanner.create().plan(diff), dialect, /* cascadeOnDrop */ true);
+            List<String> migration = new MigrationEmitterImpl(new DdlGeneratorFactoryImpl())
+                    .emit(ChangePlanner.create().plan(diff), dialect, DdlSettings.defaults().withCascade(true));
             executeAll(migration);
 
             MetaInfo after = DB_SERVICE.createMetaInfo(connection, new org.eclipse.daanse.sql.jdbc.metadata.PostgreSqlMetadataProvider());

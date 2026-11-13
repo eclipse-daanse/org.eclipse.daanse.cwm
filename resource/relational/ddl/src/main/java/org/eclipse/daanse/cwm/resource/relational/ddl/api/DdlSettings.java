@@ -13,45 +13,86 @@
  */
 package org.eclipse.daanse.cwm.resource.relational.ddl.api;
 
+import java.util.Objects;
+
+import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
+
 /**
- * Instance configuration for a {@link DdlGenerator}. Immutable; use
- * {@link #defaults()} plus the {@code with*} methods to derive a variant.
+ * How a {@link DdlGenerator} writes what the model holds. What it writes is the
+ * model's: to leave something out, cut the model to a selection first. Never
+ * changes; start from {@link #defaults()} and derive with the {@code with}
+ * methods.
  *
- * <ul>
- * <li>{@code includeSchema} — qualify table references as {@code schema.table}
- * ({@code true}, default) or emit bare {@code table} names ({@code false}, e.g.
- * for connection-scoped databases). The catalog is never emitted.</li>
- * <li>{@code ifNotExists} — emit {@code CREATE ... IF NOT EXISTS} /
- * {@code DROP ... IF EXISTS} where the dialect supports it.</li>
- * <li>{@code cascade} — append {@code CASCADE} to table/schema drops (ignored by
- * dialects that don't support it).</li>
- * <li>{@code commentType} — the {@code Description} type that holds the
- * database comment of tables and columns (default
- * {@link #COMMENT_TYPE_JDBC_REMARKS}); {@code null} writes no comments.</li>
- * </ul>
+ * @param includeSchema {@code true}: tables, views, indexes, triggers and the
+ *                      targets of grants are written {@code schema.name};
+ *                      {@code false}: bare, for the schema the connection
+ *                      uses. A script then covers one schema; a table of
+ *                      another schema it refers to is still qualified. The
+ *                      catalog is never written.
+ * @param createSchema  whether {@code CREATE SCHEMA} (and in the drop script
+ *                      {@code DROP SCHEMA}) is written for the named schemas;
+ *                      {@code false} where the schema exists already, such as
+ *                      an Oracle user. Only with {@code includeSchema}: bare
+ *                      names do not go into the schema.
+ * @param ifNotExists   {@code CREATE … IF NOT EXISTS} for schemas, tables and
+ *                      indexes, and {@code DROP … IF EXISTS} for everything
+ *                      dropped, where the dialect has the clause
+ * @param cascade       {@code CASCADE} on dropped tables and schemas, where the
+ *                      dialect has it
+ * @param commentType   the {@code type} of the descriptions written as table
+ *                      and column comments; the type the reading side gives
+ *                      the comments of a database. Leave comments out with
+ *                      the selection ({@code !is:comment}).
+ * @param strict        what to do with what the dialect cannot write as the
+ *                      model holds it, such as a materialized view where the
+ *                      database has none, or a descending index column where
+ *                      it keeps every column ascending. {@code false}: it is
+ *                      written plainer or left out, as the generator says for
+ *                      each such case, and the log names every case.
+ *                      {@code true}: nothing is written; the generation fails
+ *                      with an {@link UnwritableException} that names every
+ *                      case of the run ({@link Unwritable}).
  */
-public record DdlSettings(boolean includeSchema, boolean ifNotExists, boolean cascade, String commentType) {
+public record DdlSettings(boolean includeSchema, boolean createSchema, boolean ifNotExists, boolean cascade,
+        String commentType, boolean strict) {
 
-    /** The Description type the JDBC loader writes table and column {@code REMARKS} into. */
-    public static final String COMMENT_TYPE_JDBC_REMARKS = "JDBC-REMARKS";
+    public DdlSettings {
+        Objects.requireNonNull(commentType, "commentType");
+        if (commentType.isBlank()) {
+            throw new IllegalArgumentException("commentType must not be blank; leave comments out with !is:comment");
+        }
+    }
 
+    /**
+     * Qualified names, {@code CREATE SCHEMA}, {@code IF [NOT] EXISTS}, no
+     * {@code CASCADE}, the comments as {@link Descriptions#JDBC_REMARKS}, and
+     * what the dialect cannot write written plainer or left out, not strict.
+     */
     public static DdlSettings defaults() {
-        return new DdlSettings(true, true, false, COMMENT_TYPE_JDBC_REMARKS);
+        return new DdlSettings(true, true, true, false, Descriptions.JDBC_REMARKS, false);
     }
 
     public DdlSettings withIncludeSchema(boolean value) {
-        return new DdlSettings(value, ifNotExists, cascade, commentType);
+        return new DdlSettings(value, createSchema, ifNotExists, cascade, commentType, strict);
+    }
+
+    public DdlSettings withCreateSchema(boolean value) {
+        return new DdlSettings(includeSchema, value, ifNotExists, cascade, commentType, strict);
     }
 
     public DdlSettings withIfNotExists(boolean value) {
-        return new DdlSettings(includeSchema, value, cascade, commentType);
+        return new DdlSettings(includeSchema, createSchema, value, cascade, commentType, strict);
     }
 
     public DdlSettings withCascade(boolean value) {
-        return new DdlSettings(includeSchema, ifNotExists, value, commentType);
+        return new DdlSettings(includeSchema, createSchema, ifNotExists, value, commentType, strict);
     }
 
     public DdlSettings withCommentType(String type) {
-        return new DdlSettings(includeSchema, ifNotExists, cascade, type);
+        return new DdlSettings(includeSchema, createSchema, ifNotExists, cascade, type, strict);
+    }
+
+    public DdlSettings withStrict(boolean value) {
+        return new DdlSettings(includeSchema, createSchema, ifNotExists, cascade, commentType, value);
     }
 }

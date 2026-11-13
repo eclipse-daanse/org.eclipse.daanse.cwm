@@ -23,7 +23,6 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Tables;
-import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.MigrationEmitter;
 
@@ -32,7 +31,7 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.MigrationEmitter;
  * create-changelog — createTable (PK/NOT NULL/default inline) per table,
  * then indexes, then all foreign keys collected after every table exists
  * (FK cycles), then views, then triggers, then the table and column
- * comments ({@link DdlSettings#COMMENT_TYPE_JDBC_REMARKS} Descriptions).
+ * comments ({@link Descriptions#JDBC_REMARKS} Descriptions).
  * Delegates the per-element rendering to the same change mapping the delta
  * writer uses, so both outputs stay consistent.
  */
@@ -75,7 +74,7 @@ public final class LiquibaseSnapshotWriter {
     }
 
     private static void comment(Table table, ModelElement element, List<ChangeOp> ops) {
-        Descriptions.find(element, DdlSettings.COMMENT_TYPE_JDBC_REMARKS)
+        Descriptions.find(element, Descriptions.JDBC_REMARKS)
                 .ifPresent(d -> ops.add(new ChangeOp.SetComment(table, element, d.getBody())));
     }
 }
