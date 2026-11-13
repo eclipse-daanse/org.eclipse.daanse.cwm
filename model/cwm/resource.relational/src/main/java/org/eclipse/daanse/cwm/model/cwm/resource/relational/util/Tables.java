@@ -13,6 +13,7 @@
  */
 package org.eclipse.daanse.cwm.model.cwm.resource.relational.util;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.cwm.model.cwm.foundation.keysindexes.UniqueKey;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.CheckConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
@@ -78,6 +80,24 @@ public final class Tables {
     /** Stream twin of {@link #foreignKeys}. */
     public static Stream<ForeignKey> foreignKeyStream(Table table) {
         return Namespaces.ownedElementStream(table, ForeignKey.class).distinct();
+    }
+
+    /**
+     * The check constraints of {@code table}: those it owns, then those that
+     * constrain one of its columns ({@code Constraint.constrainedElement})
+     * wherever they are owned; each once, in declaration order.
+     */
+    public static List<CheckConstraint> checkConstraints(Table table) {
+        List<CheckConstraint> checks = new ArrayList<>();
+        if (table == null) {
+            return checks;
+        }
+        Namespaces.ownedElementStream(table, CheckConstraint.class).forEach(checks::add);
+        for (Column column : ColumnSets.columns(table)) {
+            column.getConstraint().stream().filter(CheckConstraint.class::isInstance).map(CheckConstraint.class::cast)
+                    .filter(c -> !checks.contains(c)).forEach(checks::add);
+        }
+        return checks;
     }
 
     /**

@@ -11,6 +11,7 @@ package org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
@@ -33,9 +34,10 @@ import org.eclipse.emf.ecore.xmi.XMIResource;
  *
  * <p>Path segments come from {@code core::ModelElement.name}; unnamed elements fall
  * back to their containing reference name (plus an index inside many-valued
- * references with more than one child); a {@code TaggedValue} uses its tag. Ids are
- * sanitized to XML-NCName-friendly characters and de-duplicated with a numeric
- * suffix per resource.</p>
+ * references with more than one child), an unnamed root to the name of its class
+ * in lower case, the same in every default locale; a {@code TaggedValue} uses its
+ * tag. Ids are sanitized to XML-NCName-friendly characters and de-duplicated with
+ * a numeric suffix per resource.</p>
  */
 public final class SpeakingIds {
 
@@ -82,7 +84,7 @@ public final class SpeakingIds {
         }
         EObject container = object.eContainer();
         if (container == null || object.eContainingFeature() == null) {
-            return object.eClass().getName().toLowerCase();
+            return object.eClass().getName().toLowerCase(Locale.ROOT);
         }
         String feature = object.eContainingFeature().getName();
         Object value = container.eGet(object.eContainingFeature());

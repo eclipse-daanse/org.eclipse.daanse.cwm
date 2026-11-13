@@ -65,6 +65,15 @@ public final class SQLIndexes {
         return spanningStream(table).filter(SQLIndex::isIsUnique);
     }
 
+    /**
+     * Whether {@code feature} sorts its column descending: where {@code isAscending} is false. In the
+     * Ecore mapping the attribute reads false also where nothing set it, so build index columns with
+     * {@link #indexColumn}, which says ascending, as SQL sorts unless told otherwise.
+     */
+    public static boolean isDescending(IndexedFeature feature) {
+        return feature != null && !feature.isIsAscending();
+    }
+
     /** Columns referenced by {@code idx}, in index column order. */
     public static List<Column> columns(SQLIndex idx) {
         return columnStream(idx).toList();
@@ -93,10 +102,11 @@ public final class SQLIndexes {
         return idx;
     }
 
-    /** The link from an index to one of its columns. */
+    /** The link from an index to one of its columns, sorted ascending as SQL sorts unless told otherwise. */
     public static SQLIndexColumn indexColumn(Column column) {
         SQLIndexColumn ic = RelationalFactory.eINSTANCE.createSQLIndexColumn();
         ic.setFeature(column);
+        ic.setIsAscending(true);
         return ic;
     }
 }

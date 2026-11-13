@@ -16,6 +16,7 @@ package org.eclipse.daanse.cwm.model.cwm.resource.relational.util;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -150,7 +151,7 @@ public final class QueryColumnSets {
                 anyUnnamed = true;
             } else {
                 anyNamed = true;
-                if (!names.add(p.getName().toLowerCase())) {
+                if (!names.add(p.getName().toLowerCase(Locale.ROOT))) {
                     warnings.add("duplicate parameter name: " + p.getName());
                 }
             }

@@ -31,6 +31,15 @@ import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Namespaces;
 
 public final class Descriptions {
 
+    /**
+     * The {@code type} of the descriptions that hold the comment a database
+     * keeps on a table, view, column or routine ({@code COMMENT ON},
+     * {@code REMARKS} in JDBC metadata). CWM leaves the type of a description
+     * to its users; reading a database writes its comments with this type, and
+     * writing DDL reads them back by it unless told another.
+     */
+    public static final String JDBC_REMARKS = "JDBC-REMARKS";
+
     private Descriptions() {
     }
 

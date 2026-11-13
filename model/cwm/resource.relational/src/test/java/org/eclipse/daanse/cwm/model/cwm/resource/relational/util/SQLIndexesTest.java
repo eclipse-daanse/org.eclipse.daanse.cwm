@@ -139,4 +139,17 @@ class SQLIndexesTest {
         assertThat(SQLIndexes.columns(idx)).containsExactly(b, a);
         assertThat(SQLIndexes.columns(null)).isEmpty();
     }
+
+    @Test
+    void anIndexColumnSortsAscendingUnlessTheModelSaysDescending() {
+        Schema schema = RF.createSchema();
+        Table emp = table(schema, "EMP", "A");
+        SQLIndexColumn column = SQLIndexes.indexColumn((Column) emp.getFeature().get(0));
+
+        assertThat(column.isIsAscending()).isTrue();
+        assertThat(SQLIndexes.isDescending(column)).isFalse();
+        column.setIsAscending(false);
+        assertThat(SQLIndexes.isDescending(column)).isTrue();
+        assertThat(SQLIndexes.isDescending(RF.createSQLIndexColumn())).as("unset reads false").isTrue();
+    }
 }

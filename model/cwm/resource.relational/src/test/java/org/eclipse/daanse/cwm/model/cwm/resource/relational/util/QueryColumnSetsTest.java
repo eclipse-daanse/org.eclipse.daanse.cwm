@@ -15,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.Parameter;
@@ -75,6 +76,25 @@ class QueryColumnSetsTest {
         assertThat(warnings).anyMatch(w -> w.contains("duplicate parameter name"));
         assertThat(warnings).anyMatch(w -> w.contains("PDK_IN"));
         assertThat(warnings).anyMatch(w -> w.contains("mix of named and unnamed"));
+    }
+
+    /**
+     * Names that differ in case only are one name, also in a Turkish default locale, where
+     * {@code "I"} lower-cases to a dotless {@code "ı"}.
+     */
+    @Test
+    void checkConvention_comparesNamesWithoutCase_inATurkishLocaleToo() {
+        Locale before = Locale.getDefault();
+        Locale.setDefault(Locale.forLanguageTag("tr-TR"));
+        try {
+            QueryColumnSet qcs = QueryColumnSets.create("q", "select 1");
+            QueryColumnSets.addParameter(qcs, QueryColumnSets.inParameter("ID", SQLSimpleTypes.Sql99.integerType()));
+            QueryColumnSets.addParameter(qcs, QueryColumnSets.inParameter("id", SQLSimpleTypes.Sql99.integerType()));
+
+            assertThat(QueryColumnSets.checkConvention(qcs)).containsExactly("duplicate parameter name: id");
+        } finally {
+            Locale.setDefault(before);
+        }
     }
 
     /**

@@ -22,7 +22,7 @@ import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.Procedu
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.RolePrivilege;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.TablePrivilege;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.TablePrivilegeAction;
-import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Stereotype;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.util.PrivilegeModelValidator;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.util.PrivilegeStereotypes;
 import org.eclipse.daanse.cwm.resource.relational.load.privilege.api.PrivilegeLoadResult;
@@ -93,25 +93,24 @@ class PrivilegeLoaderRoundTripPgTest {
             s.execute("GRANT USAGE ON SEQUENCE \"" + schemaName + "\".\"SEQ_ORDERS\" TO \"" + roleName + "\"");
         }
 
-        // Der PG-Provider sammelt Privilegien fuer das aktuelle Schema der Connection.
-        connection.setSchema(schemaName);
+        // Die Connection bleibt im Schema public: der Snapshot liest die Privilegien jedes Schemas seiner Tabellen.
         MetaInfo info = DB_SERVICE.createMetaInfo(connection, new PostgreSqlMetadataProvider());
         Catalog catalog = new CwmLoaderImpl().load(info, JdbcToCwmConfig.all());
         PrivilegeLoadResult result = new PrivilegeLoaderImpl().load(info, catalog);
         List<ResponsibleParty> parties = result.parties();
-        List<Stereotype> stereotypes = result.stereotypes();
+        Package loaded = LoadedParties.holding(result);
 
         assertThat(PrivilegeModelValidator.validateAll(parties)).isEmpty();
 
         // Principals: unprivilegierte Rolle erscheint; Marker via Stereotype, nicht Text.
-        List<String> roleNames = PrivilegeStereotypes.databaseRoles(stereotypes).stream()
+        List<String> roleNames = PrivilegeStereotypes.databaseRoles(loaded).stream()
                 .map(ResponsibleParty::getName).toList();
         assertThat(roleNames).contains(roleName, "grant_rt_parent", "grant_rt_unused");
         ResponsibleParty unused = parties.stream()
                 .filter(p -> "grant_rt_unused".equals(p.getName())).findFirst().orElseThrow();
         assertThat(unused.getOwnedElement()).isEmpty();
         // Der Login-User des Containers ist als databaseUser markiert.
-        assertThat(PrivilegeStereotypes.databaseUsers(stereotypes)).isNotEmpty();
+        assertThat(PrivilegeStereotypes.databaseUsers(loaded)).isNotEmpty();
 
         ResponsibleParty reader = parties.stream()
                 .filter(p -> roleName.equals(p.getName()))

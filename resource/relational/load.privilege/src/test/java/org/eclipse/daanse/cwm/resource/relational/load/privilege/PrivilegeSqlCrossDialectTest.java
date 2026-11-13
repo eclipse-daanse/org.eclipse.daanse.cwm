@@ -77,10 +77,11 @@ class PrivilegeSqlCrossDialectTest {
                 true, false, true, "xd",
                 List.of("CREATE SCHEMA `xd`",
                         "CREATE TABLE `xd`.`customers` (`id` integer PRIMARY KEY, `email` varchar(120))")),
-        // MSSQL liest Privilegien fuers aktuelle Schema (dbo) — Tabelle liegt dort.
+        // Die Tabelle liegt nicht im aktuellen Schema dbo: auch ihre Privilegien kommen zurück.
         MSSQL("mssql", MicrosoftSqlServerDialect::new, MicrosoftSqlServerMetadataProvider::new,
-                true, true, true, "dbo",
-                List.of("CREATE TABLE dbo.customers (id integer PRIMARY KEY, email varchar(120))"));
+                true, true, true, "xd",
+                List.of("CREATE SCHEMA xd",
+                        "CREATE TABLE xd.customers (id integer PRIMARY KEY, email varchar(120))"));
 
         final String providerId;
         final Supplier<Dialect> dialect;
@@ -173,7 +174,7 @@ class PrivilegeSqlCrossDialectTest {
                             .filter(RolePrivilege.class::isInstance).map(RolePrivilege.class::cast)
                             .map(rp -> rp.getRole().getName()))
                             .contains("xd_parent");
-                    assertThat(PrivilegeStereotypes.databaseRoles(loaded.stereotypes()).stream()
+                    assertThat(PrivilegeStereotypes.databaseRoles(LoadedParties.holding(loaded)).stream()
                             .map(ResponsibleParty::getName))
                             .contains("xd_reader", "xd_parent");
                 }

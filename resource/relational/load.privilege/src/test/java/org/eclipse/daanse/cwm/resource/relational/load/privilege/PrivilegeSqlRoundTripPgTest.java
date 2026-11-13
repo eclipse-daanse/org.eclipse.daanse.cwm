@@ -90,7 +90,6 @@ class PrivilegeSqlRoundTripPgTest {
             s.execute("CREATE FUNCTION \"" + schemaName + "\".fn_answer() RETURNS integer LANGUAGE sql "
                     + "AS 'SELECT 42'");
         }
-        connection.setSchema(schemaName);
 
         // Katalog laden; die Privilegien-Ziele referenzieren die geladenen CWM-Objekte.
         Catalog catalog = new CwmLoaderImpl().load(
@@ -141,7 +140,7 @@ class PrivilegeSqlRoundTripPgTest {
         // Zurueckladen und vergleichen (grantor ignorieren).
         PrivilegeLoadResult loaded = reload();
         assertThat(PrivilegeModelValidator.validateAll(loaded.parties())).isEmpty();
-        assertThat(PrivilegeStereotypes.databaseRoles(loaded.stereotypes()).stream()
+        assertThat(PrivilegeStereotypes.databaseRoles(LoadedParties.holding(loaded)).stream()
                 .map(ResponsibleParty::getName)).contains("gen_reader", "gen_parent");
         ResponsibleParty loadedReader = partyByName(loaded, "gen_reader");
         assertThat(loadedReader.getOwnedElement()).hasSize(4);
@@ -177,7 +176,7 @@ class PrivilegeSqlRoundTripPgTest {
             }
         }
         PrivilegeLoadResult afterDrop = reload();
-        assertThat(PrivilegeStereotypes.databaseRoles(afterDrop.stereotypes()).stream()
+        assertThat(PrivilegeStereotypes.databaseRoles(LoadedParties.holding(afterDrop)).stream()
                 .map(ResponsibleParty::getName)).doesNotContain("gen_reader", "gen_parent");
     }
 

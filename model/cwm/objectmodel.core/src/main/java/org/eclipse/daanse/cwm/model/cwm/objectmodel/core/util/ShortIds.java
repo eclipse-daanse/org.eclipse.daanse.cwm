@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,7 +39,8 @@ import org.eclipse.emf.ecore.xmi.XMIResource;
  * place keep apart by a number ({@code _T}, {@code _T-2}).</p>
  *
  * <p>An unnamed element takes the name of the feature that holds it (with its position when the
- * feature holds several), a tagged value its tag. Names are read reflectively, so objects of a
+ * feature holds several), an unnamed root the name of its class in lower case, the same in every
+ * default locale, and a tagged value its tag. Names are read reflectively, so objects of a
  * dynamic copy of the CWM metamodels get ids as well. Ids keep to the characters of an XML name,
  * like those of {@link SpeakingIds}.</p>
  */
@@ -133,7 +135,7 @@ public final class ShortIds {
         if (name == null) {
             EStructuralFeature feature = o.eContainingFeature();
             if (o.eContainer() == null || feature == null) {
-                name = o.eClass().getName().toLowerCase();
+                name = o.eClass().getName().toLowerCase(Locale.ROOT);
             } else {
                 name = feature.getName();
                 if (o.eContainer().eGet(feature) instanceof List<?> list && list.size() > 1) {
