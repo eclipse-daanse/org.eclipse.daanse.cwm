@@ -34,6 +34,7 @@ import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Namespaces;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.CheckConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Procedure;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
@@ -106,10 +107,10 @@ import org.osgi.service.component.annotations.Component;
  *       same shape and a new name is a rename, a changed shape is drop + add.
  *       The shape of a foreign key holds its columns, the schema and name of
  *       the table it refers to, the referenced columns and its delete and
- *       update rules; that of an index its columns with their order
+ *       update rules and its deferrability; that of an index its columns with their order
  *       (ascending unless the model says descending), uniqueness and the
  *       filter. A primary key whose columns stay and whose name changes is a
- *       rename. Deferrability is not compared: DDL cannot write it.</li>
+ *       rename.</li>
  *   <li>Triggers: paired likewise; any change (including the name) is drop + add.</li>
  *   <li>Views: paired likewise; of a pair, the query and whether the view is
  *       materialized compare ({@link ViewChange}).</li>
@@ -118,7 +119,8 @@ import org.osgi.service.component.annotations.Component;
  *       (function or procedure), the parameter names and the body compare
  *       ({@link ProcedureChange}).</li>
  *   <li>Comments: the body of the {@link DiffSettings#commentType()}
- *       Description on tables and columns, including those of added tables
+ *       Description on views and their columns, paired by name, and on tables
+ *       and columns, including those of added tables
  *       and columns.</li>
  * </ul>
  */
@@ -201,6 +203,11 @@ public final class SchemaDifferImpl implements SchemaDiffer {
             }
             List<ViewChange> viewsChanged = new ArrayList<>();
             for (Pair<View> p : views.paired) {
+                compareComment(p.newE(), p.oldE(), p.newE(), comments);
+                for (Column column : ColumnSets.columns(p.newE())) {
+                    ColumnSets.findColumn(p.oldE(), column.getName())
+                            .ifPresent(old -> compareComment(p.newE(), old, column, comments));
+                }
                 Set<ViewChange.Aspect> aspects = EnumSet.noneOf(ViewChange.Aspect.class);
                 if (!Objects.equals(cmp.expression(Views.queryBody(p.oldE()).orElse(null)),
                         cmp.expression(Views.queryBody(p.newE()).orElse(null)))) {
@@ -458,7 +465,8 @@ public final class SchemaDifferImpl implements SchemaDiffer {
          * from that of {@code oldE}; a {@code null} {@code oldE} is a new element,
          * which only counts when it carries a comment.
          */
-        private void compareComment(Table table, ModelElement oldE, ModelElement newE, List<CommentChange> out) {
+        private void compareComment(NamedColumnSet table, ModelElement oldE, ModelElement newE,
+                List<CommentChange> out) {
             if (settings.commentType() == null) {
                 return;
             }
@@ -594,7 +602,7 @@ public final class SchemaDifferImpl implements SchemaDiffer {
         private Object foreignKeyShape(ForeignKey fk) {
             Object target = ForeignKeys.targetTable(fk).map(cmp::table).orElse(null);
             List<String> refCols = fk.getUniqueKey() == null ? List.of() : featureNames(fk.getUniqueKey().getFeature());
-            return Arrays.asList(featureNames(fk.getFeature()), target, refCols, cmp.rules(fk));
+            return Arrays.asList(featureNames(fk.getFeature()), target, refCols, cmp.rules(fk), fk.getDeferrability());
         }
 
         // routines

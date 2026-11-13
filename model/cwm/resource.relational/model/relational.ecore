@@ -388,7 +388,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A condition to define uniqueness of rows in a table. An example of UniqueConstraint is a primary key" />
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deferrability" lowerBound="1" eType="#//enumerations/DeferrabilityType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deferrability" lowerBound="1" eType="#//enumerations/DeferrabilityType" defaultValueLiteral="notDeferrable">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Indicates if the validity of the UniqueConstraint is to be tested at each statement or at the end of a transaction." />
       </eAnnotations>
@@ -408,7 +408,7 @@
         <details key="documentation" value="Same as deleteRule for updates of the primary key data record" />
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deferrability" lowerBound="1" eType="#//enumerations/DeferrabilityType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deferrability" lowerBound="1" eType="#//enumerations/DeferrabilityType" defaultValueLiteral="notDeferrable">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Indicates if the validity of the ForeignKey is to be tested at each statement or at the end of a transaction." />
       </eAnnotations>
@@ -438,7 +438,7 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A rule that specifies the values allowed in one or more columns of every row of a table." />
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deferrability" lowerBound="1" eType="#//enumerations/DeferrabilityType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deferrability" lowerBound="1" eType="#//enumerations/DeferrabilityType" defaultValueLiteral="notDeferrable">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Indicates the timing of the constraint enforcement during multiple-user updates." />
       </eAnnotations>

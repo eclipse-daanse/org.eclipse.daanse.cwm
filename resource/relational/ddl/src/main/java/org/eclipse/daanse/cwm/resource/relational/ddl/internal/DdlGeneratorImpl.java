@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Description;
@@ -36,14 +37,12 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
-import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalPackage;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
-import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.DeferrabilityType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Columns;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ForeignKeys;
@@ -64,6 +63,7 @@ import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlStatement;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.Unwritable;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.Unwritables;
 import org.eclipse.daanse.sql.dialect.api.Dialect;
+import org.eclipse.daanse.sql.dialect.api.generator.DdlGenerator.Deferrability;
 import org.eclipse.daanse.sql.dialect.api.generator.DdlGenerator.IndexColumn;
 import org.eclipse.daanse.sql.dialect.api.generator.DdlGenerator.IndexDefinition;
 import org.eclipse.daanse.sql.model.schema.ColumnDefinition;
@@ -109,12 +109,12 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * the comments on a materialized view and its columns are left out where it
  * has; an index that filters its rows is left out where the dialect has no
  * partial indexes; a descending index column is written ascending where the
- * dialect keeps no order in an index; a deferrable foreign key is written
- * without its deferrability; every index is left out where the dialect has no
- * index DDL; a comment is left out where the dialect writes none on its
- * element, as on a view and its columns where it names a view no differently
- * from a table ({@link #commentsOnViews()}); a trigger is written as the
- * dialect writes it, an {@code AFTER} trigger for a {@code BEFORE} one, a
+ * dialect keeps no order in an index; a deferrable foreign key is written not
+ * deferrable where the dialect checks every key at once; every index is left
+ * out where the dialect has no index DDL; a comment is left out where the
+ * dialect writes none on its element, as on a view and its columns where it
+ * keeps none on a view ({@link #commentsOnViews()}); a trigger is written as
+ * the dialect writes it, an {@code AFTER} trigger for a {@code BEFORE} one, a
  * statement trigger for a row trigger, without its {@code WHEN} condition.
  * Strict ({@link DdlSettings#strict()}), the create and the drop script fail
  * alike, with every case of the run.
@@ -189,18 +189,11 @@ public final class DdlGeneratorImpl implements DdlGenerator {
     }
 
     /**
-     * Whether the dialect writes a comment on a view and on its columns: where the statement it
-     * writes for a view names the view a view, so it differs from the one for a table of the same
-     * name, as SQL Server's does. A dialect that writes the statement of a table for a view as well
-     * writes none: PostgreSQL rejects {@code COMMENT ON TABLE} for a view, and MySQL and MariaDB
-     * keep no comment on a view.
+     * Whether the dialect writes a comment on a view and on its columns, as it says: MySQL, MariaDB
+     * and others keep none on a view.
      */
     boolean commentsOnViews() {
-        Optional<SchemaReference> schema = Optional.of(new SchemaReference("s"));
-        Optional<String> onView = dialect.ddlGenerator()
-                .commentOnTable(new TableReference(schema, "v", TableReference.TYPE_VIEW), "c");
-        return onView.isPresent() && !onView.equals(dialect.ddlGenerator()
-                .commentOnTable(new TableReference(schema, "v", TableReference.TYPE_TABLE), "c"));
+        return dialect.ddlGenerator().supportsCommentOnView();
     }
 
     /**
@@ -225,26 +218,44 @@ public final class DdlGeneratorImpl implements DdlGenerator {
     }
 
     @Override
-    public Optional<String> comment(ModelElement tableOrColumn, String text) {
-        Optional<String> sql;
-        String on;
-        if (tableOrColumn instanceof Column column) {
-            NamedColumnSet owner = Columns.namedOwner(column).orElseThrow(
-                    () -> new IllegalArgumentException("column without table: " + QualifiedNames.of(column)));
-            sql = dialect.ddlGenerator().commentOnColumn(ref(owner, homeOf(owner)), column.getName(), text,
-                    CwmSchemaMapper.columnMetaData(column));
-            on = "a comment on a column of a table";
-        } else if (tableOrColumn instanceof Table table) {
-            sql = dialect.ddlGenerator().commentOnTable(ref(table, homeOf(table)), text);
-            on = "a comment on a table";
-        } else {
-            throw new IllegalArgumentException("comments are written on tables and columns, not on "
-                    + (tableOrColumn == null ? null : tableOrColumn.eClass().getName()));
+    public Optional<String> comment(ModelElement element, String text) {
+        NamedColumnSet owner = ownerOfComment(element).orElseThrow(() -> new IllegalArgumentException(
+                "comments are written on tables and views and their columns, not on "
+                        + (element == null ? null : element.eClass().getName() + " " + QualifiedNames.of(element))));
+        Unwritables found = Unwritables.forCreate(settings);
+        Optional<String> sql = commentStatement(element, owner, text, homeOf(owner), found);
+        found.finish();
+        return sql;
+    }
+
+    /** The table or view a comment on {@code element} is written on: the element, or that of a column. */
+    private static Optional<NamedColumnSet> ownerOfComment(ModelElement element) {
+        NamedColumnSet owner = element instanceof Column column ? Columns.namedOwner(column).orElse(null)
+                : element instanceof NamedColumnSet ncs ? ncs : null;
+        return owner instanceof Table || owner instanceof View ? Optional.of(owner) : Optional.empty();
+    }
+
+    /**
+     * The statement that sets the comment of {@code element}, {@code owner} or a column of it, to
+     * {@code text}, the names as {@code home} says. Where the dialect writes no comment on such an
+     * element, on a view and its columns where it keeps none on a view ({@link #commentsOnViews()}),
+     * on a materialized view and its columns at all, it is empty, and for a comment a case the dialect
+     * cannot write.
+     */
+    private Optional<String> commentStatement(ModelElement element, NamedColumnSet owner, String text,
+            Set<Schema> home, Unwritables found) {
+        boolean materialized = owner instanceof View view && materialized(view);
+        Optional<String> sql = Optional.empty();
+        if (owner instanceof Table || owner instanceof View && !materialized && commentsOnViews()) {
+            sql = element instanceof Column column
+                    ? dialect.ddlGenerator().commentOnColumn(ref(owner, home), column.getName(), text,
+                            CwmSchemaMapper.columnMetaData(column))
+                    : dialect.ddlGenerator().commentOnTable(ref(owner, home), text);
         }
         if (sql.isEmpty() && text != null) {
-            Unwritables found = Unwritables.forCreate(settings);
-            found.add(Unwritable.of(dialect, tableOrColumn, on, "left out"));
-            found.finish();
+            String on = (element instanceof Column ? "a column of " : "")
+                    + (materialized ? "a materialized view" : owner instanceof View ? "a view" : "a table");
+            found.add(Unwritable.of(dialect, element, "a comment on " + on, "left out"));
         }
         return sql;
     }
@@ -288,7 +299,6 @@ public final class DdlGeneratorImpl implements DdlGenerator {
         private final boolean inlineForeignKeys = !dialect.ddlGenerator().supportsAddForeignKeyConstraint();
         private final boolean inlineUnique = !dialect.ddlGenerator().supportsAddUniqueConstraint();
         private final boolean inlineChecks = !dialect.ddlGenerator().supportsAddCheckConstraint();
-        private final boolean viewComments = commentsOnViews();
 
         Script(List<? extends Schema> schemas, Unwritables found) {
             if (schemas == null || schemas.stream().anyMatch(Objects::isNull)) {
@@ -353,10 +363,7 @@ public final class DdlGeneratorImpl implements DdlGenerator {
                 });
             }
             for (View view : written) {
-                comment(view).flatMap(d -> commentPart(view, d)).ifPresent(parts::add);
-                for (Column column : ColumnSets.columns(view)) {
-                    comment(column).flatMap(d -> commentPart(column, d)).ifPresent(parts::add);
-                }
+                parts.addAll(viewCommentParts(view));
             }
             for (Table table : tables) {
                 for (Trigger trigger : table.getTrigger()) {
@@ -382,7 +389,11 @@ public final class DdlGeneratorImpl implements DdlGenerator {
                     : tableOf(fk).flatMap(table -> foreignKeys(table).stream().filter(spec -> spec.element() == fk)
                             .findFirst().map(spec -> foreignKeyPart(table, spec))).stream().toList();
             case SQLIndex index -> indexPart(index).stream().toList();
-            case View view -> viewPart(view).stream().toList();
+            case View view -> viewPart(view).map(part -> {
+                List<Part> parts = new ArrayList<>(List.of(part));
+                parts.addAll(viewCommentParts(view));
+                return parts;
+            }).orElseGet(List::of);
             case Trigger trigger -> triggerPart(trigger).stream().toList();
             case Description description -> Objects.equals(description.getType(), settings.commentType())
                     ? Descriptions.elements(description).stream().flatMap(e -> commentPart(e, description).stream())
@@ -417,11 +428,9 @@ public final class DdlGeneratorImpl implements DdlGenerator {
                         ck -> inline.add(dialect.ddlGenerator().checkConstraintClause(ck.name(), ck.body())));
             }
             if (inlineForeignKeys) {
-                foreignKeys(table).forEach(fk -> {
-                    deferrability(fk.element());
-                    inline.add(dialect.ddlGenerator().foreignKeyClause(fk.name(), fk.columns(), fk.referenced(),
-                            fk.referencedColumns(), fk.onDelete(), fk.onUpdate()));
-                });
+                foreignKeys(table).forEach(fk -> inline.add(written(fk,
+                        d -> dialect.ddlGenerator().foreignKeyClause(fk.name(), fk.columns(), fk.referenced(),
+                                fk.referencedColumns(), fk.onDelete(), fk.onUpdate(), d))));
             }
             String create = createTableSql(tref, table, primaryKeyName(table, this::name), inline);
             return new Part(table, List.of(create),
@@ -439,28 +448,19 @@ public final class DdlGeneratorImpl implements DdlGenerator {
             if (description.getBody() == null) {
                 return Optional.empty();
             }
-            NamedColumnSet owner = element instanceof Column column ? Columns.namedOwner(column).orElse(null)
-                    : element instanceof NamedColumnSet ncs ? ncs : null;
-            if (!(owner instanceof Table || owner instanceof View)) {
-                return Optional.empty();
+            return ownerOfComment(element)
+                    .flatMap(owner -> commentStatement(element, owner, description.getBody(), home, found))
+                    .map(statement -> new Part(description, List.of(statement), List.of()));
+        }
+
+        /** The comments on {@code view} and on its columns, after the view, as the create script writes them. */
+        private List<Part> viewCommentParts(View view) {
+            List<Part> parts = new ArrayList<>();
+            comment(view).flatMap(d -> commentPart(view, d)).ifPresent(parts::add);
+            for (Column column : ColumnSets.columns(view)) {
+                comment(column).flatMap(d -> commentPart(column, d)).ifPresent(parts::add);
             }
-            Optional<String> sql = Optional.empty();
-            if (owner instanceof View view && materialized(view)) {
-                unwritable(element, "a comment on " + (element instanceof Column ? "a column of " : "")
-                        + "a materialized view", "left out");
-                return Optional.empty();
-            }
-            if (owner instanceof Table || viewComments) {
-                sql = element instanceof Column column
-                        ? dialect.ddlGenerator().commentOnColumn(ref(owner, home), column.getName(),
-                                description.getBody(), CwmSchemaMapper.columnMetaData(column))
-                        : dialect.ddlGenerator().commentOnTable(ref(owner, home), description.getBody());
-            }
-            if (sql.isEmpty()) {
-                unwritable(element, "a comment on " + (element instanceof Column ? "a column of " : "")
-                        + (owner instanceof View ? "a view" : "a table"), "left out");
-            }
-            return sql.map(statement -> new Part(description, List.of(statement), List.of()));
+            return parts;
         }
 
         private Part uniquePart(Table table, UniqueSpec uc) {
@@ -478,11 +478,10 @@ public final class DdlGeneratorImpl implements DdlGenerator {
         }
 
         private Part foreignKeyPart(Table table, ForeignKeySpec fk) {
-            deferrability(fk.element());
             TableReference tref = ref(table, home);
             return new Part(fk.element(),
-                    List.of(dialect.ddlGenerator().addForeignKeyConstraint(tref, fk.name(), fk.columns(),
-                            fk.referenced(), fk.referencedColumns(), fk.onDelete(), fk.onUpdate())),
+                    List.of(written(fk, d -> dialect.ddlGenerator().addForeignKeyConstraint(tref, fk.name(),
+                            fk.columns(), fk.referenced(), fk.referencedColumns(), fk.onDelete(), fk.onUpdate(), d))),
                     List.of(dialect.ddlGenerator().dropConstraint(tref, fk.name(), settings.ifNotExists())));
         }
 
@@ -654,13 +653,24 @@ public final class DdlGeneratorImpl implements DdlGenerator {
             return name != null ? name : RelationalNames.of(element);
         }
 
-        /** The deferrability of {@code fk}, which the DDL writes not: a key is written not deferrable. */
-        private void deferrability(ForeignKey fk) {
-            if (fk.eIsSet(RelationalPackage.Literals.FOREIGN_KEY__DEFERRABILITY)
-                    && fk.getDeferrability() != DeferrabilityType.NOT_DEFERRABLE) {
-                unwritable(fk, "DEFERRABLE " + (fk.getDeferrability() == DeferrabilityType.INITIALLY_DEFERRED
+        /**
+         * The statement or clause {@code writer} writes for {@code fk} with its deferrability: where
+         * the dialect checks every key at once and writes none for a deferrable key, the key is
+         * written not deferrable, a case the dialect cannot write.
+         */
+        private String written(ForeignKeySpec fk, Function<Deferrability, Optional<String>> writer) {
+            Deferrability deferrability = switch (fk.element().getDeferrability()) {
+            case INITIALLY_DEFERRED -> Deferrability.INITIALLY_DEFERRED;
+            case INITIALLY_IMMEDIATE -> Deferrability.INITIALLY_IMMEDIATE;
+            case NOT_DEFERRABLE -> Deferrability.NOT_DEFERRABLE;
+            };
+            Optional<String> written = writer.apply(deferrability);
+            if (written.isEmpty() && deferrability != Deferrability.NOT_DEFERRABLE) {
+                unwritable(fk.element(), "DEFERRABLE " + (deferrability == Deferrability.INITIALLY_DEFERRED
                         ? "INITIALLY DEFERRED" : "INITIALLY IMMEDIATE"), "written NOT DEFERRABLE");
+                written = writer.apply(Deferrability.NOT_DEFERRABLE);
             }
+            return written.orElseThrow();
         }
 
         private void unwritable(ModelElement element, String what, String instead) {

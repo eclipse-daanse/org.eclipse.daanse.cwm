@@ -21,19 +21,16 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.BusinessinformationFactory;
-import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Description;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.ResponsibleParty;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.ParameterDirectionKind;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.BooleanExpression;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CoreFactory;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Expression;
-import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ProcedureExpression;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Stereotype;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Namespaces;
@@ -55,18 +52,17 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ActionOrientationType;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.DeferrabilityType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ProcedureType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ReferentialRuleType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Catalogs;
-import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Columns;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ForeignKeys;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.PrimaryKeys;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalRules;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SQLIndexes;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SQLSimpleTypes;
-import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Schemas;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Tables;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.UniqueConstraints;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Views;
@@ -156,13 +152,6 @@ class CatalogRoundTripParameterizedTest {
                 CatalogDiff diff = CatalogDiffer.create().diff(written, readBack, settings);
 
                 assertThat(diff.lines()).as("%s differs from what was written", profile).isEmpty();
-                if (profile.commentsOnViews()) {
-                    // the differ compares the comments of tables and their columns, not those of views
-                    View view = Schemas.findView(Catalogs.schemas(readBack).get(0), "V_CUSTOMERS").orElseThrow();
-                    assertThat(comment(view)).as("%s: the comment on the view", profile).contains(VIEW_COMMENT);
-                    assertThat(ColumnSets.findColumn(view, "EMAIL").flatMap(column -> comment(column)))
-                            .as("%s: the comment on a column of the view", profile).contains(VIEW_COLUMN_COMMENT);
-                }
                 if (TRIGGER_BODY_IN_A_PROCEDURE.contains(profile)) {
                     // the text of a body does not count in the comparison above
                     assertThat(Catalogs.schemas(readBack).get(0).getOwnedElement())
@@ -202,15 +191,15 @@ class CatalogRoundTripParameterizedTest {
     }
 
     /**
-     * {@code rt.<schema>}: {@code CUSTOMERS(ID PK, EMAIL VARCHAR(100) NOT NULL UNIQUE, NAME
-     * VARCHAR(50), STATUS VARCHAR(16) DEFAULT 'NEW', AMOUNT DECIMAL(10,2), CHECK ID > 0)}, commented,
-     * with an index on {@code NAME}, descending where the database keeps the order, and, where the dialect has partial indexes, one on {@code STATUS}
-     * over the rows that have one, {@code ORDERS(ID PK, CUSTOMER_ID → CUSTOMERS ON DELETE CASCADE)}
-     * without an index on {@code CUSTOMER_ID}, for which some databases make one, the view
-     * {@code V_CUSTOMERS}, where the dialect writes them the materialized view {@code MV_CUSTOMERS},
-     * and, where the profile has one, a trigger on {@code ORDERS}; on PostgreSQL
-     * also the overloads {@code fn_over(v integer)} and {@code fn_over(v text)} and the role
-     * {@code rt_pg_over} with {@code EXECUTE} on the second one.
+     * {@code rt.<schema>}: {@code CUSTOMERS(ID PK, EMAIL VARCHAR(100) NOT NULL UNIQUE, NAME VARCHAR(50),
+     * STATUS VARCHAR(16) DEFAULT 'NEW', AMOUNT DECIMAL(10,2), CHECK ID > 0)}, commented, with an index on
+     * {@code NAME}, descending where the database keeps the order, and, where the dialect has partial indexes, one
+     * on {@code STATUS} over the rows that have one, {@code ORDERS(ID PK, CUSTOMER_ID → CUSTOMERS ON DELETE
+     * CASCADE)}, the key deferred where the database has deferrable keys, without an index on {@code CUSTOMER_ID},
+     * for which some databases make one, the view {@code V_CUSTOMERS}, commented where the dialect writes comments
+     * on views, where the dialect writes them the materialized view {@code MV_CUSTOMERS}, and, where the profile has
+     * one, a trigger on {@code ORDERS}; on PostgreSQL also the overloads {@code fn_over(v integer)} and
+     * {@code fn_over(v text)} and the role {@code rt_pg_over} with {@code EXECUTE} on the second one.
      */
     private static Catalog model(DialectProfile profile, Dialect dialect) {
         Catalog catalog = tables(profile, dialect);
@@ -290,6 +279,9 @@ class CatalogRoundTripParameterizedTest {
         PrimaryKeys.create(orders, "PK_ORDERS", orderId);
         ForeignKey fk = ForeignKeys.create(orders, "FK_ORDERS_CUSTOMERS", customersKey, customerId);
         fk.setDeleteRule(ReferentialRuleType.IMPORTED_KEY_CASCADE);
+        if (dialect.ddlGenerator().supportsDeferrableForeignKeys()) {
+            fk.setDeferrability(DeferrabilityType.INITIALLY_DEFERRED);
+        }
         // no index on the foreign key's column: H2, MySQL and MariaDB make one of their own for it
         SQLIndex byName = SQLIndexes.index("IX_CUSTOMERS_NAME", false, customers, name);
         // descending where the database keeps the order
@@ -304,10 +296,12 @@ class CatalogRoundTripParameterizedTest {
 
         View view = Views.create(schema, "V_CUSTOMERS", "SELECT " + dialect.quoteIdentifier("ID") + ", "
                 + dialect.quoteIdentifier("EMAIL") + " FROM " + dialect.quoteIdentifier(schema.getName(), "CUSTOMERS"));
-        if (profile.commentsOnViews()) {
-            Column viewEmail = Columns.create(view, "EMAIL", varchar, NullableType.COLUMN_NO_NULLS, 100, 0, 0);
+        if (dialect.ddlGenerator().supportsCommentOnView()) {
             Descriptions.describe(view, Descriptions.JDBC_REMARKS, null, VIEW_COMMENT);
-            Descriptions.describe(viewEmail, Descriptions.JDBC_REMARKS, null, VIEW_COLUMN_COMMENT);
+            if (profile.keepsCommentsOnViewColumns()) {
+                Column viewEmail = Columns.create(view, "EMAIL", varchar, NullableType.COLUMN_NO_NULLS, 100, 0, 0);
+                Descriptions.describe(viewEmail, Descriptions.JDBC_REMARKS, null, VIEW_COLUMN_COMMENT);
+            }
         }
 
         if (dialect.ddlGenerator().supportsMaterializedViews()) {
@@ -333,11 +327,6 @@ class CatalogRoundTripParameterizedTest {
             schema.getOwnedElement().add(trigger);
         }
         return catalog;
-    }
-
-    /** The comment the read back {@code element} carries. */
-    private static Optional<String> comment(ModelElement element) {
-        return Descriptions.find(element, Descriptions.JDBC_REMARKS).map(Description::getBody);
     }
 
     private static ActiveDatabase activateOrSkip(DialectProfile profile) {

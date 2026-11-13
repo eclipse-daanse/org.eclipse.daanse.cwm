@@ -146,4 +146,11 @@ public sealed interface ChangeOp {
     /** Sets the comment of {@code element} ({@code table} or one of its columns); {@code null} removes it. */
     record SetComment(Table table, ModelElement element, String comment) implements ChangeOp {
     }
+
+    /**
+     * Sets the comment of {@code element} ({@code view} or one of its columns); {@code null} removes
+     * it. A view created again gets its comments with it ({@link CreateView}).
+     */
+    record SetViewComment(View view, ModelElement element, String comment) implements ChangeOp {
+    }
 }

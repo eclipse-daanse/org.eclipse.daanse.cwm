@@ -45,6 +45,7 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeMarkers;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangePlanner;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ColumnChange;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.CommentChange;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.SchemaDiff;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableDiff;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableMerge;
@@ -259,9 +260,20 @@ public final class ChangePlannerImpl implements ChangePlanner {
             t.getTrigger().forEach(trg -> p.createView.add(new ChangeOp.CreateTrigger(t, trg)));
         }
 
-        // comments once every table and column exists under its final name
-        diff.commentsChanged().forEach(c -> p.comment.add(
-                new ChangeOp.SetComment(c.table(), c.element(), c.newComment())));
+        // comments once every table and column exists under its final name; a view created again
+        // gets its comments with it
+        Set<View> viewsCreated = Collections.newSetFromMap(new IdentityHashMap<>());
+        p.createView.stream().filter(ChangeOp.CreateView.class::isInstance)
+                .forEach(op -> viewsCreated.add(((ChangeOp.CreateView) op).view()));
+        for (CommentChange c : diff.commentsChanged()) {
+            if (c.table() instanceof View view) {
+                if (!viewsCreated.contains(view)) {
+                    p.comment.add(new ChangeOp.SetViewComment(view, c.element(), c.newComment()));
+                }
+            } else if (c.table() instanceof Table table) {
+                p.comment.add(new ChangeOp.SetComment(table, c.element(), c.newComment()));
+            }
+        }
 
         return p.flatten();
     }
