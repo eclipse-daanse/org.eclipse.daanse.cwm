@@ -28,6 +28,7 @@ import java.util.function.Function;
 
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Description;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.ParameterDirectionKind;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.StructuralFeature;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Namespaces;
@@ -625,6 +626,11 @@ public final class SchemaDifferImpl implements SchemaDiffer {
                 if (!parameterNames(old).equals(parameterNames(same))) {
                     aspects.add(ProcedureChange.Aspect.PARAMETER_NAMES);
                 }
+                Optional<Object> oldResult = cmp.returnType(old);
+                Optional<Object> newResult = cmp.returnType(same);
+                if (oldResult.isPresent() && newResult.isPresent() && !oldResult.equals(newResult)) {
+                    aspects.add(ProcedureChange.Aspect.RETURN_TYPE);
+                }
                 if (!Objects.equals(cmp.expression(old.getBody()), cmp.expression(same.getBody()))) {
                     aspects.add(ProcedureChange.Aspect.BODY);
                 }
@@ -637,7 +643,8 @@ public final class SchemaDifferImpl implements SchemaDiffer {
 
         private List<String> parameterNames(Procedure procedure) {
             List<String> out = new ArrayList<>();
-            procedure.getParameter().forEach(p -> out.add(cmp.name(p.getName())));
+            procedure.getParameter().stream().filter(p -> p.getKind() != ParameterDirectionKind.PDK_RETURN)
+                    .forEach(p -> out.add(cmp.name(p.getName())));
             return out;
         }
     }

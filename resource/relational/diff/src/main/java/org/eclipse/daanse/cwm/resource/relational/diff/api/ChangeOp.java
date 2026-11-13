@@ -16,6 +16,7 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.CheckConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Procedure;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
@@ -140,6 +141,22 @@ public sealed interface ChangeOp {
     }
 
     record DropTrigger(Table table, Trigger trigger) implements ChangeOp {
+    }
+
+    // routines
+    /** Creates the function or procedure {@code routine}, as the create script writes it. */
+    record CreateRoutine(Procedure routine) implements ChangeOp {
+    }
+
+    /** Drops {@code routine} by its name and the types of its parameters. */
+    record DropRoutine(Procedure routine) implements ChangeOp {
+    }
+
+    /**
+     * The routine of the same signature with a new body: {@code CREATE OR REPLACE} where the dialect
+     * writes it, drop and create where not.
+     */
+    record ReplaceRoutine(Procedure oldRoutine, Procedure newRoutine) implements ChangeOp {
     }
 
     // comments

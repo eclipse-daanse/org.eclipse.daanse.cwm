@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.ResponsibleParty;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.Parameter;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.ParameterDirectionKind;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.StructuralFeature;
@@ -111,9 +112,10 @@ final class Lines {
     }
 
     /** {@code (type, …)}: the types of the parameters of a routine. */
+    /** The types of the parameters that tell a routine apart, without the one that returns its result. */
     static String signature(Procedure procedure) {
-        return procedure.getParameter().stream().map(Parameter::getType).map(Lines::type)
-                .collect(Collectors.joining(", ", "(", ")"));
+        return procedure.getParameter().stream().filter(p -> p.getKind() != ParameterDirectionKind.PDK_RETURN)
+                .map(Parameter::getType).map(Lines::type).collect(Collectors.joining(", ", "(", ")"));
     }
 
     /** A type by its name, with its JDBC type where the name is another: {@code int4 (INTEGER)}. */

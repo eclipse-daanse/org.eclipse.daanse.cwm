@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.ResponsibleParty;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.Parameter;
@@ -29,6 +30,7 @@ import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.Privile
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.ProcedurePrivilege;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.RolePrivilege;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.TablePrivilege;
+import org.eclipse.daanse.cwm.resource.relational.ddl.api.CwmSchemaMapper;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlSettings;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlStatement;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.PrivilegeSqlGenerator;
@@ -51,9 +53,11 @@ import org.osgi.service.component.annotations.Component;
  * model holds overloads of it — another procedure of the same name in the same
  * schema — the name alone is ambiguous, and only a dialect that has overloads
  * can hold them: there the types of its parameters follow the name,
- * {@code "s"."f"(integer, OUT text)}, as PostgreSQL wants them. The return
- * value is no parameter there; an {@code OUT} or {@code INOUT} parameter says
- * so.
+ * {@code "s"."f"(INTEGER, OUT VARCHAR(100))}, as PostgreSQL wants them, each
+ * type written as the DDL generator writes it for the routine
+ * ({@code CwmSchemaMapper.parameterType}), so the grant names the routine the
+ * generator created. The return value is no parameter there; an {@code OUT} or
+ * {@code INOUT} parameter says so.
  * </p>
  */
 public final class PrivilegeSqlGeneratorImpl implements PrivilegeSqlGenerator {
@@ -237,8 +241,8 @@ public final class PrivilegeSqlGeneratorImpl implements PrivilegeSqlGenerator {
             if (parameter.getKind() == ParameterDirectionKind.PDK_RETURN) {
                 continue;
             }
-            if (parameter.getType() == null || parameter.getType().getName() == null
-                    || parameter.getType().getName().isBlank()) {
+            Optional<String> type = CwmSchemaMapper.parameterType(dialect, parameter);
+            if (type.isEmpty()) {
                 LOGGER.warn("db={} — routine {} has overloads, but parameter {} has no type: named without its"
                         + " parameters", dialect.name(), procedure.getName(), parameter.getName());
                 return statement;
@@ -248,7 +252,7 @@ public final class PrivilegeSqlGeneratorImpl implements PrivilegeSqlGenerator {
             case PDK_INOUT -> "INOUT ";
             default -> "";
             };
-            types.add(mode + parameter.getType().getName());
+            types.add(mode + type.get());
         }
         String routine = dialect.ddlGenerator().qualifiedRoutine(schemaName(procedure), procedure.getName());
         int at = statement.indexOf(routine);

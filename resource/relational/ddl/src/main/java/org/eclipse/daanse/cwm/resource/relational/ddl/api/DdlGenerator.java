@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Procedure;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
 import org.eclipse.daanse.sql.model.schema.ColumnDefinition;
@@ -107,6 +108,9 @@ public interface DdlGenerator {
      * ({@link #materialized(View)}), and the comments on it and its columns, as a migration that
      * creates a view again would lose them; a trigger: its procedure, where the dialect keeps the
      * body in one, and the trigger;</li>
+     * <li>a function or procedure: {@code CREATE FUNCTION} or {@code CREATE PROCEDURE}, where the
+     * dialect writes routines in the language of its body; nothing for the procedure a trigger keeps
+     * its body in, which comes with the trigger;</li>
      * <li>a description of the comment type: the comment on the table or column it describes.</li>
      * </ul>
      * A table of another schema the element refers to is qualified also without
@@ -126,6 +130,14 @@ public interface DdlGenerator {
      * @throws UnwritableException      as {@link #drop}, for the element alone
      */
     List<DdlStatement> dropElement(ModelElement element);
+
+    /**
+     * {@code CREATE OR REPLACE} for {@code routine}, a function or procedure, as
+     * {@link #createElement} writes it otherwise, for a migration that changes its body and keeps its
+     * signature. Empty where the dialect writes no {@code OR REPLACE}, or does not write the routine at
+     * all: a migration drops and creates it then.
+     */
+    Optional<String> replaceRoutine(Procedure routine);
 
     /**
      * Whether {@code view} is written as a materialized view ({@code CREATE MATERIALIZED VIEW}): the

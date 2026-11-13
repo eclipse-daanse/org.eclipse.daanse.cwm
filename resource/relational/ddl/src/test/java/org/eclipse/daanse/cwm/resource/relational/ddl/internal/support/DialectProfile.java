@@ -145,6 +145,40 @@ public enum DialectProfile {
         return triggerCallSnippet;
     }
 
+    /**
+     * The language of a function {@code fn_double(n INTEGER) RETURNS INTEGER} that doubles {@code n},
+     * in the language the dialect writes routines in; {@code null} where it writes none (H2, DuckDB).
+     */
+    public String routineLanguage() {
+        return switch (this) {
+        case POSTGRES -> "plpgsql";
+        case MARIADB, MYSQL -> "sql";
+        case MSSQL -> "tsql";
+        case ORACLE -> "plsql";
+        case H2, DUCKDB -> null;
+        };
+    }
+
+    /**
+     * The body of the function of {@link #routineLanguage()}: MySQL and MariaDB declare it
+     * {@code DETERMINISTIC}, as MySQL with its binary log takes no function that does not say what
+     * it does.
+     */
+    public String routineBody() {
+        return switch (this) {
+        case POSTGRES -> "BEGIN RETURN n * 2; END;";
+        case ORACLE -> "BEGIN RETURN N * 2; END;";
+        case MARIADB, MYSQL -> "DETERMINISTIC RETURN n * 2";
+        case MSSQL -> "BEGIN RETURN @n * 2 END";
+        case H2, DUCKDB -> null;
+        };
+    }
+
+    /** The name of the parameter of the function of {@link #routineLanguage()}: as Oracle folds it. */
+    public String routineParameter() {
+        return this == ORACLE ? "N" : "n";
+    }
+
     public ConditionTimingType triggerTiming() {
         return triggerTiming;
     }

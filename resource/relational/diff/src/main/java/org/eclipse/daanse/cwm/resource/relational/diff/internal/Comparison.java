@@ -18,8 +18,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.Parameter;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.ParameterDirectionKind;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Expression;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
@@ -199,9 +201,20 @@ final class Comparison {
     Object signature(Procedure procedure) {
         List<Object> parameters = new ArrayList<>();
         for (Parameter parameter : procedure.getParameter()) {
-            parameters.add(Arrays.asList(parameter.getKind(), type(parameter.getType())));
+            if (parameter.getKind() != ParameterDirectionKind.PDK_RETURN) {
+                parameters.add(Arrays.asList(parameter.getKind(), type(parameter.getType())));
+            }
         }
         return Arrays.asList(name(procedure.getName()), parameters);
+    }
+
+    /**
+     * The type a function returns as it is compared, as {@link #type}; empty where it states none, as
+     * PostgreSQL's metadata do not.
+     */
+    Optional<Object> returnType(Procedure procedure) {
+        return procedure.getParameter().stream().filter(p -> p.getKind() == ParameterDirectionKind.PDK_RETURN)
+                .findFirst().map(p -> type(p.getType()));
     }
 
     private static JDBCType jdbcType(Classifier type) {

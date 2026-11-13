@@ -16,15 +16,19 @@ package org.eclipse.daanse.cwm.resource.relational.ddl.api;
 import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.Parameter;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.ParameterDirectionKind;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Feature;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.StructuralFeature;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Procedure;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLDataType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
@@ -32,9 +36,14 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ActionO
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ConditionTimingType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.EventManipulationType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.NullableType;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ProcedureType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalNames;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.SQLSimpleTypes;
 import org.eclipse.daanse.sql.dialect.api.Dialect;
+import org.eclipse.daanse.sql.dialect.api.generator.DdlGenerator.ParameterMode;
+import org.eclipse.daanse.sql.dialect.api.generator.DdlGenerator.RoutineDefinition;
+import org.eclipse.daanse.sql.dialect.api.generator.DdlGenerator.RoutineParameter;
+import org.eclipse.daanse.sql.dialect.api.generator.DdlGenerator.RoutineSignature;
 import org.eclipse.daanse.sql.jdbc.record.schema.ColumnDefinitionRecord;
 import org.eclipse.daanse.sql.jdbc.record.schema.ColumnMetaDataRecord;
 import org.eclipse.daanse.sql.jdbc.record.schema.PrimaryKeyRecord;
@@ -87,7 +96,22 @@ public final class CwmSchemaMapper {
     }
 
     public static ColumnMetaData columnMetaData(Column col) {
-        Classifier type = col.getType();
+        Optional<String> columnDefault = Optional.ofNullable(col.getInitialValue()).map(e -> e.getBody())
+                .filter(b -> b != null && !b.isBlank());
+        return metaData(col.getType(), col.getLength(), col.getPrecision(), col.getScale(), col.getIsNullable(),
+                columnDefault);
+    }
+
+    /**
+     * The metadata of {@code type} alone, as {@link #columnMetaData} gives it for a column of the type
+     * without a size of its own: its JDBC type, its name, and the size and scale the type gives.
+     */
+    public static ColumnMetaData typeMetaData(Classifier type) {
+        return metaData(type, 0, 0, 0, null, Optional.empty());
+    }
+
+    private static ColumnMetaData metaData(Classifier type, long colLen, long colPrec, long colScale,
+            NullableType nullable, Optional<String> columnDefault) {
         SQLDataType sqlType = type instanceof SQLDataType sdt ? sdt : null;
 
         JDBCType jdbcType = SQLSimpleTypes.toJdbcType(sqlType);
@@ -116,9 +140,6 @@ public final class CwmSchemaMapper {
                 scale = OptionalInt.of((int) numScale);
             }
         }
-        long colPrec = col.getPrecision();
-        long colScale = col.getScale();
-        long colLen = col.getLength();
         if (colLen > 0) {
             size = OptionalInt.of((int) colLen);
         }
@@ -129,11 +150,8 @@ public final class CwmSchemaMapper {
             scale = OptionalInt.of((int) colScale);
         }
 
-        Optional<String> columnDefault = Optional.ofNullable(col.getInitialValue()).map(e -> e.getBody())
-                .filter(b -> b != null && !b.isBlank());
-
         return new ColumnMetaDataRecord(jdbcType, typeName, size, scale, OptionalInt.empty(),
-                toJdbcNullability(col.getIsNullable()), OptionalInt.empty(), Optional.empty(), columnDefault,
+                toJdbcNullability(nullable), OptionalInt.empty(), Optional.empty(), columnDefault,
                 ColumnMetaData.AutoIncrement.UNKNOWN, ColumnMetaData.GeneratedColumn.UNKNOWN);
     }
 
@@ -329,5 +347,97 @@ public final class CwmSchemaMapper {
     /** ROW or STATEMENT. */
     public static TriggerScope triggerScope(Trigger t) {
         return t.getActionOrientation() == ActionOrientationType.ROW ? TriggerScope.ROW : TriggerScope.STATEMENT;
+    }
+
+    /**
+     * The language of the body of {@code routine}, in lower case as the dialects name the languages
+     * they write ({@code sql}, {@code plpgsql}, {@code plsql}, {@code tsql}): that of its expression,
+     * {@code sql} where it names none. Empty for a routine without body.
+     */
+    public static Optional<String> routineLanguage(Procedure routine) {
+        if (routine.getBody() == null || routine.getBody().getBody() == null
+                || routine.getBody().getBody().isBlank()) {
+            return Optional.empty();
+        }
+        String language = routine.getBody().getLanguage();
+        return Optional.of(language == null || language.isBlank() ? "sql" : language.trim().toLowerCase(Locale.ROOT));
+    }
+
+    /**
+     * The type of a parameter of a routine, written by the dialect as it writes the type of a column
+     * ({@code nativeType}), but by the name of the type, with the size the type gives:
+     * {@code VARCHAR(100)}, {@code text}, {@code int4}. A database tells overloads apart, and grants
+     * and drops one of them, by the types of their parameters as they were created; PostgreSQL's
+     * {@code text}, which its driver reports as {@code VARCHAR}, names another routine than
+     * {@code varchar}. Empty for a parameter without type.
+     */
+    public static Optional<String> parameterType(Dialect dialect, Parameter parameter) {
+        if (!(parameter.getType() instanceof Classifier type) || type.getName() == null || type.getName().isBlank()) {
+            return Optional.empty();
+        }
+        ColumnMetaData meta = typeMetaData(type);
+        return Optional.of(dialect.ddlGenerator().nativeType(new ColumnMetaDataRecord(JDBCType.OTHER,
+                type.getName().trim(), meta.columnSize(), meta.decimalDigits(), OptionalInt.empty(),
+                ColumnMetaData.Nullability.UNKNOWN, OptionalInt.empty(), Optional.empty(), Optional.empty(),
+                ColumnMetaData.AutoIncrement.UNKNOWN, ColumnMetaData.GeneratedColumn.UNKNOWN)));
+    }
+
+    /**
+     * {@code routine} as the dialect writes it: in {@code schemaName} ({@code null} for none), with its
+     * parameters but the one that returns the result, in their order, each with its direction and its
+     * type ({@link #parameterType}), the type of that one for a function, the language of its body
+     * ({@link #routineLanguage}) and the body as it is. Empty for a routine without body or name, and
+     * where a parameter has no name or no type.
+     */
+    public static Optional<RoutineDefinition> routineDefinition(Dialect dialect, Procedure routine,
+            String schemaName) {
+        Optional<String> language = routineLanguage(routine);
+        if (language.isEmpty() || routine.getName() == null || routine.getName().isBlank()) {
+            return Optional.empty();
+        }
+        List<RoutineParameter> parameters = new ArrayList<>();
+        String returnType = null;
+        for (Parameter parameter : routine.getParameter()) {
+            Optional<String> type = parameterType(dialect, parameter);
+            if (type.isEmpty()) {
+                return Optional.empty();
+            }
+            if (parameter.getKind() == ParameterDirectionKind.PDK_RETURN) {
+                returnType = type.get();
+                continue;
+            }
+            if (parameter.getName() == null || parameter.getName().isBlank()) {
+                return Optional.empty();
+            }
+            parameters.add(new RoutineParameter(parameter.getName(), switch (parameter.getKind()) {
+            case PDK_OUT -> ParameterMode.OUT;
+            case PDK_INOUT -> ParameterMode.INOUT;
+            default -> ParameterMode.IN;
+            }, type.get()));
+        }
+        return Optional.of(new RoutineDefinition(schemaName, routine.getName(), parameters,
+                routine.getType() == ProcedureType.FUNCTION ? returnType : null, language.get(),
+                routine.getBody().getBody()));
+    }
+
+    /**
+     * The signature {@code routine} is dropped by: its name in {@code schemaName} and the types of
+     * the parameters that pass a value into it ({@code IN}, {@code INOUT}), as a database tells
+     * overloads apart by them ({@link #parameterType}).
+     */
+    public static RoutineSignature routineSignature(Dialect dialect, Procedure routine, String schemaName) {
+        List<String> types = new ArrayList<>();
+        for (Parameter parameter : routine.getParameter()) {
+            ParameterDirectionKind kind = parameter.getKind();
+            if (kind == ParameterDirectionKind.PDK_RETURN || kind == ParameterDirectionKind.PDK_OUT) {
+                continue;
+            }
+            Optional<String> type = parameterType(dialect, parameter);
+            if (type.isEmpty()) {
+                return new RoutineSignature(schemaName, routine.getName(), null);
+            }
+            types.add(type.get());
+        }
+        return new RoutineSignature(schemaName, routine.getName(), types);
     }
 }

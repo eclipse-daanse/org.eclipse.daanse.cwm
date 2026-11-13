@@ -19,16 +19,22 @@ import java.util.List;
 
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Description;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.ParameterDirectionKind;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ProcedureExpression;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.TaggedValues;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Procedure;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndexColumn;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLParameter;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ActionOrientationType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.DeferrabilityType;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ProcedureType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Columns;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalRules;
@@ -225,6 +231,67 @@ class ScriptPartsTest {
         trigger.setActionOrientation(ActionOrientationType.STATEMENT);
         assertThat(CwmSchemaMapper.rowTriggerWrittenPerStatement(sqlServer, sqlServerOrders, trigger, "trg"))
                 .as("a statement trigger is written as one").isFalse();
+    }
+
+    /**
+     * A function in a language the dialect writes comes after the views and before the triggers, its
+     * body as it is, and is dropped by its signature; the procedure a trigger keeps its body in comes
+     * with the trigger only. DuckDB writes no routines: the function is left out, a case the dialect
+     * cannot write.
+     */
+    @Test
+    void aRoutineComesAfterTheViewsAndBeforeTheTriggers() {
+        SqlGenFixture f = SqlGenFixture.build("sales", pg);
+        Trigger trigger = f.attachTrigger(f.orders, "trg_orders_audit", "BEGIN RETURN NEW; END;");
+        f.schema.getOwnedElement().add(trigger);
+        Procedure total = routine(f, "fn_total", "plpgsql", "BEGIN RETURN n * 2; END;");
+        Procedure ownOfTheTrigger = routine(f, "trg_orders_audit_fn", "plpgsql", "BEGIN RETURN NEW; END;");
+
+        List<DdlStatement> create = generator.create(List.of(f.schema));
+        List<Object> elements = create.stream().map(DdlStatement::element).map(Object.class::cast).toList();
+
+        assertThat(create).filteredOn(s -> s.element() == total).singleElement().satisfies(s -> assertThat(s.sql())
+                .isEqualTo("CREATE FUNCTION \"sales\".\"fn_total\"(\"n\" INTEGER) RETURNS INTEGER LANGUAGE plpgsql"
+                        + " AS $$BEGIN RETURN n * 2; END;$$"));
+        assertThat(elements.indexOf(total)).isGreaterThan(elements.indexOf(f.view))
+                .isLessThan(elements.indexOf(trigger));
+        assertThat(elements).doesNotContain(ownOfTheTrigger);
+        assertThat(generator.drop(List.of(f.schema))).filteredOn(s -> s.element() == total).singleElement()
+                .satisfies(s -> assertThat(s.sql())
+                        .isEqualTo("DROP FUNCTION IF EXISTS \"sales\".\"fn_total\"(INTEGER)"));
+
+        DuckDbDialect duckdb = new DuckDbDialect();
+        assertThat(new DdlGeneratorImpl(duckdb).create(List.of(f.schema))).noneMatch(s -> s.element() == total);
+        assertThatThrownBy(() -> new DdlGeneratorImpl(duckdb, DdlSettings.defaults().withStrict(true))
+                .createElement(total)).isInstanceOfSatisfying(UnwritableException.class,
+                        e -> assertThat(e.cases()).singleElement().satisfies(c -> {
+                            assertThat(c.element()).isEqualTo("function sales.fn_total");
+                            assertThat(c.what()).isEqualTo("a function in plpgsql");
+                        }));
+    }
+
+    /** A function {@code name(n INTEGER) RETURNS INTEGER} of the fixture's schema. */
+    private static Procedure routine(SqlGenFixture f, String name, String language, String body) {
+        Procedure function = SqlGenFixture.RF.createProcedure();
+        function.setName(name);
+        function.setType(ProcedureType.FUNCTION);
+        Classifier integer = ColumnSets.findColumn(f.orders, "ID").orElseThrow().getType();
+        SQLParameter n = SqlGenFixture.RF.createSQLParameter();
+        n.setName("n");
+        n.setKind(ParameterDirectionKind.PDK_IN);
+        n.setType(integer);
+        function.getParameter().add(n);
+        SQLParameter result = SqlGenFixture.RF.createSQLParameter();
+        result.setName("returnValue");
+        result.setKind(ParameterDirectionKind.PDK_RETURN);
+        result.setType(integer);
+        function.getParameter().add(result);
+        ProcedureExpression expression = SqlGenFixture.CF.createProcedureExpression();
+        expression.setLanguage(language);
+        expression.setBody(body);
+        function.setBody(expression);
+        f.schema.getOwnedElement().add(function);
+        return function;
     }
 
     @Test

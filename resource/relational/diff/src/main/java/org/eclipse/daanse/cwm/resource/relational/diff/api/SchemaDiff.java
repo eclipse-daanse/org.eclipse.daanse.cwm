@@ -131,6 +131,7 @@ public record SchemaDiff(Schema oldSchema, Schema newSchema,
                 lines.add(line(left, switch (aspect) {
                 case KIND -> differs("kind", left.getType(), right.getType());
                 case PARAMETER_NAMES -> differs("parameter names", parameterNames(left), parameterNames(right));
+                case RETURN_TYPE -> "type of the result differs";
                 case BODY -> "body differs";
                 }));
             }
