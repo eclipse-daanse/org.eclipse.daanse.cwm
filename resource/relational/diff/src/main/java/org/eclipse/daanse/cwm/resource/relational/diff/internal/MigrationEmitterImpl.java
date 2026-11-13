@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -259,6 +260,19 @@ public final class MigrationEmitterImpl implements MigrationEmitter {
                 case ChangeOp.DropTrigger o -> out.addAll(sql(ddl.dropElement(o.trigger())));
 
                 //  comments
+                //  routines
+                case ChangeOp.CreateRoutine o -> out.addAll(sql(ddl.createElement(o.routine())));
+                case ChangeOp.DropRoutine o -> out.addAll(sql(ddl.dropElement(o.routine())));
+                case ChangeOp.ReplaceRoutine o -> {
+                    Optional<String> replace = ddl.replaceRoutine(o.newRoutine());
+                    if (replace.isPresent()) {
+                        out.add(replace.get());
+                    } else {
+                        out.addAll(sql(ddl.dropElement(o.oldRoutine())));
+                        out.addAll(sql(ddl.createElement(o.newRoutine())));
+                    }
+                }
+
                 case ChangeOp.SetComment o -> ddl.comment(o.element(), o.comment()).ifPresent(out::add);
                 case ChangeOp.SetViewComment o -> ddl.comment(o.element(), o.comment()).ifPresent(out::add);
             }

@@ -72,6 +72,7 @@ import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.Procedu
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.util.PrivilegeRules;
 import org.eclipse.daanse.cwm.model.daanse.resource.relational.privilege.util.PrivilegeStereotypes;
 import org.eclipse.daanse.cwm.resource.relational.ddl.api.DdlStatement;
+import org.eclipse.daanse.cwm.resource.relational.ddl.internal.DdlGeneratorFactoryImpl;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.PrivilegeSqlGeneratorImpl;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.DialectProfile;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.CatalogDiff;
@@ -132,9 +133,10 @@ class CatalogRoundTripParameterizedTest {
             Catalog written = model(profile, dialect);
             Schema schema = Catalogs.schemas(written).get(0);
             try {
-                executeAll(c, profile.create(dialect, schema));
+                executeAll(c, DdlStatement.sql(new DdlGeneratorFactoryImpl()
+                        .create(dialect, profile.settings().withStrict(true)).create(List.of(schema))));
                 if (profile == DialectProfile.POSTGRES) {
-                    overloadsWithAGrantOnOne(c, written, dialect);
+                    aGrantOnOneOverload(c, written, dialect);
                 }
 
                 profile.prepareForMetadata(c);
@@ -171,18 +173,8 @@ class CatalogRoundTripParameterizedTest {
         }
     }
 
-    /**
-     * Creates the overloads {@code fn_over(v integer)} and {@code fn_over(v text)} of the model, which
-     * the DDL writes no routines for, and writes its role with the grant on the second one.
-     */
-    private static void overloadsWithAGrantOnOne(Connection c, Catalog written, Dialect dialect) throws Exception {
-        String schema = Catalogs.schemas(written).get(0).getName();
-        try (Statement s = c.createStatement()) {
-            s.execute("CREATE FUNCTION \"" + schema + "\".fn_over(v integer) RETURNS integer LANGUAGE sql"
-                    + " AS 'SELECT 1'");
-            s.execute("CREATE FUNCTION \"" + schema + "\".fn_over(v text) RETURNS integer LANGUAGE sql"
-                    + " AS 'SELECT 2'");
-        }
+    /** Writes the role of the model with its grant on the second overload of {@code fn_over}. */
+    private static void aGrantOnOneOverload(Connection c, Catalog written, Dialect dialect) throws Exception {
         PrivilegeSqlGeneratorImpl privileges = new PrivilegeSqlGeneratorImpl(dialect);
         List<ResponsibleParty> roles = Namespaces.ownedElements(written, ResponsibleParty.class);
         executeAll(c, DdlStatement.sql(privileges.createRoleStatements(roles)));
@@ -198,8 +190,9 @@ class CatalogRoundTripParameterizedTest {
      * CASCADE)}, the key deferred where the database has deferrable keys, without an index on {@code CUSTOMER_ID},
      * for which some databases make one, the view {@code V_CUSTOMERS}, commented where the dialect writes comments
      * on views, where the dialect writes them the materialized view {@code MV_CUSTOMERS}, and, where the profile has
-     * one, a trigger on {@code ORDERS}; on PostgreSQL also the overloads {@code fn_over(v integer)} and
-     * {@code fn_over(v text)} and the role {@code rt_pg_over} with {@code EXECUTE} on the second one.
+     * one, a trigger on {@code ORDERS}; where the dialect writes routines the function {@code fn_double}; on
+     * PostgreSQL also the overloads {@code fn_over(v integer)} and {@code fn_over(v text)} and the role
+     * {@code rt_pg_over} with {@code EXECUTE} on the second one.
      */
     private static Catalog model(DialectProfile profile, Dialect dialect) {
         Catalog catalog = tables(profile, dialect);
@@ -207,8 +200,8 @@ class CatalogRoundTripParameterizedTest {
             Schema schema = Catalogs.schemas(catalog).get(0);
             SQLSimpleType integer = SQLSimpleTypes.create(catalog, "integer", Types.INTEGER);
             SQLSimpleType text = SQLSimpleTypes.create(catalog, "text", Types.VARCHAR);
-            overload(schema, integer, "SELECT 1");
-            Procedure byText = overload(schema, text, "SELECT 2");
+            overload(schema, integer, integer, "SELECT 1");
+            Procedure byText = overload(schema, text, integer, "SELECT 2");
             Stereotype databaseRole = PrivilegeStereotypes.create(PrivilegeStereotypes.DATABASE_ROLE);
             catalog.getOwnedElement().add(databaseRole);
             ResponsibleParty role = BusinessinformationFactory.eINSTANCE.createResponsibleParty();
@@ -223,8 +216,11 @@ class CatalogRoundTripParameterizedTest {
         return catalog;
     }
 
-    /** A function {@code fn_over} in {@code schema} with the parameter {@code v} of the type {@code type}. */
-    private static Procedure overload(Schema schema, SQLSimpleType type, String body) {
+    /**
+     * A function {@code fn_over} in {@code schema} with the parameter {@code v} of the type
+     * {@code type} that returns an {@code integer}.
+     */
+    private static Procedure overload(Schema schema, SQLSimpleType type, SQLSimpleType integer, String body) {
         Procedure function = RF.createProcedure();
         function.setName("fn_over");
         function.setType(ProcedureType.FUNCTION);
@@ -233,6 +229,11 @@ class CatalogRoundTripParameterizedTest {
         v.setKind(ParameterDirectionKind.PDK_IN);
         v.setType(type);
         function.getParameter().add(v);
+        SQLParameter result = RF.createSQLParameter();
+        result.setName("returnValue");
+        result.setKind(ParameterDirectionKind.PDK_RETURN);
+        result.setType(integer);
+        function.getParameter().add(result);
         ProcedureExpression expression = CoreFactory.eINSTANCE.createProcedureExpression();
         expression.setLanguage("SQL");
         expression.setBody(body);
@@ -309,6 +310,27 @@ class CatalogRoundTripParameterizedTest {
                     + ", " + dialect.quoteIdentifier("NAME") + " FROM "
                     + dialect.quoteIdentifier(schema.getName(), "CUSTOMERS"));
             TaggedValues.set(materialized, RelationalRules.MATERIALIZED_TAG, "true");
+        }
+
+        if (profile.routineLanguage() != null) {
+            Procedure function = RF.createProcedure();
+            function.setName("fn_double");
+            function.setType(ProcedureType.FUNCTION);
+            SQLParameter n = RF.createSQLParameter();
+            n.setName(profile.routineParameter());
+            n.setKind(ParameterDirectionKind.PDK_IN);
+            n.setType(integer);
+            function.getParameter().add(n);
+            SQLParameter result = RF.createSQLParameter();
+            result.setName("returnValue");
+            result.setKind(ParameterDirectionKind.PDK_RETURN);
+            result.setType(integer);
+            function.getParameter().add(result);
+            ProcedureExpression body = CoreFactory.eINSTANCE.createProcedureExpression();
+            body.setLanguage(profile.routineLanguage());
+            body.setBody(profile.routineBody());
+            function.setBody(body);
+            schema.getOwnedElement().add(function);
         }
 
         if (profile.supportsTriggers()) {

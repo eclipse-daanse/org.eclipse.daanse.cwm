@@ -18,6 +18,8 @@ import java.util.Objects;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.QualifiedNames;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Procedure;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ProcedureType;
 import org.eclipse.daanse.sql.dialect.api.Dialect;
 
 /**
@@ -48,9 +50,12 @@ public record Unwritable(String dialect, String element, String what, String ins
     /**
      * An element by its kind and its qualified name: {@code index sales.orders.ix_open},
      * {@code foreign key sales.orders.fk_customer}. The kind is the name of its class in words, without
-     * the prefix {@code SQL}.
+     * the prefix {@code SQL}; a procedure that is a function is a {@code function}.
      */
     public static String describe(ModelElement element) {
+        if (element instanceof Procedure routine && routine.getType() == ProcedureType.FUNCTION) {
+            return "function " + QualifiedNames.of(element);
+        }
         String type = element.eClass().getName();
         if (type.startsWith("SQL") && type.length() > 3) {
             type = type.substring(3);

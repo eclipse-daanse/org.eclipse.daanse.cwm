@@ -25,7 +25,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.QualifiedNames;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
@@ -46,6 +45,7 @@ import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangeOp;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ChangePlanner;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.ColumnChange;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.CommentChange;
+import org.eclipse.daanse.cwm.resource.relational.diff.api.ProcedureChange;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.SchemaDiff;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableDiff;
 import org.eclipse.daanse.cwm.resource.relational.diff.api.TableMerge;
@@ -137,6 +137,13 @@ public final class ChangePlannerImpl implements ChangePlanner {
         for (Table t : tablesToDrop) {
             // DROP TABLE takes its triggers along, but not their procedures
             t.getTrigger().forEach(trg -> p.dropMinor.add(new ChangeOp.DropTrigger(t, trg)));
+        }
+        // routines that go, and those whose kind or parameter names change, which no OR REPLACE changes
+        diff.proceduresDropped().forEach(r -> p.dropMinor.add(new ChangeOp.DropRoutine(r)));
+        for (ProcedureChange change : diff.proceduresChanged()) {
+            if (!replaceable(change)) {
+                p.dropMinor.add(new ChangeOp.DropRoutine(change.oldProcedure()));
+            }
         }
         for (TableDiff td : diff.tablesChanged()) {
             td.indexesDropped().forEach(i -> p.dropMinor.add(new ChangeOp.DropIndex(i)));
@@ -252,6 +259,13 @@ public final class ChangePlannerImpl implements ChangePlanner {
             ViewChange replace = replaced.stream().filter(vc -> vc.newView() == view).findFirst().orElse(null);
             p.createView.add(replace != null ? new ChangeOp.ReplaceView(replace.oldView(), replace.newView())
                     : new ChangeOp.CreateView(view));
+        }
+        // routines after the views, before the triggers
+        diff.proceduresAdded().forEach(r -> p.createView.add(new ChangeOp.CreateRoutine(r)));
+        for (ProcedureChange change : diff.proceduresChanged()) {
+            p.createView.add(replaceable(change)
+                    ? new ChangeOp.ReplaceRoutine(change.oldProcedure(), change.newProcedure())
+                    : new ChangeOp.CreateRoutine(change.newProcedure()));
         }
         for (TableDiff td : diff.tablesChanged()) {
             td.triggersAdded().forEach(t -> p.createView.add(new ChangeOp.CreateTrigger(td.newTable(), t)));
@@ -513,11 +527,16 @@ public final class ChangePlannerImpl implements ChangePlanner {
                     + " merged into " + m.newTable().getName()
                     + " — row data is not migrated automatically");
         }
-        diff.proceduresAdded().forEach(r -> out.add(QualifiedNames.of(r) + " added — routines are not migrated"));
-        diff.proceduresDropped().forEach(r -> out.add(QualifiedNames.of(r) + " dropped — routines are not migrated"));
-        diff.proceduresChanged().forEach(r -> out.add(QualifiedNames.of(r.oldProcedure())
-                + " changed — routines are not migrated"));
         return out;
+    }
+
+    /**
+     * Whether a changed routine is replaced in place: only its body changed. A routine that turns
+     * from function to procedure or renames a parameter is dropped and created again, as
+     * {@code CREATE OR REPLACE} keeps both.
+     */
+    private static boolean replaceable(ProcedureChange change) {
+        return change.aspects().equals(Set.of(ProcedureChange.Aspect.BODY));
     }
 
     private static boolean notNull(Column c) {

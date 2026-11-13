@@ -38,6 +38,8 @@ public record ProcedureChange(Procedure oldProcedure, Procedure newProcedure, Se
         KIND,
         /** The names of the parameters. */
         PARAMETER_NAMES,
+        /** The type a function returns, where both state one. */
+        RETURN_TYPE,
         /** The text of the body, subject to {@link Tolerance#IGNORE_EXPRESSION_TEXT}. */
         BODY
     }

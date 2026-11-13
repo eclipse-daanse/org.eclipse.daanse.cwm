@@ -205,6 +205,10 @@ class PrivilegeSqlGeneratorTest {
         assertThat(duckdb.dropUserStatements(List.of(clerk))).isEmpty();
     }
 
+    /**
+     * Overloads are named by the types of their parameters, as the DDL generator writes them for the
+     * routine: by the names of the types, as the database named them.
+     */
     @Test
     void overloadsOfARoutineAreGrantedByTheirParameterTypes() {
         Procedure byNumber = overloadOfAnswer("integer");

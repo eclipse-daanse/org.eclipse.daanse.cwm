@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.StructuralFeature;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.QualifiedNames;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
@@ -462,6 +463,36 @@ public final class LiquibaseChangelogWriter {
                 }
                 if (settings.includeRollback()) {
                     x.emptyRollback(); // the previous comment is not carried on the op
+                }
+                x.closeChangeSet();
+            }
+            case ChangeOp.CreateRoutine o -> {
+                x.openChangeSet(settings.author(), "CreateRoutine|" + QualifiedNames.of(o.routine()));
+                dbmsSql(x, o);
+                if (settings.includeRollback()) {
+                    x.startElement("rollback");
+                    dbmsSql(x, new ChangeOp.DropRoutine(o.routine()));
+                    x.endElement("rollback");
+                }
+                x.closeChangeSet();
+            }
+            case ChangeOp.DropRoutine o -> {
+                x.openChangeSet(settings.author(), "DropRoutine|" + QualifiedNames.of(o.routine()));
+                dbmsSql(x, o);
+                if (settings.includeRollback()) {
+                    x.startElement("rollback");
+                    dbmsSql(x, new ChangeOp.CreateRoutine(o.routine()));
+                    x.endElement("rollback");
+                }
+                x.closeChangeSet();
+            }
+            case ChangeOp.ReplaceRoutine o -> {
+                x.openChangeSet(settings.author(), "ReplaceRoutine|" + QualifiedNames.of(o.newRoutine()));
+                dbmsSql(x, o);
+                if (settings.includeRollback()) {
+                    x.startElement("rollback");
+                    dbmsSql(x, new ChangeOp.ReplaceRoutine(o.newRoutine(), o.oldRoutine()));
+                    x.endElement("rollback");
                 }
                 x.closeChangeSet();
             }

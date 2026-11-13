@@ -13,8 +13,8 @@
  */
 package org.eclipse.daanse.cwm.resource.relational.load.jdbc.internal;
 
-import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
+import java.lang.System.Logger;
 import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -48,8 +48,8 @@ import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.StructuralFeature;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.ConsequenceRule;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.InverseReferences;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.QualifiedNames;
-import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Selection;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Selection.Verdict;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Selection;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Selections;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.TaggedValues;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Catalog;
@@ -800,7 +800,7 @@ public final class CwmLoaderImpl implements CwmLoader {
                     continue;
                 }
                 Procedure cwmProc = createProcedure(proc.reference().name(), ProcedureType.PROCEDURE,
-                        proc.body().orElse(proc.fullDefinition().orElse(null)));
+                        proc.body().orElse(proc.fullDefinition().orElse(null)), proc.language());
                 specificName(cwmProc, proc.reference().specificName());
                 for (ProcedureColumn col : proc.columns()) {
                     mapProcedureParameter(col, types).ifPresent(cwmProc.getParameter()::add);
@@ -814,7 +814,7 @@ public final class CwmLoaderImpl implements CwmLoader {
                     continue;
                 }
                 Procedure cwmProc = createProcedure(fn.reference().name(), ProcedureType.FUNCTION,
-                        fn.body().orElse(fn.fullDefinition().orElse(null)));
+                        fn.body().orElse(fn.fullDefinition().orElse(null)), fn.language());
                 specificName(cwmProc, fn.reference().specificName());
                 for (FunctionColumn col : fn.columns()) {
                     mapFunctionParameter(col, types).ifPresent(cwmProc.getParameter()::add);
@@ -1016,13 +1016,18 @@ public final class CwmLoaderImpl implements CwmLoader {
         }
     }
 
-    private static Procedure createProcedure(String name, ProcedureType type, String body) {
+    /**
+     * A routine with its body in the language the database names it in ({@code plpgsql},
+     * {@code plsql}, {@code tsql}, ...), {@code SQL} where it names none.
+     */
+    private static Procedure createProcedure(String name, ProcedureType type, String body,
+            Optional<String> language) {
         Procedure p = RF.createProcedure();
         p.setName(name);
         p.setType(type);
         if (body != null && !body.isBlank()) {
             ProcedureExpression pe = CF.createProcedureExpression();
-            pe.setLanguage("SQL");
+            pe.setLanguage(language.filter(l -> !l.isBlank()).orElse("SQL"));
             pe.setBody(body);
             p.setBody(pe);
         }
@@ -1049,8 +1054,14 @@ public final class CwmLoaderImpl implements CwmLoader {
         return Optional.of(sp);
     }
 
+    /**
+     * A parameter of a function. Oracle and SQL Server report the result of a function as an
+     * {@code OUT} parameter without a name: it is the function's {@code RETURN} parameter.
+     */
     private static Optional<SQLParameter> mapFunctionParameter(FunctionColumn col, CatalogTypes types) {
-        ParameterDirectionKind kind = switch (col.columnType()) {
+        boolean result = col.columnType() == FunctionColumn.ColumnType.OUT
+                && (col.name() == null || col.name().isBlank());
+        ParameterDirectionKind kind = result ? ParameterDirectionKind.PDK_RETURN : switch (col.columnType()) {
         case IN -> ParameterDirectionKind.PDK_IN;
         case OUT -> ParameterDirectionKind.PDK_OUT;
         case INOUT -> ParameterDirectionKind.PDK_INOUT;

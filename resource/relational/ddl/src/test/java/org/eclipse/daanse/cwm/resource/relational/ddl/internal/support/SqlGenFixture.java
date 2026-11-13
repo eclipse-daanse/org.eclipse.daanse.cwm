@@ -11,14 +11,14 @@ package org.eclipse.daanse.cwm.resource.relational.ddl.internal.support;
 
 import java.sql.Types;
 
-import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.BusinessinformationFactory;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Description;
-import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
+import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
 import org.eclipse.daanse.cwm.model.cwm.foundation.datatypes.DatatypesFactory;
 import org.eclipse.daanse.cwm.model.cwm.foundation.datatypes.QueryExpression;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.BooleanExpression;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CoreFactory;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.CheckConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
@@ -177,6 +177,36 @@ public final class SqlGenFixture {
         trg.setActionStatement(body);
         table.getTrigger().add(trg);
         return trg;
+    }
+
+    /**
+     * A function {@code name(<parameter> INTEGER) RETURNS INTEGER} of the schema with the body
+     * {@code body} in {@code language}.
+     */
+    public org.eclipse.daanse.cwm.model.cwm.resource.relational.Procedure attachFunction(String name,
+            String parameter, String language, String body) {
+        org.eclipse.daanse.cwm.model.cwm.resource.relational.Procedure function = RF.createProcedure();
+        function.setName(name);
+        function.setType(org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ProcedureType.FUNCTION);
+        org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier integer = ((Column) orders.getFeature().get(0))
+                .getType();
+        org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLParameter in = RF.createSQLParameter();
+        in.setName(parameter);
+        in.setKind(org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.ParameterDirectionKind.PDK_IN);
+        in.setType(integer);
+        function.getParameter().add(in);
+        org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLParameter result = RF.createSQLParameter();
+        result.setName("returnValue");
+        result.setKind(org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.ParameterDirectionKind.PDK_RETURN);
+        result.setType(integer);
+        function.getParameter().add(result);
+        org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ProcedureExpression expression = CF
+                .createProcedureExpression();
+        expression.setLanguage(language);
+        expression.setBody(body);
+        function.setBody(expression);
+        schema.getOwnedElement().add(function);
+        return function;
     }
 
     /** Attaches {@code body} as the database comment of {@code element}. */

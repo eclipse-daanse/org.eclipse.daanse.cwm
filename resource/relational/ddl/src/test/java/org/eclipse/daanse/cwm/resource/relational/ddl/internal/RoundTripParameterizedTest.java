@@ -237,6 +237,41 @@ class RoundTripParameterizedTest {
         }
     }
 
+    /**
+     * Where the dialect writes routines, a function in its language is created, and the drop script
+     * drops it by its signature.
+     */
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("dialects")
+    void aFunctionIsCreatedAndDroppedWhereTheDialectWritesItsLanguage(DialectProfile profile) throws Exception {
+        Assumptions.assumeTrue(profile.routineLanguage() != null, profile + " writes no routines");
+        ActiveDatabase db = activateOrSkip(profile);
+        Dialect dialect = db.dialect();
+        try (Connection c = db.dataSource().getConnection()) {
+            SqlGenFixture f = SqlGenFixture.build(profile.schemaName(), dialect);
+            f.attachFunction("fn_double", profile.routineParameter(), profile.routineLanguage(),
+                    profile.routineBody());
+            DdlGenerator generator = new DdlGeneratorFactoryImpl().create(dialect,
+                    profile.settings().withStrict(true));
+            try {
+                executeAll(c, generator.createSchema(f.schema));
+                profile.prepareForMetadata(c);
+                assertThat(functions(profile, dialect, c)).contains("fn_double");
+
+                executeAll(c, generator.dropSchema(f.schema));
+                assertThat(functions(profile, dialect, c)).doesNotContain("fn_double");
+            } finally {
+                profile.cleanup(c, f.schema, dialect);
+            }
+        }
+    }
+
+    /** The names of the functions the metadata report. */
+    private static List<String> functions(DialectProfile profile, Dialect dialect, Connection c) throws Exception {
+        return profile.snapshot(DB_SERVICE, c, dialect).structureInfo().functions().stream()
+                .map(fn -> fn.reference().name()).toList();
+    }
+
     /** The names of the materialized views of the test's schema. */
     private static List<String> materializedViews(DialectProfile profile, Dialect dialect, Connection c)
             throws Exception {

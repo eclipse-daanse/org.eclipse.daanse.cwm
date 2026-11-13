@@ -37,12 +37,14 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.ForeignKey;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.NamedColumnSet;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.PrimaryKey;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Procedure;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Schema;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.UniqueConstraint;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.View;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ProcedureType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.Columns;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ForeignKeys;
@@ -66,6 +68,9 @@ import org.eclipse.daanse.sql.dialect.api.Dialect;
 import org.eclipse.daanse.sql.dialect.api.generator.DdlGenerator.Deferrability;
 import org.eclipse.daanse.sql.dialect.api.generator.DdlGenerator.IndexColumn;
 import org.eclipse.daanse.sql.dialect.api.generator.DdlGenerator.IndexDefinition;
+import org.eclipse.daanse.sql.dialect.api.generator.DdlGenerator.ParameterMode;
+import org.eclipse.daanse.sql.dialect.api.generator.DdlGenerator.RoutineDefinition;
+import org.eclipse.daanse.sql.dialect.api.generator.DdlGenerator.RoutineSignature;
 import org.eclipse.daanse.sql.model.schema.ColumnDefinition;
 import org.eclipse.daanse.sql.model.schema.SchemaReference;
 import org.eclipse.daanse.sql.model.schema.TableReference;
@@ -113,11 +118,13 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * deferrable where the dialect checks every key at once; every index is left
  * out where the dialect has no index DDL; a comment is left out where the
  * dialect writes none on its element, as on a view and its columns where it
- * keeps none on a view ({@link #commentsOnViews()}); a trigger is written as
- * the dialect writes it, an {@code AFTER} trigger for a {@code BEFORE} one, a
- * statement trigger for a row trigger, without its {@code WHEN} condition.
- * Strict ({@link DdlSettings#strict()}), the create and the drop script fail
- * alike, with every case of the run.
+ * keeps none on a view ({@link #commentsOnViews()}); a routine is left out
+ * where the dialect writes none in the language of its body, and so is the
+ * comment on a routine; a trigger is written as the dialect writes it, an
+ * {@code AFTER} trigger for a {@code BEFORE} one, a statement trigger for a row
+ * trigger, without its {@code WHEN} condition. Strict
+ * ({@link DdlSettings#strict()}), the create and the drop script fail alike,
+ * with every case of the run.
  * </p>
  */
 public final class DdlGeneratorImpl implements DdlGenerator {
@@ -194,6 +201,21 @@ public final class DdlGeneratorImpl implements DdlGenerator {
      */
     boolean commentsOnViews() {
         return dialect.ddlGenerator().supportsCommentOnView();
+    }
+
+    @Override
+    public Optional<String> replaceRoutine(Procedure routine) {
+        String schemaName = settings.includeSchema() && routine.getNamespace() instanceof Schema schema
+                && named(schema) ? schema.getName() : null;
+        boolean function = routine.getType() == ProcedureType.FUNCTION;
+        return CwmSchemaMapper.routineDefinition(dialect, routine, schemaName).flatMap(definition -> {
+            Optional<String> replace = function ? dialect.ddlGenerator().createFunction(definition, true)
+                    : dialect.ddlGenerator().createProcedure(definition, true);
+            Optional<String> create = function ? dialect.ddlGenerator().createFunction(definition, false)
+                    : dialect.ddlGenerator().createProcedure(definition, false);
+            // where the dialect writes the same either way, it has no OR REPLACE
+            return replace.filter(statement -> !replace.equals(create));
+        });
     }
 
     /**
@@ -365,6 +387,11 @@ public final class DdlGeneratorImpl implements DdlGenerator {
             for (View view : written) {
                 parts.addAll(viewCommentParts(view));
             }
+            for (Schema schema : schemas) {
+                for (Procedure routine : routines(schema)) {
+                    routinePart(routine).ifPresent(parts::add);
+                }
+            }
             for (Table table : tables) {
                 for (Trigger trigger : table.getTrigger()) {
                     triggerPart(trigger).ifPresent(parts::add);
@@ -395,6 +422,7 @@ public final class DdlGeneratorImpl implements DdlGenerator {
                 return parts;
             }).orElseGet(List::of);
             case Trigger trigger -> triggerPart(trigger).stream().toList();
+            case Procedure routine -> routinePart(routine).stream().toList();
             case Description description -> Objects.equals(description.getType(), settings.commentType())
                     ? Descriptions.elements(description).stream().flatMap(e -> commentPart(e, description).stream())
                             .toList()
@@ -556,6 +584,75 @@ public final class DdlGeneratorImpl implements DdlGenerator {
                     List.of(dialect.ddlGenerator().dropView(vref, settings.ifNotExists()))));
         }
 
+        /**
+         * {@code CREATE FUNCTION} or {@code CREATE PROCEDURE} with the routine's parameters, the type a
+         * function returns and the body as it is, where the dialect writes routines in the language
+         * of the body; dropped by its name and the types of its parameters, which name one of several
+         * of that name. Nothing for a routine without body, and for the procedure a trigger keeps its
+         * body in, which is written with the trigger. Where the dialect writes no routine in the
+         * language, or cannot write one of its parameters, the routine is left out, and so is a
+         * comment on a routine, which the dialect API has no statement for.
+         */
+        private Optional<Part> routinePart(Procedure routine) {
+            Optional<String> language = CwmSchemaMapper.routineLanguage(routine);
+            if (language.isEmpty() || keepsTheBodyOfATrigger(routine)) {
+                return Optional.empty();
+            }
+            boolean function = routine.getType() == ProcedureType.FUNCTION;
+            String kind = function ? "a function" : "a procedure";
+            comment(routine).ifPresent(d -> unwritable(routine, "a comment on " + kind, "left out"));
+            if (!dialect.ddlGenerator().routineLanguages().contains(language.get())) {
+                unwritable(routine, kind + " in " + language.get(), "left out");
+                return Optional.empty();
+            }
+            String schemaName = schemaName(routine);
+            Optional<RoutineDefinition> definition = CwmSchemaMapper.routineDefinition(dialect, routine, schemaName);
+            if (function && definition.isPresent() && definition.get().returnType() == null
+                    && definition.get().parameters().stream().allMatch(p -> p.mode() == ParameterMode.IN)) {
+                // the metadata of PostgreSQL do not report the type a function returns
+                unwritable(routine, "a function without the type of its result", "left out");
+                return Optional.empty();
+            }
+            Optional<String> create = definition.flatMap(d -> function ? dialect.ddlGenerator().createFunction(d, false)
+                    : dialect.ddlGenerator().createProcedure(d, false));
+            RoutineSignature signature = CwmSchemaMapper.routineSignature(dialect, routine, schemaName);
+            Optional<String> drop = function ? dialect.ddlGenerator().dropFunction(signature, settings.ifNotExists())
+                    : dialect.ddlGenerator().dropProcedure(signature, settings.ifNotExists());
+            if (create.isEmpty() || drop.isEmpty()) {
+                unwritable(routine, kind + " with these parameters", "left out");
+                return Optional.empty();
+            }
+            return Optional.of(new Part(routine, List.of(create.get()), List.of(drop.get())));
+        }
+
+        /**
+         * Whether {@code routine} is the procedure a trigger of its schema keeps its body in, where
+         * the dialect keeps the body of a trigger in a procedure of its own: named
+         * {@link CwmSchemaMapper#triggerFunctionName(String)} for the trigger.
+         */
+        private boolean keepsTheBodyOfATrigger(Procedure routine) {
+            if (!(routine.getNamespace() instanceof Schema schema)) {
+                return false;
+            }
+            for (Table table : Schemas.tables(schema)) {
+                for (Trigger trigger : table.getTrigger()) {
+                    String body = CwmSchemaMapper.triggerBody(trigger);
+                    String procedure = CwmSchemaMapper.triggerFunctionName(name(trigger));
+                    if (body != null && procedure.equals(routine.getName()) && dialect.ddlGenerator()
+                            .createTriggerProcedure(procedure, schemaName(routine), body).isPresent()) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /** The schema a routine is named with: its own with schema names, else none. */
+        private String schemaName(Procedure routine) {
+            return settings.includeSchema() && routine.getNamespace() instanceof Schema schema && named(schema)
+                    ? schema.getName() : null;
+        }
+
         private Optional<Part> triggerPart(Trigger trigger) {
             if (trigger.getTable() == null) {
                 return Optional.empty();
@@ -699,9 +796,17 @@ public final class DdlGeneratorImpl implements DdlGenerator {
         case Description description -> Descriptions.elements(description).stream().findFirst()
                 .flatMap(DdlGeneratorImpl::schemaOf);
         case Column column -> Columns.namedOwner(column).flatMap(NamedColumnSets::findSchema);
+        case Procedure routine -> routine.getNamespace() instanceof Schema schema ? Optional.of(schema)
+                : Optional.empty();
         case null -> Optional.empty();
         default -> RelationalNames.tableOf(element).flatMap(NamedColumnSets::findSchema);
         };
+    }
+
+    /** The functions and procedures of {@code schema}, in the order of the model. */
+    private static List<Procedure> routines(Schema schema) {
+        return schema.getOwnedElement().stream().filter(Procedure.class::isInstance).map(Procedure.class::cast)
+                .toList();
     }
 
     private static Optional<Table> tableOf(ModelElement element) {
