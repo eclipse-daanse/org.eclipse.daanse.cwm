@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.daanse</groupId>
+    <artifactId>org.eclipse.daanse.cwm</artifactId>
+    <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>org.eclipse.daanse.cwm.examples</artifactId>
+  <packaging>pom</packaging>
+  <name>Daanse CWM Examples (aggregator)</name>
+  <description>Plain Java programs that show the CWM tooling end to end, without OSGi and without a
+    Maven plugin, started from the IDE: jdbc.roundtrip writes a CWM model held in Java code into
+    PostgreSQL and, a part chosen by rules, into DuckDB, reads it back and compares.</description>
+  <modules>
+    <module>jdbc.roundtrip</module>
+  </modules>
+</project>
