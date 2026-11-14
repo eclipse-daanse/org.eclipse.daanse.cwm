@@ -26,11 +26,12 @@
   <description>The Maven plugins of the CWM tooling, one module per plugin. Each plugin is a thin
     Maven front end of one core library and depends on nothing else: ecore (cwm-ecore:generate)
     on emf/ecore, eorm (fennec-eorm:generate) on orm/fennec.eorm.core, atlas (fennec-atlas:generate)
-    on sensinact/fennec.atlas.core.</description>
+    on sensinact/fennec.atlas.core, ddl (cwm-ddl:generate) on resource/relational/ddl.render.</description>
 
   <modules>
     <module>ecore</module>
     <module>eorm</module>
     <module>atlas</module>
+    <module>ddl</module>
   </modules>
 </project>
