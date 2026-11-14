@@ -74,6 +74,7 @@
     <module>orm</module>
     <module>sensinact</module>
     <module>maven</module>
+    <module>examples</module>
     <!--
     <module>codegen</module>
     -->

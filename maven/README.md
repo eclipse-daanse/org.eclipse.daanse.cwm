@@ -47,7 +47,8 @@ choose their part of a catalog by the same [selection rules](#selection-rules).
 Whether a database holds what was written is answered by reading it back as the export says
 (`Exported.readBack()`) and comparing with `CatalogDiffer` of
 [`resource/relational/diff`](../resource/relational/diff), with the tolerances
-`Tolerance.roundTrip(dialect)` for what each database spells its own way.
+`Tolerance.roundTrip(dialect)` for what each database spells its own way;
+[`examples/jdbc.roundtrip`](../examples/jdbc.roundtrip/README.md) does it from start to end.
 
 ## Selection rules
 
