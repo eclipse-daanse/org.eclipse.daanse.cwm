@@ -26,13 +26,15 @@
   <description>Aggregator for the CWM relational resource tooling, split into
     focused modules: DDL generation
     (ddl), JDBC load (load.jdbc), schema diff/migration (diff), SQL/view
-    resolution (sql.resolve) and index advice (index.advise).</description>
+    resolution (sql.resolve), database to model and back without OSGi
+    (jdbc.standalone) and index advice (index.advise).</description>
 
   <modules>
     <module>ddl</module>
     <module>ddl.render</module>
     <module>dml.render</module>
     <module>diff</module>
+    <module>jdbc.standalone</module>
     <module>liquibase.render</module>
     <module>load.jdbc</module>
     <module>load.privilege</module>
