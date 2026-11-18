@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 
-import org.eclipse.daanse.cwm.emf.standalone.CwmPackages;
+import org.eclipse.daanse.cwm.emf.standalone.impl.CwmPackages;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.ElementRules;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Selected;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Selection;

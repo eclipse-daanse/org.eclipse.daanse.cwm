@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.daanse.cwm.emf.ecore.CorpusModels.File;
-import org.eclipse.daanse.cwm.emf.standalone.CwmPackages;
+import org.eclipse.daanse.cwm.emf.standalone.impl.CwmPackages;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;

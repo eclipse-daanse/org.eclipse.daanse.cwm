@@ -15,7 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.eclipse.daanse.cwm.emf.standalone.EcoreIndex;
+import org.eclipse.daanse.cwm.emf.standalone.impl.EcoreIndex;
 import org.eclipse.daanse.cwm.model.daanse.mapping.sensinact.examples.Examples;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;

@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.daanse.cwm.emf.standalone.EcoreIndex;
+import org.eclipse.daanse.cwm.emf.standalone.impl.EcoreIndex;
 import org.eclipse.daanse.cwm.model.daanse.mapping.sensinact.ProviderMapping;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;

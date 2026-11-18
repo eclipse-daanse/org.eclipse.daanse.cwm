@@ -115,7 +115,7 @@
     <!-- EcoreIndex, and loading CWM XMI outside OSGi with every CWM package registered by name -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.emf.standalone</artifactId>
+      <artifactId>org.eclipse.daanse.cwm.emf.standalone.impl</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

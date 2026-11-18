@@ -77,6 +77,13 @@
 
 
   <dependencies>
+    <!-- a plain Java program finds the model by its provider (META-INF/services); under OSGi the
+      generated configurator registers it and the API is imported optionally -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.emf.standalone.api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.relational</artifactId>

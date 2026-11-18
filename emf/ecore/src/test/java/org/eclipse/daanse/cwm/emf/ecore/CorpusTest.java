@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.daanse.cwm.emf.ecore.CorpusModels.File;
-import org.eclipse.daanse.cwm.emf.standalone.CwmPackages;
+import org.eclipse.daanse.cwm.emf.standalone.impl.CwmPackages;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;

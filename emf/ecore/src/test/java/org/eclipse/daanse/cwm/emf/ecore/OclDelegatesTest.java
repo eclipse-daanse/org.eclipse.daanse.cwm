@@ -20,7 +20,7 @@ import static org.eclipse.daanse.cwm.emf.ecore.CwmModels.parameter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.eclipse.daanse.cwm.emf.standalone.CwmPackages;
+import org.eclipse.daanse.cwm.emf.standalone.impl.CwmPackages;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.Operation;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.ParameterDirectionKind;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Attribute;

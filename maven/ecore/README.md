@@ -30,9 +30,10 @@ mapping rule. This page is about using the plugin.
 | Where it comes from | built from this repository: `mvn install -pl maven/ecore -am` puts it and its core into the local repository |
 | Dependencies | only its core `org.eclipse.daanse.cwm.emf.ecore` (plus the Maven API) |
 
-All CWM 1.1 packages and the Daanse ORM package are on the plugin's class path (they come with
-[`emf/standalone`](../../emf/standalone/README.md) through the core) and registered before the model is
-loaded, so an XMI that uses only those needs no further setup. A model that also uses other
+All CWM 1.1 packages are on the plugin's class path (they come with
+[`emf/standalone.impl`](../../emf/standalone.impl/README.md) through the core) and registered before the model is
+loaded, and so is every Daanse model added to the plugin's dependencies (it announces itself), so an
+XMI that uses only those needs no further setup. A model that also uses other
 metamodels (for example the Daanse ROLAP mapping) needs
 [`extraPackages`](#a-model-that-uses-further-metamodels).
 

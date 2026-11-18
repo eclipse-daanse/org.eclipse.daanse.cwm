@@ -18,7 +18,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.daanse.cwm.emf.standalone.CwmPackages;
+import org.eclipse.daanse.cwm.emf.standalone.impl.CwmPackages;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CoreFactory;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Model;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package;

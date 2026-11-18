@@ -40,7 +40,7 @@
       <artifactId>org.eclipse.daanse.cwm.resource.relational.diff</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <!-- model → database and database → CWM over JDBC; brings emf/standalone -->
+    <!-- model → database and database → CWM over JDBC; brings emf/standalone.impl -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.cwm.resource.relational.jdbc.standalone</artifactId>

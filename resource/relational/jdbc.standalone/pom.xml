@@ -29,7 +29,7 @@
     CwmJdbcExport cuts a model to a selection, writes its DDL in the dialect of the database
     (ddl.render) and runs it, with dropFirst idempotently and in one transaction where the database
     runs DDL in transactions. Wired by hand where OSGi wires the services. The core of the Maven goals
-    cwm-jdbc:import and cwm-jdbc:export (maven/jdbc); brings emf/standalone for reading and writing
+    cwm-jdbc:import and cwm-jdbc:export (maven/jdbc); brings emf/standalone.impl for reading and writing
     the XMI.</description>
   <dependencies>
     <dependency>
@@ -62,7 +62,7 @@
     <!-- reading and writing CWM XMI outside OSGi -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.emf.standalone</artifactId>
+      <artifactId>org.eclipse.daanse.cwm.emf.standalone.impl</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

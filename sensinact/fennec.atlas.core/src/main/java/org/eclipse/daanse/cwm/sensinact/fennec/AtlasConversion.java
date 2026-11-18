@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.eclipse.daanse.cwm.emf.standalone.CwmPath;
-import org.eclipse.daanse.cwm.emf.standalone.EcoreIndex;
+import org.eclipse.daanse.cwm.emf.standalone.impl.CwmPath;
+import org.eclipse.daanse.cwm.emf.standalone.impl.EcoreIndex;
 import org.eclipse.daanse.cwm.model.cwm.foundation.datatypes.Enumeration;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ChangeableKind;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;

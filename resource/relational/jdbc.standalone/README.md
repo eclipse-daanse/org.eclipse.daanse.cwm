@@ -14,7 +14,7 @@ side. It is the core of the Maven goals [`cwm-jdbc:import`](../../../maven/jdbc/
   snapshot of the Daanse SQL library, through the metadata provider of the database product.
 - Writes with [`ddl.render`](../ddl.render): the statements are those `cwm-ddl:generate` writes
   into its script files for the same model, selection and settings.
-- Brings [`emf/standalone`](../../../emf/standalone/README.md) for reading and writing the XMI.
+- Brings [`emf/standalone.impl`](../../../emf/standalone.impl/README.md) for reading and writing the XMI.
 - What a database spells its own way after a round trip is let pass by the tolerances of the
   [`diff`](../diff) module, `Tolerance.roundTrip(dialect)`.
 

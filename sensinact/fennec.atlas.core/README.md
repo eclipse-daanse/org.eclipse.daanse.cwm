@@ -11,7 +11,7 @@ error; with `lenient` it is a warning and the part is left out. `CwmToAtlas.conv
 
 - Reads `model/daanse/resource.sensinact`, `model/daanse/mapping.sensinact`, `governance/recording`,
   `governance/lifecycle`, `governance/obligations` and `units`; finds Ecore elements with `EcoreIndex`
-  of `emf/standalone`.
+  of `emf/standalone.impl`.
 - Writes the model of `org.eclipse.fennec.event.atlas:org.eclipse.fennec.event.atlas.mapping`
   (snapshot repository `https://central.sonatype.com/repository/maven-snapshots/`).
 - Run by the Maven goal of `maven/atlas`.

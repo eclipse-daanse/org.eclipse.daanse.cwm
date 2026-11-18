@@ -14,9 +14,9 @@ without Maven, from Java, a CLI or OSGi.
 | [`jdbc`](jdbc/README.md) | `org.eclipse.daanse.cwm.maven.jdbc` | `cwm-jdbc:import` | `generate-resources` (meant for explicit runs) | [`resource/relational/jdbc.standalone`](../resource/relational/jdbc.standalone/README.md) | live database over JDBC → CWM relational catalog XMI with roles, users and privileges, what to read chosen by rules |
 | [`jdbc`](jdbc/README.md#writing-a-model-into-a-database-cwm-jdbcexport) | `org.eclipse.daanse.cwm.maven.jdbc` | `cwm-jdbc:export` | `pre-integration-test` | [`resource/relational/jdbc.standalone`](../resource/relational/jdbc.standalone/README.md) | CWM relational catalog XMI → live database over JDBC, the DDL of its dialect run, with `dropFirst` again and again, what to write chosen by rules |
 
-The cores that load or write CWM XMI share [`emf/standalone`](../emf/standalone/README.md):
-`CwmPackages` registers every CWM and Daanse package by name, so any CWM XMI loads in every
-plugin; `loadModel` loads a model with the files it refers to, and `save` writes XMI with ids
+The cores that load or write CWM XMI share [`emf/standalone.impl`](../emf/standalone.impl/README.md):
+`CwmPackages` registers every CWM 1.1 package by name and every Daanse model on the plugin's class
+path that announces itself, so any CWM XMI of the models a plugin brings loads; `loadModel` loads a model with the files it refers to, and `save` writes XMI with ids
 built from the name path.
 
 ## How the plugins fit together

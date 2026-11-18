@@ -29,7 +29,7 @@ if (!r.hasErrors()) {
 | `CwmAnnotations` | the annotation sources and readers for the trace back to CWM |
 
 Loading the XMI (`CwmPackages`: registering the CWM EPackages, resource sets) comes from
-[`emf/standalone`](../standalone/README.md), which also brings every CWM package at run time. The
+[`emf/standalone.impl`](../standalone.impl/README.md), which also brings every CWM 1.1 package at run time. The
 Maven goal is [`cwm-ecore:generate`](../../maven/ecore/README.md).
 
 ## Which packages are converted
