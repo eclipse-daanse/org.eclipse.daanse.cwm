@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="feature" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature"
+    nsPrefix="feature">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Collections of features, as OGC API Features names them, as CWM classes: a FeatureCollection (a core::Class, owned by a core::Package) has its FeatureProperties (core::Attributes, typed by a data type) as features; the names become the ids of the collection and of its properties. The collection names the property that is the feature id, its primary geometry, the properties of its time (an instant, or the start and the end of an interval, the roles of OGC API Features Part 5) and the reference systems it offers; a property says whether it is queryable. What a geometry property holds (kind, multiplicity, height, reference system) is said by the spatial::GeometryFeature that names it, its type is a spatial::GeometryType. Where the rows come from (a table, an SQL statement, the members of a cube) is described by a mapping model; the collection and its queryables never change with the origin. What this package leaves open is checked by FeatureModelValidator, not filled in. Non-containment references are hidden association ends (Property.oppositeRoleName, prefix feature)."/>
+    <details key="modelName" value="Feature"/>
+    <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse.resource.spatial"/>
+    <details key="resource" value="XMI"/>
+    <details key="prefix" value="Feature"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="FeatureCollection">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="OnlyFeatureProperties KeyIsOwnProperty InstantOrInterval"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="OnlyFeatureProperties" value="self.feature->forAll(f | f.oclIsKindOf(FeatureProperty))"/>
+      <details key="KeyIsOwnProperty" value="self.featureKey.oclIsUndefined() or self.feature->includes(self.featureKey)"/>
+      <details key="InstantOrInterval" value="self.instant.oclIsUndefined() or (self.intervalStart.oclIsUndefined() and self.intervalEnd.oclIsUndefined())"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A collection of features: its name is the collection id (/collections/{name}), a Description of type documentation its description, displayName its title. Its features are its properties. It names the property whose value is the feature id, the primary geometry (the one bbox is evaluated on), the time of a feature (an instant, or the start and the end of an interval, either of which may stand alone), and the reference systems it offers besides the default and the storage system. The extent is not held: it is computed from the rows."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="displayName">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The title of the collection; unset, its name."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="featureKey" lowerBound="1" eType="//FeatureProperty">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The property whose value is the feature id (/items/{featureId}). Its uniqueness is a key of the origin; the collection says only which property it is."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="featureKeyOfCollection"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="featureKeyOfCollection"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="geometry" eType="//FeatureProperty">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The primary geometry: the one bbox is evaluated on and the extent is about; unset, a collection without geometry."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="featureGeometryOfCollection"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="featureGeometryOfCollection"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="instant" eType="//FeatureProperty">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The instant of a feature (the role primary-instant of OGC API Features Part 5): the property datetime is evaluated on. A collection names an instant or the ends of an interval, not both."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="featureInstantOfCollection"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="featureInstantOfCollection"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="intervalStart" eType="//FeatureProperty">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The start of the interval of a feature (primary-interval-start). Alone, without an end, the interval is half-bounded: from the start on, open to the future. A value that is null in a row is an open start."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="featureIntervalStartOfCollection"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="featureIntervalStartOfCollection"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="intervalEnd" eType="//FeatureProperty">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The end of the interval of a feature (primary-interval-end). Alone, without a start, the interval is half-bounded: open to the past, up to the end. A value that is null in a row is an open end."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="featureIntervalEndOfCollection"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="featureIntervalEndOfCollection"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeZone">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The time zone (an IANA name or an offset) in which the values of a time property without a zone are read; unset, UTC."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="endInclusive" defaultValueLiteral="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Whether a feature whose end equals the start of a requested interval still meets it."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="referenceSystems" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The reference systems offered besides the default (CRS84, or CRS84h for a geometry with a height) and the storage system, which is the one of the primary geometry; in this order they follow the default and the storage system in the list crs."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="featureCollectionOffering"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="featureCollectionOffering"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.spatial#//ReferenceSystem"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="openProperties" defaultValueLiteral="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="False: only the properties the collection names may be filtered on (the queryables say additionalProperties false); true: a property it does not name may be, and the origin decides whether it exists."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FeatureProperty">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="OwnedByCollection"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="OwnedByCollection" value="self.owner.oclIsUndefined() or self.owner.oclIsKindOf(FeatureCollection)"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A property of the features of a collection: a core::Attribute typed by a data type (a spatial::GeometryType for a geometry, the spatial::GeometryFeature that names the property says what it holds). Its name is the property name in the features and in the queryables; it says whether it is queryable and gives what the type does not say: a closed list of values, numeric bounds, a pattern. Nullability is the attribute's multiplicity, the unit a units::Quantity that names the property, the description a Description of type documentation."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="displayName">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The title in the queryables; unset, the name."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="queryable" defaultValueLiteral="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Whether the property appears in the queryables and may be used in a filter."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="returnable" defaultValueLiteral="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Whether the property appears in a feature; false for a property used only to filter. The returnables of OGC API Features Part 5 (Schemas), which Part 6 (Property Selection) selects from."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sortable" defaultValueLiteral="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Whether the property may be named in a sort parameter: the sortables of OGC API Features Part 5 (Schemas), which Part 8 (Sorting) sorts by."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="allowedValues" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The closed list of values, as text; stated only where the type does not list them."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minimum">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The smallest value, a decimal number; numeric types only."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Float"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maximum">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The largest value, a decimal number; numeric types only."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Float"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A regular expression every value matches; text types only."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+</ecore:EPackage>
