@@ -35,7 +35,7 @@ import org.eclipse.daanse.sql.jdbc.metadata.MetadataProviders;
  * there is none), run the {@code CwmLoader} on it for the structure, with the
  * {@code PrivilegeLoader} as its part for roles, users and their privileges, and cut the catalog to
  * the selection of the configuration. These are the steps of the Maven goal
- * {@code cwm-jdbc:import}, for use from Java; {@code CwmPackages.save} of {@code emf/standalone}
+ * {@code cwm-jdbc:import}, for use from Java; {@code CwmPackages.save} of {@code emf/standalone.impl}
  * writes the catalog, {@link CwmJdbcExport} takes the way back:
  *
  * <pre>{@code

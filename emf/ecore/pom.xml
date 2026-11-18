@@ -78,7 +78,7 @@
     <!-- loading and registering CWM XMI; brings every CWM package at run time -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.emf.standalone</artifactId>
+      <artifactId>org.eclipse.daanse.cwm.emf.standalone.impl</artifactId>
       <version>${project.version}</version>
     </dependency>
 

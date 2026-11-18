@@ -19,7 +19,7 @@ EormWriter.save(r.eorm(), dir.resolve("library.eorm"));
 | Type | Role |
 | --- | --- |
 | `CwmOrmToEorm` | `convert(EntityMappings, EcoreIndex[, lenient])` → `Result{eorm, notes}`; `requireExplicit`, `mappingsIn(Resource)` |
-| `EcoreIndex` (from [`emf/standalone`](../../emf/standalone/README.md)) | finds the Ecore element of a CWM element **by names**: package (by name, by its containers when several share it, or an explicit package map), classifier name, feature name; a navigable association end at the class of the other end. No annotation is read, so any Ecore model with the CWM names works |
+| `EcoreIndex` (from [`emf/standalone.impl`](../../emf/standalone.impl/README.md)) | finds the Ecore element of a CWM element **by names**: package (by name, by its containers when several share it, or an explicit package map), classifier name, feature name; a navigable association end at the class of the other end. No annotation is read, so any Ecore model with the CWM names works |
 | `EormWriter` | resource set as Fennec sets it up without OSGi (Ecore, EORM, EPersistence registered; `EORMResourceFactoryImpl` for `.eorm`), `save`, `load` |
 | `EormGenerator` | the whole way to files: `withEcore` takes the `.ecore` files of the class model — one file and those it references, or a list of files (e.g. one per package), optionally a package map — and copies them next to the `.eorm`; one mapping set always gives one `.eorm` |
 | `Note` | a finding: severity, rule, CWM element, message |

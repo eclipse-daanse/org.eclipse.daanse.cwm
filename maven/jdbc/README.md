@@ -413,7 +413,7 @@ were skipped.
 
 The import is a thin front end of `CwmJdbcImport` in
 [`resource/relational/jdbc.standalone`](../../resource/relational/jdbc.standalone/README.md) and of `CwmPackages.save` in
-[`emf/standalone`](../../emf/standalone/README.md); a Java program does the same in three calls:
+[`emf/standalone.impl`](../../emf/standalone.impl/README.md); a Java program does the same in three calls:
 
 ```java
 JdbcToCwmConfig config = JdbcToCwmConfig.defaults().withCatalogName("shop")

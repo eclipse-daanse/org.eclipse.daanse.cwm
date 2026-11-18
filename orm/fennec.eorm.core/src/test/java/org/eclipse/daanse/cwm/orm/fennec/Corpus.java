@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.eclipse.daanse.cwm.emf.standalone.CwmPackages;
+import org.eclipse.daanse.cwm.emf.standalone.impl.CwmPackages;
 import org.eclipse.daanse.cwm.model.daanse.mapping.relational.EntityMappings;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;

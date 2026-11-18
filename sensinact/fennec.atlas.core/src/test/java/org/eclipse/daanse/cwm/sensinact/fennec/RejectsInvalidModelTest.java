@@ -18,7 +18,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.daanse.cwm.emf.standalone.EcoreIndex;
+import org.eclipse.daanse.cwm.emf.standalone.impl.EcoreIndex;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package;
 import org.eclipse.daanse.cwm.model.daanse.governance.lifecycle.util.RetentionSchedules;
 import org.eclipse.daanse.cwm.model.daanse.governance.obligations.util.RetentionHolds;

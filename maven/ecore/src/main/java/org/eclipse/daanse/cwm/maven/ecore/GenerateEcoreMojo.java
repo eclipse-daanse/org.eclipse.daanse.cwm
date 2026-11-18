@@ -22,12 +22,12 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.eclipse.daanse.cwm.emf.standalone.CwmPackages;
 import org.eclipse.daanse.cwm.emf.ecore.CwmToEcore;
 import org.eclipse.daanse.cwm.emf.ecore.EcoreWriter;
 import org.eclipse.daanse.cwm.emf.ecore.Note;
 import org.eclipse.daanse.cwm.emf.ecore.Options;
 import org.eclipse.daanse.cwm.emf.ecore.Result;
+import org.eclipse.daanse.cwm.emf.standalone.impl.CwmPackages;
 
 /**
  * Converts the class model of a CWM XMI into {@code .ecore} files, one per root EPackage, and

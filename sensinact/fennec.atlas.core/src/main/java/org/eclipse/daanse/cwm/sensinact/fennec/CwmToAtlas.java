@@ -15,8 +15,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.daanse.cwm.emf.standalone.CwmPath;
-import org.eclipse.daanse.cwm.emf.standalone.EcoreIndex;
+import org.eclipse.daanse.cwm.emf.standalone.impl.CwmPath;
+import org.eclipse.daanse.cwm.emf.standalone.impl.EcoreIndex;
 import org.eclipse.daanse.cwm.model.daanse.governance.lifecycle.util.LifecycleModelValidator;
 import org.eclipse.daanse.cwm.model.daanse.governance.obligations.util.ObligationsModelValidator;
 import org.eclipse.daanse.cwm.model.daanse.governance.recording.util.RecordingModelValidator;

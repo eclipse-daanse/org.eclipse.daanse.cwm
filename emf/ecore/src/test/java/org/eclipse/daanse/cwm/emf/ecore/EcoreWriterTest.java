@@ -24,7 +24,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.daanse.cwm.emf.standalone.CwmPackages;
+import org.eclipse.daanse.cwm.emf.standalone.impl.CwmPackages;
 import org.eclipse.daanse.cwm.model.cwm.foundation.datatypes.Enumeration;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Class;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.DataType;

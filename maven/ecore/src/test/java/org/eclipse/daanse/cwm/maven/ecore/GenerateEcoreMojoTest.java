@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import org.apache.maven.plugin.MojoFailureException;
-import org.eclipse.daanse.cwm.emf.standalone.CwmPackages;
+import org.eclipse.daanse.cwm.emf.standalone.impl.CwmPackages;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EObject;

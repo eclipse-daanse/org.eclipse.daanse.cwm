@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import org.eclipse.daanse.cwm.emf.standalone.CwmPackages;
+import org.eclipse.daanse.cwm.emf.standalone.impl.CwmPackages;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.ResponsibleParty;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.ElementRule;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.UnmatchedRulesException;

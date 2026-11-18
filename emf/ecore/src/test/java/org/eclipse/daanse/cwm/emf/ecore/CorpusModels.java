@@ -47,7 +47,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import org.eclipse.daanse.cwm.emf.standalone.CwmPackages;
+import org.eclipse.daanse.cwm.emf.standalone.impl.CwmPackages;
 import org.eclipse.daanse.cwm.model.cwm.foundation.datatypes.Enumeration;
 import org.eclipse.daanse.cwm.model.cwm.foundation.datatypes.UnionMember;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.behavioral.BehavioralFactory;

@@ -23,12 +23,12 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.eclipse.daanse.cwm.emf.standalone.impl.CwmPackages;
 import org.eclipse.daanse.cwm.model.daanse.mapping.relational.EntityMappings;
 import org.eclipse.daanse.cwm.model.daanse.mapping.relational.util.OrmModelValidator;
 import org.eclipse.daanse.cwm.orm.fennec.CwmOrmToEorm;
 import org.eclipse.daanse.cwm.orm.fennec.EormGenerator;
 import org.eclipse.daanse.cwm.orm.fennec.EormNotes;
-import org.eclipse.daanse.cwm.emf.standalone.CwmPackages;
 import org.eclipse.daanse.cwm.orm.fennec.InvalidMappingException;
 import org.eclipse.daanse.cwm.orm.fennec.Note;
 

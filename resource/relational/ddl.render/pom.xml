@@ -37,7 +37,7 @@
     <!-- loading CWM XMI outside OSGi -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
-      <artifactId>org.eclipse.daanse.cwm.emf.standalone</artifactId>
+      <artifactId>org.eclipse.daanse.cwm.emf.standalone.impl</artifactId>
       <version>${project.version}</version>
     </dependency>
     <!-- SQL dialects (offline-instantiable); common carries AnsiDialect + the base class -->
