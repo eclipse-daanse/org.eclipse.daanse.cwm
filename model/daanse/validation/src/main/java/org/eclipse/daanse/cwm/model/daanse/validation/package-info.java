@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *   Stefan Bischof (bipolis.org) - initial
+ */
+/**
+ * What a validator of a model found, in one form: a {@link org.eclipse.daanse.cwm.model.daanse.validation.Finding}
+ * names its rule and weighs, a {@link org.eclipse.daanse.cwm.model.daanse.validation.Rule} states a check as data and
+ * makes its findings, {@link org.eclipse.daanse.cwm.model.daanse.validation.Findings} reads what the EMF check of a
+ * model says as findings.
+ */
+@org.osgi.annotation.bundle.Export
+@org.osgi.annotation.versioning.Version("1.0")
+package org.eclipse.daanse.cwm.model.daanse.validation;

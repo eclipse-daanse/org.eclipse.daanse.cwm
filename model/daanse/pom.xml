@@ -26,6 +26,9 @@
     <module>resource.sensinact</module>
     <module>mapping.sensinact</module>
     <module>units</module>
+    <module>validation</module>
+    <module>spatial</module>
+    <module>resource.spatial.feature</module>
     <module>resource.json</module>
     <module>resource.r</module>
     <module>resource.calc</module>
