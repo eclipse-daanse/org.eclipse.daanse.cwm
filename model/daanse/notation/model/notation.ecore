@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="notation" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.notation"
+    nsPrefix="notation">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="How a value of an attribute is written where it is stored or exchanged: the lexical form beside the type. A Notation names the elements it holds for (attributes such as columns, record fields, measures and resources, parameters, or data types whose attributes all are written so; an element's own notation comes before that of its type) and holds at most one form, the words that mean no value and how a text is trimmed. The class of the form says the kind of value: TemporalText (an ISO 8601 form or a Unicode LDML date pattern, with a zone for texts without one and a language for names of months and days), TemporalNumber (a count of a unit of time since an epoch), NumberText (decimal and group characters, an LDML number pattern), BooleanText (the true and false words) and PatternText (a regular expression for any other type). The shape follows W3C CSV on the Web, the parsing of cells. It is not the display format of a value (an OLAP format string), and it holds no scale: a percent or a thousand is a unit (units::ScaledUnit). Non-containment references are hidden association ends (Property.oppositeRoleName, prefix notation)."/>
+    <details key="modelName" value="Notation"/>
+    <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
+    <details key="oSGiCompatible" value="true"/>
+    <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse"/>
+    <details key="resource" value="XMI"/>
+    <details key="prefix" value="Notation"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+    <details key="hiddenOpposites" value="true"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Notation">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="NoMissingWordIsTrueOrFalse"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="NoMissingWordIsTrueOrFalse" value="self.form.oclIsUndefined() or not self.form.oclIsKindOf(BooleanText) or (self.missingWords->excludesAll(self.form.oclAsType(BooleanText).trueWords) and self.missingWords->excludesAll(self.form.oclAsType(BooleanText).falseWords))"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="States how the values of the elements it names are written where they are stored or exchanged: an attribute (a column, a record field, a measure, a resource), a parameter, or a data type whose attributes all are written so. An element's own notation comes before that of its type. A reader trims a text first, then reads a missing word as no value, then reads the rest by the form; a writer writes no value as the first missing word."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="modelElement" ordered="false" lowerBound="1"
+        upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The elements whose values are written so: attributes, parameters, data types."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="notationNotation"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="notationNotation"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="form" eType="//Form" containment="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The form of the values; without one a value is the text itself."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="missingWords" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The texts that mean no value, compared after trimming and exactly; the first is the one a writer writes for no value. The empty text is a missing word only where it is named."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="trim" lowerBound="1" eType="//Trim">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Which white space a reader removes before it reads a text."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Form" abstract="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The lexical form of a value; the subclass says the kind of value it writes: a time as text or as a number, a number, a truth value, or text of any other type."/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TemporalText" eSuperTypes="//Form">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A date, a time of day or both, written as text: by a named ISO 8601 form or by a date pattern of Unicode LDML (yyyy-MM-dd, dd.MM.yyyy HH:mm, MMM yyyy). A text without an offset or zone takes the zone of the form, where it names one; names of months and days are read in its language."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="named" eType="//TemporalForm" unsettable="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The ISO 8601 form of the text; exactly one of named and pattern is given."/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A date pattern of Unicode LDML (UTS #35): yyyy year, MM month, MMM and MMMM its names, dd day, EEE the name of the day, HH hour, mm minute, ss second, S fraction, X and x offset, VV zone; text in single quotes. A lone T between a date and a time is a literal, as CSV on the Web writes it."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="zone">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The zone of a date and time whose text holds none: an IANA zone (Europe/Berlin) or a fixed offset (+01:00, Z). Where the text holds an offset or a zone, the text's wins."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="language">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The language of names of months, days and day periods, a BCP 47 tag (de, en-GB)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lenient" lowerBound="1" defaultValueLiteral="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Reads texts that are close: numbers with fewer digits than the pattern writes, names and literals in any case, abbreviated names with or without their dot, a name by three or more of its first letters where that is one name, a local time in the gap of a change of offset moved forward. Values out of range stay errors."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TemporalNumber" eSuperTypes="//Form">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="UnitOfTime"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="UnitOfTime" value="self.unit.oclIsUndefined() or self.unit.dimension.oclIsUndefined() or (self.unit.dimension.time = 1 and self.unit.dimension.length = 0 and self.unit.dimension.mass = 0 and self.unit.dimension.electricCurrent = 0 and self.unit.dimension.thermodynamicTemperature = 0 and self.unit.dimension.amountOfSubstance = 0 and self.unit.dimension.luminousIntensity = 0)"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A date, a time or an instant written as a number: the count of a unit of time since an epoch. Seconds or milliseconds since 1970-01-01T00:00:00Z are an instant; days since a local date (1899-12-30 for spreadsheet serial dates) are a local date and time, which a zone makes an instant."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="epoch" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Where the count starts, in ISO 8601: an instant (1970-01-01T00:00:00Z) or, without an offset, a local date or date and time (1899-12-30)."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="unit" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The unit of the count, a unit of time: second, millisecond, day."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="notationTemporalNumber"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="notationTemporalNumber"/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.units#//Unit"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="zone">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The zone of a local epoch counted in days or longer units: it makes the local date and time an instant."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NumberText" eSuperTypes="//Form">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="DecimalCharIsOneCharacter GroupCharIsOneCharacter DecimalAndGroupDiffer"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="DecimalCharIsOneCharacter" value="self.decimalChar.size() = 1"/>
+      <details key="GroupCharIsOneCharacter" value="self.groupChar.oclIsUndefined() or self.groupChar.size() = 1"/>
+      <details key="DecimalAndGroupDiffer" value="self.groupChar.oclIsUndefined() or self.groupChar &lt;> self.decimalChar"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A number written as text, with a decimal character, a group character and an optional number pattern of Unicode LDML (#,##0.00). Without a pattern a text is an optional sign, digits in the usual groups (a first group of one to three digits, then groups of three), an optional fraction and an optional exponent, or one of NaN, INF and -INF."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="decimalChar" lowerBound="1" defaultValueLiteral=".">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The character between the whole part and the fraction, one character."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="groupChar">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The character between groups of digits of the whole part, one character other than the decimal character; without one a text groups no digits."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A number pattern of Unicode LDML written with this decimal and group character: 0 a digit, # a digit where needed, E an exponent, text in single quotes, a negative subpattern after ;. No percent or per-mille sign outside quotes: a scale is a unit."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="bare" lowerBound="1" defaultValueLiteral="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The text is the number alone. Where false, white space, currency signs, percent and per-mille signs and letters around the number are stripped on reading."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lenient" lowerBound="1" defaultValueLiteral="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Reads a group character between any two digits of the whole part, as CSV on the Web reads it, whatever groups the pattern states. Where false, the groups are those of the pattern or, without one, the usual ones: a first group of one to three digits, then groups of three. A text without group characters fits either way; a writer writes the proper groups."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BooleanText" eSuperTypes="//Form">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="NoWordTrueAndFalse"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="NoWordTrueAndFalse" value="self.trueWords->excludesAll(self.falseWords)"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A truth value written as one of the true words or one of the false words; the first of each is the word a writer writes."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="trueWords" lowerBound="1" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The words for true; the first is written."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="falseWords" lowerBound="1" upperBound="-1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The words for false; the first is written."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ignoreCase" lowerBound="1" defaultValueLiteral="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Reads the words in any case."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Boolean"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PatternText" eSuperTypes="//Form">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A value of any other type written as text the whole of which matches a regular expression (a postcode, a code of letters and digits)."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern" lowerBound="1">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A regular expression in the syntax of ECMAScript the whole text matches."/>
+      </eAnnotations>
+      <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Trim">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Which white space a reader removes from a text before it reads it: at both ends, at the start, at the end, or none (as the trim of CSV on the Web: true, start, end, false)."/>
+    </eAnnotations>
+    <eLiterals name="both"/>
+    <eLiterals name="start" value="1"/>
+    <eLiterals name="end" value="2"/>
+    <eLiterals name="none" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="TemporalForm">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A form of ISO 8601: a calendar date, a time of day or both, without or with an offset from UTC, in the extended form (with - and :) or the basic form (digits only). Seconds are written, a fraction of a second where it is not zero; an offset is Z or +hh:mm (extended), Z or +hhmm (basic)."/>
+    </eAnnotations>
+    <eLiterals name="date"/>
+    <eLiterals name="basicDate" value="1"/>
+    <eLiterals name="time" value="2"/>
+    <eLiterals name="basicTime" value="3"/>
+    <eLiterals name="timeWithOffset" value="4"/>
+    <eLiterals name="basicTimeWithOffset" value="5"/>
+    <eLiterals name="dateTime" value="6"/>
+    <eLiterals name="basicDateTime" value="7"/>
+    <eLiterals name="dateTimeWithOffset" value="8"/>
+    <eLiterals name="basicDateTimeWithOffset" value="9"/>
+  </eClassifiers>
+</ecore:EPackage>
