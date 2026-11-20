@@ -102,6 +102,12 @@
       <artifactId>org.eclipse.daanse.cwm.model.daanse.units</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
+    <!-- the usual notations as a standard set of instances -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.emf.standard</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <!-- the tests write the values of relational columns and of a parameter -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>

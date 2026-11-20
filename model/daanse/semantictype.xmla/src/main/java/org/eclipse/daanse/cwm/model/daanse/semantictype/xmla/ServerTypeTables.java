@@ -28,30 +28,31 @@ final class ServerTypeTables {
 
     /** A row of {@code attribute-types.tsv}. */
     record AttributeRow(String name, long number, int levelType, Integer levelTypeSpec, int propertyContentType,
-            Integer propertyContentTypeSpec, String otherSpelling, String group) {
+            Integer propertyContentTypeSpec, String otherSpelling, String group, String id) {
     }
 
     /** A row of {@code dimension-types.tsv}. */
-    record DimensionRow(String name, long number, int dimensionType) {
+    record DimensionRow(String name, long number, int dimensionType, String id) {
     }
 
     /** A row of {@code account-types.tsv}. */
-    record AccountRow(String name, long number) {
+    record AccountRow(String name, long number, String id) {
     }
 
     static final List<AttributeRow> ATTRIBUTES = rows("attribute-types.tsv").stream()
             .map(r -> new AttributeRow(r.get("name"), Long.parseLong(r.get("number")), code(r.get("level_type")),
                     optionalCode(r.get("level_type_spec")), code(r.get("property_content_type")),
                     optionalCode(r.get("property_content_type_spec")), emptyAsNull(r.get("other_spelling")),
-                    r.get("group")))
+                    r.get("group"), r.get("id")))
             .toList();
 
     static final List<DimensionRow> DIMENSIONS = rows("dimension-types.tsv").stream()
-            .map(r -> new DimensionRow(r.get("name"), Long.parseLong(r.get("number")), code(r.get("dimension_type"))))
+            .map(r -> new DimensionRow(r.get("name"), Long.parseLong(r.get("number")), code(r.get("dimension_type")),
+                    r.get("id")))
             .toList();
 
     static final List<AccountRow> ACCOUNTS = rows("account-types.tsv").stream()
-            .map(r -> new AccountRow(r.get("name"), Long.parseLong(r.get("number")))).toList();
+            .map(r -> new AccountRow(r.get("name"), Long.parseLong(r.get("number")), r.get("id"))).toList();
 
     private ServerTypeTables() {
     }

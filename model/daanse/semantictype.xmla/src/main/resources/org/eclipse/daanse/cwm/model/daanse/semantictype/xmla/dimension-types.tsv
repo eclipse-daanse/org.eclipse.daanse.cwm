@@ -13,19 +13,20 @@
 # dimension_type: the code as an Analysis Services server reports it (MDSCHEMA_DIMENSIONS.DIMENSION_TYPE), the one
 # the specification [MS-SSAS] names. A dimension of the type Regular is reported as 3 (other); the measures dimension
 # has no type and is reported as 2 (measure).
-name	number	dimension_type
-Regular	0	3
-Time	1	1
-Geography	2	17
-Organization	3	15
-BillOfMaterials	4	16
-Accounts	5	6
-Customers	6	7
-Products	7	8
-Scenario	8	9
-Quantitative	9	5
-Utility	10	10
-Currency	11	11
-Rates	12	12
-Channel	13	13
-Promotion	14	14
+# id: the id of the type in the standard set of the server's types (ServerTypes.SET_URI), a UUID; never changed.
+name	number	dimension_type	id
+Regular	0	3	_Ld2QYOUIEfGl4IEUgfF4xA
+Time	1	1	_Ld2QYeUIEfGl4IEUgfF4xA
+Geography	2	17	_Ld2QYuUIEfGl4IEUgfF4xA
+Organization	3	15	_Ld2QY-UIEfGl4IEUgfF4xA
+BillOfMaterials	4	16	_Ld2QZOUIEfGl4IEUgfF4xA
+Accounts	5	6	_Ld2QZeUIEfGl4IEUgfF4xA
+Customers	6	7	_Ld2QZuUIEfGl4IEUgfF4xA
+Products	7	8	_Ld2QZ-UIEfGl4IEUgfF4xA
+Scenario	8	9	_Ld2QaOUIEfGl4IEUgfF4xA
+Quantitative	9	5	_Ld2QaeUIEfGl4IEUgfF4xA
+Utility	10	10	_Ld2QauUIEfGl4IEUgfF4xA
+Currency	11	11	_Ld2Qa-UIEfGl4IEUgfF4xA
+Rates	12	12	_Ld2QbOUIEfGl4IEUgfF4xA
+Channel	13	13	_Ld2QbeUIEfGl4IEUgfF4xA
+Promotion	14	14	_Ld2QbuUIEfGl4IEUgfF4xA

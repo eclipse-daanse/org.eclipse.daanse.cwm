@@ -95,6 +95,12 @@
       <artifactId>org.eclipse.daanse.cwm.model.daanse.validation</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
+    <!-- the reference systems, grid systems and the geometry type as a standard set of instances -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.emf.standard</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <!-- the tests describe the columns of relational tables -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>

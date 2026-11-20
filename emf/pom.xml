@@ -24,11 +24,13 @@
   <packaging>pom</packaging>
   <name>Daanse CWM EMF (aggregator)</name>
   <description>Support for using the CWM EMF models: standalone.impl loads and writes CWM XMI
-    outside OSGi and finds every model that announces itself through standalone.api, ecore converts
-    a CWM class model into Ecore.</description>
+    outside OSGi and finds every model that announces itself through standalone.api, standard holds the
+    standard sets of instances as XMI files under URIs of their own, ecore converts a CWM class model
+    into Ecore.</description>
 
   <modules>
     <module>standalone.api</module>
+    <module>standard</module>
     <module>standalone.impl</module>
     <module>ecore</module>
   </modules>

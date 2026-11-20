@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<typemapping:TypeSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:relational="http://www.omg.org/spec/CWM/1.1/resource/relational" xmlns:typemapping="http://www.omg.org/spec/CWM/1.1/foundation/typemapping"
+    xmi:id="_Ldvh4-UIEfGl4IEUgfF4xA" name="SQL" version="SQL:1999, BIGINT of SQL:2003">
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh0eUIEfGl4IEUgfF4xA" name="BIT" typeNumber="-7"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh0uUIEfGl4IEUgfF4xA" name="BIT VARYING" typeNumber="-3"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh0-UIEfGl4IEUgfF4xA" name="BINARY LARGE OBJECT" typeNumber="2004"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvhy-UIEfGl4IEUgfF4xA" name="CHARACTER" typeNumber="1"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_LdvhzOUIEfGl4IEUgfF4xA" name="CHARACTER VARYING" typeNumber="12"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_LdvhzeUIEfGl4IEUgfF4xA" name="CHARACTER LARGE OBJECT" typeNumber="2005"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_LdvhzuUIEfGl4IEUgfF4xA" name="NATIONAL CHARACTER" typeNumber="-15"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvhz-UIEfGl4IEUgfF4xA" name="NATIONAL CHARACTER VARYING" typeNumber="-9"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh0OUIEfGl4IEUgfF4xA" name="NATIONAL CHARACTER LARGE OBJECT"
+      typeNumber="2011"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh1OUIEfGl4IEUgfF4xA" name="NUMERIC" typeNumber="2" numericPrecisionRadix="10"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh1eUIEfGl4IEUgfF4xA" name="DECIMAL" typeNumber="3" numericPrecisionRadix="10"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh1-UIEfGl4IEUgfF4xA" name="INTEGER" typeNumber="4"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh1uUIEfGl4IEUgfF4xA" name="SMALLINT" typeNumber="5"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh2eUIEfGl4IEUgfF4xA" name="FLOAT" typeNumber="6" numericPrecisionRadix="2"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh2uUIEfGl4IEUgfF4xA" name="REAL" typeNumber="7" numericPrecisionRadix="2"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh2-UIEfGl4IEUgfF4xA" name="DOUBLE PRECISION" typeNumber="8"
+      numericPrecisionRadix="2"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh3OUIEfGl4IEUgfF4xA" name="BOOLEAN" typeNumber="16"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh3eUIEfGl4IEUgfF4xA" name="DATE" typeNumber="91"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh3uUIEfGl4IEUgfF4xA" name="TIME" typeNumber="92"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh3-UIEfGl4IEUgfF4xA" name="TIME WITH TIMEZONE" typeNumber="2013"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh4OUIEfGl4IEUgfF4xA" name="TIMESTAMP" typeNumber="93"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh4eUIEfGl4IEUgfF4xA" name="TIMESTAMP WITH TIMEZONE" typeNumber="2014"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh4uUIEfGl4IEUgfF4xA" name="INTERVAL" typeNumber="1111"/>
+  <ownedElement xsi:type="relational:SQLSimpleType" xmi:id="_Ldvh2OUIEfGl4IEUgfF4xA" name="BIGINT" typeNumber="-5"/>
+</typemapping:TypeSystem>

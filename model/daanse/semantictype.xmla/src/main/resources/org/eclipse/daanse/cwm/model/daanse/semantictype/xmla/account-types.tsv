@@ -12,11 +12,12 @@
 # adds an account type of its own in a library of its own, the same as or narrower than one of these.
 # name: the type as the schema spells it. number: its place in the schema's list, counted from 0. A server reports
 # no code for an account type.
-name	number
-Income	0
-Expense	1
-Flow	2
-Balance	3
-Asset	4
-Liability	5
-Statistical	6
+# id: the id of the type in the standard set of the server's types (ServerTypes.SET_URI), a UUID; never changed.
+name	number	id
+Income	0	_Ld2Qb-UIEfGl4IEUgfF4xA
+Expense	1	_Ld2QcOUIEfGl4IEUgfF4xA
+Flow	2	_Ld2QceUIEfGl4IEUgfF4xA
+Balance	3	_Ld2QcuUIEfGl4IEUgfF4xA
+Asset	4	_Ld2Qc-UIEfGl4IEUgfF4xA
+Liability	5	_Ld2QdOUIEfGl4IEUgfF4xA
+Statistical	6	_Ld2QdeUIEfGl4IEUgfF4xA

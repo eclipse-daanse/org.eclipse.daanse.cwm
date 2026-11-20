@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<units:SystemOfUnits xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:units="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.units" xmi:id="_LdylLuUIEfGl4IEUgfF4xA" name="SI" abbreviation="SI">
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylEOUIEfGl4IEUgfF4xA" name="A0E0L1I0M0H0T0D0" length="1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdylL-UIEfGl4IEUgfF4xA" name="Length" dimension="_LdylEOUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylEeUIEfGl4IEUgfF4xA" name="A0E0L0I0M1H0T0D0" mass="1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdylMOUIEfGl4IEUgfF4xA" name="Mass" dimension="_LdylEeUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylEuUIEfGl4IEUgfF4xA" name="A0E0L0I0M0H0T1D0" time="1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdylMeUIEfGl4IEUgfF4xA" name="Time" dimension="_LdylEuUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylE-UIEfGl4IEUgfF4xA" name="A0E1L0I0M0H0T0D0" electricCurrent="1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdylMuUIEfGl4IEUgfF4xA" name="ElectricCurrent" dimension="_LdylE-UIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylFOUIEfGl4IEUgfF4xA" name="A0E0L0I0M0H1T0D0" thermodynamicTemperature="1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdylM-UIEfGl4IEUgfF4xA" name="Temperature" dimension="_LdylFOUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylFeUIEfGl4IEUgfF4xA" name="A1E0L0I0M0H0T0D0" amountOfSubstance="1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdylNOUIEfGl4IEUgfF4xA" name="AmountOfSubstance" dimension="_LdylFeUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylFuUIEfGl4IEUgfF4xA" name="A0E0L0I1M0H0T0D0" luminousIntensity="1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdylNeUIEfGl4IEUgfF4xA" name="LuminousIntensity" dimension="_LdylFuUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylF-UIEfGl4IEUgfF4xA" name="A0E0L0I0M0H0T0D1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdylNuUIEfGl4IEUgfF4xA" name="Dimensionless" dimension="_LdylF-UIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdylN-UIEfGl4IEUgfF4xA" name="Angle" dimension="_LdylF-UIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdylOOUIEfGl4IEUgfF4xA" name="SolidAngle" dimension="_LdylF-UIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylGOUIEfGl4IEUgfF4xA" name="A0E0L2I0M0H0T0D0" length="2"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMIOUIEfGl4IEUgfF4xA" name="Area" dimension="_LdylGOUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylGeUIEfGl4IEUgfF4xA" name="A0E0L3I0M0H0T0D0" length="3"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMIeUIEfGl4IEUgfF4xA" name="Volume" dimension="_LdylGeUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylGuUIEfGl4IEUgfF4xA" name="A0E0L1I0M0H0T-1D0" length="1" time="-1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMIuUIEfGl4IEUgfF4xA" name="Speed" dimension="_LdylGuUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylG-UIEfGl4IEUgfF4xA" name="A0E0L1I0M0H0T-2D0" length="1" time="-2"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMI-UIEfGl4IEUgfF4xA" name="Acceleration" dimension="_LdylG-UIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylHOUIEfGl4IEUgfF4xA" name="A0E0L0I0M0H0T-1D0" time="-1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMJOUIEfGl4IEUgfF4xA" name="Frequency" dimension="_LdylHOUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylHeUIEfGl4IEUgfF4xA" name="A0E0L1I0M1H0T-2D0" length="1" mass="1" time="-2"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMJeUIEfGl4IEUgfF4xA" name="Force" dimension="_LdylHeUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylHuUIEfGl4IEUgfF4xA" name="A0E0L-1I0M1H0T-2D0" length="-1" mass="1"
+      time="-2"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMJuUIEfGl4IEUgfF4xA" name="Pressure" dimension="_LdylHuUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylH-UIEfGl4IEUgfF4xA" name="A0E0L2I0M1H0T-2D0" length="2" mass="1" time="-2"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMJ-UIEfGl4IEUgfF4xA" name="Energy" dimension="_LdylH-UIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylIOUIEfGl4IEUgfF4xA" name="A0E0L2I0M1H0T-3D0" length="2" mass="1" time="-3"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMKOUIEfGl4IEUgfF4xA" name="Power" dimension="_LdylIOUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylIeUIEfGl4IEUgfF4xA" name="A0E1L0I0M0H0T1D0" time="1" electricCurrent="1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMKeUIEfGl4IEUgfF4xA" name="ElectricCharge" dimension="_LdylIeUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylIuUIEfGl4IEUgfF4xA" name="A0E-1L2I0M1H0T-3D0" length="2" mass="1"
+      time="-3" electricCurrent="-1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMKuUIEfGl4IEUgfF4xA" name="ElectricPotential" dimension="_LdylIuUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylI-UIEfGl4IEUgfF4xA" name="A0E2L-2I0M-1H0T4D0" length="-2" mass="-1"
+      time="4" electricCurrent="2"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMK-UIEfGl4IEUgfF4xA" name="ElectricCapacitance" dimension="_LdylI-UIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylJOUIEfGl4IEUgfF4xA" name="A0E-2L2I0M1H0T-3D0" length="2" mass="1"
+      time="-3" electricCurrent="-2"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMLOUIEfGl4IEUgfF4xA" name="ElectricResistance" dimension="_LdylJOUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylJeUIEfGl4IEUgfF4xA" name="A0E2L-2I0M-1H0T3D0" length="-2" mass="-1"
+      time="3" electricCurrent="2"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMLeUIEfGl4IEUgfF4xA" name="ElectricConductance" dimension="_LdylJeUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylJuUIEfGl4IEUgfF4xA" name="A0E-1L2I0M1H0T-2D0" length="2" mass="1"
+      time="-2" electricCurrent="-1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMLuUIEfGl4IEUgfF4xA" name="MagneticFlux" dimension="_LdylJuUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylJ-UIEfGl4IEUgfF4xA" name="A0E-1L0I0M1H0T-2D0" mass="1" time="-2" electricCurrent="-1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzML-UIEfGl4IEUgfF4xA" name="MagneticFluxDensity" dimension="_LdylJ-UIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylKOUIEfGl4IEUgfF4xA" name="A0E-2L2I0M1H0T-2D0" length="2" mass="1"
+      time="-2" electricCurrent="-2"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMMOUIEfGl4IEUgfF4xA" name="ElectricInductance" dimension="_LdylKOUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMMeUIEfGl4IEUgfF4xA" name="LuminousFlux" dimension="_LdylFuUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylKeUIEfGl4IEUgfF4xA" name="A0E0L-2I1M0H0T0D0" length="-2" luminousIntensity="1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMMuUIEfGl4IEUgfF4xA" name="Illuminance" dimension="_LdylKeUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMM-UIEfGl4IEUgfF4xA" name="Radioactivity" dimension="_LdylHOUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylKuUIEfGl4IEUgfF4xA" name="A0E0L2I0M0H0T-2D0" length="2" time="-2"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMNOUIEfGl4IEUgfF4xA" name="RadiationDoseAbsorbed" dimension="_LdylKuUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMNeUIEfGl4IEUgfF4xA" name="RadiationDoseEffective" dimension="_LdylKuUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylK-UIEfGl4IEUgfF4xA" name="A1E0L0I0M0H0T-1D0" time="-1" amountOfSubstance="1"/>
+  <ownedElement xsi:type="units:QuantityKind" xmi:id="_LdzMNuUIEfGl4IEUgfF4xA" name="CatalyticActivity" dimension="_LdylK-UIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMN-UIEfGl4IEUgfF4xA" name="quetta" symbol="Q" base="10" exponent="30"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMOOUIEfGl4IEUgfF4xA" name="ronna" symbol="R" base="10" exponent="27"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMOeUIEfGl4IEUgfF4xA" name="yotta" symbol="Y" base="10" exponent="24"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMOuUIEfGl4IEUgfF4xA" name="zetta" symbol="Z" base="10" exponent="21"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMO-UIEfGl4IEUgfF4xA" name="exa" symbol="E" base="10" exponent="18"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMPOUIEfGl4IEUgfF4xA" name="peta" symbol="P" base="10" exponent="15"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMPeUIEfGl4IEUgfF4xA" name="tera" symbol="T" base="10" exponent="12"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMPuUIEfGl4IEUgfF4xA" name="giga" symbol="G" base="10" exponent="9"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMP-UIEfGl4IEUgfF4xA" name="mega" symbol="M" base="10" exponent="6"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMQOUIEfGl4IEUgfF4xA" name="kilo" symbol="k" base="10" exponent="3"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMQeUIEfGl4IEUgfF4xA" name="hecto" symbol="h" base="10" exponent="2"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMQuUIEfGl4IEUgfF4xA" name="deca" symbol="da" base="10" exponent="1"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMQ-UIEfGl4IEUgfF4xA" name="deci" symbol="d" base="10" exponent="-1"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMROUIEfGl4IEUgfF4xA" name="centi" symbol="c" base="10" exponent="-2"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMReUIEfGl4IEUgfF4xA" name="milli" symbol="m" base="10" exponent="-3"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMRuUIEfGl4IEUgfF4xA" name="micro" symbol="µ" base="10" exponent="-6"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMR-UIEfGl4IEUgfF4xA" name="nano" symbol="n" base="10" exponent="-9"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMSOUIEfGl4IEUgfF4xA" name="pico" symbol="p" base="10" exponent="-12"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMSeUIEfGl4IEUgfF4xA" name="femto" symbol="f" base="10" exponent="-15"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMSuUIEfGl4IEUgfF4xA" name="atto" symbol="a" base="10" exponent="-18"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMS-UIEfGl4IEUgfF4xA" name="zepto" symbol="z" base="10" exponent="-21"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMTOUIEfGl4IEUgfF4xA" name="yocto" symbol="y" base="10" exponent="-24"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMTeUIEfGl4IEUgfF4xA" name="ronto" symbol="r" base="10" exponent="-27"/>
+  <ownedElement xsi:type="units:Prefix" xmi:id="_LdzMTuUIEfGl4IEUgfF4xA" name="quecto" symbol="q" base="10" exponent="-30"/>
+  <ownedElement xsi:type="units:BaseUnit" xmi:id="_LdzMT-UIEfGl4IEUgfF4xA" name="metre" symbol="m" ucumCode="m" dimension="_LdylEOUIEfGl4IEUgfF4xA"
+      quantityKind="_LdylL-UIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:BaseUnit" xmi:id="_LdzMUOUIEfGl4IEUgfF4xA" name="kilogram" symbol="kg" ucumCode="kg" dimension="_LdylEeUIEfGl4IEUgfF4xA"
+      quantityKind="_LdylMOUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:BaseUnit" xmi:id="_LdzMUeUIEfGl4IEUgfF4xA" name="second" symbol="s" ucumCode="s" dimension="_LdylEuUIEfGl4IEUgfF4xA"
+      quantityKind="_LdylMeUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:BaseUnit" xmi:id="_LdzMUuUIEfGl4IEUgfF4xA" name="ampere" symbol="A" ucumCode="A" dimension="_LdylE-UIEfGl4IEUgfF4xA"
+      quantityKind="_LdylMuUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:BaseUnit" xmi:id="_LdzMU-UIEfGl4IEUgfF4xA" name="kelvin" symbol="K" ucumCode="K" dimension="_LdylFOUIEfGl4IEUgfF4xA"
+      quantityKind="_LdylM-UIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:BaseUnit" xmi:id="_LdzMVOUIEfGl4IEUgfF4xA" name="mole" symbol="mol" ucumCode="mol" dimension="_LdylFeUIEfGl4IEUgfF4xA"
+      quantityKind="_LdylNOUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:BaseUnit" xmi:id="_LdzMVeUIEfGl4IEUgfF4xA" name="candela" symbol="cd" ucumCode="cd" dimension="_LdylFuUIEfGl4IEUgfF4xA"
+      quantityKind="_LdylNeUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzMVuUIEfGl4IEUgfF4xA" name="one" symbol="1" ucumCode="1" dimension="_LdylF-UIEfGl4IEUgfF4xA"
+      quantityKind="_LdylNuUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:AlternateUnit" xmi:id="_LdzMV-UIEfGl4IEUgfF4xA" name="radian" symbol="rad" ucumCode="rad"
+      dimension="_LdylF-UIEfGl4IEUgfF4xA" quantityKind="_LdylN-UIEfGl4IEUgfF4xA" reference="_LdzMVuUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:AlternateUnit" xmi:id="_LdzMWOUIEfGl4IEUgfF4xA" name="steradian" symbol="sr" ucumCode="sr"
+      dimension="_LdylF-UIEfGl4IEUgfF4xA" quantityKind="_LdylOOUIEfGl4IEUgfF4xA" reference="_LdzMVuUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzMWeUIEfGl4IEUgfF4xA" name="hertz" symbol="Hz" ucumCode="Hz" dimension="_LdylHOUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMJOUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzMWuUIEfGl4IEUgfF4xA" unit="_LdzMUeUIEfGl4IEUgfF4xA" exponent="-1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzMW-UIEfGl4IEUgfF4xA" name="newton" symbol="N" ucumCode="N" dimension="_LdylHeUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMJeUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzMXOUIEfGl4IEUgfF4xA" unit="_LdzMUOUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzMXeUIEfGl4IEUgfF4xA" unit="_LdzMT-UIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzMXuUIEfGl4IEUgfF4xA" unit="_LdzMUeUIEfGl4IEUgfF4xA" exponent="-2"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzMX-UIEfGl4IEUgfF4xA" name="pascal" symbol="Pa" ucumCode="Pa" dimension="_LdylHuUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMJuUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzMYOUIEfGl4IEUgfF4xA" unit="_LdzMW-UIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzMYeUIEfGl4IEUgfF4xA" unit="_LdzMT-UIEfGl4IEUgfF4xA" exponent="-2"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzMYuUIEfGl4IEUgfF4xA" name="joule" symbol="J" ucumCode="J" dimension="_LdylH-UIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMJ-UIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzMY-UIEfGl4IEUgfF4xA" unit="_LdzMW-UIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzMZOUIEfGl4IEUgfF4xA" unit="_LdzMT-UIEfGl4IEUgfF4xA" exponent="1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzMZeUIEfGl4IEUgfF4xA" name="watt" symbol="W" ucumCode="W" dimension="_LdylIOUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMKOUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzMZuUIEfGl4IEUgfF4xA" unit="_LdzMYuUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzMZ-UIEfGl4IEUgfF4xA" unit="_LdzMUeUIEfGl4IEUgfF4xA" exponent="-1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzMaOUIEfGl4IEUgfF4xA" name="coulomb" symbol="C" ucumCode="C" dimension="_LdylIeUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMKeUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzMaeUIEfGl4IEUgfF4xA" unit="_LdzMUuUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzMauUIEfGl4IEUgfF4xA" unit="_LdzMUeUIEfGl4IEUgfF4xA" exponent="1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzMa-UIEfGl4IEUgfF4xA" name="volt" symbol="V" ucumCode="V" dimension="_LdylIuUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMKuUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzMbOUIEfGl4IEUgfF4xA" unit="_LdzMZeUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzMbeUIEfGl4IEUgfF4xA" unit="_LdzMUuUIEfGl4IEUgfF4xA" exponent="-1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzMbuUIEfGl4IEUgfF4xA" name="farad" symbol="F" ucumCode="F" dimension="_LdylI-UIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMK-UIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzMb-UIEfGl4IEUgfF4xA" unit="_LdzMaOUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzMcOUIEfGl4IEUgfF4xA" unit="_LdzMa-UIEfGl4IEUgfF4xA" exponent="-1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzMceUIEfGl4IEUgfF4xA" name="ohm" symbol="Ω" ucumCode="Ohm" dimension="_LdylJOUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMLOUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzMcuUIEfGl4IEUgfF4xA" unit="_LdzMa-UIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzzMOUIEfGl4IEUgfF4xA" unit="_LdzMUuUIEfGl4IEUgfF4xA" exponent="-1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzzMeUIEfGl4IEUgfF4xA" name="siemens" symbol="S" ucumCode="S" dimension="_LdylJeUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMLeUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzzMuUIEfGl4IEUgfF4xA" unit="_LdzMUuUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzzM-UIEfGl4IEUgfF4xA" unit="_LdzMa-UIEfGl4IEUgfF4xA" exponent="-1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzzNOUIEfGl4IEUgfF4xA" name="weber" symbol="Wb" ucumCode="Wb" dimension="_LdylJuUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMLuUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzzNeUIEfGl4IEUgfF4xA" unit="_LdzMa-UIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzzNuUIEfGl4IEUgfF4xA" unit="_LdzMUeUIEfGl4IEUgfF4xA" exponent="1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzzN-UIEfGl4IEUgfF4xA" name="tesla" symbol="T" ucumCode="T" dimension="_LdylJ-UIEfGl4IEUgfF4xA"
+      quantityKind="_LdzML-UIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzzOOUIEfGl4IEUgfF4xA" unit="_LdzzNOUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzzOeUIEfGl4IEUgfF4xA" unit="_LdzMT-UIEfGl4IEUgfF4xA" exponent="-2"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzzOuUIEfGl4IEUgfF4xA" name="henry" symbol="H" ucumCode="H" dimension="_LdylKOUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMMOUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzzO-UIEfGl4IEUgfF4xA" unit="_LdzzNOUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzzPOUIEfGl4IEUgfF4xA" unit="_LdzMUuUIEfGl4IEUgfF4xA" exponent="-1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:ScaledUnit" xmi:id="_LdzzPeUIEfGl4IEUgfF4xA" name="degreeCelsius" symbol="°C" ucumCode="Cel"
+      dimension="_LdylFOUIEfGl4IEUgfF4xA" quantityKind="_LdylM-UIEfGl4IEUgfF4xA" reference="_LdzMU-UIEfGl4IEUgfF4xA" multiplier="1"
+      offset="273.15"/>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzzPuUIEfGl4IEUgfF4xA" name="lumen" symbol="lm" ucumCode="lm" dimension="_LdylFuUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMMeUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzzP-UIEfGl4IEUgfF4xA" unit="_LdzMVeUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzzQOUIEfGl4IEUgfF4xA" unit="_LdzMWOUIEfGl4IEUgfF4xA" exponent="1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzzQeUIEfGl4IEUgfF4xA" name="lux" symbol="lx" ucumCode="lx" dimension="_LdylKeUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMMuUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzzQuUIEfGl4IEUgfF4xA" unit="_LdzzPuUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzzQ-UIEfGl4IEUgfF4xA" unit="_LdzMT-UIEfGl4IEUgfF4xA" exponent="-2"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:AlternateUnit" xmi:id="_LdzzROUIEfGl4IEUgfF4xA" name="becquerel" symbol="Bq" ucumCode="Bq"
+      dimension="_LdylHOUIEfGl4IEUgfF4xA" quantityKind="_LdzMM-UIEfGl4IEUgfF4xA" reference="_LdzMWeUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzzReUIEfGl4IEUgfF4xA" name="gray" symbol="Gy" ucumCode="Gy" dimension="_LdylKuUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMNOUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzzRuUIEfGl4IEUgfF4xA" unit="_LdzMYuUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzzR-UIEfGl4IEUgfF4xA" unit="_LdzMUOUIEfGl4IEUgfF4xA" exponent="-1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:AlternateUnit" xmi:id="_LdzzSOUIEfGl4IEUgfF4xA" name="sievert" symbol="Sv" ucumCode="Sv" dimension="_LdylKuUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMNeUIEfGl4IEUgfF4xA" reference="_LdzzReUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzzSeUIEfGl4IEUgfF4xA" name="katal" symbol="kat" ucumCode="kat" dimension="_LdylK-UIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMNuUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzzSuUIEfGl4IEUgfF4xA" unit="_LdzMVOUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_LdzzS-UIEfGl4IEUgfF4xA" unit="_LdzMUeUIEfGl4IEUgfF4xA" exponent="-1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_LdzzTOUIEfGl4IEUgfF4xA" name="squareMetre" symbol="m²" ucumCode="m2"
+      dimension="_LdylGOUIEfGl4IEUgfF4xA" quantityKind="_LdzMIOUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_LdzzTeUIEfGl4IEUgfF4xA" unit="_LdzMT-UIEfGl4IEUgfF4xA" exponent="2"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_Ld0aQOUIEfGl4IEUgfF4xA" name="cubicMetre" symbol="m³" ucumCode="m3"
+      dimension="_LdylGeUIEfGl4IEUgfF4xA" quantityKind="_LdzMIeUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_Ld0aQeUIEfGl4IEUgfF4xA" unit="_LdzMT-UIEfGl4IEUgfF4xA" exponent="3"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:ScaledUnit" xmi:id="_Ld0aQuUIEfGl4IEUgfF4xA" name="minute" symbol="min" ucumCode="min" dimension="_LdylEuUIEfGl4IEUgfF4xA"
+      quantityKind="_LdylMeUIEfGl4IEUgfF4xA" reference="_LdzMUeUIEfGl4IEUgfF4xA" multiplier="60"/>
+  <ownedElement xsi:type="units:ScaledUnit" xmi:id="_Ld0aQ-UIEfGl4IEUgfF4xA" name="hour" symbol="h" ucumCode="h" dimension="_LdylEuUIEfGl4IEUgfF4xA"
+      quantityKind="_LdylMeUIEfGl4IEUgfF4xA" reference="_LdzMUeUIEfGl4IEUgfF4xA" multiplier="3600"/>
+  <ownedElement xsi:type="units:ScaledUnit" xmi:id="_Ld0aROUIEfGl4IEUgfF4xA" name="day" symbol="d" ucumCode="d" dimension="_LdylEuUIEfGl4IEUgfF4xA"
+      quantityKind="_LdylMeUIEfGl4IEUgfF4xA" reference="_LdzMUeUIEfGl4IEUgfF4xA" multiplier="86400"/>
+  <ownedElement xsi:type="units:ScaledUnit" xmi:id="_Ld0aReUIEfGl4IEUgfF4xA" name="degree" symbol="°" ucumCode="deg" dimension="_LdylF-UIEfGl4IEUgfF4xA"
+      quantityKind="_LdylN-UIEfGl4IEUgfF4xA" reference="_LdzMV-UIEfGl4IEUgfF4xA" multiplier="0.0174532925199433"/>
+  <ownedElement xsi:type="units:ScaledUnit" xmi:id="_Ld0aRuUIEfGl4IEUgfF4xA" name="litre" symbol="L" ucumCode="L" dimension="_LdylGeUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMIeUIEfGl4IEUgfF4xA" reference="_Ld0aQOUIEfGl4IEUgfF4xA" multiplier="0.001"/>
+  <ownedElement xsi:type="units:ScaledUnit" xmi:id="_Ld0aR-UIEfGl4IEUgfF4xA" name="tonne" symbol="t" ucumCode="t" dimension="_LdylEeUIEfGl4IEUgfF4xA"
+      quantityKind="_LdylMOUIEfGl4IEUgfF4xA" reference="_LdzMUOUIEfGl4IEUgfF4xA" multiplier="1000"/>
+  <ownedElement xsi:type="units:ScaledUnit" xmi:id="_Ld0aSOUIEfGl4IEUgfF4xA" name="percent" symbol="%" ucumCode="%" dimension="_LdylF-UIEfGl4IEUgfF4xA"
+      quantityKind="_LdylNuUIEfGl4IEUgfF4xA" reference="_LdzMVuUIEfGl4IEUgfF4xA" multiplier="0.01"/>
+  <ownedElement xsi:type="units:ScaledUnit" xmi:id="_Ld0aSeUIEfGl4IEUgfF4xA" name="hectare" symbol="ha" ucumCode="har" dimension="_LdylGOUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMIOUIEfGl4IEUgfF4xA" reference="_LdzzTOUIEfGl4IEUgfF4xA" multiplier="10000"/>
+  <ownedElement xsi:type="units:ScaledUnit" xmi:id="_Ld0aSuUIEfGl4IEUgfF4xA" name="gram" symbol="g" ucumCode="g" dimension="_LdylEeUIEfGl4IEUgfF4xA"
+      quantityKind="_LdylMOUIEfGl4IEUgfF4xA" reference="_LdzMUOUIEfGl4IEUgfF4xA" multiplier="0.001"/>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_Ld0aS-UIEfGl4IEUgfF4xA" name="metrePerSecond" symbol="m/s" ucumCode="m/s"
+      dimension="_LdylGuUIEfGl4IEUgfF4xA" quantityKind="_LdzMIuUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_Ld0aTOUIEfGl4IEUgfF4xA" unit="_LdzMT-UIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_Ld0aTeUIEfGl4IEUgfF4xA" unit="_LdzMUeUIEfGl4IEUgfF4xA" exponent="-1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_Ld0aTuUIEfGl4IEUgfF4xA" name="metrePerSecondSquared" symbol="m/s²" ucumCode="m/s2"
+      dimension="_LdylG-UIEfGl4IEUgfF4xA" quantityKind="_LdzMI-UIEfGl4IEUgfF4xA">
+    <factor xmi:id="_Ld0aT-UIEfGl4IEUgfF4xA" unit="_LdzMT-UIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_Ld0aUOUIEfGl4IEUgfF4xA" unit="_LdzMUeUIEfGl4IEUgfF4xA" exponent="-2"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_Ld0aUeUIEfGl4IEUgfF4xA" name="kilometre" symbol="km" ucumCode="km"
+      dimension="_LdylEOUIEfGl4IEUgfF4xA" quantityKind="_LdylL-UIEfGl4IEUgfF4xA" reference="_LdzMT-UIEfGl4IEUgfF4xA" prefix="_LdzMQOUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_Ld0aUuUIEfGl4IEUgfF4xA" name="centimetre" symbol="cm" ucumCode="cm"
+      dimension="_LdylEOUIEfGl4IEUgfF4xA" quantityKind="_LdylL-UIEfGl4IEUgfF4xA" reference="_LdzMT-UIEfGl4IEUgfF4xA" prefix="_LdzMROUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_Ld0aU-UIEfGl4IEUgfF4xA" name="millimetre" symbol="mm" ucumCode="mm"
+      dimension="_LdylEOUIEfGl4IEUgfF4xA" quantityKind="_LdylL-UIEfGl4IEUgfF4xA" reference="_LdzMT-UIEfGl4IEUgfF4xA" prefix="_LdzMReUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_Ld0aVOUIEfGl4IEUgfF4xA" name="kilometrePerHour" symbol="km/h" ucumCode="km/h"
+      dimension="_LdylGuUIEfGl4IEUgfF4xA" quantityKind="_LdzMIuUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_Ld0aVeUIEfGl4IEUgfF4xA" unit="_Ld0aUeUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_Ld0aVuUIEfGl4IEUgfF4xA" unit="_Ld0aQ-UIEfGl4IEUgfF4xA" exponent="-1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_Ld0aV-UIEfGl4IEUgfF4xA" name="millimetrePerHour" symbol="mm/h" ucumCode="mm/h"
+      dimension="_LdylGuUIEfGl4IEUgfF4xA" quantityKind="_LdzMIuUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_Ld0aWOUIEfGl4IEUgfF4xA" unit="_Ld0aU-UIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_Ld0aWeUIEfGl4IEUgfF4xA" unit="_Ld0aQ-UIEfGl4IEUgfF4xA" exponent="-1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_Ld0aWuUIEfGl4IEUgfF4xA" name="hectopascal" symbol="hPa" ucumCode="hPa"
+      dimension="_LdylHuUIEfGl4IEUgfF4xA" quantityKind="_LdzMJuUIEfGl4IEUgfF4xA" reference="_LdzMX-UIEfGl4IEUgfF4xA" prefix="_LdzMQeUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_Ld0aW-UIEfGl4IEUgfF4xA" name="kilopascal" symbol="kPa" ucumCode="kPa"
+      dimension="_LdylHuUIEfGl4IEUgfF4xA" quantityKind="_LdzMJuUIEfGl4IEUgfF4xA" reference="_LdzMX-UIEfGl4IEUgfF4xA" prefix="_LdzMQOUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_Ld0aXOUIEfGl4IEUgfF4xA" name="kilojoule" symbol="kJ" ucumCode="kJ"
+      dimension="_LdylH-UIEfGl4IEUgfF4xA" quantityKind="_LdzMJ-UIEfGl4IEUgfF4xA" reference="_LdzMYuUIEfGl4IEUgfF4xA" prefix="_LdzMQOUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_Ld0aXeUIEfGl4IEUgfF4xA" name="kilowatt" symbol="kW" ucumCode="kW" dimension="_LdylIOUIEfGl4IEUgfF4xA"
+      quantityKind="_LdzMKOUIEfGl4IEUgfF4xA" reference="_LdzMZeUIEfGl4IEUgfF4xA" prefix="_LdzMQOUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_Ld0aXuUIEfGl4IEUgfF4xA" name="kilowattHour" symbol="kWh" ucumCode="kW.h"
+      dimension="_LdylH-UIEfGl4IEUgfF4xA" quantityKind="_LdzMJ-UIEfGl4IEUgfF4xA">
+    <factor xmi:id="_Ld0aX-UIEfGl4IEUgfF4xA" unit="_Ld0aXeUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_Ld0aYOUIEfGl4IEUgfF4xA" unit="_Ld0aQ-UIEfGl4IEUgfF4xA" exponent="1"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_Ld0aYeUIEfGl4IEUgfF4xA" name="wattPerSquareMetre" symbol="W/m²" ucumCode="W/m2"
+      dimension="_LdylLOUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_Ld0aYuUIEfGl4IEUgfF4xA" unit="_LdzMZeUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_Ld0aY-UIEfGl4IEUgfF4xA" unit="_LdzMT-UIEfGl4IEUgfF4xA" exponent="-2"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylLOUIEfGl4IEUgfF4xA" name="A0E0L0I0M1H0T-3D0" mass="1" time="-3"/>
+  <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_Ld0aZOUIEfGl4IEUgfF4xA" name="milliampere" symbol="mA" ucumCode="mA"
+      dimension="_LdylE-UIEfGl4IEUgfF4xA" quantityKind="_LdylMuUIEfGl4IEUgfF4xA" reference="_LdzMUuUIEfGl4IEUgfF4xA" prefix="_LdzMReUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_Ld0aZeUIEfGl4IEUgfF4xA" name="millivolt" symbol="mV" ucumCode="mV"
+      dimension="_LdylIuUIEfGl4IEUgfF4xA" quantityKind="_LdzMKuUIEfGl4IEUgfF4xA" reference="_LdzMa-UIEfGl4IEUgfF4xA" prefix="_LdzMReUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_Ld0aZuUIEfGl4IEUgfF4xA" name="millisecond" symbol="ms" ucumCode="ms"
+      dimension="_LdylEuUIEfGl4IEUgfF4xA" quantityKind="_LdylMeUIEfGl4IEUgfF4xA" reference="_LdzMUeUIEfGl4IEUgfF4xA" prefix="_LdzMReUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:PrefixedUnit" xmi:id="_Ld0aZ-UIEfGl4IEUgfF4xA" name="milligram" symbol="mg" ucumCode="mg"
+      dimension="_LdylEeUIEfGl4IEUgfF4xA" quantityKind="_LdylMOUIEfGl4IEUgfF4xA" reference="_Ld0aSuUIEfGl4IEUgfF4xA" prefix="_LdzMReUIEfGl4IEUgfF4xA"/>
+  <ownedElement xsi:type="units:DerivedUnit" xmi:id="_Ld0aaOUIEfGl4IEUgfF4xA" name="kilogramPerSquareMetre" symbol="kg/m²"
+      ucumCode="kg/m2" dimension="_LdylLeUIEfGl4IEUgfF4xA">
+    <factor xmi:id="_Ld0aaeUIEfGl4IEUgfF4xA" unit="_LdzMUOUIEfGl4IEUgfF4xA" exponent="1"/>
+    <factor xmi:id="_Ld0aauUIEfGl4IEUgfF4xA" unit="_LdzMT-UIEfGl4IEUgfF4xA" exponent="-2"/>
+  </ownedElement>
+  <ownedElement xsi:type="units:Dimension" xmi:id="_LdylLeUIEfGl4IEUgfF4xA" name="A0E0L-2I0M1H0T0D0" length="-2" mass="1"/>
+</units:SystemOfUnits>

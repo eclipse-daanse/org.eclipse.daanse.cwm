@@ -48,6 +48,18 @@
       <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.instance</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <!-- the standard set of the SQL types (util/StandardSqlTypes): a type system of typemapping, held by
+      emf/standard; both imported optionally (bnd.bnd), so the bundle resolves without them -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.typemapping</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.emf.standard</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
