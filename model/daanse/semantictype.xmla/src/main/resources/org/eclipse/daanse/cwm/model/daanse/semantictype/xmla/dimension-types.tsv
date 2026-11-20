@@ -1,0 +1,31 @@
+#*******************************************************************************
+# Copyright (c) 2026 Contributors to the Eclipse Foundation.
+#
+# This program and the accompanying materials are made
+# available under the terms of the Eclipse Public License 2.0
+# which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+# The dimension types of an Analysis Services server: what the members of a dimension stand for. One row per type,
+# in the order of the enumeration DimensionTypeEnum of the Analysis Services Scripting Language.
+# name: the type as the schema spells it. number: its place in that enumeration, counted from 0.
+# dimension_type: the code as an Analysis Services server reports it (MDSCHEMA_DIMENSIONS.DIMENSION_TYPE), the one
+# the specification [MS-SSAS] names. A dimension of the type Regular is reported as 3 (other); the measures dimension
+# has no type and is reported as 2 (measure).
+name	number	dimension_type
+Regular	0	3
+Time	1	1
+Geography	2	17
+Organization	3	15
+BillOfMaterials	4	16
+Accounts	5	6
+Customers	6	7
+Products	7	8
+Scenario	8	9
+Quantitative	9	5
+Utility	10	10
+Currency	11	11
+Rates	12	12
+Channel	13	13
+Promotion	14	14
