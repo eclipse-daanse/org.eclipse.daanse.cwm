@@ -102,6 +102,12 @@
       <artifactId>org.eclipse.daanse.cwm.model.cwm.objectmodel.core</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
+    <!-- the SI as a standard set of instances -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.emf.standard</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <!-- the tests attach units to the elements of these models -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>

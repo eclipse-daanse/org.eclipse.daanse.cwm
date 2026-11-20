@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core"
+    xmlns:notation="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.notation" xmlns:units="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.units"
+    xmi:id="_LdwI0OUIEfGl4IEUgfF4xA" name="Notations">
+  <ownedElement xsi:type="core:DataType" xmi:id="_LdwI0eUIEfGl4IEUgfF4xA" name="IsoDate">
+    <taggedValue xmi:id="_LdwI0uUIEfGl4IEUgfF4xA" tag="daanse.ecore.instanceClassName" value="java.time.LocalDate"/>
+  </ownedElement>
+  <ownedElement xsi:type="notation:Notation" xmi:id="_LdwI0-UIEfGl4IEUgfF4xA" name="IsoDateNotation" modelElement="_LdwI0eUIEfGl4IEUgfF4xA">
+    <form xsi:type="notation:TemporalText" xmi:id="_LdwI1OUIEfGl4IEUgfF4xA" named="date"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="_LdwI1eUIEfGl4IEUgfF4xA" name="IsoTime">
+    <taggedValue xmi:id="_LdwI1uUIEfGl4IEUgfF4xA" tag="daanse.ecore.instanceClassName" value="java.time.LocalTime"/>
+  </ownedElement>
+  <ownedElement xsi:type="notation:Notation" xmi:id="_LdwI1-UIEfGl4IEUgfF4xA" name="IsoTimeNotation" modelElement="_LdwI1eUIEfGl4IEUgfF4xA">
+    <form xsi:type="notation:TemporalText" xmi:id="_LdwI2OUIEfGl4IEUgfF4xA" named="time"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="_LdwI2eUIEfGl4IEUgfF4xA" name="IsoDateTime">
+    <taggedValue xmi:id="_LdwI2uUIEfGl4IEUgfF4xA" tag="daanse.ecore.instanceClassName" value="java.time.LocalDateTime"/>
+  </ownedElement>
+  <ownedElement xsi:type="notation:Notation" xmi:id="_LdwI2-UIEfGl4IEUgfF4xA" name="IsoDateTimeNotation" modelElement="_LdwI2eUIEfGl4IEUgfF4xA">
+    <form xsi:type="notation:TemporalText" xmi:id="_LdwI3OUIEfGl4IEUgfF4xA" named="dateTime"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="_LdwI3eUIEfGl4IEUgfF4xA" name="IsoDateTimeWithOffset">
+    <taggedValue xmi:id="_LdwI3uUIEfGl4IEUgfF4xA" tag="daanse.ecore.instanceClassName" value="java.time.OffsetDateTime"/>
+  </ownedElement>
+  <ownedElement xsi:type="notation:Notation" xmi:id="_LdwI3-UIEfGl4IEUgfF4xA" name="IsoDateTimeWithOffsetNotation" modelElement="_LdwI3eUIEfGl4IEUgfF4xA">
+    <form xsi:type="notation:TemporalText" xmi:id="_LdwI4OUIEfGl4IEUgfF4xA" named="dateTimeWithOffset"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="_LdwI4eUIEfGl4IEUgfF4xA" name="GermanDate">
+    <taggedValue xmi:id="_LdwI4uUIEfGl4IEUgfF4xA" tag="daanse.ecore.instanceClassName" value="java.time.LocalDate"/>
+  </ownedElement>
+  <ownedElement xsi:type="notation:Notation" xmi:id="_LdwI4-UIEfGl4IEUgfF4xA" name="GermanDateNotation" modelElement="_LdwI4eUIEfGl4IEUgfF4xA">
+    <form xsi:type="notation:TemporalText" xmi:id="_LdwI5OUIEfGl4IEUgfF4xA" pattern="dd.MM.yyyy"/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="_LdwI5eUIEfGl4IEUgfF4xA" name="UnixSeconds">
+    <taggedValue xmi:id="_LdwI5uUIEfGl4IEUgfF4xA" tag="daanse.ecore.instanceClassName" value="java.time.Instant"/>
+  </ownedElement>
+  <ownedElement xsi:type="notation:Notation" xmi:id="_LdwI5-UIEfGl4IEUgfF4xA" name="UnixSecondsNotation" modelElement="_LdwI5eUIEfGl4IEUgfF4xA">
+    <form xsi:type="notation:TemporalNumber" xmi:id="_LdwI6OUIEfGl4IEUgfF4xA" epoch="1970-01-01T00:00:00Z">
+      <unit xsi:type="units:BaseUnit" href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.units/si.xmi#_LdzMUeUIEfGl4IEUgfF4xA"/>
+    </form>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="_LdwI6eUIEfGl4IEUgfF4xA" name="UnixMilliseconds">
+    <taggedValue xmi:id="_LdwI6uUIEfGl4IEUgfF4xA" tag="daanse.ecore.instanceClassName" value="java.time.Instant"/>
+  </ownedElement>
+  <ownedElement xsi:type="notation:Notation" xmi:id="_LdwI6-UIEfGl4IEUgfF4xA" name="UnixMillisecondsNotation" modelElement="_LdwI6eUIEfGl4IEUgfF4xA">
+    <form xsi:type="notation:TemporalNumber" xmi:id="_LdwI7OUIEfGl4IEUgfF4xA" epoch="1970-01-01T00:00:00Z">
+      <unit xsi:type="units:PrefixedUnit" href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.units/si.xmi#_Ld0aZuUIEfGl4IEUgfF4xA"/>
+    </form>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="_LdwI7eUIEfGl4IEUgfF4xA" name="SpreadsheetDays">
+    <taggedValue xmi:id="_LdwI7uUIEfGl4IEUgfF4xA" tag="daanse.ecore.instanceClassName" value="java.time.LocalDateTime"/>
+  </ownedElement>
+  <ownedElement xsi:type="notation:Notation" xmi:id="_LdwI7-UIEfGl4IEUgfF4xA" name="SpreadsheetDaysNotation" modelElement="_LdwI7eUIEfGl4IEUgfF4xA">
+    <form xsi:type="notation:TemporalNumber" xmi:id="_LdwI8OUIEfGl4IEUgfF4xA" epoch="1899-12-30">
+      <unit xsi:type="units:ScaledUnit" href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.units/si.xmi#_Ld0aROUIEfGl4IEUgfF4xA"/>
+    </form>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="_LdwI8eUIEfGl4IEUgfF4xA" name="EnglishNumber">
+    <taggedValue xmi:id="_LdwI8uUIEfGl4IEUgfF4xA" tag="daanse.ecore.instanceClassName" value="java.math.BigDecimal"/>
+  </ownedElement>
+  <ownedElement xsi:type="notation:Notation" xmi:id="_LdwI8-UIEfGl4IEUgfF4xA" name="EnglishNumberNotation" modelElement="_LdwI8eUIEfGl4IEUgfF4xA">
+    <form xsi:type="notation:NumberText" xmi:id="_LdwI9OUIEfGl4IEUgfF4xA" groupChar=","/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="_LdwI9eUIEfGl4IEUgfF4xA" name="GermanNumber">
+    <taggedValue xmi:id="_LdwI9uUIEfGl4IEUgfF4xA" tag="daanse.ecore.instanceClassName" value="java.math.BigDecimal"/>
+  </ownedElement>
+  <ownedElement xsi:type="notation:Notation" xmi:id="_LdwI9-UIEfGl4IEUgfF4xA" name="GermanNumberNotation" modelElement="_LdwI9eUIEfGl4IEUgfF4xA">
+    <form xsi:type="notation:NumberText" xmi:id="_LdwI-OUIEfGl4IEUgfF4xA" decimalChar="," groupChar="."/>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="_LdwI-eUIEfGl4IEUgfF4xA" name="TrueFalse">
+    <taggedValue xmi:id="_LdwI-uUIEfGl4IEUgfF4xA" tag="daanse.ecore.instanceClassName" value="java.lang.Boolean"/>
+  </ownedElement>
+  <ownedElement xsi:type="notation:Notation" xmi:id="_LdwI--UIEfGl4IEUgfF4xA" name="TrueFalseNotation" modelElement="_LdwI-eUIEfGl4IEUgfF4xA">
+    <form xsi:type="notation:BooleanText" xmi:id="_LdwI_OUIEfGl4IEUgfF4xA" ignoreCase="true">
+      <trueWords>true</trueWords>
+      <falseWords>false</falseWords>
+    </form>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="_LdwI_eUIEfGl4IEUgfF4xA" name="OneZero">
+    <taggedValue xmi:id="_LdwI_uUIEfGl4IEUgfF4xA" tag="daanse.ecore.instanceClassName" value="java.lang.Boolean"/>
+  </ownedElement>
+  <ownedElement xsi:type="notation:Notation" xmi:id="_LdwI_-UIEfGl4IEUgfF4xA" name="OneZeroNotation" modelElement="_LdwI_eUIEfGl4IEUgfF4xA">
+    <form xsi:type="notation:BooleanText" xmi:id="_LdwJAOUIEfGl4IEUgfF4xA">
+      <trueWords>1</trueWords>
+      <falseWords>0</falseWords>
+    </form>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="_LdwJAeUIEfGl4IEUgfF4xA" name="YesNo">
+    <taggedValue xmi:id="_LdwJAuUIEfGl4IEUgfF4xA" tag="daanse.ecore.instanceClassName" value="java.lang.Boolean"/>
+  </ownedElement>
+  <ownedElement xsi:type="notation:Notation" xmi:id="_LdwJA-UIEfGl4IEUgfF4xA" name="YesNoNotation" modelElement="_LdwJAeUIEfGl4IEUgfF4xA">
+    <form xsi:type="notation:BooleanText" xmi:id="_LdwJBOUIEfGl4IEUgfF4xA" ignoreCase="true">
+      <trueWords>yes</trueWords>
+      <falseWords>no</falseWords>
+    </form>
+  </ownedElement>
+  <ownedElement xsi:type="core:DataType" xmi:id="_LdwJBeUIEfGl4IEUgfF4xA" name="JaNein">
+    <taggedValue xmi:id="_LdwJBuUIEfGl4IEUgfF4xA" tag="daanse.ecore.instanceClassName" value="java.lang.Boolean"/>
+  </ownedElement>
+  <ownedElement xsi:type="notation:Notation" xmi:id="_LdwJB-UIEfGl4IEUgfF4xA" name="JaNeinNotation" modelElement="_LdwJBeUIEfGl4IEUgfF4xA">
+    <form xsi:type="notation:BooleanText" xmi:id="_LdwJCOUIEfGl4IEUgfF4xA" ignoreCase="true">
+      <trueWords>ja</trueWords>
+      <falseWords>nein</falseWords>
+    </form>
+  </ownedElement>
+</core:Package>

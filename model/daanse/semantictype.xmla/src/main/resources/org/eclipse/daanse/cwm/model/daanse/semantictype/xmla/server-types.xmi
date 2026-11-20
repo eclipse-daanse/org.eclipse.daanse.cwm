@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core"
+    xmlns:semantictype="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.semantictype.base" xmi:id="_LdwJJ-UIEfGl4IEUgfF4xA" name="AnalysisServices">
+  <ownedElement xsi:type="semantictype:TypeLibrary" xmi:id="_LdwJKOUIEfGl4IEUgfF4xA" name="AttributeTypes" uri="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.semantictype.xmla/attribute"
+      sourceSystem="Analysis Services">
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PcOUIEfGl4IEUgfF4xA" name="Account" sourceName="Account"
+        sourceNumber="0" broader="_LdwJCeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PceUIEfGl4IEUgfF4xA" name="AccountName" sourceName="AccountName"
+        sourceNumber="1" broader="_LdwJCeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PcuUIEfGl4IEUgfF4xA" name="AccountNumber" sourceName="AccountNumber"
+        sourceNumber="2" broader="_LdwJCeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pc-UIEfGl4IEUgfF4xA" name="AccountType" sourceName="AccountType"
+        sourceNumber="3" broader="_LdwJCeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PdOUIEfGl4IEUgfF4xA" name="Address" sourceName="Address"
+        sourceNumber="4" broader="_LdwJCuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PdeUIEfGl4IEUgfF4xA" name="AddressBuilding" sourceName="AddressBuilding"
+        sourceNumber="5" broader="_LdwJCuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PduUIEfGl4IEUgfF4xA" name="AddressCity" sourceName="AddressCity"
+        sourceNumber="6" broader="_LdwJCuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pd-UIEfGl4IEUgfF4xA" name="AddressCountry" sourceName="AddressCountry"
+        sourceNumber="7" broader="_LdwJCuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PeOUIEfGl4IEUgfF4xA" name="AddressFax" sourceName="AddressFax"
+        sourceNumber="8" broader="_LdwJCuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PeeUIEfGl4IEUgfF4xA" name="AddressFloor" sourceName="AddressFloor"
+        sourceNumber="9" broader="_LdwJCuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PeuUIEfGl4IEUgfF4xA" name="AddressHouse" sourceName="AddressHouse"
+        sourceNumber="10" broader="_LdwJCuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pe-UIEfGl4IEUgfF4xA" name="AddressPhone" sourceName="AddressPhone"
+        sourceNumber="11" broader="_LdwJCuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PfOUIEfGl4IEUgfF4xA" name="AddressQuarter" sourceName="AddressQuarter"
+        sourceNumber="12" broader="_LdwJCuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PfeUIEfGl4IEUgfF4xA" name="AddressRoom" sourceName="AddressRoom"
+        sourceNumber="13" broader="_LdwJCuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PfuUIEfGl4IEUgfF4xA" name="AddressStateOrProvince" sourceName="AddressStateOrProvince"
+        sourceNumber="14" broader="_LdwJCuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pf-UIEfGl4IEUgfF4xA" name="AddressStreet" sourceName="AddressStreet"
+        sourceNumber="15" broader="_LdwJCuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PgOUIEfGl4IEUgfF4xA" name="AddressZip" sourceName="AddressZip"
+        sourceNumber="16" broader="_LdwJCuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PgeUIEfGl4IEUgfF4xA" name="BomResource" sourceName="BomResource"
+        sourceNumber="17" broader="_LdwJC-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PguUIEfGl4IEUgfF4xA" name="Caption" sourceName="Caption"
+        sourceNumber="18" broader="_LdwJDOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pg-UIEfGl4IEUgfF4xA" name="CaptionAbbreviation" sourceName="CaptionAbbreviation"
+        sourceNumber="19" broader="_LdwJDOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PhOUIEfGl4IEUgfF4xA" name="CaptionDescription" sourceName="CaptionDescription"
+        sourceNumber="20" broader="_LdwJDOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PheUIEfGl4IEUgfF4xA" name="Channel" sourceName="Channel"
+        sourceNumber="21" broader="_LdwJDeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PhuUIEfGl4IEUgfF4xA" name="City" sourceName="City" sourceNumber="22"
+        broader="_LdwJDuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Ph-UIEfGl4IEUgfF4xA" name="Company" sourceName="Company"
+        sourceNumber="23" broader="_LdwJD-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PiOUIEfGl4IEUgfF4xA" name="Continent" sourceName="Continent"
+        sourceNumber="24" broader="_LdwJDuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PieUIEfGl4IEUgfF4xA" name="Country" sourceName="Country"
+        sourceNumber="25" broader="_LdwJDuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PiuUIEfGl4IEUgfF4xA" name="County" sourceName="County"
+        sourceNumber="26" broader="_LdwJDuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pi-UIEfGl4IEUgfF4xA" name="CurrencyDestination" sourceName="CurrencyDestination"
+        sourceNumber="27" broader="_LdwJEOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PjOUIEfGl4IEUgfF4xA" name="CurrencyIsoCode" sourceName="CurrencyIsoCode"
+        sourceNumber="28" broader="_LdwJEOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PjeUIEfGl4IEUgfF4xA" name="CurrencyName" sourceName="CurrencyName"
+        sourceNumber="29" broader="_LdwJEOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PjuUIEfGl4IEUgfF4xA" name="CurrencySource" sourceName="CurrencySource"
+        sourceNumber="30" broader="_LdwJEOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pj-UIEfGl4IEUgfF4xA" name="CustomerGroup" sourceName="CustomerGroup"
+        sourceNumber="31" broader="_LdwJEeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PkOUIEfGl4IEUgfF4xA" name="CustomerHousehold" sourceName="CustomerHousehold"
+        sourceNumber="32" broader="_LdwJEeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PkeUIEfGl4IEUgfF4xA" name="Customers" sourceName="Customers"
+        sourceNumber="33" broader="_LdwJEeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PkuUIEfGl4IEUgfF4xA" name="Date" sourceName="Date" sourceNumber="34"
+        broader="_LdwJEuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pk-UIEfGl4IEUgfF4xA" name="DateCanceled" sourceName="DateCanceled"
+        sourceNumber="35" broader="_LdwJEuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PlOUIEfGl4IEUgfF4xA" name="DateDuration" sourceName="DateDuration"
+        sourceNumber="36" broader="_LdwJEuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PleUIEfGl4IEUgfF4xA" name="DateEnded" sourceName="DateEnded"
+        sourceNumber="37" broader="_LdwJEuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PluUIEfGl4IEUgfF4xA" name="DateModified" sourceName="DateModified"
+        sourceNumber="38" broader="_LdwJEuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pl-UIEfGl4IEUgfF4xA" name="DateStart" sourceName="DateStart"
+        sourceNumber="39" broader="_LdwJEuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PmOUIEfGl4IEUgfF4xA" name="DayOfHalfYear" sourceName="DayOfHalfYear"
+        sourceNumber="40" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PmeUIEfGl4IEUgfF4xA" name="DayOfMonth" sourceName="DayOfMonth"
+        sourceNumber="41" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PmuUIEfGl4IEUgfF4xA" name="DayOfQuarter" sourceName="DayOfQuarter"
+        sourceNumber="42" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pm-UIEfGl4IEUgfF4xA" name="DayOfTenDays" sourceName="DayOfTenDays"
+        sourceNumber="43" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PnOUIEfGl4IEUgfF4xA" name="DayOfTrimester" sourceName="DayOfTrimester"
+        sourceNumber="44" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PneUIEfGl4IEUgfF4xA" name="DayOfWeek" sourceName="DayOfWeek"
+        sourceNumber="45" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PnuUIEfGl4IEUgfF4xA" name="DayOfYear" sourceName="DayOfYear"
+        sourceNumber="46" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pn-UIEfGl4IEUgfF4xA" name="Days" sourceName="Days" sourceNumber="47"
+        broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PoOUIEfGl4IEUgfF4xA" name="DeletedFlag" sourceName="DeletedFlag"
+        sourceNumber="48" broader="_LdwJFOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PoeUIEfGl4IEUgfF4xA" name="ExtendedType" sourceName="ExtendedType"
+        sourceNumber="49" broader="_LdwJFeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PouUIEfGl4IEUgfF4xA" name="FiscalDate" sourceName="FiscalDate"
+        sourceNumber="50" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Po-UIEfGl4IEUgfF4xA" name="FiscalDayOfHalfYear" sourceName="FiscalDayOfHalfYear"
+        sourceNumber="51" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PpOUIEfGl4IEUgfF4xA" name="FiscalDayOfMonth" sourceName="FiscalDayOfMonth"
+        sourceNumber="52" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PpeUIEfGl4IEUgfF4xA" name="FiscalDayOfQuarter" sourceName="FiscalDayOfQuarter"
+        sourceNumber="53" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PpuUIEfGl4IEUgfF4xA" name="FiscalDayOfTrimester" sourceName="FiscalDayOfTrimester"
+        sourceNumber="54" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pp-UIEfGl4IEUgfF4xA" name="FiscalDayOfWeek" sourceName="FiscalDayOfWeek"
+        sourceNumber="55" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PqOUIEfGl4IEUgfF4xA" name="FiscalDayOfYear" sourceName="FiscalDayOfYear"
+        sourceNumber="56" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PqeUIEfGl4IEUgfF4xA" name="FiscalHalfYears" sourceName="FiscalHalfYears"
+        sourceNumber="57" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PquUIEfGl4IEUgfF4xA" name="FiscalHalfYearOfYear" sourceName="FiscalHalfYearOfYear"
+        sourceNumber="58" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pq-UIEfGl4IEUgfF4xA" name="FiscalMonths" sourceName="FiscalMonths"
+        sourceNumber="59" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PrOUIEfGl4IEUgfF4xA" name="FiscalMonthOfHalfYear" sourceName="FiscalMonthOfHalfYear"
+        sourceNumber="60" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PreUIEfGl4IEUgfF4xA" name="FiscalMonthOfQuarter" sourceName="FiscalMonthOfQuarter"
+        sourceNumber="61" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PruUIEfGl4IEUgfF4xA" name="FiscalMonthOfTrimester" sourceName="FiscalMonthOfTrimester"
+        sourceNumber="62" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pr-UIEfGl4IEUgfF4xA" name="FiscalMonthOfYear" sourceName="FiscalMonthOfYear"
+        sourceNumber="63" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PsOUIEfGl4IEUgfF4xA" name="FiscalQuarters" sourceName="FiscalQuarters"
+        sourceNumber="64" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PseUIEfGl4IEUgfF4xA" name="FiscalQuarterOfHalfYear" sourceName="FiscalQuarterOfHalfYear"
+        sourceNumber="65" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PsuUIEfGl4IEUgfF4xA" name="FiscalQuarterOfYear" sourceName="FiscalQuarterOfYear"
+        sourceNumber="66" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Ps-UIEfGl4IEUgfF4xA" name="FiscalTrimesters" sourceName="FiscalTrimesters"
+        sourceNumber="67" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PtOUIEfGl4IEUgfF4xA" name="FiscalTrimesterOfYear" sourceName="FiscalTrimesterOfYear"
+        sourceNumber="68" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PteUIEfGl4IEUgfF4xA" name="FiscalWeeks" sourceName="FiscalWeeks"
+        sourceNumber="69" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PtuUIEfGl4IEUgfF4xA" name="FiscalWeekOfHalfYear" sourceName="FiscalWeekOfHalfYear"
+        sourceNumber="70" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pt-UIEfGl4IEUgfF4xA" name="FiscalWeekOfMonth" sourceName="FiscalWeekOfMonth"
+        sourceNumber="71" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PuOUIEfGl4IEUgfF4xA" name="FiscalWeekOfQuarter" sourceName="FiscalWeekOfQuarter"
+        sourceNumber="72" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PueUIEfGl4IEUgfF4xA" name="FiscalWeekOfTrimester" sourceName="FiscalWeekOfTrimester"
+        sourceNumber="73" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PuuUIEfGl4IEUgfF4xA" name="FiscalWeekOfYear" sourceName="FiscalWeekOfYear"
+        sourceNumber="74" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pu-UIEfGl4IEUgfF4xA" name="FiscalYears" sourceName="FiscalYears"
+        sourceNumber="75" broader="_LdwJFuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PvOUIEfGl4IEUgfF4xA" name="FormattingColor" sourceName="FormattingColor"
+        sourceNumber="76" broader="_LdwJF-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PveUIEfGl4IEUgfF4xA" name="FormattingFont" sourceName="FormattingFont"
+        sourceNumber="77" broader="_LdwJF-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PvuUIEfGl4IEUgfF4xA" name="FormattingFontEffects" sourceName="FormattingFontEffects"
+        sourceNumber="78" broader="_LdwJF-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pv-UIEfGl4IEUgfF4xA" name="FormattingFontSize" sourceName="FormattingFontSize"
+        sourceNumber="79" broader="_LdwJF-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PwOUIEfGl4IEUgfF4xA" name="FormattingOrder" sourceName="FormattingOrder"
+        sourceNumber="80" broader="_LdwJF-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PweUIEfGl4IEUgfF4xA" name="FormattingSubtotal" sourceName="FormattingSubtotal"
+        sourceNumber="81" broader="_LdwJF-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PwuUIEfGl4IEUgfF4xA" name="GeoBoundaryBottom" sourceName="GeoBoundaryBottom"
+        sourceNumber="82" broader="_LdwJGOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pw-UIEfGl4IEUgfF4xA" name="GeoBoundaryFront" sourceName="GeoBoundaryFront"
+        sourceNumber="83" broader="_LdwJGOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PxOUIEfGl4IEUgfF4xA" name="GeoBoundaryLeft" sourceName="GeoBoundaryLeft"
+        sourceNumber="84" broader="_LdwJGOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PxeUIEfGl4IEUgfF4xA" name="GeoBoundaryPolygon" sourceName="GeoBoundaryPolygon"
+        sourceNumber="85" broader="_LdwJGOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PxuUIEfGl4IEUgfF4xA" name="GeoBoundaryRear" sourceName="GeoBoundaryRear"
+        sourceNumber="86" broader="_LdwJGOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Px-UIEfGl4IEUgfF4xA" name="GeoBoundaryRight" sourceName="GeoBoundaryRight"
+        sourceNumber="87" broader="_LdwJGOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PyOUIEfGl4IEUgfF4xA" name="GeoBoundaryTop" sourceName="GeoBoundaryTop"
+        sourceNumber="88" broader="_LdwJGOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PyeUIEfGl4IEUgfF4xA" name="GeoCentroidX" sourceName="GeoCentroidX"
+        sourceNumber="89" broader="_LdwJGOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PyuUIEfGl4IEUgfF4xA" name="GeoCentroidY" sourceName="GeoCentroidY"
+        sourceNumber="90" broader="_LdwJGOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Py-UIEfGl4IEUgfF4xA" name="GeoCentroidZ" sourceName="GeoCentroidZ"
+        sourceNumber="91" broader="_LdwJGOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PzOUIEfGl4IEUgfF4xA" name="HalfYears" sourceName="HalfYears"
+        sourceNumber="92" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PzeUIEfGl4IEUgfF4xA" name="HalfYearOfYear" sourceName="HalfYearOfYear"
+        sourceNumber="93" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2PzuUIEfGl4IEUgfF4xA" name="Hours" sourceName="Hours" sourceNumber="94"
+        broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Pz-UIEfGl4IEUgfF4xA" name="ID" sourceName="ID" sourceNumber="95"
+        broader="_LdwJFeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P0OUIEfGl4IEUgfF4xA" name="Image" sourceName="Image" sourceNumber="96"
+        broader="_LdwJGeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P0eUIEfGl4IEUgfF4xA" name="ImageBmp" sourceName="ImageBmp"
+        sourceNumber="97" broader="_LdwJGeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P0uUIEfGl4IEUgfF4xA" name="ImageGif" sourceName="ImageGif"
+        sourceNumber="98" broader="_LdwJGeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P0-UIEfGl4IEUgfF4xA" name="ImageJpg" sourceName="ImageJpg"
+        sourceNumber="99" broader="_LdwJGeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P1OUIEfGl4IEUgfF4xA" name="ImagePng" sourceName="ImagePng"
+        sourceNumber="100" broader="_LdwJGeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P1eUIEfGl4IEUgfF4xA" name="ImageTiff" sourceName="ImageTiff"
+        sourceNumber="101" broader="_LdwJGeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P1uUIEfGl4IEUgfF4xA" name="ImageUrl" sourceName="ImageUrl"
+        sourceNumber="102" broader="_LdwJGeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P1-UIEfGl4IEUgfF4xA" name="IsHoliday" sourceName="IsHoliday"
+        sourceNumber="103" broader="_LdwJGuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P2OUIEfGl4IEUgfF4xA" name="Iso8601Date" sourceName="Iso8601Date"
+        sourceNumber="104" broader="_LdwJG-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P2eUIEfGl4IEUgfF4xA" name="Iso8601DayOfWeek" sourceName="Iso8601DayOfWeek"
+        sourceNumber="105" broader="_LdwJG-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P2uUIEfGl4IEUgfF4xA" name="Iso8601DayOfYear" sourceName="Iso8601DayOfYear"
+        sourceNumber="106" broader="_LdwJG-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P2-UIEfGl4IEUgfF4xA" name="Iso8601Weeks" sourceName="Iso8601Weeks"
+        sourceNumber="107" broader="_LdwJG-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P3OUIEfGl4IEUgfF4xA" name="Iso8601WeekOfYear" sourceName="Iso8601WeekOfYear"
+        sourceNumber="108" broader="_LdwJG-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P3eUIEfGl4IEUgfF4xA" name="Iso8601Years" sourceName="Iso8601Years"
+        sourceNumber="109" broader="_LdwJG-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P3uUIEfGl4IEUgfF4xA" name="IsPeakDay" sourceName="IsPeakDay"
+        sourceNumber="110" broader="_LdwJGuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P3-UIEfGl4IEUgfF4xA" name="IsWeekDay" sourceName="IsWeekDay"
+        sourceNumber="111" broader="_LdwJGuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P4OUIEfGl4IEUgfF4xA" name="IsWorkingDay" sourceName="IsWorkingDay"
+        sourceNumber="112" broader="_LdwJGuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P4eUIEfGl4IEUgfF4xA" name="ManufacturingDate" sourceName="ManufacturingDate"
+        sourceNumber="113" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P4uUIEfGl4IEUgfF4xA" name="ManufacturingDayOfHalfYear"
+        sourceName="ManufacturingDayOfHalfYear" sourceNumber="114" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P4-UIEfGl4IEUgfF4xA" name="ManufacturingDayOfMonth" sourceName="ManufacturingDayOfMonth"
+        sourceNumber="115" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P5OUIEfGl4IEUgfF4xA" name="ManufacturingDayOfQuarter" sourceName="ManufacturingDayOfQuarter"
+        sourceNumber="116" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P5eUIEfGl4IEUgfF4xA" name="ManufacturingDayOfWeek" sourceName="ManufacturingDayOfWeek"
+        sourceNumber="117" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P5uUIEfGl4IEUgfF4xA" name="ManufacturingDayOfYear" sourceName="ManufacturingDayOfYear"
+        sourceNumber="118" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P5-UIEfGl4IEUgfF4xA" name="ManufacturingHalfYears" sourceName="ManufacturingHalfYears"
+        sourceNumber="119" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P6OUIEfGl4IEUgfF4xA" name="ManufacturingHalfYearOfYear"
+        sourceName="ManufacturingHalfYearOfYear" sourceNumber="120" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P6eUIEfGl4IEUgfF4xA" name="ManufacturingMonths" sourceName="ManufacturingMonths"
+        sourceNumber="121" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P6uUIEfGl4IEUgfF4xA" name="ManufacturingMonthOfHalfYear"
+        sourceName="ManufacturingMonthOfHalfYear" sourceNumber="122" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P6-UIEfGl4IEUgfF4xA" name="ManufacturingMonthOfQuarter"
+        sourceName="ManufacturingMonthOfQuarter" sourceNumber="123" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P7OUIEfGl4IEUgfF4xA" name="ManufacturingMonthOfYear" sourceName="ManufacturingMonthOfYear"
+        sourceNumber="124" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P7eUIEfGl4IEUgfF4xA" name="ManufacturingQuarters" sourceName="ManufacturingQuarters"
+        sourceNumber="125" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P7uUIEfGl4IEUgfF4xA" name="ManufacturingQuarterOfHalfYear"
+        sourceName="ManufacturingQuarterOfHalfYear" sourceNumber="126" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P7-UIEfGl4IEUgfF4xA" name="ManufacturingQuarterOfYear"
+        sourceName="ManufacturingQuarterOfYear" sourceNumber="127" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P8OUIEfGl4IEUgfF4xA" name="ManufacturingWeeks" sourceName="ManufacturingWeeks"
+        sourceNumber="128" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P8eUIEfGl4IEUgfF4xA" name="ManufacturingWeekOfHalfYear"
+        sourceName="ManufacturingWeekOfHalfYear" sourceNumber="129" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P8uUIEfGl4IEUgfF4xA" name="ManufacturingWeekOfMonth" sourceName="ManufacturingWeekOfMonth"
+        sourceNumber="130" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P8-UIEfGl4IEUgfF4xA" name="ManufacturingWeekOfQuarter"
+        sourceName="ManufacturingWeekOfQuarter" sourceNumber="131" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P9OUIEfGl4IEUgfF4xA" name="ManufacturingWeekOfYear" sourceName="ManufacturingWeekOfYear"
+        sourceNumber="132" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P9eUIEfGl4IEUgfF4xA" name="ManufacturingYears" sourceName="ManufacturingYears"
+        sourceNumber="133" broader="_LdwJHOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P9uUIEfGl4IEUgfF4xA" name="Minutes" sourceName="Minutes"
+        sourceNumber="134" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P9-UIEfGl4IEUgfF4xA" name="Months" sourceName="Months"
+        sourceNumber="135" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P-OUIEfGl4IEUgfF4xA" name="MonthOfHalfYear" sourceName="MonthOfHalfYear"
+        sourceNumber="136" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P-eUIEfGl4IEUgfF4xA" name="MonthOfQuarter" sourceName="MonthOfQuarter"
+        sourceNumber="137" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P-uUIEfGl4IEUgfF4xA" name="MonthOfTrimester" sourceName="MonthOfTrimester"
+        sourceNumber="138" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P--UIEfGl4IEUgfF4xA" name="MonthOfYear" sourceName="MonthOfYear"
+        sourceNumber="139" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P_OUIEfGl4IEUgfF4xA" name="OrganizationalUnit" sourceName="OrganizationalUnit"
+        sourceNumber="140" broader="_LdwJD-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P_eUIEfGl4IEUgfF4xA" name="OrgTitle" sourceName="OrgTitle"
+        sourceNumber="141" broader="_LdwJD-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P_uUIEfGl4IEUgfF4xA" name="PercentOwnership" sourceName="PercentOwnership"
+        sourceNumber="142" broader="_LdwJD-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2P_-UIEfGl4IEUgfF4xA" name="PercentVoteRight" sourceName="PercentVoteRight"
+        sourceNumber="143" broader="_LdwJD-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QAOUIEfGl4IEUgfF4xA" name="Person" sourceName="Person"
+        sourceNumber="144" broader="_LdwJHeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QAeUIEfGl4IEUgfF4xA" name="PersonContact" sourceName="PersonContact"
+        sourceNumber="145" broader="_LdwJHeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QAuUIEfGl4IEUgfF4xA" name="PersonDemographic" sourceName="PersonDemographic"
+        sourceNumber="146" broader="_LdwJHeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QA-UIEfGl4IEUgfF4xA" name="PersonFirstName" sourceName="PersonFirstName"
+        sourceNumber="147" broader="_LdwJHeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QBOUIEfGl4IEUgfF4xA" name="PersonFullName" sourceName="PersonFullName"
+        sourceNumber="148" broader="_LdwJHeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QBeUIEfGl4IEUgfF4xA" name="PersonLastName" sourceName="PersonLastName"
+        sourceNumber="149" broader="_LdwJHeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QBuUIEfGl4IEUgfF4xA" name="PersonMiddleName" sourceName="PersonMiddleName"
+        sourceNumber="150" broader="_LdwJHeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QB-UIEfGl4IEUgfF4xA" name="PhysicalColor" sourceName="PhysicalColor"
+        sourceNumber="151" broader="_LdwJHuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QCOUIEfGl4IEUgfF4xA" name="PhysicalDensity" sourceName="PhysicalDensity"
+        sourceNumber="152" broader="_LdwJHuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QCeUIEfGl4IEUgfF4xA" name="PhysicalDepth" sourceName="PhysicalDepth"
+        sourceNumber="153" broader="_LdwJHuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QCuUIEfGl4IEUgfF4xA" name="PhysicalHeight" sourceName="PhysicalHeight"
+        sourceNumber="154" broader="_LdwJHuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QC-UIEfGl4IEUgfF4xA" name="PhysicalSize" sourceName="PhysicalSize"
+        sourceNumber="155" broader="_LdwJHuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QDOUIEfGl4IEUgfF4xA" name="PhysicalVolume" sourceName="PhysicalVolume"
+        sourceNumber="156" broader="_LdwJHuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QDeUIEfGl4IEUgfF4xA" name="PhysicalWeight" sourceName="PhysicalWeight"
+        sourceNumber="157" broader="_LdwJHuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QDuUIEfGl4IEUgfF4xA" name="PhysicalWidth" sourceName="PhysicalWidth"
+        sourceNumber="158" broader="_LdwJHuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QD-UIEfGl4IEUgfF4xA" name="Point" sourceName="Point" sourceNumber="159"
+        broader="_LdwJDuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QEOUIEfGl4IEUgfF4xA" name="PostalCode" sourceName="PostalCode"
+        sourceNumber="160" broader="_LdwJDuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QEeUIEfGl4IEUgfF4xA" name="Product" sourceName="Product"
+        sourceNumber="161" broader="_LdwJH-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QEuUIEfGl4IEUgfF4xA" name="ProductBrand" sourceName="ProductBrand"
+        sourceNumber="162" broader="_LdwJH-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QE-UIEfGl4IEUgfF4xA" name="ProductCategory" sourceName="ProductCategory"
+        sourceNumber="163" broader="_LdwJH-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QFOUIEfGl4IEUgfF4xA" name="ProductGroup" sourceName="ProductGroup"
+        sourceNumber="164" broader="_LdwJH-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QFeUIEfGl4IEUgfF4xA" name="ProductSKU" sourceName="ProductSKU"
+        sourceNumber="165" broader="_LdwJH-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QFuUIEfGl4IEUgfF4xA" name="Project" sourceName="Project"
+        sourceNumber="166" broader="_LdwJIOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QF-UIEfGl4IEUgfF4xA" name="ProjectCode" sourceName="ProjectCode"
+        sourceNumber="167" broader="_LdwJIOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QGOUIEfGl4IEUgfF4xA" name="ProjectCompletion" sourceName="ProjectCompletion"
+        sourceNumber="168" broader="_LdwJIOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QGeUIEfGl4IEUgfF4xA" name="ProjectEndDate" sourceName="ProjectEndDate"
+        sourceNumber="169" broader="_LdwJIOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QGuUIEfGl4IEUgfF4xA" name="ProjectName" sourceName="ProjectName"
+        sourceNumber="170" broader="_LdwJIOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QG-UIEfGl4IEUgfF4xA" name="ProjectStartDate" sourceName="ProjectStartDate"
+        sourceNumber="171" broader="_LdwJIOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QHOUIEfGl4IEUgfF4xA" name="Promotion" sourceName="Promotion"
+        sourceNumber="172" broader="_LdwJIeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QHeUIEfGl4IEUgfF4xA" name="QtyRangeHigh" sourceName="QtyRangeHigh"
+        sourceNumber="173" broader="_LdwJHuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QHuUIEfGl4IEUgfF4xA" name="QtyRangeLow" sourceName="QtyRangeLow"
+        sourceNumber="174" broader="_LdwJHuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QH-UIEfGl4IEUgfF4xA" name="Quantitative" sourceName="Quantitative"
+        sourceNumber="175" broader="_LdwJHuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QIOUIEfGl4IEUgfF4xA" name="Quarters" sourceName="Quarters"
+        sourceNumber="176" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QIeUIEfGl4IEUgfF4xA" name="QuarterOfHalfYear" sourceName="QuarterOfHalfYear"
+        sourceNumber="177" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QIuUIEfGl4IEUgfF4xA" name="QuarterOfYear" sourceName="QuarterOfYear"
+        sourceNumber="178" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QI-UIEfGl4IEUgfF4xA" name="Rate" sourceName="Rate" sourceNumber="179"
+        broader="_LdwJIuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QJOUIEfGl4IEUgfF4xA" name="RateType" sourceName="RateType"
+        sourceNumber="180" broader="_LdwJIuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QJeUIEfGl4IEUgfF4xA" name="Region" sourceName="Region"
+        sourceNumber="181" broader="_LdwJDuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QJuUIEfGl4IEUgfF4xA" name="Regular" sourceName="Regular"
+        sourceNumber="182" broader="_LdwJFeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QJ-UIEfGl4IEUgfF4xA" name="RelationToParent" sourceName="RelationToParent"
+        sourceNumber="183" broader="_LdwJFeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QKOUIEfGl4IEUgfF4xA" name="ReportingDate" sourceName="ReportingDate"
+        sourceNumber="184" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QKeUIEfGl4IEUgfF4xA" name="ReportingDayOfHalfYear" sourceName="ReportingDayOfHalfYear"
+        sourceNumber="185" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QKuUIEfGl4IEUgfF4xA" name="ReportingDayOfMonth" sourceName="ReportingDayOfMonth"
+        sourceNumber="186" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QK-UIEfGl4IEUgfF4xA" name="ReportingDayOfQuarter" sourceName="ReportingDayOfQuarter"
+        sourceNumber="187" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QLOUIEfGl4IEUgfF4xA" name="ReportingDayOfTrimester" sourceName="ReportingDayOfTrimester"
+        sourceNumber="188" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QLeUIEfGl4IEUgfF4xA" name="ReportingDayOfWeek" sourceName="ReportingDayOfWeek"
+        sourceNumber="189" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QLuUIEfGl4IEUgfF4xA" name="ReportingDayOfYear" sourceName="ReportingDayOfYear"
+        sourceNumber="190" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QL-UIEfGl4IEUgfF4xA" name="ReportingHalfYears" sourceName="ReportingHalfYears"
+        sourceNumber="191" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QMOUIEfGl4IEUgfF4xA" name="ReportingHalfYearOfYear" sourceName="ReportingHalfYearOfYear"
+        sourceNumber="192" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QMeUIEfGl4IEUgfF4xA" name="ReportingMonths" sourceName="ReportingMonths"
+        sourceNumber="193" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QMuUIEfGl4IEUgfF4xA" name="ReportingMonthOfHalfYear" sourceName="ReportingMonthOfHalfYear"
+        sourceNumber="194" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QM-UIEfGl4IEUgfF4xA" name="ReportingMonthOfQuarter" sourceName="ReportingMonthOfQuarter"
+        sourceNumber="195" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QNOUIEfGl4IEUgfF4xA" name="ReportingMonthOfTrimester" sourceName="ReportingMonthOfTrimester"
+        sourceNumber="196" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QNeUIEfGl4IEUgfF4xA" name="ReportingMonthOfYear" sourceName="ReportingMonthOfYear"
+        sourceNumber="197" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QNuUIEfGl4IEUgfF4xA" name="ReportingQuarters" sourceName="ReportingQuarters"
+        sourceNumber="198" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QN-UIEfGl4IEUgfF4xA" name="ReportingQuarterOfHalfYear"
+        sourceName="ReportingQuarterOfHalfYear" sourceNumber="199" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QOOUIEfGl4IEUgfF4xA" name="ReportingQuarterOfYear" sourceName="ReportingQuarterOfYear"
+        sourceNumber="200" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QOeUIEfGl4IEUgfF4xA" name="ReportingTrimesters" sourceName="ReportingTrimesters"
+        sourceNumber="201" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QOuUIEfGl4IEUgfF4xA" name="ReportingTrimesterOfYear" sourceName="ReportingTrimesterOfYear"
+        sourceNumber="202" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QO-UIEfGl4IEUgfF4xA" name="ReportingWeeks" sourceName="ReportingWeeks"
+        sourceNumber="203" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QPOUIEfGl4IEUgfF4xA" name="ReportingWeekOfHalfYear" sourceName="ReportingWeekOfHalfYear"
+        sourceNumber="204" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QPeUIEfGl4IEUgfF4xA" name="ReportingWeekOfMonth" sourceName="ReportingWeekOfMonth"
+        sourceNumber="205" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QPuUIEfGl4IEUgfF4xA" name="ReportingWeekOfQuarter" sourceName="ReportingWeekOfQuarter"
+        sourceNumber="206" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QP-UIEfGl4IEUgfF4xA" name="ReportingWeekOfTrimester" sourceName="ReportingWeekOfTrimester"
+        sourceNumber="207" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QQOUIEfGl4IEUgfF4xA" name="ReportingWeekOfYear" sourceName="ReportingWeekOfYear"
+        sourceNumber="208" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QQeUIEfGl4IEUgfF4xA" name="ReportingYears" sourceName="ReportingYears"
+        sourceNumber="209" broader="_LdwJI-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QQuUIEfGl4IEUgfF4xA" name="Representative" sourceName="Representative"
+        sourceNumber="210" broader="_LdwJDeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QQ-UIEfGl4IEUgfF4xA" name="RowNumber" sourceName="RowNumber"
+        sourceNumber="211" broader="_LdwJFeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QROUIEfGl4IEUgfF4xA" name="ScdEndDate" sourceName="ScdEndDate"
+        sourceNumber="212" broader="_LdwJFOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QReUIEfGl4IEUgfF4xA" name="ScdOriginalID" sourceName="ScdOriginalID"
+        sourceNumber="213" broader="_LdwJFOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QRuUIEfGl4IEUgfF4xA" name="ScdStartDate" sourceName="ScdStartDate"
+        sourceNumber="214" broader="_LdwJFOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QR-UIEfGl4IEUgfF4xA" name="ScdStatus" sourceName="ScdStatus"
+        sourceNumber="215" broader="_LdwJFOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QSOUIEfGl4IEUgfF4xA" name="Scenario" sourceName="Scenario"
+        sourceNumber="216" broader="_LdwJJOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QSeUIEfGl4IEUgfF4xA" name="Seconds" sourceName="Seconds"
+        sourceNumber="217" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QSuUIEfGl4IEUgfF4xA" name="Sequence" sourceName="Sequence"
+        sourceNumber="218" broader="_LdwJFeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QS-UIEfGl4IEUgfF4xA" name="ShortCaption" sourceName="ShortCaption"
+        sourceNumber="219" broader="_LdwJDOUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QTOUIEfGl4IEUgfF4xA" name="StateOrProvince" sourceName="StateOrProvince"
+        sourceNumber="220" broader="_LdwJDuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QTeUIEfGl4IEUgfF4xA" name="TenDay" sourceName="TenDay"
+        sourceNumber="221" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QTuUIEfGl4IEUgfF4xA" name="TenDayOfHalfYear" sourceName="TenDayOfHalfYear"
+        sourceNumber="222" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QT-UIEfGl4IEUgfF4xA" name="TenDayOfMonth" sourceName="TenDayOfMonth"
+        sourceNumber="223" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QUOUIEfGl4IEUgfF4xA" name="TenDayOfQuarter" sourceName="TenDayOfQuarter"
+        sourceNumber="224" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QUeUIEfGl4IEUgfF4xA" name="TenDayOfTrimester" sourceName="TenDayOfTrimester"
+        sourceNumber="225" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QUuUIEfGl4IEUgfF4xA" name="TenDayOfYear" sourceName="TenDayOfYear"
+        sourceNumber="226" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QU-UIEfGl4IEUgfF4xA" name="Trimesters" sourceName="Trimesters"
+        sourceNumber="227" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QVOUIEfGl4IEUgfF4xA" name="TrimesterOfYear" sourceName="TrimesterOfYear"
+        sourceNumber="228" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QVeUIEfGl4IEUgfF4xA" name="UndefinedTime" sourceName="UndefinedTime"
+        sourceNumber="229" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QVuUIEfGl4IEUgfF4xA" name="Utility" sourceName="Utility"
+        sourceNumber="230" broader="_LdwJJeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QV-UIEfGl4IEUgfF4xA" name="Version" sourceName="Version"
+        sourceNumber="231" broader="_LdwJFeUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QWOUIEfGl4IEUgfF4xA" name="WebHtml" sourceName="WebHtml"
+        sourceNumber="232" broader="_LdwJJuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QWeUIEfGl4IEUgfF4xA" name="WebMailAlias" sourceName="WebMailAlias"
+        sourceNumber="233" broader="_LdwJJuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QWuUIEfGl4IEUgfF4xA" name="WebUrl" sourceName="WebUrl"
+        sourceNumber="234" broader="_LdwJJuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QW-UIEfGl4IEUgfF4xA" name="WebXmlOrXsl" sourceName="WebXmlOrXsl"
+        sourceNumber="235" broader="_LdwJJuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QXOUIEfGl4IEUgfF4xA" name="WeekOfYear" sourceName="WeekOfYear"
+        sourceNumber="236" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QXeUIEfGl4IEUgfF4xA" name="Weeks" sourceName="Weeks" sourceNumber="237"
+        broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QXuUIEfGl4IEUgfF4xA" name="WinterSummerSeason" sourceName="WinterSummerSeason"
+        sourceNumber="238" broader="_LdwJGuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QX-UIEfGl4IEUgfF4xA" name="Years" sourceName="Years" sourceNumber="239"
+        broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+  </ownedElement>
+  <ownedElement xsi:type="semantictype:TypeLibrary" xmi:id="_LdwJKeUIEfGl4IEUgfF4xA" name="DimensionTypes" uri="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.semantictype.xmla/dimension"
+      sourceSystem="Analysis Services">
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QYOUIEfGl4IEUgfF4xA" name="Regular" sourceName="Regular"
+        sourceNumber="0"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QYeUIEfGl4IEUgfF4xA" name="Time" sourceName="Time" sourceNumber="1"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QYuUIEfGl4IEUgfF4xA" name="Geography" sourceName="Geography"
+        sourceNumber="2"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QY-UIEfGl4IEUgfF4xA" name="Organization" sourceName="Organization"
+        sourceNumber="3"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QZOUIEfGl4IEUgfF4xA" name="BillOfMaterials" sourceName="BillOfMaterials"
+        sourceNumber="4"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QZeUIEfGl4IEUgfF4xA" name="Accounts" sourceName="Accounts"
+        sourceNumber="5"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QZuUIEfGl4IEUgfF4xA" name="Customers" sourceName="Customers"
+        sourceNumber="6"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QZ-UIEfGl4IEUgfF4xA" name="Products" sourceName="Products"
+        sourceNumber="7"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QaOUIEfGl4IEUgfF4xA" name="Scenario" sourceName="Scenario"
+        sourceNumber="8"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QaeUIEfGl4IEUgfF4xA" name="Quantitative" sourceName="Quantitative"
+        sourceNumber="9"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QauUIEfGl4IEUgfF4xA" name="Utility" sourceName="Utility"
+        sourceNumber="10"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Qa-UIEfGl4IEUgfF4xA" name="Currency" sourceName="Currency"
+        sourceNumber="11"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QbOUIEfGl4IEUgfF4xA" name="Rates" sourceName="Rates" sourceNumber="12"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QbeUIEfGl4IEUgfF4xA" name="Channel" sourceName="Channel"
+        sourceNumber="13"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QbuUIEfGl4IEUgfF4xA" name="Promotion" sourceName="Promotion"
+        sourceNumber="14"/>
+  </ownedElement>
+  <ownedElement xsi:type="semantictype:TypeLibrary" xmi:id="_LdwJKuUIEfGl4IEUgfF4xA" name="AccountTypes" uri="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.semantictype.xmla/account"
+      sourceSystem="Analysis Services">
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Qb-UIEfGl4IEUgfF4xA" name="Income" sourceName="Income"
+        sourceNumber="0"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QcOUIEfGl4IEUgfF4xA" name="Expense" sourceName="Expense"
+        sourceNumber="1"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QceUIEfGl4IEUgfF4xA" name="Flow" sourceName="Flow" sourceNumber="2"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QcuUIEfGl4IEUgfF4xA" name="Balance" sourceName="Balance"
+        sourceNumber="3"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2Qc-UIEfGl4IEUgfF4xA" name="Asset" sourceName="Asset" sourceNumber="4"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QdOUIEfGl4IEUgfF4xA" name="Liability" sourceName="Liability"
+        sourceNumber="5"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_Ld2QdeUIEfGl4IEUgfF4xA" name="Statistical" sourceName="Statistical"
+        sourceNumber="6"/>
+  </ownedElement>
+  <ownedElement xsi:type="semantictype:TypeLibrary" xmi:id="_Ldwv4OUIEfGl4IEUgfF4xA" name="AttributeGroups" uri="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.semantictype.xmla/groups">
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJCeUIEfGl4IEUgfF4xA" name="Account"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJCuUIEfGl4IEUgfF4xA" name="Address"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJC-UIEfGl4IEUgfF4xA" name="BillOfMaterials"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJDOUIEfGl4IEUgfF4xA" name="Caption"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJDeUIEfGl4IEUgfF4xA" name="Channel"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJDuUIEfGl4IEUgfF4xA" name="Geography"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJD-UIEfGl4IEUgfF4xA" name="Organization"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJEOUIEfGl4IEUgfF4xA" name="Currency"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJEeUIEfGl4IEUgfF4xA" name="Customer"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJEuUIEfGl4IEUgfF4xA" name="Date"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJE-UIEfGl4IEUgfF4xA" name="Time"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJFOUIEfGl4IEUgfF4xA" name="History"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJFeUIEfGl4IEUgfF4xA" name="Structure"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJFuUIEfGl4IEUgfF4xA" name="TimeFiscal" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJF-UIEfGl4IEUgfF4xA" name="Formatting"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJGOUIEfGl4IEUgfF4xA" name="GeographyShape" broader="_LdwJDuUIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJGeUIEfGl4IEUgfF4xA" name="Image"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJGuUIEfGl4IEUgfF4xA" name="TimeDayFlag" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJG-UIEfGl4IEUgfF4xA" name="TimeIso8601" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJHOUIEfGl4IEUgfF4xA" name="TimeManufacturing" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJHeUIEfGl4IEUgfF4xA" name="Person"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJHuUIEfGl4IEUgfF4xA" name="Quantitative"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJH-UIEfGl4IEUgfF4xA" name="Product"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJIOUIEfGl4IEUgfF4xA" name="Project"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJIeUIEfGl4IEUgfF4xA" name="Promotion"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJIuUIEfGl4IEUgfF4xA" name="Rate"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJI-UIEfGl4IEUgfF4xA" name="TimeReporting" broader="_LdwJE-UIEfGl4IEUgfF4xA"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJJOUIEfGl4IEUgfF4xA" name="Scenario"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJJeUIEfGl4IEUgfF4xA" name="Utility"/>
+    <ownedElement xsi:type="semantictype:SemanticType" xmi:id="_LdwJJuUIEfGl4IEUgfF4xA" name="Web"/>
+  </ownedElement>
+</core:Package>

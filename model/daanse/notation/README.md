@@ -24,7 +24,8 @@ language.
 
 ## Relations
 
-- Builds on CWM `core` and on `units` (the unit of a `TemporalNumber` is a `units::Unit` of time).
+- Builds on CWM `core` and on `units` (the unit of a `TemporalNumber` is a `units::Unit` of time); the standard set
+  on `emf/standard`.
 - Knows no OLAP, no relational model, no sensiNact; no model depends on it. A tool or a connector resolves the
   notation of an element (`Notations.of`) and reads its values with a `Codec`.
 
@@ -227,6 +228,48 @@ Codec codec = Codec.of(observed);
 codec.read("19.03.2026 10:15");                       // 2026-03-19T10:15+01:00[Europe/Berlin]
 codec.write(Instant.parse("2026-07-01T08:00:00Z"));   // 01.07.2026 10:00
 codec.read("-");                                       // null
+```
+
+## Standard set
+
+The usual notations are a standard set, the file `notations.xmi` in the jar beside `StandardNotations` under the URI
+`https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.notation/notations.xmi`
+(`StandardNotations.SET_URI`): the package `Notations` with, for each notation, a `core::DataType` and the notation
+that names it. An attribute of a model file typed by one of these data types is written in its notation
+(`Notations.of`: an element's own notation, else that of its data type). Each data type names the Java class of its
+values in the tagged value `daanse.ecore.instanceClassName`, so that the rules know what it holds (NT7, NT8, NT12).
+
+| Data type | Form | Reads | Values |
+| --- | --- | --- | --- |
+| `IsoDate` | `TemporalText`, named `date` | `2026-11-19` | `LocalDate` |
+| `IsoTime` | `TemporalText`, named `time` | `10:15:30` | `LocalTime` |
+| `IsoDateTime` | `TemporalText`, named `dateTime` | `2026-11-19T10:15:30` | `LocalDateTime` |
+| `IsoDateTimeWithOffset` | `TemporalText`, named `dateTimeWithOffset` | `2026-11-19T10:15:30+01:00` | `OffsetDateTime` |
+| `GermanDate` | `TemporalText`, pattern `dd.MM.yyyy` | `19.11.2026` | `LocalDate` |
+| `UnixSeconds` | `TemporalNumber`, `1970-01-01T00:00:00Z`, second | `86400` | `Instant` |
+| `UnixMilliseconds` | `TemporalNumber`, `1970-01-01T00:00:00Z`, millisecond | `1500` | `Instant` |
+| `SpreadsheetDays` | `TemporalNumber`, `1899-12-30`, day | `61` (1900-03-01) | `LocalDateTime` |
+| `EnglishNumber` | `NumberText`, decimal `.`, group `,` | `1,234,567.5` | `BigDecimal` |
+| `GermanNumber` | `NumberText`, decimal `,`, group `.` | `1.234.567,5` | `BigDecimal` |
+| `TrueFalse` | `BooleanText`, `true` / `false`, any case | `TRUE` | `Boolean` |
+| `OneZero` | `BooleanText`, `1` / `0` | `0` | `Boolean` |
+| `YesNo` | `BooleanText`, `yes` / `no`, any case | `No` | `Boolean` |
+| `JaNein` | `BooleanText`, `ja` / `nein`, any case | `Ja` | `Boolean` |
+
+The forms come from ISO 8601 (the named forms), the date formats CSV on the Web lists (`dd.MM.yyyy`), the Unix
+epoch and the spreadsheet epoch of `Notations`, and the decimal and group characters of English and German text.
+The unit of a count lies in the standard set of the SI of `units`, to which the file refers by its URI;
+`StandardNotations.map` and `load` map the SI beside the set.
+
+An attribute of a model file may be typed by a data type of the set; a model may as well make its own data types and
+notations (`Notations.create`). Both stay.
+
+The id of every element is the UUID stated beside it in `StandardNotations`; how a set is written, kept equal to the
+code, mapped and loaded is said in `emf/standard`.
+
+```java
+Package notations = StandardNotations.load(resourceSet);     // the set read from the jar, the SI mapped beside it
+DataType germanNumber = StandardNotations.type(notations, StandardNotations.GERMAN_NUMBER).orElseThrow();
 ```
 
 ## The Ecore

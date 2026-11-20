@@ -40,13 +40,32 @@ names one of its three lists and a type in it.
 
 | Table | Columns |
 | --- | --- |
-| `attribute-types.tsv` | `name`, `number`, `level_type`, `level_type_spec`, `property_content_type`, `property_content_type_spec`, `other_spelling` (another spelling a server takes, such as `ProductSku`), `group` |
-| `dimension-types.tsv` | `name`, `number`, `dimension_type` |
-| `account-types.tsv` | `name`, `number` |
+| `attribute-types.tsv` | `name`, `number`, `level_type`, `level_type_spec`, `property_content_type`, `property_content_type_spec`, `other_spelling` (another spelling a server takes, such as `ProductSku`), `group`, `id` |
+| `dimension-types.tsv` | `name`, `number`, `dimension_type`, `id` |
+| `account-types.tsv` | `name`, `number`, `id` |
+
+## Standard set
+
+The four libraries are also a standard set, the file `server-types.xmi` in the jar beside `ServerTypes` under the URI
+`https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.semantictype.xmla/server-types.xmi`
+(`ServerTypes.SET_URI`): the package `AnalysisServices` with the four libraries and their 292 types.
+
+A model file may refer to a type of the set; a model may as well hold the libraries, as `ServerTypes.create` builds
+them into a namespace of its own. Both stay. Where that namespace lies in an XMI resource, its elements carry the
+UUIDs of the set.
+
+The id of a type is the UUID in the column `id` of its table; the ids of the groups, the libraries and the package are
+the UUIDs stated in `ServerTypes`. How a set is written, kept equal to the code and the tables, mapped and loaded is
+said in `emf/standard`.
+
+```java
+Package server = ServerTypes.load(resourceSet);  // mapped and read from the jar under SET_URI
+```
 
 ## Relations
 
-- Builds on `semantictype.base` and CWM `core`; reports in `model/daanse/validation`.
+- Builds on `semantictype.base` and CWM `core`; reports in `model/daanse/validation`; the standard set on
+  `emf/standard`.
 - A model holds the libraries it uses, as it holds the SI, or names the types of libraries delivered
   beside it: `ServerTypes.LIBRARIES` are the URIs a program passes to
   `SemanticTypeModelValidator.check(root, delivered)`.

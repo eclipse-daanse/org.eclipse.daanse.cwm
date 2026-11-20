@@ -25,7 +25,7 @@ that any implementation gives the same keys and shares.
 
 - Builds on CWM `core` only (the columns it names are attributes; keys are read from the
   `keysindexes` unique keys a table owns, without a dependency); the validator reports in the form
-  of `validation`.
+  of `validation`; the standard set builds on `emf/standard`.
 - Knows no OLAP class; the feature collections (`resource.spatial.feature`) build on it. No
   dependency on `units` (distances and bounds are metres whatever the reference system, a geographic
   system measured on the spheroid; areas and lengths are measured in metres on the spheroid in a
@@ -143,6 +143,38 @@ the one the model already has; `SpatialElements.gridSystem(owner, identifier, mi
 does the same for any other identifier and refuses one the model holds with other resolutions;
 `SpatialElements.gridSystem(element, identifier)` finds a system by its identifier. Naming a system
 is not resolving it: which systems a resolver computes is for each resolver to say.
+
+## Standard set
+
+The reference systems, grid systems and the geometry type everybody uses are a standard set, the file
+`spatial-standards.xmi` in the jar beside `SpatialStandards` under the URI
+`https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.spatial/spatial-standards.xmi`
+(`SpatialStandards.SET_URI`): the package `Spatial` with 13 reference systems, the grid systems geohash (1 to 12,
+nested), h3 (0 to 15) and quadkey (1 to 23, nested) and the type `Geometry`. Each reference system has the kind, the
+axes and the axis order its register (EPSG, OGC) defines; all are static, as their registers' ensembles are used.
+
+| System | Kind | Axes, order |
+| --- | --- | --- |
+| OGC CRS84 (WGS 84, version 1.3) | geographic | 2, east first |
+| OGC CRS84h (WGS 84 with height) | geographic | 3, east first |
+| EPSG 4326 WGS 84 | geographic | 2, north first |
+| EPSG 4979 WGS 84 with height | geographic | 3, north first |
+| EPSG 3857 Web Mercator | projected | 2, east first |
+| EPSG 4258 ETRS89 | geographic | 2, north first |
+| EPSG 3035 ETRS89 LAEA Europe | projected | 2, north first |
+| EPSG 25832, 25833 ETRS89 / UTM zones 32N, 33N | projected | 2, east first |
+| EPSG 31466 to 31469 DHDN / 3-degree Gauss-Kruger zones 2 to 5 | projected | 2, north first |
+
+A model file may refer to a system of the set; a model may as well make its own (`SpatialElements.epsg`). Both stay:
+a system of the set and one a model makes itself with the same authority, version and code are one system (SP12).
+
+The id of every element is the UUID stated beside it in `SpatialStandards`; how a set is written, kept equal to the
+code, mapped and loaded is said in `emf/standard`.
+
+```java
+Package spatial = SpatialStandards.load(resourceSet);              // mapped and read from the jar
+ReferenceSystem utm32 = SpatialStandards.epsg(spatial, 25832).orElseThrow();
+```
 
 ## What a resolver leaves
 

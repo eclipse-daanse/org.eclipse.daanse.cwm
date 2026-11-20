@@ -18,244 +18,245 @@
 # other_spelling: another spelling a server takes or gives back, which a reader takes as well.
 # group: the group of the type, a type of the library of groups beside the server's types; the type is narrower than
 # its group. The groups are not the server's: they gather the types by what they describe.
-name	number	level_type	level_type_spec	property_content_type	property_content_type_spec	other_spelling	group
-Account	0	0x1014	0x1014	0xD1			Account
-AccountName	1	0x1081		0xD2			Account
-AccountNumber	2	0x1082		0xD3			Account
-AccountType	3	0x1083		0xD4			Account
-Address	4	0x1091		0x41	0x41		Address
-AddressBuilding	5	0x1092		0x49	0x49		Address
-AddressCity	6	0x1093		0x44	0x44		Address
-AddressCountry	7	0x1094		0x48	0x48		Address
-AddressFax	8	0x1095		0x4C	0x4C		Address
-AddressFloor	9	0x1096		0x4B	0x4B		Address
-AddressHouse	10	0x1097		0x43	0x43		Address
-AddressPhone	11	0x1098		0x4D	0x4D		Address
-AddressQuarter	12	0x1099		0x47	0x47		Address
-AddressRoom	13	0x109A		0x4A	0x4A		Address
-AddressStateOrProvince	14	0x109B		0x45	0x45		Address
-AddressStreet	15	0x109C		0x42	0x42		Address
-AddressZip	16	0x109D		0x46	0x46		Address
-BomResource	17	0x1012	0x1012	0xF1			BillOfMaterials
-Caption	18	0x10A1		0x21	0x21		Caption
-CaptionAbbreviation	19	0x10A2		0x24	0x24		Caption
-CaptionDescription	20	0x10A3		0x23	0x23		Caption
-Channel	21	0x1061	0x1061	0x101			Channel
-City	22	0x2006	0x2006	0x111			Geography
-Company	23	0x1042	0x1042	0x121			Organization
-Continent	24	0x2001	0x2001	0x122			Geography
-Country	25	0x2003	0x2003	0x123			Geography
-County	26	0x2005	0x2005	0x124			Geography
-CurrencyDestination	27	0x1052	0x1052	0x131			Currency
-CurrencyIsoCode	28	0x10B1		0x132			Currency
-CurrencyName	29	0x10B2		0x133			Currency
-CurrencySource	30	0x1051	0x1051	0x134			Currency
-CustomerGroup	31	0x1022	0x1022	0x135			Customer
-CustomerHousehold	32	0x1023	0x1023	0x136			Customer
-Customers	33	0x1021	0x1021	0x137			Customer
-Date	34	0x10C1		0xB1	0xB1		Date
-DateCanceled	35	0x10C2		0xB4	0xB4		Date
-DateDuration	36	0x10C3		0xB6	0xB6		Date
-DateEnded	37	0x10C4		0xB3	0xB3		Date
-DateModified	38	0x10C5		0xB5	0xB5		Date
-DateStart	39	0x10C6		0xB2	0xB2		Date
-DayOfHalfYear	40	0x10C7		0x141			Time
-DayOfMonth	41	0x10C8		0x142			Time
-DayOfQuarter	42	0x10CA		0x144			Time
-DayOfTenDays	43	0x10CB		0x145			Time
-DayOfTrimester	44	0x10CC		0x146			Time
-DayOfWeek	45	0x10CD		0x147			Time
-DayOfYear	46	0x10CE		0x148			Time
-Days	47	0x0204	0x0204	0x149			Time
-DeletedFlag	48	0x10D1		0x151			History
-ExtendedType	49	0x12B1		0x322			Structure
-FiscalDate	50	0x10E1		0x161			TimeFiscal
-FiscalDayOfHalfYear	51	0x10E2		0x162			TimeFiscal
-FiscalDayOfMonth	52	0x10E3		0x163			TimeFiscal
-FiscalDayOfQuarter	53	0x10E4		0x164			TimeFiscal
-FiscalDayOfTrimester	54	0x10E5		0x165			TimeFiscal
-FiscalDayOfWeek	55	0x10E6		0x166			TimeFiscal
-FiscalDayOfYear	56	0x10E7		0x167			TimeFiscal
-FiscalHalfYears	57	0x10E9		0x169			TimeFiscal
-FiscalHalfYearOfYear	58	0x10E8		0x168			TimeFiscal
-FiscalMonths	59	0x10EE		0x16E			TimeFiscal
-FiscalMonthOfHalfYear	60	0x10EA		0x16A			TimeFiscal
-FiscalMonthOfQuarter	61	0x10EB		0x16B			TimeFiscal
-FiscalMonthOfTrimester	62	0x10EC		0x16C			TimeFiscal
-FiscalMonthOfYear	63	0x10ED		0x16D			TimeFiscal
-FiscalQuarters	64	0x10F1		0x171			TimeFiscal
-FiscalQuarterOfHalfYear	65	0x10EF		0x16F			TimeFiscal
-FiscalQuarterOfYear	66	0x10F0		0x170			TimeFiscal
-FiscalTrimesters	67	0x10F3		0x173			TimeFiscal
-FiscalTrimesterOfYear	68	0x10F2		0x172			TimeFiscal
-FiscalWeeks	69	0x10F9		0x179			TimeFiscal
-FiscalWeekOfHalfYear	70	0x10F4		0x174			TimeFiscal
-FiscalWeekOfMonth	71	0x10F5		0x175			TimeFiscal
-FiscalWeekOfQuarter	72	0x10F6		0x176			TimeFiscal
-FiscalWeekOfTrimester	73	0x10F7		0x177			TimeFiscal
-FiscalWeekOfYear	74	0x10F8		0x178			TimeFiscal
-FiscalYears	75	0x10FA		0x17A			TimeFiscal
-FormattingColor	76	0x1101		0xA1	0xA1		Formatting
-FormattingFont	77	0x1102		0xA3	0xA3		Formatting
-FormattingFontEffects	78	0x1103		0xA4	0xA4		Formatting
-FormattingFontSize	79	0x1104		0xA5	0xA5		Formatting
-FormattingOrder	80	0x1105		0xA2	0xA2		Formatting
-FormattingSubtotal	81	0x1106		0xA1	0xA6		Formatting
-GeoBoundaryBottom	82	0x1111		0x66	0x66		GeographyShape
-GeoBoundaryFront	83	0x1112		0x68	0x68		GeographyShape
-GeoBoundaryLeft	84	0x1113		0x65	0x65		GeographyShape
-GeoBoundaryPolygon	85	0x1114		0x6A	0x6A		GeographyShape
-GeoBoundaryRear	86	0x1115		0x69	0x69		GeographyShape
-GeoBoundaryRight	87	0x1116		0x67	0x67		GeographyShape
-GeoBoundaryTop	88	0x1117		0x64	0x64		GeographyShape
-GeoCentroidX	89	0x1118		0x61	0x61		GeographyShape
-GeoCentroidY	90	0x1119		0x62	0x62		GeographyShape
-GeoCentroidZ	91	0x111A		0x63	0x63		GeographyShape
-HalfYears	92	0x0024	0x0024	0x182			Time
-HalfYearOfYear	93	0x1121		0x181			Time
-Hours	94	0x0304		0x191			Time
-ID	95	0x1131		0x01	0x01	Id	Structure
-Image	96	0x1141		0x1A1			Image
-ImageBmp	97	0x1142		0x1A2			Image
-ImageGif	98	0x1143		0x1A3			Image
-ImageJpg	99	0x1144		0x1A4			Image
-ImagePng	100	0x1145		0x1A5			Image
-ImageTiff	101	0x1146		0x1A6			Image
-ImageUrl	102	0x1147		0x1A7			Image
-IsHoliday	103	0x1151		0x1B1			TimeDayFlag
-Iso8601Date	104	0x1152		0x1B2			TimeIso8601
-Iso8601DayOfWeek	105	0x1153		0x1B3			TimeIso8601
-Iso8601DayOfYear	106	0x1154		0x1B4			TimeIso8601
-Iso8601Weeks	107	0x1156		0x1B6			TimeIso8601
-Iso8601WeekOfYear	108	0x1155		0x1B5			TimeIso8601
-Iso8601Years	109	0x1157		0x1B7			TimeIso8601
-IsPeakDay	110	0x1158		0x1B8			TimeDayFlag
-IsWeekDay	111	0x1159		0x1B9			TimeDayFlag
-IsWorkingDay	112	0x115A		0x1BA			TimeDayFlag
-ManufacturingDate	113	0x1161		0x1C1			TimeManufacturing
-ManufacturingDayOfHalfYear	114	0x1162		0x1C2			TimeManufacturing
-ManufacturingDayOfMonth	115	0x1163		0x1C3			TimeManufacturing
-ManufacturingDayOfQuarter	116	0x1164		0x1C4			TimeManufacturing
-ManufacturingDayOfWeek	117	0x1165		0x1C5			TimeManufacturing
-ManufacturingDayOfYear	118	0x1166		0x1C6			TimeManufacturing
-ManufacturingHalfYears	119	0x1168		0x1C8			TimeManufacturing
-ManufacturingHalfYearOfYear	120	0x1167		0x1C7			TimeManufacturing
-ManufacturingMonths	121	0x116C		0x1CC			TimeManufacturing
-ManufacturingMonthOfHalfYear	122	0x1169		0x1C9			TimeManufacturing
-ManufacturingMonthOfQuarter	123	0x116A		0x1CA			TimeManufacturing
-ManufacturingMonthOfYear	124	0x116B		0x1CB			TimeManufacturing
-ManufacturingQuarters	125	0x116F		0x1CF			TimeManufacturing
-ManufacturingQuarterOfHalfYear	126	0x116D		0x1CD			TimeManufacturing
-ManufacturingQuarterOfYear	127	0x116E		0x1CE			TimeManufacturing
-ManufacturingWeeks	128	0x1176		0x1D6			TimeManufacturing
-ManufacturingWeekOfHalfYear	129	0x1172		0x1D2			TimeManufacturing
-ManufacturingWeekOfMonth	130	0x1173		0x1D3			TimeManufacturing
-ManufacturingWeekOfQuarter	131	0x1174		0x1D4			TimeManufacturing
-ManufacturingWeekOfYear	132	0x1175		0x1D5			TimeManufacturing
-ManufacturingYears	133	0x1177		0x1D7			TimeManufacturing
-Minutes	134	0x0404		0x1E1			Time
-Months	135	0x0084		0x1F7			Time
-MonthOfHalfYear	136	0x1181		0x1F1			Time
-MonthOfQuarter	137	0x1182		0x1F2			Time
-MonthOfTrimester	138	0x1183		0x1F3			Time
-MonthOfYear	139	0x1184		0x1F4			Time
-OrganizationalUnit	140	0x1011	0x1011	0x201			Organization
-OrgTitle	141	0x1191		0x11	0x11		Organization
-PercentOwnership	142	0x11A1		0x211			Organization
-PercentVoteRight	143	0x11A2		0x212			Organization
-Person	144	0x1041	0x1041	0x213			Person
-PersonContact	145	0x11A3		0x87	0x87		Person
-PersonDemographic	146	0x11A4		0x86	0x86		Person
-PersonFirstName	147	0x11A5		0x83	0x83		Person
-PersonFullName	148	0x11A6		0x214	0x82		Person
-PersonLastName	149	0x11A7		0x84	0x84		Person
-PersonMiddleName	150	0x11A8		0x85	0x85		Person
-PhysicalColor	151	0x11B1		0x72	0x72		Quantitative
-PhysicalDensity	152	0x11B2		0x78	0x78		Quantitative
-PhysicalDepth	153	0x11B3		0x76	0x76		Quantitative
-PhysicalHeight	154	0x11B4		0x74	0x74		Quantitative
-PhysicalSize	155	0x11B5		0x71	0x71		Quantitative
-PhysicalVolume	156	0x11B6		0x77	0x77		Quantitative
-PhysicalWeight	157	0x11B7		0x73	0x73		Quantitative
-PhysicalWidth	158	0x11B8		0x75	0x75		Quantitative
-Point	159	0x2008	0x2008	0x221			Geography
-PostalCode	160	0x2007	0x2007	0x222			Geography
-Product	161	0x1031	0x1031	0x231			Product
-ProductBrand	162	0x11C1		0x232			Product
-ProductCategory	163	0x11C2		0x233			Product
-ProductGroup	164	0x1032	0x1032	0x234			Product
-ProductSKU	165	0x11C3		0x235		ProductSku	Product
-Project	166	0x11C4		0x236			Project
-ProjectCode	167	0x11C5		0x237			Project
-ProjectCompletion	168	0x11C6		0x238			Project
-ProjectEndDate	169	0x11C7		0x239			Project
-ProjectName	170	0x11C8		0x23A			Project
-ProjectStartDate	171	0x11C9		0x23B			Project
-Promotion	172	0x1071	0x1071	0x23C			Promotion
-QtyRangeHigh	173	0x11D1		0x92	0x92		Quantitative
-QtyRangeLow	174	0x11D2		0x91	0x91		Quantitative
-Quantitative	175	0x1013	0x1013	0x241			Quantitative
-Quarters	176	0x0044	0x0044	0x244			Time
-QuarterOfHalfYear	177	0x11E1		0x242			Time
-QuarterOfYear	178	0x11E2		0x243			Time
-Rate	179	0x11F1		0x251			Rate
-RateType	180	0x11F2		0x252			Rate
-Region	181	0x2002	0x2002	0x261			Geography
-Regular	182	0x0000	0x0000	0x00	0x00		Structure
-RelationToParent	183	0x1201		0x02	0x02		Structure
-ReportingDate	184	0x1202		0x262			TimeReporting
-ReportingDayOfHalfYear	185	0x1203		0x263			TimeReporting
-ReportingDayOfMonth	186	0x1204		0x264			TimeReporting
-ReportingDayOfQuarter	187	0x1205		0x265			TimeReporting
-ReportingDayOfTrimester	188	0x1206		0x266			TimeReporting
-ReportingDayOfWeek	189	0x1207		0x267			TimeReporting
-ReportingDayOfYear	190	0x1208		0x268			TimeReporting
-ReportingHalfYears	191	0x120A		0x26A			TimeReporting
-ReportingHalfYearOfYear	192	0x1209		0x269			TimeReporting
-ReportingMonths	193	0x120F		0x26F			TimeReporting
-ReportingMonthOfHalfYear	194	0x120B		0x26B			TimeReporting
-ReportingMonthOfQuarter	195	0x120C		0x26C			TimeReporting
-ReportingMonthOfTrimester	196	0x120D		0x26D			TimeReporting
-ReportingMonthOfYear	197	0x120E		0x26E			TimeReporting
-ReportingQuarters	198	0x1212		0x272			TimeReporting
-ReportingQuarterOfHalfYear	199	0x1210		0x270			TimeReporting
-ReportingQuarterOfYear	200	0x1211		0x271			TimeReporting
-ReportingTrimesters	201	0x1214		0x274			TimeReporting
-ReportingTrimesterOfYear	202	0x1213		0x273			TimeReporting
-ReportingWeeks	203	0x121A		0x27A			TimeReporting
-ReportingWeekOfHalfYear	204	0x1215		0x275			TimeReporting
-ReportingWeekOfMonth	205	0x1216		0x276			TimeReporting
-ReportingWeekOfQuarter	206	0x1217		0x277			TimeReporting
-ReportingWeekOfTrimester	207	0x1218		0x278			TimeReporting
-ReportingWeekOfYear	208	0x1219		0x279			TimeReporting
-ReportingYears	209	0x121B		0x27B			TimeReporting
-Representative	210	0x1062	0x1062	0x27C			Channel
-RowNumber	211	0x1221		0x281			Structure
-ScdEndDate	212	0x1231		0x291			History
-ScdOriginalID	213	0x1232		0x292			History
-ScdStartDate	214	0x1233		0x293			History
-ScdStatus	215	0x1234		0x294			History
-Scenario	216	0x1015	0x1015	0x295			Scenario
-Seconds	217	0x0804	0x0804	0x2A1			Time
-Sequence	218	0x1241		0x2A2			Structure
-ShortCaption	219	0x1251		0x22	0x22		Caption
-StateOrProvince	220	0x2004	0x2004	0x2B1			Geography
-TenDay	221	0x1266		0x2C6		TenDays	Time
-TenDayOfHalfYear	222	0x1261		0x2C1			Time
-TenDayOfMonth	223	0x1262		0x2C2			Time
-TenDayOfQuarter	224	0x1263		0x2C3			Time
-TenDayOfTrimester	225	0x1264		0x2C4			Time
-TenDayOfYear	226	0x1265		0x2C5			Time
-Trimesters	227	0x1272		0x2D2			Time
-TrimesterOfYear	228	0x1271		0x2D1			Time
-UndefinedTime	229	0x1004	0x1004	0x2E1			Time
-Utility	230	0x1016	0x1016	0x2F1			Utility
-Version	231	0x1281		0xC1	0xC1		Structure
-WebHtml	232	0x1291		0x32	0x32		Web
-WebMailAlias	233	0x1292		0x34	0x34		Web
-WebUrl	234	0x1293		0x31	0x31		Web
-WebXmlOrXsl	235	0x1294		0x33	0x33		Web
-WeekOfYear	236	0x1297		0x303			Time
-Weeks	237	0x0104	0x0104	0x304			Time
-WinterSummerSeason	238	0x12A1		0x311			TimeDayFlag
-Years	239	0x0014	0x0014	0x321			Time
+# id: the id of the type in the standard set of the server's types (ServerTypes.SET_URI), a UUID; never changed.
+name	number	level_type	level_type_spec	property_content_type	property_content_type_spec	other_spelling	group	id
+Account	0	0x1014	0x1014	0xD1			Account	_Ld2PcOUIEfGl4IEUgfF4xA
+AccountName	1	0x1081		0xD2			Account	_Ld2PceUIEfGl4IEUgfF4xA
+AccountNumber	2	0x1082		0xD3			Account	_Ld2PcuUIEfGl4IEUgfF4xA
+AccountType	3	0x1083		0xD4			Account	_Ld2Pc-UIEfGl4IEUgfF4xA
+Address	4	0x1091		0x41	0x41		Address	_Ld2PdOUIEfGl4IEUgfF4xA
+AddressBuilding	5	0x1092		0x49	0x49		Address	_Ld2PdeUIEfGl4IEUgfF4xA
+AddressCity	6	0x1093		0x44	0x44		Address	_Ld2PduUIEfGl4IEUgfF4xA
+AddressCountry	7	0x1094		0x48	0x48		Address	_Ld2Pd-UIEfGl4IEUgfF4xA
+AddressFax	8	0x1095		0x4C	0x4C		Address	_Ld2PeOUIEfGl4IEUgfF4xA
+AddressFloor	9	0x1096		0x4B	0x4B		Address	_Ld2PeeUIEfGl4IEUgfF4xA
+AddressHouse	10	0x1097		0x43	0x43		Address	_Ld2PeuUIEfGl4IEUgfF4xA
+AddressPhone	11	0x1098		0x4D	0x4D		Address	_Ld2Pe-UIEfGl4IEUgfF4xA
+AddressQuarter	12	0x1099		0x47	0x47		Address	_Ld2PfOUIEfGl4IEUgfF4xA
+AddressRoom	13	0x109A		0x4A	0x4A		Address	_Ld2PfeUIEfGl4IEUgfF4xA
+AddressStateOrProvince	14	0x109B		0x45	0x45		Address	_Ld2PfuUIEfGl4IEUgfF4xA
+AddressStreet	15	0x109C		0x42	0x42		Address	_Ld2Pf-UIEfGl4IEUgfF4xA
+AddressZip	16	0x109D		0x46	0x46		Address	_Ld2PgOUIEfGl4IEUgfF4xA
+BomResource	17	0x1012	0x1012	0xF1			BillOfMaterials	_Ld2PgeUIEfGl4IEUgfF4xA
+Caption	18	0x10A1		0x21	0x21		Caption	_Ld2PguUIEfGl4IEUgfF4xA
+CaptionAbbreviation	19	0x10A2		0x24	0x24		Caption	_Ld2Pg-UIEfGl4IEUgfF4xA
+CaptionDescription	20	0x10A3		0x23	0x23		Caption	_Ld2PhOUIEfGl4IEUgfF4xA
+Channel	21	0x1061	0x1061	0x101			Channel	_Ld2PheUIEfGl4IEUgfF4xA
+City	22	0x2006	0x2006	0x111			Geography	_Ld2PhuUIEfGl4IEUgfF4xA
+Company	23	0x1042	0x1042	0x121			Organization	_Ld2Ph-UIEfGl4IEUgfF4xA
+Continent	24	0x2001	0x2001	0x122			Geography	_Ld2PiOUIEfGl4IEUgfF4xA
+Country	25	0x2003	0x2003	0x123			Geography	_Ld2PieUIEfGl4IEUgfF4xA
+County	26	0x2005	0x2005	0x124			Geography	_Ld2PiuUIEfGl4IEUgfF4xA
+CurrencyDestination	27	0x1052	0x1052	0x131			Currency	_Ld2Pi-UIEfGl4IEUgfF4xA
+CurrencyIsoCode	28	0x10B1		0x132			Currency	_Ld2PjOUIEfGl4IEUgfF4xA
+CurrencyName	29	0x10B2		0x133			Currency	_Ld2PjeUIEfGl4IEUgfF4xA
+CurrencySource	30	0x1051	0x1051	0x134			Currency	_Ld2PjuUIEfGl4IEUgfF4xA
+CustomerGroup	31	0x1022	0x1022	0x135			Customer	_Ld2Pj-UIEfGl4IEUgfF4xA
+CustomerHousehold	32	0x1023	0x1023	0x136			Customer	_Ld2PkOUIEfGl4IEUgfF4xA
+Customers	33	0x1021	0x1021	0x137			Customer	_Ld2PkeUIEfGl4IEUgfF4xA
+Date	34	0x10C1		0xB1	0xB1		Date	_Ld2PkuUIEfGl4IEUgfF4xA
+DateCanceled	35	0x10C2		0xB4	0xB4		Date	_Ld2Pk-UIEfGl4IEUgfF4xA
+DateDuration	36	0x10C3		0xB6	0xB6		Date	_Ld2PlOUIEfGl4IEUgfF4xA
+DateEnded	37	0x10C4		0xB3	0xB3		Date	_Ld2PleUIEfGl4IEUgfF4xA
+DateModified	38	0x10C5		0xB5	0xB5		Date	_Ld2PluUIEfGl4IEUgfF4xA
+DateStart	39	0x10C6		0xB2	0xB2		Date	_Ld2Pl-UIEfGl4IEUgfF4xA
+DayOfHalfYear	40	0x10C7		0x141			Time	_Ld2PmOUIEfGl4IEUgfF4xA
+DayOfMonth	41	0x10C8		0x142			Time	_Ld2PmeUIEfGl4IEUgfF4xA
+DayOfQuarter	42	0x10CA		0x144			Time	_Ld2PmuUIEfGl4IEUgfF4xA
+DayOfTenDays	43	0x10CB		0x145			Time	_Ld2Pm-UIEfGl4IEUgfF4xA
+DayOfTrimester	44	0x10CC		0x146			Time	_Ld2PnOUIEfGl4IEUgfF4xA
+DayOfWeek	45	0x10CD		0x147			Time	_Ld2PneUIEfGl4IEUgfF4xA
+DayOfYear	46	0x10CE		0x148			Time	_Ld2PnuUIEfGl4IEUgfF4xA
+Days	47	0x0204	0x0204	0x149			Time	_Ld2Pn-UIEfGl4IEUgfF4xA
+DeletedFlag	48	0x10D1		0x151			History	_Ld2PoOUIEfGl4IEUgfF4xA
+ExtendedType	49	0x12B1		0x322			Structure	_Ld2PoeUIEfGl4IEUgfF4xA
+FiscalDate	50	0x10E1		0x161			TimeFiscal	_Ld2PouUIEfGl4IEUgfF4xA
+FiscalDayOfHalfYear	51	0x10E2		0x162			TimeFiscal	_Ld2Po-UIEfGl4IEUgfF4xA
+FiscalDayOfMonth	52	0x10E3		0x163			TimeFiscal	_Ld2PpOUIEfGl4IEUgfF4xA
+FiscalDayOfQuarter	53	0x10E4		0x164			TimeFiscal	_Ld2PpeUIEfGl4IEUgfF4xA
+FiscalDayOfTrimester	54	0x10E5		0x165			TimeFiscal	_Ld2PpuUIEfGl4IEUgfF4xA
+FiscalDayOfWeek	55	0x10E6		0x166			TimeFiscal	_Ld2Pp-UIEfGl4IEUgfF4xA
+FiscalDayOfYear	56	0x10E7		0x167			TimeFiscal	_Ld2PqOUIEfGl4IEUgfF4xA
+FiscalHalfYears	57	0x10E9		0x169			TimeFiscal	_Ld2PqeUIEfGl4IEUgfF4xA
+FiscalHalfYearOfYear	58	0x10E8		0x168			TimeFiscal	_Ld2PquUIEfGl4IEUgfF4xA
+FiscalMonths	59	0x10EE		0x16E			TimeFiscal	_Ld2Pq-UIEfGl4IEUgfF4xA
+FiscalMonthOfHalfYear	60	0x10EA		0x16A			TimeFiscal	_Ld2PrOUIEfGl4IEUgfF4xA
+FiscalMonthOfQuarter	61	0x10EB		0x16B			TimeFiscal	_Ld2PreUIEfGl4IEUgfF4xA
+FiscalMonthOfTrimester	62	0x10EC		0x16C			TimeFiscal	_Ld2PruUIEfGl4IEUgfF4xA
+FiscalMonthOfYear	63	0x10ED		0x16D			TimeFiscal	_Ld2Pr-UIEfGl4IEUgfF4xA
+FiscalQuarters	64	0x10F1		0x171			TimeFiscal	_Ld2PsOUIEfGl4IEUgfF4xA
+FiscalQuarterOfHalfYear	65	0x10EF		0x16F			TimeFiscal	_Ld2PseUIEfGl4IEUgfF4xA
+FiscalQuarterOfYear	66	0x10F0		0x170			TimeFiscal	_Ld2PsuUIEfGl4IEUgfF4xA
+FiscalTrimesters	67	0x10F3		0x173			TimeFiscal	_Ld2Ps-UIEfGl4IEUgfF4xA
+FiscalTrimesterOfYear	68	0x10F2		0x172			TimeFiscal	_Ld2PtOUIEfGl4IEUgfF4xA
+FiscalWeeks	69	0x10F9		0x179			TimeFiscal	_Ld2PteUIEfGl4IEUgfF4xA
+FiscalWeekOfHalfYear	70	0x10F4		0x174			TimeFiscal	_Ld2PtuUIEfGl4IEUgfF4xA
+FiscalWeekOfMonth	71	0x10F5		0x175			TimeFiscal	_Ld2Pt-UIEfGl4IEUgfF4xA
+FiscalWeekOfQuarter	72	0x10F6		0x176			TimeFiscal	_Ld2PuOUIEfGl4IEUgfF4xA
+FiscalWeekOfTrimester	73	0x10F7		0x177			TimeFiscal	_Ld2PueUIEfGl4IEUgfF4xA
+FiscalWeekOfYear	74	0x10F8		0x178			TimeFiscal	_Ld2PuuUIEfGl4IEUgfF4xA
+FiscalYears	75	0x10FA		0x17A			TimeFiscal	_Ld2Pu-UIEfGl4IEUgfF4xA
+FormattingColor	76	0x1101		0xA1	0xA1		Formatting	_Ld2PvOUIEfGl4IEUgfF4xA
+FormattingFont	77	0x1102		0xA3	0xA3		Formatting	_Ld2PveUIEfGl4IEUgfF4xA
+FormattingFontEffects	78	0x1103		0xA4	0xA4		Formatting	_Ld2PvuUIEfGl4IEUgfF4xA
+FormattingFontSize	79	0x1104		0xA5	0xA5		Formatting	_Ld2Pv-UIEfGl4IEUgfF4xA
+FormattingOrder	80	0x1105		0xA2	0xA2		Formatting	_Ld2PwOUIEfGl4IEUgfF4xA
+FormattingSubtotal	81	0x1106		0xA1	0xA6		Formatting	_Ld2PweUIEfGl4IEUgfF4xA
+GeoBoundaryBottom	82	0x1111		0x66	0x66		GeographyShape	_Ld2PwuUIEfGl4IEUgfF4xA
+GeoBoundaryFront	83	0x1112		0x68	0x68		GeographyShape	_Ld2Pw-UIEfGl4IEUgfF4xA
+GeoBoundaryLeft	84	0x1113		0x65	0x65		GeographyShape	_Ld2PxOUIEfGl4IEUgfF4xA
+GeoBoundaryPolygon	85	0x1114		0x6A	0x6A		GeographyShape	_Ld2PxeUIEfGl4IEUgfF4xA
+GeoBoundaryRear	86	0x1115		0x69	0x69		GeographyShape	_Ld2PxuUIEfGl4IEUgfF4xA
+GeoBoundaryRight	87	0x1116		0x67	0x67		GeographyShape	_Ld2Px-UIEfGl4IEUgfF4xA
+GeoBoundaryTop	88	0x1117		0x64	0x64		GeographyShape	_Ld2PyOUIEfGl4IEUgfF4xA
+GeoCentroidX	89	0x1118		0x61	0x61		GeographyShape	_Ld2PyeUIEfGl4IEUgfF4xA
+GeoCentroidY	90	0x1119		0x62	0x62		GeographyShape	_Ld2PyuUIEfGl4IEUgfF4xA
+GeoCentroidZ	91	0x111A		0x63	0x63		GeographyShape	_Ld2Py-UIEfGl4IEUgfF4xA
+HalfYears	92	0x0024	0x0024	0x182			Time	_Ld2PzOUIEfGl4IEUgfF4xA
+HalfYearOfYear	93	0x1121		0x181			Time	_Ld2PzeUIEfGl4IEUgfF4xA
+Hours	94	0x0304		0x191			Time	_Ld2PzuUIEfGl4IEUgfF4xA
+ID	95	0x1131		0x01	0x01	Id	Structure	_Ld2Pz-UIEfGl4IEUgfF4xA
+Image	96	0x1141		0x1A1			Image	_Ld2P0OUIEfGl4IEUgfF4xA
+ImageBmp	97	0x1142		0x1A2			Image	_Ld2P0eUIEfGl4IEUgfF4xA
+ImageGif	98	0x1143		0x1A3			Image	_Ld2P0uUIEfGl4IEUgfF4xA
+ImageJpg	99	0x1144		0x1A4			Image	_Ld2P0-UIEfGl4IEUgfF4xA
+ImagePng	100	0x1145		0x1A5			Image	_Ld2P1OUIEfGl4IEUgfF4xA
+ImageTiff	101	0x1146		0x1A6			Image	_Ld2P1eUIEfGl4IEUgfF4xA
+ImageUrl	102	0x1147		0x1A7			Image	_Ld2P1uUIEfGl4IEUgfF4xA
+IsHoliday	103	0x1151		0x1B1			TimeDayFlag	_Ld2P1-UIEfGl4IEUgfF4xA
+Iso8601Date	104	0x1152		0x1B2			TimeIso8601	_Ld2P2OUIEfGl4IEUgfF4xA
+Iso8601DayOfWeek	105	0x1153		0x1B3			TimeIso8601	_Ld2P2eUIEfGl4IEUgfF4xA
+Iso8601DayOfYear	106	0x1154		0x1B4			TimeIso8601	_Ld2P2uUIEfGl4IEUgfF4xA
+Iso8601Weeks	107	0x1156		0x1B6			TimeIso8601	_Ld2P2-UIEfGl4IEUgfF4xA
+Iso8601WeekOfYear	108	0x1155		0x1B5			TimeIso8601	_Ld2P3OUIEfGl4IEUgfF4xA
+Iso8601Years	109	0x1157		0x1B7			TimeIso8601	_Ld2P3eUIEfGl4IEUgfF4xA
+IsPeakDay	110	0x1158		0x1B8			TimeDayFlag	_Ld2P3uUIEfGl4IEUgfF4xA
+IsWeekDay	111	0x1159		0x1B9			TimeDayFlag	_Ld2P3-UIEfGl4IEUgfF4xA
+IsWorkingDay	112	0x115A		0x1BA			TimeDayFlag	_Ld2P4OUIEfGl4IEUgfF4xA
+ManufacturingDate	113	0x1161		0x1C1			TimeManufacturing	_Ld2P4eUIEfGl4IEUgfF4xA
+ManufacturingDayOfHalfYear	114	0x1162		0x1C2			TimeManufacturing	_Ld2P4uUIEfGl4IEUgfF4xA
+ManufacturingDayOfMonth	115	0x1163		0x1C3			TimeManufacturing	_Ld2P4-UIEfGl4IEUgfF4xA
+ManufacturingDayOfQuarter	116	0x1164		0x1C4			TimeManufacturing	_Ld2P5OUIEfGl4IEUgfF4xA
+ManufacturingDayOfWeek	117	0x1165		0x1C5			TimeManufacturing	_Ld2P5eUIEfGl4IEUgfF4xA
+ManufacturingDayOfYear	118	0x1166		0x1C6			TimeManufacturing	_Ld2P5uUIEfGl4IEUgfF4xA
+ManufacturingHalfYears	119	0x1168		0x1C8			TimeManufacturing	_Ld2P5-UIEfGl4IEUgfF4xA
+ManufacturingHalfYearOfYear	120	0x1167		0x1C7			TimeManufacturing	_Ld2P6OUIEfGl4IEUgfF4xA
+ManufacturingMonths	121	0x116C		0x1CC			TimeManufacturing	_Ld2P6eUIEfGl4IEUgfF4xA
+ManufacturingMonthOfHalfYear	122	0x1169		0x1C9			TimeManufacturing	_Ld2P6uUIEfGl4IEUgfF4xA
+ManufacturingMonthOfQuarter	123	0x116A		0x1CA			TimeManufacturing	_Ld2P6-UIEfGl4IEUgfF4xA
+ManufacturingMonthOfYear	124	0x116B		0x1CB			TimeManufacturing	_Ld2P7OUIEfGl4IEUgfF4xA
+ManufacturingQuarters	125	0x116F		0x1CF			TimeManufacturing	_Ld2P7eUIEfGl4IEUgfF4xA
+ManufacturingQuarterOfHalfYear	126	0x116D		0x1CD			TimeManufacturing	_Ld2P7uUIEfGl4IEUgfF4xA
+ManufacturingQuarterOfYear	127	0x116E		0x1CE			TimeManufacturing	_Ld2P7-UIEfGl4IEUgfF4xA
+ManufacturingWeeks	128	0x1176		0x1D6			TimeManufacturing	_Ld2P8OUIEfGl4IEUgfF4xA
+ManufacturingWeekOfHalfYear	129	0x1172		0x1D2			TimeManufacturing	_Ld2P8eUIEfGl4IEUgfF4xA
+ManufacturingWeekOfMonth	130	0x1173		0x1D3			TimeManufacturing	_Ld2P8uUIEfGl4IEUgfF4xA
+ManufacturingWeekOfQuarter	131	0x1174		0x1D4			TimeManufacturing	_Ld2P8-UIEfGl4IEUgfF4xA
+ManufacturingWeekOfYear	132	0x1175		0x1D5			TimeManufacturing	_Ld2P9OUIEfGl4IEUgfF4xA
+ManufacturingYears	133	0x1177		0x1D7			TimeManufacturing	_Ld2P9eUIEfGl4IEUgfF4xA
+Minutes	134	0x0404		0x1E1			Time	_Ld2P9uUIEfGl4IEUgfF4xA
+Months	135	0x0084		0x1F7			Time	_Ld2P9-UIEfGl4IEUgfF4xA
+MonthOfHalfYear	136	0x1181		0x1F1			Time	_Ld2P-OUIEfGl4IEUgfF4xA
+MonthOfQuarter	137	0x1182		0x1F2			Time	_Ld2P-eUIEfGl4IEUgfF4xA
+MonthOfTrimester	138	0x1183		0x1F3			Time	_Ld2P-uUIEfGl4IEUgfF4xA
+MonthOfYear	139	0x1184		0x1F4			Time	_Ld2P--UIEfGl4IEUgfF4xA
+OrganizationalUnit	140	0x1011	0x1011	0x201			Organization	_Ld2P_OUIEfGl4IEUgfF4xA
+OrgTitle	141	0x1191		0x11	0x11		Organization	_Ld2P_eUIEfGl4IEUgfF4xA
+PercentOwnership	142	0x11A1		0x211			Organization	_Ld2P_uUIEfGl4IEUgfF4xA
+PercentVoteRight	143	0x11A2		0x212			Organization	_Ld2P_-UIEfGl4IEUgfF4xA
+Person	144	0x1041	0x1041	0x213			Person	_Ld2QAOUIEfGl4IEUgfF4xA
+PersonContact	145	0x11A3		0x87	0x87		Person	_Ld2QAeUIEfGl4IEUgfF4xA
+PersonDemographic	146	0x11A4		0x86	0x86		Person	_Ld2QAuUIEfGl4IEUgfF4xA
+PersonFirstName	147	0x11A5		0x83	0x83		Person	_Ld2QA-UIEfGl4IEUgfF4xA
+PersonFullName	148	0x11A6		0x214	0x82		Person	_Ld2QBOUIEfGl4IEUgfF4xA
+PersonLastName	149	0x11A7		0x84	0x84		Person	_Ld2QBeUIEfGl4IEUgfF4xA
+PersonMiddleName	150	0x11A8		0x85	0x85		Person	_Ld2QBuUIEfGl4IEUgfF4xA
+PhysicalColor	151	0x11B1		0x72	0x72		Quantitative	_Ld2QB-UIEfGl4IEUgfF4xA
+PhysicalDensity	152	0x11B2		0x78	0x78		Quantitative	_Ld2QCOUIEfGl4IEUgfF4xA
+PhysicalDepth	153	0x11B3		0x76	0x76		Quantitative	_Ld2QCeUIEfGl4IEUgfF4xA
+PhysicalHeight	154	0x11B4		0x74	0x74		Quantitative	_Ld2QCuUIEfGl4IEUgfF4xA
+PhysicalSize	155	0x11B5		0x71	0x71		Quantitative	_Ld2QC-UIEfGl4IEUgfF4xA
+PhysicalVolume	156	0x11B6		0x77	0x77		Quantitative	_Ld2QDOUIEfGl4IEUgfF4xA
+PhysicalWeight	157	0x11B7		0x73	0x73		Quantitative	_Ld2QDeUIEfGl4IEUgfF4xA
+PhysicalWidth	158	0x11B8		0x75	0x75		Quantitative	_Ld2QDuUIEfGl4IEUgfF4xA
+Point	159	0x2008	0x2008	0x221			Geography	_Ld2QD-UIEfGl4IEUgfF4xA
+PostalCode	160	0x2007	0x2007	0x222			Geography	_Ld2QEOUIEfGl4IEUgfF4xA
+Product	161	0x1031	0x1031	0x231			Product	_Ld2QEeUIEfGl4IEUgfF4xA
+ProductBrand	162	0x11C1		0x232			Product	_Ld2QEuUIEfGl4IEUgfF4xA
+ProductCategory	163	0x11C2		0x233			Product	_Ld2QE-UIEfGl4IEUgfF4xA
+ProductGroup	164	0x1032	0x1032	0x234			Product	_Ld2QFOUIEfGl4IEUgfF4xA
+ProductSKU	165	0x11C3		0x235		ProductSku	Product	_Ld2QFeUIEfGl4IEUgfF4xA
+Project	166	0x11C4		0x236			Project	_Ld2QFuUIEfGl4IEUgfF4xA
+ProjectCode	167	0x11C5		0x237			Project	_Ld2QF-UIEfGl4IEUgfF4xA
+ProjectCompletion	168	0x11C6		0x238			Project	_Ld2QGOUIEfGl4IEUgfF4xA
+ProjectEndDate	169	0x11C7		0x239			Project	_Ld2QGeUIEfGl4IEUgfF4xA
+ProjectName	170	0x11C8		0x23A			Project	_Ld2QGuUIEfGl4IEUgfF4xA
+ProjectStartDate	171	0x11C9		0x23B			Project	_Ld2QG-UIEfGl4IEUgfF4xA
+Promotion	172	0x1071	0x1071	0x23C			Promotion	_Ld2QHOUIEfGl4IEUgfF4xA
+QtyRangeHigh	173	0x11D1		0x92	0x92		Quantitative	_Ld2QHeUIEfGl4IEUgfF4xA
+QtyRangeLow	174	0x11D2		0x91	0x91		Quantitative	_Ld2QHuUIEfGl4IEUgfF4xA
+Quantitative	175	0x1013	0x1013	0x241			Quantitative	_Ld2QH-UIEfGl4IEUgfF4xA
+Quarters	176	0x0044	0x0044	0x244			Time	_Ld2QIOUIEfGl4IEUgfF4xA
+QuarterOfHalfYear	177	0x11E1		0x242			Time	_Ld2QIeUIEfGl4IEUgfF4xA
+QuarterOfYear	178	0x11E2		0x243			Time	_Ld2QIuUIEfGl4IEUgfF4xA
+Rate	179	0x11F1		0x251			Rate	_Ld2QI-UIEfGl4IEUgfF4xA
+RateType	180	0x11F2		0x252			Rate	_Ld2QJOUIEfGl4IEUgfF4xA
+Region	181	0x2002	0x2002	0x261			Geography	_Ld2QJeUIEfGl4IEUgfF4xA
+Regular	182	0x0000	0x0000	0x00	0x00		Structure	_Ld2QJuUIEfGl4IEUgfF4xA
+RelationToParent	183	0x1201		0x02	0x02		Structure	_Ld2QJ-UIEfGl4IEUgfF4xA
+ReportingDate	184	0x1202		0x262			TimeReporting	_Ld2QKOUIEfGl4IEUgfF4xA
+ReportingDayOfHalfYear	185	0x1203		0x263			TimeReporting	_Ld2QKeUIEfGl4IEUgfF4xA
+ReportingDayOfMonth	186	0x1204		0x264			TimeReporting	_Ld2QKuUIEfGl4IEUgfF4xA
+ReportingDayOfQuarter	187	0x1205		0x265			TimeReporting	_Ld2QK-UIEfGl4IEUgfF4xA
+ReportingDayOfTrimester	188	0x1206		0x266			TimeReporting	_Ld2QLOUIEfGl4IEUgfF4xA
+ReportingDayOfWeek	189	0x1207		0x267			TimeReporting	_Ld2QLeUIEfGl4IEUgfF4xA
+ReportingDayOfYear	190	0x1208		0x268			TimeReporting	_Ld2QLuUIEfGl4IEUgfF4xA
+ReportingHalfYears	191	0x120A		0x26A			TimeReporting	_Ld2QL-UIEfGl4IEUgfF4xA
+ReportingHalfYearOfYear	192	0x1209		0x269			TimeReporting	_Ld2QMOUIEfGl4IEUgfF4xA
+ReportingMonths	193	0x120F		0x26F			TimeReporting	_Ld2QMeUIEfGl4IEUgfF4xA
+ReportingMonthOfHalfYear	194	0x120B		0x26B			TimeReporting	_Ld2QMuUIEfGl4IEUgfF4xA
+ReportingMonthOfQuarter	195	0x120C		0x26C			TimeReporting	_Ld2QM-UIEfGl4IEUgfF4xA
+ReportingMonthOfTrimester	196	0x120D		0x26D			TimeReporting	_Ld2QNOUIEfGl4IEUgfF4xA
+ReportingMonthOfYear	197	0x120E		0x26E			TimeReporting	_Ld2QNeUIEfGl4IEUgfF4xA
+ReportingQuarters	198	0x1212		0x272			TimeReporting	_Ld2QNuUIEfGl4IEUgfF4xA
+ReportingQuarterOfHalfYear	199	0x1210		0x270			TimeReporting	_Ld2QN-UIEfGl4IEUgfF4xA
+ReportingQuarterOfYear	200	0x1211		0x271			TimeReporting	_Ld2QOOUIEfGl4IEUgfF4xA
+ReportingTrimesters	201	0x1214		0x274			TimeReporting	_Ld2QOeUIEfGl4IEUgfF4xA
+ReportingTrimesterOfYear	202	0x1213		0x273			TimeReporting	_Ld2QOuUIEfGl4IEUgfF4xA
+ReportingWeeks	203	0x121A		0x27A			TimeReporting	_Ld2QO-UIEfGl4IEUgfF4xA
+ReportingWeekOfHalfYear	204	0x1215		0x275			TimeReporting	_Ld2QPOUIEfGl4IEUgfF4xA
+ReportingWeekOfMonth	205	0x1216		0x276			TimeReporting	_Ld2QPeUIEfGl4IEUgfF4xA
+ReportingWeekOfQuarter	206	0x1217		0x277			TimeReporting	_Ld2QPuUIEfGl4IEUgfF4xA
+ReportingWeekOfTrimester	207	0x1218		0x278			TimeReporting	_Ld2QP-UIEfGl4IEUgfF4xA
+ReportingWeekOfYear	208	0x1219		0x279			TimeReporting	_Ld2QQOUIEfGl4IEUgfF4xA
+ReportingYears	209	0x121B		0x27B			TimeReporting	_Ld2QQeUIEfGl4IEUgfF4xA
+Representative	210	0x1062	0x1062	0x27C			Channel	_Ld2QQuUIEfGl4IEUgfF4xA
+RowNumber	211	0x1221		0x281			Structure	_Ld2QQ-UIEfGl4IEUgfF4xA
+ScdEndDate	212	0x1231		0x291			History	_Ld2QROUIEfGl4IEUgfF4xA
+ScdOriginalID	213	0x1232		0x292			History	_Ld2QReUIEfGl4IEUgfF4xA
+ScdStartDate	214	0x1233		0x293			History	_Ld2QRuUIEfGl4IEUgfF4xA
+ScdStatus	215	0x1234		0x294			History	_Ld2QR-UIEfGl4IEUgfF4xA
+Scenario	216	0x1015	0x1015	0x295			Scenario	_Ld2QSOUIEfGl4IEUgfF4xA
+Seconds	217	0x0804	0x0804	0x2A1			Time	_Ld2QSeUIEfGl4IEUgfF4xA
+Sequence	218	0x1241		0x2A2			Structure	_Ld2QSuUIEfGl4IEUgfF4xA
+ShortCaption	219	0x1251		0x22	0x22		Caption	_Ld2QS-UIEfGl4IEUgfF4xA
+StateOrProvince	220	0x2004	0x2004	0x2B1			Geography	_Ld2QTOUIEfGl4IEUgfF4xA
+TenDay	221	0x1266		0x2C6		TenDays	Time	_Ld2QTeUIEfGl4IEUgfF4xA
+TenDayOfHalfYear	222	0x1261		0x2C1			Time	_Ld2QTuUIEfGl4IEUgfF4xA
+TenDayOfMonth	223	0x1262		0x2C2			Time	_Ld2QT-UIEfGl4IEUgfF4xA
+TenDayOfQuarter	224	0x1263		0x2C3			Time	_Ld2QUOUIEfGl4IEUgfF4xA
+TenDayOfTrimester	225	0x1264		0x2C4			Time	_Ld2QUeUIEfGl4IEUgfF4xA
+TenDayOfYear	226	0x1265		0x2C5			Time	_Ld2QUuUIEfGl4IEUgfF4xA
+Trimesters	227	0x1272		0x2D2			Time	_Ld2QU-UIEfGl4IEUgfF4xA
+TrimesterOfYear	228	0x1271		0x2D1			Time	_Ld2QVOUIEfGl4IEUgfF4xA
+UndefinedTime	229	0x1004	0x1004	0x2E1			Time	_Ld2QVeUIEfGl4IEUgfF4xA
+Utility	230	0x1016	0x1016	0x2F1			Utility	_Ld2QVuUIEfGl4IEUgfF4xA
+Version	231	0x1281		0xC1	0xC1		Structure	_Ld2QV-UIEfGl4IEUgfF4xA
+WebHtml	232	0x1291		0x32	0x32		Web	_Ld2QWOUIEfGl4IEUgfF4xA
+WebMailAlias	233	0x1292		0x34	0x34		Web	_Ld2QWeUIEfGl4IEUgfF4xA
+WebUrl	234	0x1293		0x31	0x31		Web	_Ld2QWuUIEfGl4IEUgfF4xA
+WebXmlOrXsl	235	0x1294		0x33	0x33		Web	_Ld2QW-UIEfGl4IEUgfF4xA
+WeekOfYear	236	0x1297		0x303			Time	_Ld2QXOUIEfGl4IEUgfF4xA
+Weeks	237	0x0104	0x0104	0x304			Time	_Ld2QXeUIEfGl4IEUgfF4xA
+WinterSummerSeason	238	0x12A1		0x311			TimeDayFlag	_Ld2QXuUIEfGl4IEUgfF4xA
+Years	239	0x0014	0x0014	0x321			Time	_Ld2QX-UIEfGl4IEUgfF4xA

@@ -16,10 +16,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import org.eclipse.daanse.cwm.emf.standard.StandardSets;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CoreFactory;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CorePackage;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Namespace;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Packages;
 import org.eclipse.daanse.cwm.model.daanse.semantictype.base.SemanticType;
+import org.eclipse.daanse.cwm.model.daanse.semantictype.base.SemanticTypePackage;
 import org.eclipse.daanse.cwm.model.daanse.semantictype.base.TypeLibrary;
 import org.eclipse.daanse.cwm.model.daanse.semantictype.base.util.SemanticTypes;
 import org.eclipse.daanse.cwm.model.daanse.semantictype.base.util.TypeLibraries;
@@ -27,6 +31,8 @@ import org.eclipse.daanse.cwm.model.daanse.semantictype.xmla.ServerTypeTables.Ac
 import org.eclipse.daanse.cwm.model.daanse.semantictype.xmla.ServerTypeTables.AttributeRow;
 import org.eclipse.daanse.cwm.model.daanse.semantictype.xmla.ServerTypeTables.DimensionRow;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.xmi.XMIResource;
 
 /**
  * The types of an Analysis Services server as libraries of semantic types: {@link #create(Namespace)} builds them
@@ -45,6 +51,12 @@ import org.eclipse.emf.ecore.EObject;
  * <p>A model holds the libraries it uses, as it holds the SI, or names the types of libraries a program delivers
  * beside it, recognised by their URIs ({@link #LIBRARIES}). An account type of a model's own lies in a library of its
  * own and is narrower than or the same as one of the seven.</p>
+ *
+ * <p>The four libraries are also a standard set, the file {@value #SET_FILE} beside this class under the URI
+ * {@value #SET_URI}: {@link #standardSet()} builds it, {@link #load(ResourceSet)} reads it from the jar, and a model
+ * file refers to a type as {@code href="<SET_URI>#<id>"}. The id of a type is the UUID in the column {@code id} of its
+ * table, of a group, a library and the package the UUID stated here. {@link #create(Namespace)} gives the elements the
+ * same ids where the owner lies in an XMI resource.</p>
  */
 public final class ServerTypes {
 
@@ -63,6 +75,12 @@ public final class ServerTypes {
 
     /** The URI of the library of the groups of the server's attribute types. */
     public static final String GROUPS_URI = URI + "/groups";
+
+    /** The URI of the standard set of the four libraries, under which a model file refers to their types. */
+    public static final String SET_URI = URI + "/server-types.xmi";
+
+    /** The file of the standard set, beside this class in the jar. */
+    public static final String SET_FILE = "server-types.xmi";
 
     /** The URIs of the server's three lists: attribute, dimension and account types. */
     public static final List<String> LISTS = List.of(ATTRIBUTE_URI, DIMENSION_URI, ACCOUNT_URI);
@@ -86,31 +104,88 @@ public final class ServerTypes {
     private static final Map<String, String> GROUP_BROADER = Map.of("TimeFiscal", "Time", "TimeReporting", "Time",
             "TimeManufacturing", "Time", "TimeIso8601", "Time", "TimeDayFlag", "Time", "GeographyShape", "Geography");
 
+    /** The id of each group of the attribute types, by its name in the table. */
+    private static final Map<String, String> GROUP_IDS = Map.ofEntries(
+            Map.entry("Account", "_LdwJCeUIEfGl4IEUgfF4xA"), Map.entry("Address", "_LdwJCuUIEfGl4IEUgfF4xA"),
+            Map.entry("BillOfMaterials", "_LdwJC-UIEfGl4IEUgfF4xA"), Map.entry("Caption", "_LdwJDOUIEfGl4IEUgfF4xA"),
+            Map.entry("Channel", "_LdwJDeUIEfGl4IEUgfF4xA"), Map.entry("Geography", "_LdwJDuUIEfGl4IEUgfF4xA"),
+            Map.entry("Organization", "_LdwJD-UIEfGl4IEUgfF4xA"), Map.entry("Currency", "_LdwJEOUIEfGl4IEUgfF4xA"),
+            Map.entry("Customer", "_LdwJEeUIEfGl4IEUgfF4xA"), Map.entry("Date", "_LdwJEuUIEfGl4IEUgfF4xA"),
+            Map.entry("Time", "_LdwJE-UIEfGl4IEUgfF4xA"), Map.entry("History", "_LdwJFOUIEfGl4IEUgfF4xA"),
+            Map.entry("Structure", "_LdwJFeUIEfGl4IEUgfF4xA"), Map.entry("TimeFiscal", "_LdwJFuUIEfGl4IEUgfF4xA"),
+            Map.entry("Formatting", "_LdwJF-UIEfGl4IEUgfF4xA"), Map.entry("GeographyShape", "_LdwJGOUIEfGl4IEUgfF4xA"),
+            Map.entry("Image", "_LdwJGeUIEfGl4IEUgfF4xA"), Map.entry("TimeDayFlag", "_LdwJGuUIEfGl4IEUgfF4xA"),
+            Map.entry("TimeIso8601", "_LdwJG-UIEfGl4IEUgfF4xA"),
+            Map.entry("TimeManufacturing", "_LdwJHOUIEfGl4IEUgfF4xA"), Map.entry("Person", "_LdwJHeUIEfGl4IEUgfF4xA"),
+            Map.entry("Quantitative", "_LdwJHuUIEfGl4IEUgfF4xA"), Map.entry("Product", "_LdwJH-UIEfGl4IEUgfF4xA"),
+            Map.entry("Project", "_LdwJIOUIEfGl4IEUgfF4xA"), Map.entry("Promotion", "_LdwJIeUIEfGl4IEUgfF4xA"),
+            Map.entry("Rate", "_LdwJIuUIEfGl4IEUgfF4xA"), Map.entry("TimeReporting", "_LdwJI-UIEfGl4IEUgfF4xA"),
+            Map.entry("Scenario", "_LdwJJOUIEfGl4IEUgfF4xA"), Map.entry("Utility", "_LdwJJeUIEfGl4IEUgfF4xA"),
+            Map.entry("Web", "_LdwJJuUIEfGl4IEUgfF4xA"));
+
     private ServerTypes() {
     }
 
     /** Builds a package {@value #NAME} with the four libraries into {@code owner} and returns it. */
     public static Package create(Namespace owner) {
-        Package server = Packages.create(owner, NAME);
-        TypeLibrary attributes = list(server, "AttributeTypes", ATTRIBUTE_URI);
-        TypeLibrary dimensions = list(server, "DimensionTypes", DIMENSION_URI);
-        TypeLibrary accounts = list(server, "AccountTypes", ACCOUNT_URI);
-        TypeLibrary groups = TypeLibraries.create(server, "AttributeGroups", GROUPS_URI);
+        return fill(Packages.create(owner, NAME));
+    }
+
+    /** The standard set of the four libraries, built in memory with their ids, the root a package {@value #NAME}. */
+    public static XMIResource standardSet() {
+        XMIResource set = StandardSets.create(SET_URI);
+        Package server = CoreFactory.eINSTANCE.createPackage();
+        server.setName(NAME);
+        set.getContents().add(server);
+        fill(server);
+        return set;
+    }
+
+    /**
+     * Maps the standard set in {@code resourceSet} to its file in the jar: a model file there that refers to
+     * its types reads them from the jar ({@link StandardSets#map}).
+     */
+    public static void map(ResourceSet resourceSet) {
+        StandardSets.map(resourceSet, SET_URI, ServerTypes.class.getResource(SET_FILE), CorePackage.eINSTANCE,
+                SemanticTypePackage.eINSTANCE);
+    }
+
+    /**
+     * The package of the standard set in {@code resourceSet}, mapped there and read from the jar where it is not read
+     * yet.
+     */
+    public static Package load(ResourceSet resourceSet) {
+        map(resourceSet);
+        return StandardSets.load(resourceSet, SET_URI, Package.class);
+    }
+
+    private static Package fill(Package server) {
+        StandardSets.id(server, "_LdwJJ-UIEfGl4IEUgfF4xA");
+        TypeLibrary attributes = StandardSets.id(list(server, "AttributeTypes", ATTRIBUTE_URI),
+                "_LdwJKOUIEfGl4IEUgfF4xA");
+        TypeLibrary dimensions = StandardSets.id(list(server, "DimensionTypes", DIMENSION_URI),
+                "_LdwJKeUIEfGl4IEUgfF4xA");
+        TypeLibrary accounts = StandardSets.id(list(server, "AccountTypes", ACCOUNT_URI), "_LdwJKuUIEfGl4IEUgfF4xA");
+        TypeLibrary groups = StandardSets.id(TypeLibraries.create(server, "AttributeGroups", GROUPS_URI),
+                "_Ldwv4OUIEfGl4IEUgfF4xA");
         Map<String, SemanticType> groupTypes = new LinkedHashMap<>();
         for (AttributeRow row : ServerTypeTables.ATTRIBUTES) {
-            groupTypes.computeIfAbsent(row.group(), name -> SemanticTypes.create(groups, name));
+            groupTypes.computeIfAbsent(row.group(), group -> StandardSets.id(SemanticTypes.create(groups, group),
+                    Objects.requireNonNull(GROUP_IDS.get(group), () -> "no id is stated for the group " + group)));
         }
         GROUP_BROADER.forEach((narrower, broader) -> SemanticTypes.broader(groupTypes.get(narrower),
                 groupTypes.get(broader)));
         for (AttributeRow row : ServerTypeTables.ATTRIBUTES) {
-            SemanticTypes.broader(SemanticTypes.source(SemanticTypes.create(attributes, row.name()), row.name(),
-                    row.number()), groupTypes.get(row.group()));
+            SemanticTypes.broader(SemanticTypes.source(StandardSets.id(SemanticTypes.create(attributes, row.name()),
+                    row.id()), row.name(), row.number()), groupTypes.get(row.group()));
         }
         for (DimensionRow row : ServerTypeTables.DIMENSIONS) {
-            SemanticTypes.source(SemanticTypes.create(dimensions, row.name()), row.name(), row.number());
+            SemanticTypes.source(StandardSets.id(SemanticTypes.create(dimensions, row.name()), row.id()), row.name(),
+                    row.number());
         }
         for (AccountRow row : ServerTypeTables.ACCOUNTS) {
-            SemanticTypes.source(SemanticTypes.create(accounts, row.name()), row.name(), row.number());
+            SemanticTypes.source(StandardSets.id(SemanticTypes.create(accounts, row.name()), row.id()), row.name(),
+                    row.number());
         }
         return server;
     }

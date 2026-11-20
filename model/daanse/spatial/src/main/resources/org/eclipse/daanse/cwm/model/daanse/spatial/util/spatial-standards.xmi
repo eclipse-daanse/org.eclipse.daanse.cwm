@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*********************************************************************
+* Copyright (c) 2026 Contributors to the Eclipse Foundation.
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+**********************************************************************/
+-->
+<core:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:core="http://www.omg.org/spec/CWM/1.1/objectmodel/core"
+    xmlns:spatial="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.spatial" xmi:id="_Ldwv7OUIEfGl4IEUgfF4xA" name="Spatial">
+  <ownedElement xsi:type="spatial:ReferenceSystem" xmi:id="_Ldwv7eUIEfGl4IEUgfF4xA" name="CRS84" authority="OGC" code="CRS84"
+      version="1.3" axisOrder="EAST_NORTH"/>
+  <ownedElement xsi:type="spatial:ReferenceSystem" xmi:id="_Ldwv7uUIEfGl4IEUgfF4xA" name="CRS84h" authority="OGC" code="CRS84h"
+      axes="3" axisOrder="EAST_NORTH"/>
+  <ownedElement xsi:type="spatial:ReferenceSystem" xmi:id="_Ldwv4eUIEfGl4IEUgfF4xA" name="EPSG_4326" code="4326" axisOrder="NORTH_EAST"/>
+  <ownedElement xsi:type="spatial:ReferenceSystem" xmi:id="_Ldwv4uUIEfGl4IEUgfF4xA" name="EPSG_4979" code="4979" axes="3"
+      axisOrder="NORTH_EAST"/>
+  <ownedElement xsi:type="spatial:ReferenceSystem" xmi:id="_Ldwv4-UIEfGl4IEUgfF4xA" name="EPSG_3857" code="3857" kind="PROJECTED"
+      axisOrder="EAST_NORTH"/>
+  <ownedElement xsi:type="spatial:ReferenceSystem" xmi:id="_Ldwv5OUIEfGl4IEUgfF4xA" name="EPSG_4258" code="4258" axisOrder="NORTH_EAST"/>
+  <ownedElement xsi:type="spatial:ReferenceSystem" xmi:id="_Ldwv5eUIEfGl4IEUgfF4xA" name="EPSG_3035" code="3035" kind="PROJECTED"
+      axisOrder="NORTH_EAST"/>
+  <ownedElement xsi:type="spatial:ReferenceSystem" xmi:id="_Ldwv5uUIEfGl4IEUgfF4xA" name="EPSG_25832" code="25832" kind="PROJECTED"
+      axisOrder="EAST_NORTH"/>
+  <ownedElement xsi:type="spatial:ReferenceSystem" xmi:id="_Ldwv5-UIEfGl4IEUgfF4xA" name="EPSG_25833" code="25833" kind="PROJECTED"
+      axisOrder="EAST_NORTH"/>
+  <ownedElement xsi:type="spatial:ReferenceSystem" xmi:id="_Ldwv6OUIEfGl4IEUgfF4xA" name="EPSG_31466" code="31466" kind="PROJECTED"
+      axisOrder="NORTH_EAST"/>
+  <ownedElement xsi:type="spatial:ReferenceSystem" xmi:id="_Ldwv6eUIEfGl4IEUgfF4xA" name="EPSG_31467" code="31467" kind="PROJECTED"
+      axisOrder="NORTH_EAST"/>
+  <ownedElement xsi:type="spatial:ReferenceSystem" xmi:id="_Ldwv6uUIEfGl4IEUgfF4xA" name="EPSG_31468" code="31468" kind="PROJECTED"
+      axisOrder="NORTH_EAST"/>
+  <ownedElement xsi:type="spatial:ReferenceSystem" xmi:id="_Ldwv6-UIEfGl4IEUgfF4xA" name="EPSG_31469" code="31469" kind="PROJECTED"
+      axisOrder="NORTH_EAST"/>
+  <ownedElement xsi:type="spatial:GridSystem" xmi:id="_Ldwv7-UIEfGl4IEUgfF4xA" name="geohash" minResolution="1" maxResolution="12"
+      nested="true"/>
+  <ownedElement xsi:type="spatial:GridSystem" xmi:id="_Ldwv8OUIEfGl4IEUgfF4xA" name="h3" maxResolution="15"/>
+  <ownedElement xsi:type="spatial:GridSystem" xmi:id="_Ldwv8eUIEfGl4IEUgfF4xA" name="quadkey" minResolution="1" maxResolution="23"
+      nested="true"/>
+  <ownedElement xsi:type="spatial:GeometryType" xmi:id="_Ldwv8uUIEfGl4IEUgfF4xA" name="Geometry"/>
+</core:Package>

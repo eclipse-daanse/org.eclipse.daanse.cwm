@@ -1,0 +1,14 @@
+#*******************************************************************************
+# Copyright (c) 2026 Contributors to the Eclipse Foundation.
+#
+# This program and the accompanying materials are made
+# available under the terms of the Eclipse Public License 2.0
+# which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+# The standard set of the SQL types needs emf/standard and typemapping only when it is built or loaded: the model
+# resolves without them.
+Import-Package: org.eclipse.daanse.cwm.emf.standard*;resolution:=optional,\
+    org.eclipse.daanse.cwm.model.cwm.foundation.typemapping*;resolution:=optional,\
+    *
