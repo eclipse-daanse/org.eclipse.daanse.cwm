@@ -30,6 +30,8 @@
     <module>notation</module>
     <module>spatial</module>
     <module>resource.spatial.feature</module>
+    <module>semantictype.base</module>
+    <module>semantictype.xmla</module>
     <module>resource.json</module>
     <module>resource.r</module>
     <module>resource.calc</module>
