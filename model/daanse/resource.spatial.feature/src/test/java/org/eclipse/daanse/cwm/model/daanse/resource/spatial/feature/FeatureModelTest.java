@@ -35,7 +35,10 @@ import org.eclipse.ocl.ecore.delegate.OCLDelegateDomainFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-/** The shape of the feature metamodel and its OCL invariants. */
+/**
+ * The shape of the feature metamodel and some of its OCL invariants, each through the method the code generator makes
+ * of it; {@code FeatureModelValidatorTest} holds a test of every rule, {@code FeatureRulesTest} the place of each.
+ */
 class FeatureModelTest {
 
     private static final String EMOF = "http://schema.omg.org/spec/MOF/2.0/emof.xml";
@@ -99,73 +102,45 @@ class FeatureModelTest {
         }
     }
 
+    /** FC1 of a collection: it stands in a package and owns only feature properties, each name once. */
     @Test
     void aCollectionOwnsOnlyFeatureProperties() {
         FeatureCollection collection = F.createFeatureCollection();
+        CoreFactory.eINSTANCE.createPackage().getOwnedElement().add(collection);
         collection.getFeature().add(F.createFeatureProperty());
-        assertThat(severity((v, d) -> v.validateFeatureCollection_OnlyFeatureProperties(collection, d,
-                new HashMap<>()))).isEqualTo(Diagnostic.OK);
-        collection.getFeature().add(CoreFactory.eINSTANCE.createAttribute());
-        assertThat(severity((v, d) -> v.validateFeatureCollection_OnlyFeatureProperties(collection, d,
-                new HashMap<>()))).isEqualTo(Diagnostic.ERROR);
-    }
-
-    @Test
-    void theKeyIsAPropertyOfTheCollection() {
-        FeatureCollection collection = F.createFeatureCollection();
-        FeatureProperty own = F.createFeatureProperty();
-        collection.getFeature().add(own);
-        collection.setFeatureKey(own);
-        assertThat(severity((v, d) -> v.validateFeatureCollection_KeyIsOwnProperty(collection, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateFeatureCollection_FC1(collection, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
-        FeatureCollection other = F.createFeatureCollection();
-        FeatureProperty foreign = F.createFeatureProperty();
-        other.getFeature().add(foreign);
-        collection.setFeatureKey(foreign);
-        assertThat(severity((v, d) -> v.validateFeatureCollection_KeyIsOwnProperty(collection, d, new HashMap<>())))
+        collection.getFeature().add(CoreFactory.eINSTANCE.createAttribute());
+        assertThat(severity((v, d) -> v.validateFeatureCollection_FC1(collection, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.ERROR);
     }
 
     /**
      * The time of a feature after the roles of OGC API Features Part 5: an instant, or the start and the end of an
-     * interval, either of which may stand alone; an instant excludes the two.
+     * interval, either of which may stand alone; that an instant excludes the two is FC18 of the validator.
      */
     @Test
-    void theTimeIsAnInstantOrAnInterval() {
-        FeatureCollection collection = F.createFeatureCollection();
-        FeatureProperty instant = F.createFeatureProperty();
-        FeatureProperty start = F.createFeatureProperty();
-        FeatureProperty end = F.createFeatureProperty();
-        collection.getFeature().addAll(List.of(instant, start, end));
-        collection.setIntervalStart(start);
-        collection.setIntervalEnd(end);
-        assertThat(severity((v, d) -> v.validateFeatureCollection_InstantOrInterval(collection, d, new HashMap<>())))
-                .isEqualTo(Diagnostic.OK);
-        collection.setIntervalStart(null);
-        assertThat(severity((v, d) -> v.validateFeatureCollection_InstantOrInterval(collection, d, new HashMap<>())))
-                .as("an end alone is a half-bounded interval").isEqualTo(Diagnostic.OK);
-        collection.setIntervalEnd(null);
-        collection.setIntervalStart(start);
-        assertThat(severity((v, d) -> v.validateFeatureCollection_InstantOrInterval(collection, d, new HashMap<>())))
-                .as("a start alone is a half-bounded interval").isEqualTo(Diagnostic.OK);
-        collection.setInstant(instant);
-        assertThat(severity((v, d) -> v.validateFeatureCollection_InstantOrInterval(collection, d, new HashMap<>())))
-                .as("an instant excludes the ends of an interval").isEqualTo(Diagnostic.ERROR);
-        collection.setIntervalStart(null);
-        assertThat(severity((v, d) -> v.validateFeatureCollection_InstantOrInterval(collection, d, new HashMap<>())))
-                .isEqualTo(Diagnostic.OK);
+    void theTimeHasTheRolesOfPart5() {
+        assertThat(P.getFeatureCollection().getEStructuralFeatures()).extracting(f -> f.getName())
+                .contains("instant", "intervalStart", "intervalEnd");
         assertThat(P.getFeatureCollection().getEStructuralFeature("timeStart")).isNull();
     }
 
+    /** FC1 of a property: it is typed and belongs to a collection. */
     @Test
     void aPropertyIsOwnedByACollection() {
         FeatureProperty property = F.createFeatureProperty();
+        property.setType(CoreFactory.eINSTANCE.createDataType());
         F.createFeatureCollection().getFeature().add(property);
-        assertThat(severity((v, d) -> v.validateFeatureProperty_OwnedByCollection(property, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateFeatureProperty_FC1(property, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
         CoreFactory.eINSTANCE.createClass().getFeature().add(property);
-        assertThat(severity((v, d) -> v.validateFeatureProperty_OwnedByCollection(property, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateFeatureProperty_FC1(property, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.ERROR);
+        F.createFeatureCollection().getFeature().add(property);
+        property.setType(null);
+        assertThat(severity((v, d) -> v.validateFeatureProperty_FC1(property, d, new HashMap<>())))
+                .as("untyped").isEqualTo(Diagnostic.ERROR);
     }
 
     /** Every classifier and feature of the package says what it is, for a reader who sees only the model. */

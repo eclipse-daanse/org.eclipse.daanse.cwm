@@ -32,12 +32,39 @@
   </eAnnotations>
   <eClassifiers xsi:type="ecore:EClass" name="FeatureCollection">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="OnlyFeatureProperties KeyIsOwnProperty InstantOrInterval"/>
+      <details key="constraints" value="FC1 FC2 FC5 FC13 FC14 FC16 FC19"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
-      <details key="OnlyFeatureProperties" value="self.feature->forAll(f | f.oclIsKindOf(FeatureProperty))"/>
-      <details key="KeyIsOwnProperty" value="self.featureKey.oclIsUndefined() or self.feature->includes(self.featureKey)"/>
-      <details key="InstantOrInterval" value="self.instant.oclIsUndefined() or (self.intervalStart.oclIsUndefined() and self.intervalEnd.oclIsUndefined())"/>
+      <details key="FC1" value="not self.namespace.oclIsUndefined() and self.namespace.oclIsKindOf(core::Package) and self.feature->forAll(f | f.oclIsKindOf(FeatureProperty)) and self.feature->select(f | not f.name.oclIsUndefined())->isUnique(f | f.name)"/>
+      <details key="FC2" value="self.name.oclIsUndefined() or self.name.matches('[A-Za-z0-9_.-]+')"/>
+      <details key="FC5" value="(self.instant.oclIsUndefined() or self.instant.owner = self) and (self.intervalStart.oclIsUndefined() or self.intervalStart.owner = self) and (self.intervalEnd.oclIsUndefined() or self.intervalEnd.owner = self)"/>
+      <details key="FC13" value="self.geometry.oclIsUndefined() or self.geometry.hasHeight or self.referenceSystems->forAll(s | s.axes &lt;> 3)"/>
+      <details key="FC14" value="self.geometry.oclIsUndefined() or self.referenceSystems->forAll(s | not (s.authority = spatial::ReferenceSystemAuthority::OGC and not s.code.oclIsUndefined() and Set{'CRS84', 'CRS84h'}->includes(s.code.trim())) and (self.geometry.referenceSystem.oclIsUndefined() or not (s = self.geometry.referenceSystem or (s.authority = self.geometry.referenceSystem.authority and (if s.code.oclIsUndefined() then '' else s.code.trim() endif) = (if self.geometry.referenceSystem.code.oclIsUndefined() then '' else self.geometry.referenceSystem.code.trim() endif) and (if s.version.oclIsUndefined() or s.version.trim() = '' then '0' else s.version.trim() endif) = (if self.geometry.referenceSystem.version.oclIsUndefined() or self.geometry.referenceSystem.version.trim() = '' then '0' else self.geometry.referenceSystem.version.trim() endif)))))"/>
+      <details key="FC16" value="self.feature->exists(f | f.oclIsKindOf(FeatureProperty) and f &lt;> self.featureKey and f.oclAsType(FeatureProperty).queryable)"/>
+      <details key="FC19" value="self.geometry.oclIsUndefined() or self.geometry.holding->exists(h | let attributes : Set(core::Attribute) = (if h.oclIsKindOf(spatial::WholeHolding) then h.oclAsType(spatial::WholeHolding).attribute->asSet() else if h.oclIsKindOf(spatial::ListHolding) then h.oclAsType(spatial::ListHolding).attribute->asSet() else h.oclAsType(spatial::PartsHolding).part->collect(p | p.attribute)->select(a | not a.oclIsUndefined())->asSet() endif endif) in attributes->notEmpty() and attributes->forAll(a | a.owner = self))"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature/constraints">
+      <details key="FC1.name" value="StandsInAPackageAndOwnsProperties"/>
+      <details key="FC1.description" value="A collection stands in a package and owns only feature properties, each named uniquely and typed; a feature property belongs to a collection."/>
+      <details key="FC1.level" value="error"/>
+      <details key="FC2.name" value="PlainId"/>
+      <details key="FC2.description" value="The names of collections and properties are plain ids."/>
+      <details key="FC2.level" value="warning"/>
+      <details key="FC5.name" value="TimeOfItsOwnProperties"/>
+      <details key="FC5.description" value="The time properties are properties of the collection."/>
+      <details key="FC5.level" value="error"/>
+      <details key="FC13.name" value="ThreeAxesOnlyWithAHeight"/>
+      <details key="FC13.description" value="A reference system of three axes is offered only where the primary geometry holds a height."/>
+      <details key="FC13.level" value="error"/>
+      <details key="FC14.name" value="NeitherTheDefaultNorTheStorageSystemOffered"/>
+      <details key="FC14.description" value="An offered reference system is neither the default nor the storage system, which the server lists anyway."/>
+      <details key="FC14.level" value="warning"/>
+      <details key="FC16.name" value="AQueryableBesideTheKey"/>
+      <details key="FC16.description" value="A collection has a queryable property besides its key."/>
+      <details key="FC16.level" value="warning"/>
+      <details key="FC19.name" value="ThePrimaryGeometryHeldInItsProperties"/>
+      <details key="FC19.description" value="At least one holding of the primary geometry lies entirely in properties of the collection."/>
+      <details key="FC19.level" value="error"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A collection of features: its name is the collection id (/collections/{name}), a Description of type documentation its description, displayName its title. Its features are its properties. It names the property whose value is the feature id, the primary geometry (the one bbox is evaluated on, held in properties of the collection), the time of a feature (an instant, or the start and the end of an interval, either of which may stand alone), and the reference systems it offers besides the default and the storage system. The schools of a city are a collection with the key school_id, the primary geometry schoolPoint held in the property location, and the instant opened. The extent is not held: it is computed from the rows."/>
@@ -138,10 +165,23 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FeatureProperty">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="OwnedByCollection"/>
+      <details key="constraints" value="FC1 FC2 FC3"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
-      <details key="OwnedByCollection" value="self.owner.oclIsUndefined() or self.owner.oclIsKindOf(FeatureCollection)"/>
+      <details key="FC1" value="not self.type.oclIsUndefined() and (self.owner.oclIsUndefined() or self.owner.oclIsKindOf(FeatureCollection))"/>
+      <details key="FC2" value="self.name.oclIsUndefined() or self.name.matches('[A-Za-z0-9_.-]+')"/>
+      <details key="FC3" value="self.name.oclIsUndefined() or Set{'bbox', 'bbox-crs', 'crs', 'datetime', 'exclude-properties', 'f', 'filter', 'filter-crs', 'filter-lang', 'limit', 'offset', 'profile', 'properties', 'q', 'sortby', 'zoom-level'}->excludes(self.name)"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature/constraints">
+      <details key="FC1.name" value="TypedAndInACollection"/>
+      <details key="FC1.description" value="A collection stands in a package and owns only feature properties, each named uniquely and typed; a feature property belongs to a collection."/>
+      <details key="FC1.level" value="error"/>
+      <details key="FC2.name" value="PlainId"/>
+      <details key="FC2.description" value="The names of collections and properties are plain ids."/>
+      <details key="FC2.level" value="warning"/>
+      <details key="FC3.name" value="NotAQueryParameter"/>
+      <details key="FC3.description" value="No property is named like a query parameter of the API."/>
+      <details key="FC3.level" value="error"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A property of the features of a collection: a core::Attribute typed by a data type, a spatial::GeometryType where it holds a whole geometry (a holding of a spatial::GeometryFeature names it and says what the geometry is); a number of a geometry held in parts, such as east, keeps its numeric type. Its name is the property name in the features and in the queryables; it says whether it is queryable and gives what the type does not say: a closed list of values, numeric bounds, a pattern. Nullability is the attribute's multiplicity, the unit a units::Quantity that names the property, the description a Description of type documentation."/>
