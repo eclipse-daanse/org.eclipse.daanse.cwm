@@ -12,7 +12,9 @@ package org.eclipse.daanse.cwm.model.daanse.dcat.build;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.eclipse.daanse.cwm.model.daanse.dcat.util.DcatVocabularies;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
@@ -40,7 +42,9 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
  * {@code core::ModelElement}. Agents (publisher, creator, contact point) are
  * {@code businessinformation::ResponsibleParty}s; themes point at {@code businessnomenclature::Concept}s
  * next to EU vocabulary IRIs; a data service may point at its deployed component
- * ({@code softwaredeployment::DataProvider}).</p>
+ * ({@code softwaredeployment::DataProvider}). A {@code Portal} is the place that provides catalogs: a
+ * {@code core::Package} that owns its catalogs and its access service and imports the catalogs it
+ * takes over from other portals.</p>
  *
  * <p>Naming: DCAT property names literally in camelCase; vocabulary resources flattened to strings
  * carry the suffix {@code Iri} ({@code themeIri}, {@code licenseIri}); plain web addresses keep
@@ -247,8 +251,10 @@ public final class DcatEcoreBuilder {
                         + "businessinformation::ResponsibleParty, Themen verweisen auf "
                         + "businessnomenclature::Concept und/oder EU-Vokabular-IRIs. Kontrollierte "
                         + "Vokabulare (data-theme, frequency, access-right, ...) sind bewusst als "
-                        + "IRI-Strings verflacht (Suffix Iri). DCAT-Inverse (seriesMember, inCatalog, "
-                        + "nextVersion, ...) sind die Property.oppositeRoleName-Annotationen der "
+                        + "IRI-Strings verflacht (Suffix Iri). Ein Portal ist die Stelle, die Kataloge "
+                        + "bereitstellt: es besitzt seine Kataloge und seinen Zugangsdienst und importiert "
+                        + "Kataloge, die es von anderen Portalen uebernimmt. DCAT-Inverse (seriesMember, "
+                        + "inCatalog, nextVersion, ...) sind die Property.oppositeRoleName-Annotationen der "
                         + "versteckten Gegenrichtungen — Rueckwaertsnavigation ueber InverseReferences.",
                 "W3C DCAT 3 (Data Catalog Vocabulary, REC 2024) as a CWM-anchored Daanse extension: "
                         + "catalogs describe datasets whose content already exists as a CWM model — "
@@ -257,10 +263,11 @@ public final class DcatEcoreBuilder {
                         + "forms, data services the APIs. Agents are businessinformation::ResponsibleParty, "
                         + "themes point at businessnomenclature::Concept and/or EU vocabulary IRIs. "
                         + "Controlled vocabularies (data-theme, frequency, access-right, ...) are "
-                        + "deliberately flattened to IRI strings (suffix Iri). DCAT inverses "
-                        + "(seriesMember, inCatalog, nextVersion, ...) are the Property.oppositeRoleName "
-                        + "annotations of the hidden reverse directions — backward navigation via "
-                        + "InverseReferences.",
+                        + "deliberately flattened to IRI strings (suffix Iri). A portal is the place that "
+                        + "provides catalogs: it owns its catalogs and its access service and imports the "
+                        + "catalogs it takes over from other portals. DCAT inverses (seriesMember, "
+                        + "inCatalog, nextVersion, ...) are the Property.oppositeRoleName annotations of the "
+                        + "hidden reverse directions — backward navigation via InverseReferences.",
                 "Datenkatalog (DCAT)", "Data Catalog (DCAT)");
         pa.getDetails().put("basePackage", "org.eclipse.daanse.cwm.model.daanse");
         pa.getDetails().put("prefix", "Dcat");
@@ -373,6 +380,42 @@ public final class DcatEcoreBuilder {
                 "Datensatzserie", "Dataset Series");
         datasetSeries.getESuperTypes().add(dataset);
 
+        EClass portal = cls(p, "Portal", false,
+                "Ein Portal — die Stelle, die Kataloge bereitstellt, etwa das Open-Data-Angebot einer "
+                        + "Stadt oder eines Landes. DCAT selbst kennt keine Portal-Klasse, seine Einheit ist "
+                        + "der Katalog; das Portal ist der Namensraum darueber. Ein core::Package ohne "
+                        + "eigene Merkmale: Es besitzt (ownedElement) seine Kataloge und genau einen "
+                        + "Datendienst, seinen Zugangsdienst (OneAccessService). Dessen endpointUrl ist die "
+                        + "Adresse der Katalogschnittstelle des Portals, conformsToIri nennt das "
+                        + "Metadatenprofil (etwa DCAT-AP.de), servesDataset nennt die Kataloge "
+                        + "(AccessServiceServesCatalogs), provider fuehrt zur Betriebssicht "
+                        + "(softwaredeployment). Einen Katalog, den das Portal von einem anderen uebernimmt "
+                        + "(Harvesting), importiert es (importedElement), statt ihn zu besitzen "
+                        + "(TakenOverNotOwned): Der Besitz ist die Heimat eines Katalogs, die "
+                        + "Mitgliedschaft von Ressourcen bleibt die Referenz Catalog.resource. Als Package "
+                        + "kann ein Portal auch das dataPackage eines softwaredeployment::DataManager sein, "
+                        + "der seine Installation beschreibt. Beispiel: Das Portal 'utility-open-data' der "
+                        + "Stadtwerke besitzt den Katalog 'open-data' und den Zugangsdienst 'portal-api'; "
+                        + "ein Landesportal importiert 'open-data' und zeigt ihn ebenfalls.",
+                "A portal — the place that provides catalogs, such as the open-data site of a city or "
+                        + "a state. DCAT itself has no portal class, its unit is the catalog; the portal is "
+                        + "the namespace above it. A core::Package without features of its own: it owns "
+                        + "(ownedElement) its catalogs and exactly one data service, its access service "
+                        + "(OneAccessService). The endpointUrl of that service is the address of the "
+                        + "portal's catalog interface, conformsToIri names the metadata profile it speaks "
+                        + "(for example DCAT-AP.de), servesDataset names the catalogs "
+                        + "(AccessServiceServesCatalogs) and provider leads to the operations view "
+                        + "(softwaredeployment). A catalog the portal takes over from another portal "
+                        + "(harvesting) is imported (importedElement), not owned (TakenOverNotOwned): "
+                        + "ownership is the home of a catalog, while the membership of resources stays the "
+                        + "reference Catalog.resource. As a package a portal can also be the dataPackage of "
+                        + "a softwaredeployment::DataManager that describes its installation. Example: the "
+                        + "portal 'utility-open-data' of a municipal utility owns the catalog 'open-data' "
+                        + "and the access service 'portal-api'; a regional portal imports 'open-data' and "
+                        + "shows it as well.",
+                "Portal", "Portal");
+        portal.getESuperTypes().add(cwm.cwmPackage);
+
         EClass catalog = cls(p, "Catalog", false,
                 "dcat:Catalog — eine kuratierte Sammlung von Metadaten ueber Ressourcen. DCAT-treu "
                         + "ein Dataset und zugleich core::Package (Vorbild core::Subsystem): als Package "
@@ -380,37 +423,58 @@ public final class DcatEcoreBuilder {
                         + "Taxonomien) als ownedElement besitzen; die kanonische Mitgliedschaft ist aber "
                         + "die Referenz resource — Datensaetze leben in der Regel bei den Ressourcenmodellen, "
                         + "die sie beschreiben. dataset/service/catalog-Teilmengen sind ableitbar "
-                        + "(Util-Filter), keine eigenen Features.",
+                        + "(Util-Filter), keine eigenen Features. Ein veroeffentlichter Katalog lebt in "
+                        + "einem Portal: das Portal besitzt ihn, weitere Portale, die ihn zeigen, "
+                        + "importieren ihn.",
                 "dcat:Catalog — a curated collection of metadata about resources. Faithful to DCAT it "
                         + "is a Dataset and at the same time a core::Package (precedent core::Subsystem): "
                         + "as a Package the catalog may own homeless datasets and support objects "
                         + "(ResponsibleParties, taxonomies) as ownedElement; canonical membership however "
                         + "is the resource reference — datasets usually live next to the resource models "
                         + "they describe. The dataset/service/catalog subsets are derivable (util "
-                        + "filters), not separate features.",
+                        + "filters), not separate features. A published catalog lives in a portal: the "
+                        + "portal owns it, further portals that show it import it.",
                 "Katalog", "Catalog");
         catalog.getESuperTypes().add(dataset);
         catalog.getESuperTypes().add(cwm.cwmPackage);
 
         EClass dataService = cls(p, "DataService", false,
-                "dcat:DataService — ein Dienst/API, der Zugriff auf Datensaetze bietet. "
-                        + "endpointUrl/endpointDescription sind eigene Merkmale (CWM SoftwareDeployment "
-                        + "kennt keine URL); provider verlinkt optional die deployte Komponente "
-                        + "(softwaredeployment::DataProvider) fuer die Betriebssicht.",
-                "dcat:DataService — a service/API offering access to datasets. "
-                        + "endpointUrl/endpointDescription are own features (CWM SoftwareDeployment has "
-                        + "no URL anywhere); provider optionally links the deployed component "
-                        + "(softwaredeployment::DataProvider) for the operations view.",
+                "dcat:DataService — ein Dienst/API, der Zugriff auf Datensaetze bietet. endpointUrl "
+                        + "ist die eine Wurzeladresse des Dienstes (CWM SoftwareDeployment kennt keine URL); "
+                        + "conformsToIri nennt das Protokoll, das der Dienst umsetzt — hoechstens eines der "
+                        + "bekannten Protokolle aus DcatVocabularies (OneProtocol), etwa OGC API Features, "
+                        + "OData oder MQTT. Die Distributionen, die ueber den Dienst zugaenglich sind, nennen "
+                        + "ihn als accessService; der Teil ihrer accessUrl hinter endpointUrl ist der Pfad "
+                        + "des Datensatzes im Dienst, bei einem MQTT-Broker das Topic. servesDataset nennt "
+                        + "die Datensaetze, und zu jedem gibt es eine Distribution mit diesem Dienst "
+                        + "(ServedDatasetHasDistribution). provider verlinkt optional die deployte "
+                        + "Komponente (softwaredeployment::DataProvider) fuer die Betriebssicht. Der "
+                        + "Datendienst, den ein Portal besitzt, ist dessen Zugangsdienst.",
+                "dcat:DataService — a service/API offering access to datasets. endpointUrl is the one "
+                        + "root address of the service (CWM SoftwareDeployment has no URL anywhere); "
+                        + "conformsToIri names the protocol the service implements — at most one of the "
+                        + "known protocols of DcatVocabularies (OneProtocol), such as OGC API Features, "
+                        + "OData or MQTT. The distributions accessed through the service name it as "
+                        + "accessService; the part of their accessUrl behind endpointUrl is the path of "
+                        + "the dataset in the service, for an MQTT broker the topic. servesDataset names "
+                        + "the datasets, and each of them has a distribution with this service "
+                        + "(ServedDatasetHasDistribution). provider optionally links the deployed component "
+                        + "(softwaredeployment::DataProvider) for the operations view. The data service a "
+                        + "portal owns is the portal's access service.",
                 "Datendienst", "Data Service");
         dataService.getESuperTypes().add(catalogedResource);
 
         EClass distribution = cls(p, "Distribution", false,
                 "dcat:Distribution — eine konkrete Zugriffsform eines Datensatzes (Datei-Download, "
                         + "API-Sicht, Medientyp, Groesse, Pruefsumme). Existiert nur als Kind seines "
-                        + "Datensatzes (Dataset.distribution); dcat:isDistributionOf ist der Container.",
+                        + "Datensatzes (Dataset.distribution); dcat:isDistributionOf ist der Container. Ist "
+                        + "sie ueber einen Dienst zugaenglich, dann ueber genau einen (accessService): "
+                        + "Derselbe Datensatz ueber zwei Dienste sind zwei Distributionen.",
                 "dcat:Distribution — a concrete access form of a dataset (file download, API view, "
                         + "media type, size, checksum). Exists only as a child of its dataset "
-                        + "(Dataset.distribution); dcat:isDistributionOf is the container.",
+                        + "(Dataset.distribution); dcat:isDistributionOf is the container. Accessed "
+                        + "through a service, it is accessed through exactly one (accessService): the same "
+                        + "dataset through two services is two distributions.",
                 "Distribution", "Distribution");
         distribution.getESuperTypes().add(dcatElement);
 
@@ -430,13 +494,28 @@ public final class DcatEcoreBuilder {
                 "Zustaendigkeit einer ResponsibleParty fuer eine Ressource in genau einer Rolle — "
                         + "vereinigt dcterms:publisher/creator/contributor, dcat:contactPoint, "
                         + "dcterms:rightsHolder und prov:qualifiedAttribution+dcat:hadRole in einer "
-                        + "Form (agent, role). Kontaktdaten (E-Mail, Telefon, URL) bringt die "
-                        + "ResponsibleParty ueber businessinformation::Contact mit.",
+                        + "Form (agent, role). Kontaktdaten bringt die ResponsibleParty ueber "
+                        + "businessinformation::Contact mit: Die url ihres einen ResourceLocator (contact -> "
+                        + "Contact.url) ist ihre URI fuer jeden Zweck — als Herausgeber die URI der "
+                        + "Organisation, als Kontaktstelle die Kontaktseite (AgentHasOneLocator); die "
+                        + "E-Mail-Adresse steht in Contact.email. Braucht die Kontaktstelle eine andere "
+                        + "Adresse als die Organisation, ist sie eine eigene ResponsibleParty, die die "
+                        + "Organisation besitzt (ResponsibleParty ist ein Namespace). Beispiel: PUBLISHER -> "
+                        + "'municipal-utility' (https://www.utility.example), CONTACT_POINT -> deren "
+                        + "'customer-service' (https://www.utility.example/contact, "
+                        + "service@utility.example).",
                 "Responsibility of a ResponsibleParty for a resource in exactly one role — unifies "
                         + "dcterms:publisher/creator/contributor, dcat:contactPoint, "
                         + "dcterms:rightsHolder and prov:qualifiedAttribution+dcat:hadRole in one shape "
-                        + "(agent, role). Contact data (email, telephone, URL) comes with the "
-                        + "ResponsibleParty via businessinformation::Contact.",
+                        + "(agent, role). Contact data comes with the ResponsibleParty via "
+                        + "businessinformation::Contact: the url of its one ResourceLocator (contact -> "
+                        + "Contact.url) is its URI for every purpose — as publisher the URI of the "
+                        + "organization, as contact point the contact page (AgentHasOneLocator); the e-mail "
+                        + "address is in Contact.email. A contact point that needs another address than its "
+                        + "organization is a ResponsibleParty of its own, owned by the organization's party "
+                        + "(a ResponsibleParty is a Namespace). Example: PUBLISHER -> 'municipal-utility' "
+                        + "(https://www.utility.example), CONTACT_POINT -> its 'customer-service' "
+                        + "(https://www.utility.example/contact, service@utility.example).",
                 "Attribution", "Attribution");
         attribution.getESuperTypes().add(cwm.modelElement);
 
@@ -650,15 +729,48 @@ public final class DcatEcoreBuilder {
                 "dcat:temporalResolution — minimum resolvable time period as an xsd:duration "
                         + "literal (core::Time is an instant, not a duration).");
         EReference wasGeneratedBy = ref(dataset, "wasGeneratedBy", cwm.modelElement, 0, -1,
-                "prov:wasGeneratedBy — die erzeugende Aktivitaet. Bewusst generisch typisiert; "
-                        + "kanonische Ziele sind transformation::TransformationActivity und "
-                        + "warehouseoperation::TransformationExecution (so bleibt deren Modul-Huelle "
-                        + "aus dem pom der Konsumenten).",
-                "prov:wasGeneratedBy — the generating activity. Deliberately generically typed; "
-                        + "canonical targets are transformation::TransformationActivity and "
-                        + "warehouseoperation::TransformationExecution (keeping their module hull out "
-                        + "of consumers' poms).");
+                "prov:wasGeneratedBy — wodurch dieser Datensatz erzeugt wurde. Bewusst generisch "
+                        + "typisiert (core::ModelElement), so bleibt die Modul-Huelle der Ziele aus dem pom "
+                        + "der Konsumenten. Kanonische Ziele sind transformation::Transformation (die "
+                        + "Abbildung von Quelle auf Ziel), transformation::TransformationTask "
+                        + "(Transformationen, die als Einheit laufen), transformation::TransformationActivity "
+                        + "und warehouseoperation::TransformationExecution (ein Lauf). Gesetzt zusammen mit "
+                        + "source: wasGeneratedBy sagt, wie der Datensatz entstand, source, woraus "
+                        + "(GeneratedHasSource). Nicht gesetzt: ueber den Vorgang ist nichts gesagt. "
+                        + "Beispiel: 'pool-visits-monthly' wurde von der Transformation 'aggregate-visits' "
+                        + "aus 'turnstile-events' erzeugt.",
+                "prov:wasGeneratedBy — what generated this dataset. Deliberately typed generically "
+                        + "(core::ModelElement), keeping the module hull of the targets out of consumers' "
+                        + "poms. Canonical targets are transformation::Transformation (the mapping from "
+                        + "source to target), transformation::TransformationTask (transformations run as a "
+                        + "unit), transformation::TransformationActivity and "
+                        + "warehouseoperation::TransformationExecution (one run). Set together with source: "
+                        + "wasGeneratedBy says how the dataset was made, source from what "
+                        + "(GeneratedHasSource). Unset: nothing is said about the process. Example: "
+                        + "'pool-visits-monthly' was generated by the transformation 'aggregate-visits' from "
+                        + "'turnstile-events'.");
         oppositeRole(wasGeneratedBy, "generated");
+        EReference source = ref(dataset, "source", dataset, 0, -1,
+                "dcterms:source — die Datensaetze, aus denen dieser abgeleitet ist: die Roh- oder "
+                        + "Betriebsdaten, aus denen er entstand. Gesetzt an einem veroeffentlichten "
+                        + "Datensatz, der ein Auszug, eine Verdichtung oder eine bereinigte Fassung eines "
+                        + "anderen ist; die Quelle ist meist ein nicht oeffentlicher Datensatz "
+                        + "(accessRightsIri NON_PUBLIC) mit eigenen Distributionen. Nicht gesetzt: ueber die "
+                        + "Herkunft ist nichts gesagt — der Datensatz ist selbst eine Quelle, oder seine "
+                        + "Herkunft ist unbekannt. Ein Datensatz ist nicht seine eigene Quelle, weder direkt "
+                        + "noch ueber andere (SourceNotCircular). Gegenrolle derivedDataset. Beispiel: Der "
+                        + "veroeffentlichte Datensatz 'pools' hat die Quelle 'pool-register', das "
+                        + "Baederverzeichnis der Betriebsdatenbank.",
+                "dcterms:source — the datasets this dataset is derived from: the raw or operational "
+                        + "data it was made of. Set on a published dataset that is an extract, an "
+                        + "aggregation or a cleaned copy of another one; the source is usually a non-public "
+                        + "dataset (accessRightsIri NON_PUBLIC) with distributions of its own. Unset: "
+                        + "nothing is said about the origin — the dataset is a source itself, or its origin "
+                        + "is unknown. A dataset is not its own source, neither directly nor over others "
+                        + "(SourceNotCircular). Reverse role derivedDataset. Example: the published dataset "
+                        + "'pools' has the source 'pool-register', the register of pools in the operations "
+                        + "database.");
+        oppositeRole(source, "derivedDataset");
 
         // -- Catalog: features --------------------------------------------
 
@@ -691,9 +803,21 @@ public final class DcatEcoreBuilder {
 
         // -- DataService: features ----------------------------------------
 
-        attr(dataService, "endpointUrl", cwm.stringType, 1, -1,
-                "dcat:endpointURL — Wurzel-Endpunkt(e) des Dienstes.",
-                "dcat:endpointURL — root endpoint(s) of the service.");
+        attr(dataService, "endpointUrl", cwm.stringType, 1, 1,
+                "dcat:endpointURL — die eine Wurzeladresse des Dienstes. Pflicht. Die accessUrl jeder "
+                        + "Distribution mit diesem Dienst beginnt damit (AccessUrlUnderEndpoint), der Rest "
+                        + "ist der Pfad des Datensatzes im Dienst. Ist ein Dienst unter einer zweiten Wurzel "
+                        + "erreichbar, ist das ein zweiter Datendienst. Beispiel: Der OGC-API-Features-Dienst "
+                        + "'ogc-assets' hat die Wurzel https://geo.utility.example/ogc/assets, die "
+                        + "Distribution von 'pools' darin die accessUrl "
+                        + "https://geo.utility.example/ogc/assets/collections/pools.",
+                "dcat:endpointURL — the one root address of the service. Required. The accessUrl of "
+                        + "every distribution with this service starts with it (AccessUrlUnderEndpoint); the "
+                        + "rest is the path of the dataset in the service. A service reachable under a "
+                        + "second root is a second data service. Example: the OGC API Features service "
+                        + "'ogc-assets' has the root https://geo.utility.example/ogc/assets, the "
+                        + "distribution of 'pools' in it the accessUrl "
+                        + "https://geo.utility.example/ogc/assets/collections/pools.");
         attr(dataService, "endpointDescription", cwm.stringType, 0, -1,
                 "dcat:endpointDescription — maschinenlesbare Beschreibung (OpenAPI, OGC "
                         + "GetCapabilities, SPARQL Service Description, WSDL) als URL oder inline.",
@@ -701,8 +825,13 @@ public final class DcatEcoreBuilder {
                         + "GetCapabilities, SPARQL service description, WSDL) as URL or inline.");
         EReference servesDataset = ref(dataService, "servesDataset", dataset, 0, -1,
                 "dcat:servesDataset — die Datensaetze, die dieser Dienst ausliefert; Gegenrolle "
-                        + "dataService.",
-                "dcat:servesDataset — the datasets this service serves; reverse role dataService.");
+                        + "dataService. Jeder davon, Kataloge ausgenommen, hat eine Distribution mit diesem "
+                        + "Dienst (ServedDatasetHasDistribution); beim Zugangsdienst eines Portals sind es "
+                        + "die Kataloge des Portals.",
+                "dcat:servesDataset — the datasets this service serves; reverse role dataService. Each "
+                        + "of them, catalogs excepted, has a distribution with this service "
+                        + "(ServedDatasetHasDistribution); for the access service of a portal these are the "
+                        + "portal's catalogs.");
         oppositeRole(servesDataset, "dataService");
         EReference provider = ref(dataService, "provider", cwm.dataProvider, 0, 1,
                 "Optionale Bruecke zur Betriebssicht: die deployte Zugriffskomponente "
@@ -715,9 +844,11 @@ public final class DcatEcoreBuilder {
 
         attr(distribution, "accessUrl", cwm.stringType, 1, -1,
                 "dcat:accessURL — Zugangspunkt(e): Downloadseite, API-Einstieg, Formular. Bei "
-                        + "direktem Dateizugriff zusaetzlich downloadUrl setzen.",
+                        + "direktem Dateizugriff zusaetzlich downloadUrl setzen. Mit accessService beginnt "
+                        + "jede accessUrl mit der endpointUrl des Dienstes.",
                 "dcat:accessURL — access point(s): download page, API entry, form. For direct file "
-                        + "access also set downloadUrl.");
+                        + "access also set downloadUrl. With an accessService every accessUrl starts with "
+                        + "the endpointUrl of the service.");
         attr(distribution, "downloadUrl", cwm.stringType, 0, -1,
                 "dcat:downloadURL — direkte Download-Adresse(n) der Datei.",
                 "dcat:downloadURL — direct download address(es) of the file.");
@@ -750,11 +881,26 @@ public final class DcatEcoreBuilder {
         cont1(distribution, "checksum", checksum,
                 "spdx:checksum (neu in DCAT 3) — Pruefsumme, bezogen auf downloadUrl.",
                 "spdx:checksum (new in DCAT 3) — checksum, related to downloadUrl.");
-        EReference accessService = ref(distribution, "accessService", dataService, 0, -1,
-                "dcat:accessService — Dienste, die diese Distribution ausliefern; Gegenrolle "
-                        + "servedDistribution.",
-                "dcat:accessService — services serving this distribution; reverse role "
-                        + "servedDistribution.");
+        EReference accessService = ref(distribution, "accessService", dataService, 0, 1,
+                "dcat:accessService — der eine Dienst, ueber den diese Distribution zugaenglich ist; "
+                        + "Gegenrolle servedDistribution. Gesetzt, wenn die Distribution die Sicht eines "
+                        + "Datensatzes in einem Dienst ist: Ihre accessUrl beginnt mit der endpointUrl des "
+                        + "Dienstes, der Teil dahinter ist der Pfad (bei MQTT das Topic), und das Protokoll "
+                        + "des Dienstes (conformsToIri) sagt, wie er zu lesen ist. Der Dienst nennt den "
+                        + "Datensatz in servesDataset (DistributionServiceServesDataset). Nicht gesetzt: ein "
+                        + "Datei-Download oder eine Webseite ohne Dienst. Derselbe Datensatz ueber zwei "
+                        + "Dienste sind zwei Distributionen. Beispiel: Die Distribution 'pools-geojson' des "
+                        + "Datensatzes 'pools' ist ueber 'ogc-assets' unter dem Pfad collections/pools "
+                        + "zugaenglich.",
+                "dcat:accessService — the one service through which this distribution is accessed; "
+                        + "reverse role servedDistribution. Set when the distribution is the view of a "
+                        + "dataset in a service: its accessUrl starts with the service's endpointUrl, the "
+                        + "part behind it is the path (for MQTT the topic), and the service's protocol "
+                        + "(conformsToIri) says how to read it. The service names the dataset in "
+                        + "servesDataset (DistributionServiceServesDataset). Unset: a file download or a web "
+                        + "page without a service. The same dataset through two services is two "
+                        + "distributions. Example: the distribution 'pools-geojson' of the dataset 'pools' "
+                        + "is accessed through 'ogc-assets' at the path collections/pools.");
         oppositeRole(accessService, "servedDistribution");
 
         // -- CatalogRecord: features --------------------------------------
@@ -770,9 +916,11 @@ public final class DcatEcoreBuilder {
 
         EReference agent = ref(attribution, "agent", cwm.responsibleParty, 1, 1,
                 "Die zustaendige businessinformation::ResponsibleParty (Person, Rolle oder "
-                        + "Organisation); Gegenrolle attribution.",
+                        + "Organisation); Gegenrolle attribution. Ihre URI ist die url ihres einen "
+                        + "ResourceLocator.",
                 "The responsible businessinformation::ResponsibleParty (person, role or "
-                        + "organization); reverse role attribution.");
+                        + "organization); reverse role attribution. Its URI is the url of its one "
+                        + "ResourceLocator.");
         oppositeRole(agent, "attribution");
         attr(attribution, "role", agentRole, 1, 1,
                 "Die Rolle des Agenten gegenueber der Ressource.",
@@ -828,53 +976,145 @@ public final class DcatEcoreBuilder {
 
         constrain(catalogedResource, "SinglePublisher",
                 "self.attribution->select(a | a.role = AgentRole::PUBLISHER)->size() <= 1",
-                "A resource has at most one publisher attribution.", "error");
+                "A resource has at most one publisher attribution.",
+                "Eine Ressource hat hoechstens eine Herausgeber-Attribution.", "error");
         constrain(dataset, "SpatialResolutionPositive",
                 "self.spatialResolutionInMeters <> null "
                         + "implies self.spatialResolutionInMeters.toReal() > 0",
                 "The spatial resolution, when given, is positive (core::Float is a decimal "
-                        + "literal).", "error");
+                        + "literal).",
+                "Die raeumliche Aufloesung ist, wenn angegeben, positiv (core::Float ist ein "
+                        + "Dezimal-Literal).", "error");
+        constrain(dataset, "SourceNotCircular",
+                "self.source->excludes(self) and self.source->closure(d | d.source)->excludes(self)",
+                "A dataset is not its own source, neither directly nor over other datasets.",
+                "Ein Datensatz ist nicht seine eigene Quelle, weder direkt noch ueber andere "
+                        + "Datensaetze.", "error");
+        constrain(dataset, "GeneratedHasSource",
+                "self.wasGeneratedBy->notEmpty() implies self.source->notEmpty()",
+                "A dataset with wasGeneratedBy names the datasets it was generated from in source.",
+                "Ein Datensatz mit wasGeneratedBy nennt in source die Datensaetze, aus denen er "
+                        + "erzeugt wurde.", "warning");
+        constrain(dataset, "DistributionServiceServesDataset",
+                "self.distribution->forAll(x | x.accessService <> null "
+                        + "implies x.accessService.servesDataset->includes(self))",
+                "The access service of every distribution of a dataset names the dataset in "
+                        + "servesDataset.",
+                "Der Zugangsdienst jeder Distribution eines Datensatzes nennt den Datensatz in "
+                        + "servesDataset.", "warning");
         constrain(datasetSeries, "SeriesHasNoDistribution",
                 "self.distribution->isEmpty()",
-                "A dataset series should not carry distributions itself (DCAT 3 SHOULD).", "warning");
+                "A dataset series should not carry distributions itself (DCAT 3 SHOULD).",
+                "Eine Datensatzserie soll selbst keine Distributionen tragen (DCAT 3 SHOULD).",
+                "warning");
+        constrain(portal, "OneAccessService",
+                "self.ownedElement->select(e | e.oclIsKindOf(DataService))->size() = 1",
+                "A portal owns exactly one data service: its access service.",
+                "Ein Portal besitzt genau einen Datendienst: seinen Zugangsdienst.", "error");
+        constrain(portal, "AccessServiceServesCatalogs",
+                "self.ownedElement->select(e | e.oclIsKindOf(DataService))->forAll(s | "
+                        + "self.ownedElement->select(e | e.oclIsKindOf(Catalog))"
+                        + "->forAll(c | s.oclAsType(DataService).servesDataset->includes(c)) "
+                        + "and s.oclAsType(DataService).servesDataset->forAll(d | d.oclIsKindOf(Catalog) "
+                        + "and (self.ownedElement->includes(d) or self.importedElement->includes(d))))",
+                "The access service of a portal serves every catalog the portal owns, and nothing but "
+                        + "catalogs the portal owns or takes over.",
+                "Der Zugangsdienst eines Portals liefert jeden Katalog aus, den das Portal besitzt, "
+                        + "und nichts als Kataloge, die das Portal besitzt oder uebernimmt.", "error");
+        constrain(portal, "TakenOverNotOwned",
+                "self.importedElement->forAll(e | self.ownedElement->excludes(e))",
+                "A portal does not take over what it owns: a catalog of another portal is in "
+                        + "importedElement only, never also in ownedElement.",
+                "Ein Portal uebernimmt nicht, was es besitzt: Ein Katalog eines anderen Portals steht "
+                        + "nur in importedElement, nie zugleich in ownedElement.", "error");
         constrain(catalog, "RecordTopicIsListed",
                 "self.record->forAll(r | self.resource->includes(r.primaryTopic) "
                         + "or self.ownedElement->includes(r.primaryTopic))",
-                "Every catalog record describes a resource the catalog lists or owns.", "error");
+                "Every catalog record describes a resource the catalog lists or owns.",
+                "Jeder Katalogeintrag beschreibt eine Ressource, die der Katalog listet oder "
+                        + "besitzt.", "error");
         constrain(catalog, "NotOwnMember",
                 "not self.resource->includes(self)",
-                "A catalog does not list itself as a member.", "error");
+                "A catalog does not list itself as a member.",
+                "Ein Katalog listet sich nicht selbst als Mitglied.", "error");
         constrain(dataService, "EndpointUrlNotEmpty",
-                "self.endpointUrl->forAll(u | u.size() > 0)",
-                "Endpoint URLs are non-empty strings.", "error");
+                "self.endpointUrl <> null implies self.endpointUrl.size() > 0",
+                "The endpoint URL, when set, is a non-empty string (that it is set at all, its lower "
+                        + "bound says).",
+                "Die Endpunkt-URL ist, wenn gesetzt, eine nicht leere Zeichenkette (dass sie gesetzt "
+                        + "ist, sagt ihre Untergrenze).", "error");
+        constrain(dataService, "OneProtocol",
+                DcatVocabularies.PROTOCOLS.stream().map(iri -> "'" + iri + "'")
+                        .collect(Collectors.joining(", ", "Sequence{", "}"))
+                        + "->select(p | self.conformsToIri->exists(i | i.size() >= p.size() "
+                        + "and i.substring(1, p.size()) = p))->size() <= 1",
+                "A data service names at most one of the known protocols (DcatVocabularies.PROTOCOLS) "
+                        + "in conformsToIri; an IRI that begins with a protocol IRI, such as a version or a "
+                        + "conformance class, names that protocol.",
+                "Ein Datendienst nennt in conformsToIri hoechstens eines der bekannten Protokolle "
+                        + "(DcatVocabularies.PROTOCOLS); eine IRI, die mit einer Protokoll-IRI beginnt, "
+                        + "etwa eine Version oder Konformitaetsklasse, nennt dieses Protokoll.", "error");
+        constrain(dataService, "ServedDatasetHasDistribution",
+                "self.servesDataset->reject(d | d.oclIsKindOf(Catalog))"
+                        + "->forAll(d | d.distribution->exists(x | x.accessService = self))",
+                "Every dataset a service serves, catalogs excepted, has a distribution with this "
+                        + "service as accessService.",
+                "Jeder Datensatz, den ein Dienst ausliefert, Kataloge ausgenommen, hat eine "
+                        + "Distribution mit diesem Dienst als accessService.", "warning");
         constrain(distribution, "ByteSizeNonNegative",
                 "self.byteSize >= 0",
                 "The byte size is not negative (core::Integer is a primitive long; unset = 0).",
-                "error");
+                "Die Groesse in Bytes ist nicht negativ (core::Integer ist ein primitives long; nicht "
+                        + "gesetzt = 0).", "error");
         constrain(distribution, "SpatialResolutionPositive",
                 "self.spatialResolutionInMeters <> null "
                         + "implies self.spatialResolutionInMeters.toReal() > 0",
                 "The spatial resolution, when given, is positive (core::Float is a decimal "
-                        + "literal).", "error");
+                        + "literal).",
+                "Die raeumliche Aufloesung ist, wenn angegeben, positiv (core::Float ist ein "
+                        + "Dezimal-Literal).", "error");
+        constrain(distribution, "AccessUrlUnderEndpoint",
+                "self.accessService <> null implies (let e : String = self.accessService.endpointUrl in "
+                        + "e <> null implies self.accessUrl->forAll(u | u.size() >= e.size() "
+                        + "and u.substring(1, e.size()) = e))",
+                "Every access URL of a distribution with an access service starts with the endpoint "
+                        + "URL of that service.",
+                "Jede Zugangs-URL einer Distribution mit Zugangsdienst beginnt mit der Endpunkt-URL "
+                        + "dieses Dienstes.", "error");
         constrain(attribution, "OtherRoleNeedsIri",
                 "self.role = AgentRole::OTHER implies self.roleIri <> null",
-                "The open role OTHER requires a refining role IRI.", "error");
+                "The open role OTHER requires a refining role IRI.",
+                "Die offene Rolle OTHER verlangt eine praezisierende Rollen-IRI.", "error");
+        constrain(attribution, "AgentHasOneLocator",
+                "self.agent <> null implies self.agent.contact.url->asSet()->size() <= 1",
+                "The agent of an attribution has at most one ResourceLocator over all its contacts: "
+                        + "its url is the party's URI; with more, the first counts.",
+                "Der Agent einer Attribution hat ueber alle seine Kontakte hoechstens einen "
+                        + "ResourceLocator: dessen url ist die URI der Stelle; bei mehreren gilt der "
+                        + "erste.", "warning");
         constrain(relationship, "RelationshipHasRole",
                 "self.roleIri->notEmpty() or self.role->notEmpty()",
-                "A qualified relationship names at least one role (IRI or concept).", "error");
+                "A qualified relationship names at least one role (IRI or concept).",
+                "Eine qualifizierte Beziehung nennt mindestens eine Rolle (IRI oder Konzept).",
+                "error");
         constrain(periodOfTime, "StartBeforeEnd",
                 "(self.startDate <> null and self.endDate <> null) "
                         + "implies self.startDate <= self.endDate",
                 "When both bounds are given, the period starts no later than it ends "
-                        + "(lexical comparison of ISO 8601 values).", "error");
+                        + "(lexical comparison of ISO 8601 values).",
+                "Sind beide Grenzen angegeben, beginnt der Zeitraum nicht nach seinem Ende "
+                        + "(lexikalischer Vergleich der ISO-8601-Werte).", "error");
         constrain(location, "LocationNotEmpty",
                 "self.iri <> null or self.geometryWkt <> null or self.bboxWkt <> null "
                         + "or self.centroidWkt <> null",
                 "A location carries at least one of gazetteer IRI, geometry, bounding box or "
-                        + "centroid.", "error");
+                        + "centroid.",
+                "Ein Ort traegt mindestens eines von Gazetteer-IRI, Geometrie, Begrenzungsrahmen oder "
+                        + "Zentroid.", "error");
         constrain(checksum, "ChecksumValueNotEmpty",
                 "self.checksumValue.size() > 0",
-                "The checksum value is a non-empty hex string.", "error");
+                "The checksum value is a non-empty hex string.",
+                "Der Pruefsummenwert ist eine nicht leere Hex-Zeichenkette.", "error");
 
         return p;
     }
@@ -893,8 +1133,12 @@ public final class DcatEcoreBuilder {
         r.getEAnnotations().add(a2);
     }
 
-    /** An OCL invariant: Ecore constraints list, OCL body and Daanse metadata (name, description, level). */
-    private void constrain(EClass c, String name, String ocl, String descriptionEn, String level) {
+    /**
+     * An OCL invariant: Ecore constraints list, OCL body and Daanse metadata (name, description in
+     * English and German, level).
+     */
+    private void constrain(EClass c, String name, String ocl, String descriptionEn, String descriptionDe,
+            String level) {
         EAnnotation ce = c.getEAnnotation(ECORE_ANN);
         if (ce == null) {
             ce = ef.createEAnnotation();
@@ -918,6 +1162,7 @@ public final class DcatEcoreBuilder {
         }
         me.getDetails().put(name + ".name", name);
         me.getDetails().put(name + ".description", descriptionEn);
+        me.getDetails().put(name + ".description.de", descriptionDe);
         me.getDetails().put(name + ".level", level);
     }
 

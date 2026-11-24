@@ -28,6 +28,7 @@ import org.eclipse.daanse.cwm.model.daanse.dcat.util.Catalogs;
 import org.eclipse.daanse.cwm.model.daanse.dcat.util.Datasets;
 import org.eclipse.daanse.cwm.model.daanse.dcat.util.DcatVocabularies;
 import org.eclipse.daanse.cwm.model.daanse.dcat.util.Distributions;
+import org.eclipse.daanse.cwm.model.daanse.dcat.util.Portals;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClass;
@@ -44,10 +45,10 @@ import org.junit.jupiter.api.io.TempDir;
 
 /**
  * The shape of the {@code dcat} metamodel: hidden opposites with {@code Property.oppositeRoleName}
- * pairs, the annotations of every constraint, the catalog as dataset and package, the XMI round trip
- * of a small catalog next to the CWM elements it publishes, and the way back through
- * {@code InverseReferences} (dataset, inCatalog, seriesMember, next, dataService,
- * servedDistribution).
+ * pairs, the annotations of every constraint, the catalog as dataset and package, the portal as the
+ * package of its catalogs, the XMI round trip of a small catalog next to the CWM elements it
+ * publishes, and the way back through {@code InverseReferences} (dataset, inCatalog, seriesMember,
+ * next, dataService, servedDistribution, derivedDataset).
  */
 class DcatModelTest {
 
@@ -101,9 +102,9 @@ class DcatModelTest {
                 assertThat(body.getDetails().get("body")).isEqualTo(roleName);
             }
         }
-        // 23 hidden association ends, 7 containments (attribution, qualifiedRelation,
+        // 24 hidden association ends, 7 containments (attribution, qualifiedRelation,
         // distribution, spatial, temporal, checksum, record).
-        assertThat(nonContainment).isEqualTo(23);
+        assertThat(nonContainment).isEqualTo(24);
         assertThat(containment).isEqualTo(7);
     }
 
@@ -130,10 +131,11 @@ class DcatModelTest {
                         .as("OCL body of %s.%s", eClass.getName(), name).isNotBlank();
                 assertThat(meta.getDetails().get(name + ".name")).isEqualTo(name);
                 assertThat(meta.getDetails().get(name + ".description")).isNotBlank();
+                assertThat(meta.getDetails().get(name + ".description.de")).isNotBlank();
                 assertThat(meta.getDetails().get(name + ".level")).isIn("error", "warning");
             }
         }
-        assertThat(constraints).isEqualTo(13);
+        assertThat(constraints).isEqualTo(23);
     }
 
     // ------------------------------------------------------------------
@@ -151,6 +153,28 @@ class DcatModelTest {
         party.setName("Statistikamt");
         catalog.getOwnedElement().add(party);
         assertThat(party.getNamespace()).isSameAs(catalog);
+    }
+
+    @Test
+    void portalOwnsItsCatalogsAndImportsTakenOverOnes() {
+        Portal portal = DF.createPortal();
+        assertThat(portal).isInstanceOf(org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package.class);
+        assertThat(DcatPackage.Literals.PORTAL.getEStructuralFeatures()).as("no features of its own").isEmpty();
+
+        DataService api = DF.createDataService();
+        Catalog own = DF.createCatalog();
+        portal.getOwnedElement().add(api);
+        portal.getOwnedElement().add(own);
+        Portal other = DF.createPortal();
+        Catalog takenOver = DF.createCatalog();
+        other.getOwnedElement().add(takenOver);
+        portal.getImportedElement().add(takenOver);
+
+        // Importing does not move the catalog: its home stays with the portal that owns it.
+        assertThat(takenOver.getNamespace()).isSameAs(other);
+        assertThat(Portals.catalogs(portal)).containsExactly(own, takenOver);
+        assertThat(Portals.accessService(portal)).contains(api);
+        assertThat(Portals.portalsShowing(takenOver)).containsExactly(other, portal);
     }
 
     // ------------------------------------------------------------------
@@ -225,10 +249,22 @@ class DcatModelTest {
 
         DataService api = DF.createDataService();
         api.setName("hr-api");
-        api.getEndpointUrl().add("https://api.example.org/hr");
+        api.setEndpointUrl("https://api.example.org/hr");
         api.getServesDataset().add(employees);
-        csv.getAccessService().add(api);
         catalog.getOwnedElement().add(api);
+        Distribution json = DF.createDistribution();
+        json.setName("employees-json");
+        json.getAccessUrl().add("https://api.example.org/hr/employees");
+        json.setMediaType("application/json");
+        json.setAccessService(api);
+        employees.getDistribution().add(json);
+
+        // The published dataset is derived from the raw records of the HR system.
+        Dataset records = DF.createDataset();
+        records.setName("employee-records");
+        records.setAccessRightsIri(DcatVocabularies.ACCESS_RIGHT_NON_PUBLIC);
+        employees.getSource().add(records);
+        catalog.getOwnedElement().add(records);
 
         // A series with two ordered members.
         DatasetSeries series = DF.createDatasetSeries();
@@ -283,6 +319,7 @@ class DcatModelTest {
                 loadedEmployees.getSubject().get(0);
         assertThat(loadedEmployee.getName()).isEqualTo("EMPLOYEE");
         Distribution loadedCsv = loadedEmployees.getDistribution().get(0);
+        Distribution loadedJson = loadedEmployees.getDistribution().get(1);
         assertThat(loadedCsv.getChecksum().getAlgorithm()).isEqualTo(ChecksumAlgorithm.SHA256);
         assertThat(Distributions.datasetOf(loadedCsv)).contains(loadedEmployees);
         assertThat(Datasets.publisherOf(loadedEmployees).orElseThrow().getName())
@@ -291,6 +328,8 @@ class DcatModelTest {
         assertThat(Catalogs.recordFor(loadedCatalog, loadedEmployees)).isPresent();
         // The datasets, services and catalogs of a catalog are filters, not features.
         assertThat(Catalogs.datasets(loadedCatalog)).hasSize(4);
+        Dataset loadedRecords = Datasets.sourcesOf(loadedEmployees).get(0);
+        assertThat(loadedRecords.getName()).isEqualTo("employee-records");
         assertThat(Catalogs.services(loadedCatalog)).hasSize(1);
         assertThat(Catalogs.catalogs(loadedCatalog)).isEmpty();
 
@@ -303,7 +342,9 @@ class DcatModelTest {
         assertThat(Catalogs.catalogsListing(loadedEmployees)).containsExactly(loadedCatalog);
         DataService loadedApi = Catalogs.services(loadedCatalog).get(0);
         assertThat(Datasets.servicesServing(loadedEmployees)).containsExactly(loadedApi);
-        assertThat(Distributions.distributionsServedBy(loadedApi)).containsExactly(loadedCsv);
+        assertThat(Distributions.distributionsServedBy(loadedApi)).containsExactly(loadedJson);
+        assertThat(Distributions.servedBy(loadedEmployees, loadedApi)).contains(loadedJson);
+        assertThat(Datasets.derivedDatasets(loadedRecords)).containsExactly(loadedEmployees);
 
         DatasetSeries loadedSeries = (DatasetSeries) Catalogs.datasetStream(loadedCatalog)
                 .filter(DatasetSeries.class::isInstance).findFirst().orElseThrow();
