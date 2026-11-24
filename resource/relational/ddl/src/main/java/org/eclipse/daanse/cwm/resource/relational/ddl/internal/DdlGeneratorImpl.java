@@ -122,7 +122,11 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * where the dialect writes none in the language of its body, and so is the
  * comment on a routine; a trigger is written as the dialect writes it, an
  * {@code AFTER} trigger for a {@code BEFORE} one, a statement trigger for a row
- * trigger, without its {@code WHEN} condition. Strict
+ * trigger, without its {@code WHEN} condition; a trigger is left out where the
+ * dialect refuses it as the model has it
+ * ({@link CwmSchemaMapper#triggerRefused}), a statement trigger where it has
+ * row triggers only, as MySQL and MariaDB, a trigger with a {@code WHEN}
+ * condition where it has none, as SQL Server. Strict
  * ({@link DdlSettings#strict()}), the create and the drop script fail alike,
  * with every case of the run.
  * </p>
@@ -653,12 +657,22 @@ public final class DdlGeneratorImpl implements DdlGenerator {
                     ? schema.getName() : null;
         }
 
+        /**
+         * The trigger with its procedure, where the dialect keeps the body in one, as the dialect
+         * writes it: what it writes otherwise than the model has it is a case it cannot write. A
+         * trigger it refuses as the model has it is left out, a case it cannot write too.
+         */
         private Optional<Part> triggerPart(Trigger trigger) {
             if (trigger.getTable() == null) {
                 return Optional.empty();
             }
             TableReference tref = ref(trigger.getTable(), home);
             String name = name(trigger);
+            Optional<String> refused = CwmSchemaMapper.triggerRefused(dialect, tref, trigger, name);
+            if (refused.isPresent()) {
+                unwritable(trigger, refused.get(), "left out");
+                return Optional.empty();
+            }
             List<String> create = CwmSchemaMapper.createTrigger(dialect, tref, trigger, name);
             if (create.isEmpty()) {
                 return Optional.empty();

@@ -20,11 +20,14 @@ import java.util.List;
 
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.BusinessinformationFactory;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.ResponsibleParty;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.Expressions;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.TaggedValues;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndex;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLIndexColumn;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Trigger;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ActionOrientationType;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.ConditionTimingType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.enumerations.DeferrabilityType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.ColumnSets;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.util.RelationalRules;
@@ -122,6 +125,60 @@ class UnwritableTest {
                                         "written AFTER"),
                                 org.assertj.core.groups.Tuple.tuple("trigger sales.trg_orders_audit",
                                         "FOR EACH ROW", "written as a statement trigger")));
+    }
+
+    /**
+     * MySQL and MariaDB have row triggers only and refuse a statement trigger: it is left out, with
+     * the procedure that keeps its body, or, strict, the create and the drop script fail alike,
+     * naming it.
+     */
+    @Test
+    void aStatementTriggerWhereTheDatabaseHasRowTriggersOnly() {
+        MySqlDialect mysql = new MySqlDialect();
+        SqlGenFixture f = SqlGenFixture.build("sales", mysql);
+        Trigger trigger = f.attachTrigger(f.orders, "trg_orders_audit", "BEGIN SET @audit_count = 1; END");
+        trigger.setActionOrientation(ActionOrientationType.STATEMENT);
+        f.schema.getOwnedElement().add(trigger);
+        DdlGeneratorImpl strict = new DdlGeneratorImpl(mysql, STRICT);
+
+        assertThat(new DdlGeneratorImpl(mysql).create(List.of(f.schema))).isNotEmpty()
+                .noneMatch(s -> s.element() == trigger).noneMatch(s -> s.sql().contains("trg_orders_audit"));
+        assertThat(new DdlGeneratorImpl(mysql).drop(List.of(f.schema))).isNotEmpty()
+                .noneMatch(s -> s.element() == trigger);
+        assertThat(new DdlGeneratorImpl(mysql).createElement(trigger)).isEmpty();
+        assertThatThrownBy(() -> strict.create(List.of(f.schema))).isInstanceOfSatisfying(UnwritableException.class,
+                e -> assertThat(e.cases()).singleElement().satisfies(c -> {
+                    assertThat(c.element()).isEqualTo("trigger sales.trg_orders_audit");
+                    assertThat(c.what()).isEqualTo("FOR EACH STATEMENT");
+                    assertThat(c.instead()).isEqualTo("left out");
+                    assertThat(c.dialect()).isEqualTo(mysql.name());
+                }));
+        assertThatThrownBy(() -> strict.drop(List.of(f.schema))).isInstanceOfSatisfying(UnwritableException.class,
+                e -> assertThat(e.cases()).extracting(Unwritable::what).containsExactly("FOR EACH STATEMENT"));
+        assertThatThrownBy(() -> strict.createElement(trigger)).isInstanceOf(UnwritableException.class);
+        assertThatThrownBy(() -> strict.dropElement(trigger)).isInstanceOf(UnwritableException.class);
+    }
+
+    /**
+     * SQL Server has no condition on a trigger and refuses one: a trigger with a {@code WHEN}
+     * condition is left out, as without it the trigger would fire for every row, or, strict, the
+     * generation fails naming the condition.
+     */
+    @Test
+    void aTriggerWithAConditionOnSqlServer() {
+        SqlGenFixture f = SqlGenFixture.build("sales", sqlServer);
+        Trigger trigger = f.attachTrigger(f.orders, "trg_orders_audit", "SET NOCOUNT ON;");
+        trigger.setConditionTiming(ConditionTimingType.AFTER);
+        trigger.setActionOrientation(ActionOrientationType.STATEMENT);
+        trigger.setActionCondition(Expressions.bool("SQL", "TOTAL > 0"));
+        f.schema.getOwnedElement().add(trigger);
+
+        assertThat(new DdlGeneratorImpl(sqlServer).createElement(trigger)).isEmpty();
+        assertThatThrownBy(() -> new DdlGeneratorImpl(sqlServer, STRICT).createElement(trigger))
+                .isInstanceOfSatisfying(UnwritableException.class, e -> assertThat(e.cases())
+                        .extracting(Unwritable::element, Unwritable::what, Unwritable::instead)
+                        .containsExactly(org.assertj.core.groups.Tuple.tuple("trigger sales.trg_orders_audit",
+                                "WHEN TOTAL > 0", "left out")));
     }
 
     /** MySQL keeps no comment on a view: it is left out, or, strict, the generation fails. */

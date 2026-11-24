@@ -107,7 +107,8 @@ public interface DdlGenerator {
      * <li>a view: {@code CREATE VIEW}, or {@code CREATE MATERIALIZED VIEW} for a materialized one
      * ({@link #materialized(View)}), and the comments on it and its columns, as a migration that
      * creates a view again would lose them; a trigger: its procedure, where the dialect keeps the
-     * body in one, and the trigger;</li>
+     * body in one, and the trigger; nothing where the dialect refuses the trigger as the model has
+     * it, as a statement trigger where it has row triggers only;</li>
      * <li>a function or procedure: {@code CREATE FUNCTION} or {@code CREATE PROCEDURE}, where the
      * dialect writes routines in the language of its body; nothing for the procedure a trigger keeps
      * its body in, which comes with the trigger;</li>
