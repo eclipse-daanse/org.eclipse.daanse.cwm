@@ -17,15 +17,21 @@ import java.util.List;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CoreFactory;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.DataType;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.InverseReferences;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.daanse.spatial.AxisOrder;
+import org.eclipse.daanse.cwm.model.daanse.spatial.CoordinatePart;
 import org.eclipse.daanse.cwm.model.daanse.spatial.DistanceBand;
+import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryDerivation;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryFeature;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryKind;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryMultiplicity;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryStorage;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GridLevel;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GridSystem;
+import org.eclipse.daanse.cwm.model.daanse.spatial.ListHolding;
+import org.eclipse.daanse.cwm.model.daanse.spatial.Ordinate;
+import org.eclipse.daanse.cwm.model.daanse.spatial.PartsHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystem;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystemAuthority;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystemKind;
@@ -35,9 +41,10 @@ import org.eclipse.daanse.cwm.model.daanse.spatial.SpatialRelation;
 import org.eclipse.daanse.cwm.model.daanse.spatial.SpatialWeight;
 import org.eclipse.daanse.cwm.model.daanse.spatial.TieBreak;
 import org.eclipse.daanse.cwm.model.daanse.spatial.UnmatchedPolicy;
+import org.eclipse.daanse.cwm.model.daanse.spatial.WholeHolding;
 import org.junit.jupiter.api.Test;
 
-/** The create helpers hang each element on its owner and the finders find it from a column or a feature. */
+/** The create helpers hang each element on its owner and the finders find it from an attribute or a feature. */
 class SpatialElementsTest {
 
     private final Land land = new Land();
@@ -45,19 +52,109 @@ class SpatialElementsTest {
     @Test
     void aFeatureIsOwnedByItsNamespaceAndFoundFromItsColumn() {
         assertThat(land.communes.getNamespace()).isSameAs(land.geodata);
-        assertThat(land.communes.getModelElement()).containsExactly(land.communeShape);
+        assertThat(land.communes.getHolding()).singleElement().isInstanceOfSatisfying(WholeHolding.class, w -> {
+            assertThat(w.getAttribute()).isSameAs(land.communeShape);
+            assertThat(w.getStorage()).isEqualTo(GeometryStorage.NATIVE);
+            assertThat(w.getAxisOrder()).as("stored east first unless said").isEqualTo(AxisOrder.EAST_NORTH);
+        });
         assertThat(land.communes.getKind()).isEqualTo(GeometryKind.POLYGON);
         assertThat(land.communes.getReferenceSystem()).isSameAs(land.utm32);
-        assertThat(land.communes.getStorage()).isEqualTo(GeometryStorage.NATIVE);
         assertThat(land.communes.getMultiplicity()).as("single or multi, unless said").isEqualTo(
                 GeometryMultiplicity.EITHER);
         assertThat(land.communes.isHasHeight()).isFalse();
-        assertThat(land.communes.getAxisOrder()).as("stored east first unless said").isEqualTo(AxisOrder.EAST_NORTH);
+        assertThat(land.communes.isSetDerivation()).as("a geometry of its own").isFalse();
         assertThat(land.communes.getCoordinateEpoch()).isNull();
         assertThat(SpatialElements.features(land.communeShape)).containsExactly(land.communes);
+        assertThat(SpatialElements.holdings(land.communeShape)).containsExactlyElementsOf(land.communes.getHolding());
         assertThat(SpatialElements.features(land.communeId)).isEmpty();
         assertThatThrownBy(() -> SpatialElements.feature(land.geodata, "none", GeometryKind.POINT, land.wgs84,
-                GeometryStorage.NATIVE)).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("column");
+                GeometryStorage.NATIVE)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("attribute");
+    }
+
+    /** A feature without a holding says what a geometry is; whole, parts and list holdings say where it is held. */
+    @Test
+    void aFeatureAndItsHoldingsOneByOne() {
+        Table stop = land.table("stop");
+        Column position = Land.column(stop, "position", land.varchar);
+        Column lon = Land.column(stop, "lon", land.decimal);
+        Column lat = Land.column(stop, "lat", land.decimal);
+        Column shape = Land.column(stop, "shape", land.geometry);
+        GeometryFeature stops = SpatialElements.feature(land.geodata, "stops", GeometryKind.POINT, land.wgs84);
+        assertThat(stops.getHolding()).as("not held yet").isEmpty();
+        WholeHolding whole = SpatialElements.whole(stops, shape, GeometryStorage.NATIVE);
+        PartsHolding parts = SpatialElements.pointParts(stops, lon, lat);
+        ListHolding list = SpatialElements.list(stops, position, ",", Ordinate.NORTH, Ordinate.EAST);
+        assertThat(stops.getHolding()).containsExactly(whole, parts, list);
+        assertThat(parts.getPart()).extracting(CoordinatePart::getRole, CoordinatePart::getAttribute)
+                .containsExactly(org.assertj.core.groups.Tuple.tuple(Ordinate.EAST, lon),
+                        org.assertj.core.groups.Tuple.tuple(Ordinate.NORTH, lat));
+        assertThat(list.getOrdinate()).containsExactly(Ordinate.NORTH, Ordinate.EAST);
+        assertThat(list.getSeparator()).isEqualTo(",");
+        assertThat(SpatialElements.attributes(whole)).containsExactly(shape);
+        assertThat(SpatialElements.attributes(parts)).containsExactly(lon, lat);
+        assertThat(SpatialElements.attributes(list)).containsExactly(position);
+        assertThat(SpatialElements.attribute(parts, Ordinate.NORTH)).contains(lat);
+        assertThat(SpatialElements.attribute(parts, Ordinate.HEIGHT)).isEmpty();
+        assertThat(SpatialElements.features(lat)).containsExactly(stops);
+        assertThat(SpatialElements.holdings(lat)).containsExactly(parts);
+        PartsHolding more = SpatialElements.part(SpatialElements.parts(stops), Ordinate.EAST, lon);
+        assertThat(more.getPart()).hasSize(1);
+        assertThat(SpatialElements.holdings(lon)).as("named twice: an error of the model")
+                .containsExactlyInAnyOrder(parts, more);
+        assertThatThrownBy(() -> SpatialElements.list(stops, position, ",")).isInstanceOf(
+                IllegalArgumentException.class).hasMessageContaining("number");
+    }
+
+    /** A point of two or three numbers: single, held in parts; with three a height. */
+    @Test
+    void aPointOfNumbers() {
+        Table mast = land.table("mast");
+        Column lon = Land.column(mast, "lon", land.decimal);
+        Column lat = Land.column(mast, "lat", land.decimal);
+        Column height = Land.column(mast, "height", land.decimal);
+        ReferenceSystem crs84h = SpatialElements.crs84h(land.geodata);
+        GeometryFeature masts = SpatialElements.point(land.geodata, "masts", crs84h, lon, lat, height);
+        assertThat(masts.getKind()).isEqualTo(GeometryKind.POINT);
+        assertThat(masts.getMultiplicity()).as("one point a row").isEqualTo(GeometryMultiplicity.SINGLE);
+        assertThat(masts.isHasHeight()).isTrue();
+        assertThat(masts.getHolding()).singleElement().isInstanceOfSatisfying(PartsHolding.class,
+                p -> assertThat(p.getPart()).extracting(CoordinatePart::getRole).containsExactly(Ordinate.EAST,
+                        Ordinate.NORTH, Ordinate.HEIGHT));
+        GeometryFeature flat = SpatialElements.point(land.geodata, "flat", land.wgs84,
+                Land.column(mast, "x", land.decimal), Land.column(mast, "y", land.decimal));
+        assertThat(flat.isHasHeight()).isFalse();
+        assertThat(SpatialModelValidator.check(land.model)).isEmpty();
+    }
+
+    /**
+     * A derived geometry takes the kind of its derivation, the system of its geometry, and is single; an envelope of
+     * four numbers in the edges' order.
+     */
+    @Test
+    void aDerivedGeometryAndAnEnvelopeOfFourNumbers() {
+        Column minX = Land.column(land.commune, "min_x", land.decimal);
+        Column minY = Land.column(land.commune, "min_y", land.decimal);
+        Column maxX = Land.column(land.commune, "max_x", land.decimal);
+        Column maxY = Land.column(land.commune, "max_y", land.decimal);
+        GeometryFeature boxes = SpatialElements.envelope(land.geodata, "communeBoxes", land.communes, minX, minY, maxX,
+                maxY);
+        assertThat(boxes.getDerivation()).isEqualTo(GeometryDerivation.ENVELOPE);
+        assertThat(boxes.getOf()).isSameAs(land.communes);
+        assertThat(boxes.getKind()).isEqualTo(GeometryKind.POLYGON);
+        assertThat(boxes.getMultiplicity()).isEqualTo(GeometryMultiplicity.SINGLE);
+        assertThat(boxes.getReferenceSystem()).isSameAs(land.utm32);
+        assertThat(boxes.getHolding()).singleElement().isInstanceOfSatisfying(PartsHolding.class,
+                p -> assertThat(p.getPart()).extracting(CoordinatePart::getRole).containsExactly(Ordinate.MIN_EAST,
+                        Ordinate.MIN_NORTH, Ordinate.MAX_EAST, Ordinate.MAX_NORTH));
+        GeometryFeature centres = SpatialElements.derived(land.geodata, "communeCentres", GeometryDerivation.CENTROID,
+                land.communes);
+        assertThat(centres.getKind()).isEqualTo(GeometryKind.POINT);
+        assertThat(centres.getHolding()).as("held as the caller says").isEmpty();
+        SpatialElements.whole(centres, Land.column(land.commune, "centre", land.geometry), GeometryStorage.NATIVE);
+        assertThat(SpatialElements.derivations(land.communes)).containsExactly(boxes, centres);
+        assertThat(SpatialElements.derivations(land.counties)).isEmpty();
+        assertThat(SpatialModelValidator.check(land.model)).isEmpty();
     }
 
     @Test
@@ -210,12 +307,13 @@ class SpatialElementsTest {
         assertThat(SpatialElements.gridSystems(new Land().model)).as("another model has its own").isEmpty();
     }
 
+    /** Columns of one meaning in two tables are two holdings of one feature. */
     @Test
-    void featuresOfTwoTablesShareOneFeature() {
+    void columnsOfTwoTablesAreTwoHoldingsOfOneFeature() {
         GeometryFeature areas = SpatialElements.feature(land.geodata, "areas", GeometryKind.POLYGON, land.laea,
                 GeometryStorage.NATIVE, Land.column(land.table("reserve"), "shape", land.geometry),
                 Land.column(land.table("park"), "shape", land.geometry));
-        assertThat(areas.getModelElement()).hasSize(2);
+        assertThat(areas.getHolding()).hasSize(2).allMatch(WholeHolding.class::isInstance);
         assertThat(SpatialModelValidator.check(land.model)).isEmpty();
     }
 }

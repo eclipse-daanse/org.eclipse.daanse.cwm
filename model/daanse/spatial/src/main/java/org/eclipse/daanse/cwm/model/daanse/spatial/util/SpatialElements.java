@@ -11,22 +11,31 @@ package org.eclipse.daanse.cwm.model.daanse.spatial.util;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Attribute;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Namespace;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.util.InverseReferences;
 import org.eclipse.daanse.cwm.model.daanse.spatial.AxisOrder;
+import org.eclipse.daanse.cwm.model.daanse.spatial.CoordinatePart;
 import org.eclipse.daanse.cwm.model.daanse.spatial.DistanceBand;
+import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryDerivation;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryFeature;
+import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryKind;
+import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryMultiplicity;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryType;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryStorage;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GridLevel;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GridSystem;
+import org.eclipse.daanse.cwm.model.daanse.spatial.ListHolding;
+import org.eclipse.daanse.cwm.model.daanse.spatial.Ordinate;
+import org.eclipse.daanse.cwm.model.daanse.spatial.PartsHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystem;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystemAuthority;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystemKind;
@@ -37,17 +46,18 @@ import org.eclipse.daanse.cwm.model.daanse.spatial.SpatialPredicate;
 import org.eclipse.daanse.cwm.model.daanse.spatial.SpatialRelation;
 import org.eclipse.daanse.cwm.model.daanse.spatial.SpatialWeight;
 import org.eclipse.daanse.cwm.model.daanse.spatial.UnmatchedPolicy;
+import org.eclipse.daanse.cwm.model.daanse.spatial.WholeHolding;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
- * Creates the elements of the spatial model and finds them from a column. Each element is owned by the namespace it
- * is created in (a package of geodata beside the relational model, for instance) and names its columns; a column owns
- * nothing of it.
+ * Creates the elements of the spatial model and finds them from an attribute. Each element is owned by the namespace
+ * it is created in (a package of geodata beside the relational model, for instance); a geometry feature owns its
+ * holdings, which name the attributes; an attribute owns nothing of it.
  *
- * <p>The features of a column and the relations of a feature are found backwards through {@link InverseReferences}:
- * with an {@code ECrossReferenceAdapter} installed on the resource set in constant time, without one by a scan of the
- * model.</p>
+ * <p>The holdings and features of an attribute, the relations of a feature and the geometries derived from it are
+ * found backwards through {@link InverseReferences}: with an {@code ECrossReferenceAdapter} installed on the resource
+ * set in constant time, without one by a scan of the model.</p>
  */
 public final class SpatialElements {
 
@@ -190,24 +200,165 @@ public final class SpatialElements {
     }
 
     /**
-     * A geometry feature owned by {@code owner}: the {@code columns} hold geometries of {@code kind} in the reference
-     * system {@code system}, stored as {@code storage} with the coordinates east first; single or multi as either,
-     * without a height, without an epoch.
+     * A geometry feature owned by {@code owner}, held whole: each of {@code attributes} holds geometries of
+     * {@code kind} in the reference system {@code system}, stored as {@code storage} with the coordinates east first,
+     * one {@link WholeHolding} each (the same meaning in two tables); single or multi as either, without a height,
+     * without an epoch.
      */
     public static GeometryFeature feature(Namespace owner, String name, GeometryKind kind, ReferenceSystem system,
-            GeometryStorage storage, ModelElement... columns) {
-        Objects.requireNonNull(columns, "columns");
-        if (columns.length == 0) {
-            throw new IllegalArgumentException("a geometry feature names at least one column");
+            GeometryStorage storage, Attribute... attributes) {
+        Objects.requireNonNull(attributes, "attributes");
+        if (attributes.length == 0) {
+            throw new IllegalArgumentException("a geometry feature is held by at least one attribute");
         }
+        GeometryFeature feature = feature(owner, name, kind, system);
+        for (Attribute attribute : attributes) {
+            whole(feature, attribute, storage);
+        }
+        return feature;
+    }
+
+    /**
+     * A geometry feature owned by {@code owner} that says what the geometry is, a {@code kind} in {@code system}, and
+     * has no holding yet: {@link #whole}, {@link #parts}, {@link #pointParts} and {@link #list} add them.
+     */
+    public static GeometryFeature feature(Namespace owner, String name, GeometryKind kind, ReferenceSystem system) {
         GeometryFeature feature = F.createGeometryFeature();
         feature.setKind(Objects.requireNonNull(kind, "kind"));
         feature.setReferenceSystem(Objects.requireNonNull(system, "system"));
-        feature.setStorage(Objects.requireNonNull(storage, "storage"));
-        for (ModelElement column : columns) {
-            feature.getModelElement().add(Objects.requireNonNull(column, "column"));
-        }
         return owned(owner, name, feature);
+    }
+
+    /**
+     * A point owned by {@code owner}, held as two numbers in the reference system {@code system}: {@code east} (the
+     * longitude, the easting) and {@code north} (the latitude, the northing), two attributes of one table or class.
+     */
+    public static GeometryFeature point(Namespace owner, String name, ReferenceSystem system, Attribute east,
+            Attribute north) {
+        GeometryFeature point = feature(owner, name, GeometryKind.POINT, system);
+        point.setMultiplicity(GeometryMultiplicity.SINGLE);
+        pointParts(point, east, north);
+        return point;
+    }
+
+    /**
+     * A point with a height owned by {@code owner}, held as three numbers: {@code east}, {@code north} and
+     * {@code height}; {@code system} has three axes.
+     */
+    public static GeometryFeature point(Namespace owner, String name, ReferenceSystem system, Attribute east,
+            Attribute north, Attribute height) {
+        GeometryFeature point = point(owner, name, system, east, north);
+        point.setHasHeight(true);
+        part((PartsHolding) point.getHolding().get(0), Ordinate.HEIGHT, height);
+        return point;
+    }
+
+    /**
+     * A geometry owned by {@code owner} that is derived from {@code of} as {@code derivation} says: single, of the
+     * kind the derivation gives (an envelope a polygon, a corner, a centroid or a point on the surface a point), in
+     * the reference system of {@code of}, without a height; holdings are added as to any feature.
+     */
+    public static GeometryFeature derived(Namespace owner, String name, GeometryDerivation derivation,
+            GeometryFeature of) {
+        Objects.requireNonNull(of, "of");
+        GeometryFeature derived = feature(owner, name, Objects.requireNonNull(derivation, "derivation")
+                == GeometryDerivation.ENVELOPE ? GeometryKind.POLYGON : GeometryKind.POINT, of.getReferenceSystem());
+        derived.setMultiplicity(GeometryMultiplicity.SINGLE);
+        derived.setDerivation(derivation);
+        derived.setOf(of);
+        return derived;
+    }
+
+    /**
+     * The envelope of {@code of} owned by {@code owner}, held as four numbers: the west, south, east and north edges
+     * in {@code minEast}, {@code minNorth}, {@code maxEast} and {@code maxNorth} (minx, miny, maxx, maxy).
+     */
+    public static GeometryFeature envelope(Namespace owner, String name, GeometryFeature of, Attribute minEast,
+            Attribute minNorth, Attribute maxEast, Attribute maxNorth) {
+        GeometryFeature envelope = derived(owner, name, GeometryDerivation.ENVELOPE, of);
+        PartsHolding parts = parts(envelope);
+        part(parts, Ordinate.MIN_EAST, minEast);
+        part(parts, Ordinate.MIN_NORTH, minNorth);
+        part(parts, Ordinate.MAX_EAST, maxEast);
+        part(parts, Ordinate.MAX_NORTH, maxNorth);
+        return envelope;
+    }
+
+    /** {@code attribute} holds the whole geometry of {@code feature} as {@code storage}, its coordinates east first. */
+    public static WholeHolding whole(GeometryFeature feature, Attribute attribute, GeometryStorage storage) {
+        WholeHolding holding = F.createWholeHolding();
+        holding.setAttribute(Objects.requireNonNull(attribute, "attribute"));
+        holding.setStorage(Objects.requireNonNull(storage, "storage"));
+        Objects.requireNonNull(feature, "feature").getHolding().add(holding);
+        return holding;
+    }
+
+    /** A holding of {@code feature} in parts, one number per attribute, without parts yet: {@link #part} adds them. */
+    public static PartsHolding parts(GeometryFeature feature) {
+        PartsHolding holding = F.createPartsHolding();
+        Objects.requireNonNull(feature, "feature").getHolding().add(holding);
+        return holding;
+    }
+
+    /** {@code attribute} holds the number {@code role} of {@code holding}; the holding, for the next part. */
+    public static PartsHolding part(PartsHolding holding, Ordinate role, Attribute attribute) {
+        CoordinatePart part = F.createCoordinatePart();
+        part.setRole(Objects.requireNonNull(role, "role"));
+        part.setAttribute(Objects.requireNonNull(attribute, "attribute"));
+        Objects.requireNonNull(holding, "holding").getPart().add(part);
+        return holding;
+    }
+
+    /** {@code feature}, a point, is held in {@code east} and {@code north} as well, one number each. */
+    public static PartsHolding pointParts(GeometryFeature feature, Attribute east, Attribute north) {
+        return part(part(parts(feature), Ordinate.EAST, east), Ordinate.NORTH, north);
+    }
+
+    /**
+     * {@code attribute} holds the numbers of {@code feature} in the order of {@code ordinates}: as text with
+     * {@code separator} between two numbers, or as several values (an array, a multi-valued attribute) where the
+     * separator is {@code null}.
+     */
+    public static ListHolding list(GeometryFeature feature, Attribute attribute, String separator,
+            Ordinate... ordinates) {
+        Objects.requireNonNull(ordinates, "ordinates");
+        if (ordinates.length == 0) {
+            throw new IllegalArgumentException("a list holds at least one number");
+        }
+        ListHolding holding = F.createListHolding();
+        holding.setAttribute(Objects.requireNonNull(attribute, "attribute"));
+        holding.setSeparator(separator);
+        for (Ordinate ordinate : ordinates) {
+            holding.getOrdinate().add(Objects.requireNonNull(ordinate, "ordinate"));
+        }
+        Objects.requireNonNull(feature, "feature").getHolding().add(holding);
+        return holding;
+    }
+
+    /** The attributes {@code holding} names, in its order; none where it names none. */
+    public static List<Attribute> attributes(GeometryHolding holding) {
+        List<Attribute> attributes = new ArrayList<>();
+        switch (holding) {
+        case WholeHolding w -> add(attributes, w.getAttribute());
+        case ListHolding l -> add(attributes, l.getAttribute());
+        case PartsHolding p -> p.getPart().forEach(part -> add(attributes, part.getAttribute()));
+        default -> {
+            // a holding of another kind names no attribute this model knows
+        }
+        }
+        return attributes;
+    }
+
+    private static void add(List<Attribute> attributes, Attribute attribute) {
+        if (attribute != null) {
+            attributes.add(attribute);
+        }
+    }
+
+    /** The attribute that holds the number {@code role} in {@code holding}. */
+    public static Optional<Attribute> attribute(PartsHolding holding, Ordinate role) {
+        return holding.getPart().stream().filter(p -> p.getRole() == role).map(CoordinatePart::getAttribute)
+                .filter(Objects::nonNull).findFirst();
     }
 
     /**
@@ -331,8 +482,9 @@ public final class SpatialElements {
 
     /**
      * The {@link GeometryType} of {@code owner}, named {@value #GEOMETRY}, made where it has none: the type of a
-     * logical property that holds a geometry, as the SQL types of a catalog are its elements. What the property holds
-     * (kind, multiplicity, height, reference system) is said by the geometry feature that names it, not by the type.
+     * logical property that holds a whole geometry, as the SQL types of a catalog are its elements. What the geometry
+     * is (kind, multiplicity, height, reference system) is said by the geometry feature whose holding names the
+     * property, not by the type.
      */
     public static GeometryType geometryType(Namespace owner) {
         Objects.requireNonNull(owner, "owner");
@@ -383,9 +535,36 @@ public final class SpatialElements {
         return false;
     }
 
-    /** The geometry features that name {@code column}; more than one is an error of the model. */
-    public static List<GeometryFeature> features(ModelElement column) {
-        return InverseReferences.referencingList(column, SpatialPackage.Literals.GEOMETRY_FEATURE__MODEL_ELEMENT,
+    /** The holdings that name {@code attribute}; more than one is an error of the model. */
+    public static List<GeometryHolding> holdings(Attribute attribute) {
+        Set<GeometryHolding> holdings = new LinkedHashSet<>();
+        holdings.addAll(InverseReferences.referencingList(attribute, SpatialPackage.Literals.WHOLE_HOLDING__ATTRIBUTE,
+                WholeHolding.class));
+        for (CoordinatePart part : InverseReferences.referencingList(attribute,
+                SpatialPackage.Literals.COORDINATE_PART__ATTRIBUTE, CoordinatePart.class)) {
+            if (part.eContainer() instanceof PartsHolding holding) {
+                holdings.add(holding);
+            }
+        }
+        holdings.addAll(InverseReferences.referencingList(attribute, SpatialPackage.Literals.LIST_HOLDING__ATTRIBUTE,
+                ListHolding.class));
+        return List.copyOf(holdings);
+    }
+
+    /** The geometry features one of whose holdings names {@code attribute}. */
+    public static List<GeometryFeature> features(Attribute attribute) {
+        Set<GeometryFeature> features = new LinkedHashSet<>();
+        for (GeometryHolding holding : holdings(attribute)) {
+            if (holding.eContainer() instanceof GeometryFeature feature) {
+                features.add(feature);
+            }
+        }
+        return List.copyOf(features);
+    }
+
+    /** The geometries derived from {@code feature}: its envelope, the corners of the envelope, its centroid. */
+    public static List<GeometryFeature> derivations(GeometryFeature feature) {
+        return InverseReferences.referencingList(feature, SpatialPackage.Literals.GEOMETRY_FEATURE__OF,
                 GeometryFeature.class);
     }
 

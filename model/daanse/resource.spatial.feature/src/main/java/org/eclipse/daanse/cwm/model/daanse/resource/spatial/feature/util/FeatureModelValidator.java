@@ -26,8 +26,10 @@ import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package;
 import org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature.FeatureCollection;
 import org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature.FeatureProperty;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryFeature;
+import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystem;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystemAuthority;
+import org.eclipse.daanse.cwm.model.daanse.spatial.WholeHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.util.ReferenceSystems;
 import org.eclipse.daanse.cwm.model.daanse.spatial.util.SpatialElements;
 import org.eclipse.daanse.cwm.model.daanse.validation.Finding;
@@ -54,10 +56,12 @@ import org.eclipse.emf.ecore.EObject;
  * servers use): a simple queryable is a parameter too.</li>
  * <li>{@code FC4} the feature key is a property of the collection, never null, a string or an integer (OGC API
  * Features Part 5).</li>
- * <li>{@code FC5} the primary geometry and the time properties are properties of the collection.</li>
- * <li>{@code FC6} the primary geometry is named by exactly one geometry feature.</li>
- * <li>{@code FC7} a property named by a geometry feature is of the data type Geometry, and a property of that type is
- * named by one.</li>
+ * <li>{@code FC5} the time properties are properties of the collection; where the primary geometry is held says
+ * {@code FC19}.</li>
+ * <li>There is no {@code FC6}: the collection names its primary geometry, a geometry feature, itself, where it named a
+ * property that one geometry feature had to name.</li>
+ * <li>{@code FC7} a property held whole by a geometry feature is of the data type Geometry, and a property of that type
+ * is held whole by one. A property that holds a number of a geometry keeps its numeric type.</li>
  * <li>{@code FC8} a geometry is not the key nor a time, and carries no allowed values, bounds or pattern and is not
  * sortable.</li>
  * <li>There is no {@code FC9}: a code keeps its meaning, and the time of a feature has {@code FC18}.</li>
@@ -70,13 +74,16 @@ import org.eclipse.emf.ecore.EObject;
  * <li>{@code FC13} a reference system of three axes is offered only where the primary geometry holds a height.</li>
  * <li>{@code FC14} (warning) an offered system is the default (CRS84, CRS84h) or the storage system, which the
  * server lists anyway.</li>
- * <li>{@code FC15} a collection with a geometry property names its primary geometry; one without states no reference
- * systems.</li>
+ * <li>{@code FC15} a collection that holds a geometry in its properties (whole, or as numbers) names its primary
+ * geometry; one without states no reference systems.</li>
  * <li>{@code FC16} (warning) a collection has a queryable property besides its key.</li>
  * <li>{@code FC17} (warning) a reference that does not resolve.</li>
  * <li>{@code FC18} the time of a feature is an instant or an interval (its start, its end or both; a start or an end
  * alone is half-bounded), as OGC API Features Part 5 names the roles, and each time property is of a date or a
  * timestamp type.</li>
+ * <li>{@code FC19} at least one holding of the primary geometry lies entirely in properties of the collection: a
+ * property of the type Geometry, or the numbers of a point, such as east and north; the server writes the geometry of
+ * a feature from it.</li>
  * </ul>
  */
 public final class FeatureModelValidator {
@@ -95,15 +102,11 @@ public final class FeatureModelValidator {
     public static final Rule FC4 = Rule.error(MODULE, "FC4",
             "The feature key is a property of the collection, never null, a string or an integer.");
 
-    public static final Rule FC5 = Rule.error(MODULE, "FC5",
-            "The primary geometry and the time properties are properties of the collection.");
-
-    public static final Rule FC6 = Rule.error(MODULE, "FC6",
-            "The primary geometry is named by exactly one geometry feature.");
+    public static final Rule FC5 = Rule.error(MODULE, "FC5", "The time properties are properties of the collection.");
 
     public static final Rule FC7 = Rule.error(MODULE, "FC7",
-            "A property named by a geometry feature is of the data type Geometry, and a property of that type is "
-                + "named by one.");
+            "A property held whole by a geometry feature is of the data type Geometry, and a property of that type is "
+                + "held whole by one.");
 
     public static final Rule FC8 = Rule.error(MODULE, "FC8",
             "A geometry is not the key nor a time, and carries no allowed values, bounds or pattern and is not "
@@ -126,8 +129,8 @@ public final class FeatureModelValidator {
                 + "anyway.");
 
     public static final Rule FC15 = Rule.error(MODULE, "FC15",
-            "A collection with a geometry property names its primary geometry; one without states no reference "
-                + "systems.");
+            "A collection that holds a geometry in its properties names its primary geometry; one without states no "
+                + "reference systems.");
 
     public static final Rule FC16 = Rule.warning(MODULE, "FC16",
             "A collection has a queryable property besides its key.");
@@ -138,9 +141,12 @@ public final class FeatureModelValidator {
             "The time of a feature is an instant or an interval, and each time property is of a date or a timestamp "
                 + "type.");
 
-    /** Every rule of this validator, in the order of their codes; there is no FC9. */
-    public static final List<Rule> RULES = List.of(FC1, FC2, FC3, FC4, FC5, FC6, FC7, FC8, FC10, FC11, FC12, FC13,
-            FC14, FC15, FC16, FC17, FC18);
+    public static final Rule FC19 = Rule.error(MODULE, "FC19",
+            "At least one holding of the primary geometry lies entirely in properties of the collection.");
+
+    /** Every rule of this validator, in the order of their codes; there is no FC6 and no FC9. */
+    public static final List<Rule> RULES = List.of(FC1, FC2, FC3, FC4, FC5, FC7, FC8, FC10, FC11, FC12, FC13,
+            FC14, FC15, FC16, FC17, FC18, FC19);
 
     /**
      * The query parameters of OGC API Features that a property name would hide: those of Parts 1 to 3 and 5 to 9, and
@@ -202,20 +208,18 @@ public final class FeatureModelValidator {
             property(c, p, findings);
         }
         key(c, findings);
-        boolean geometryKnown = own(c, c.getGeometry(), "the primary geometry", findings);
+        boolean geometryKnown = primaryGeometry(c, findings);
         boolean instantKnown = own(c, c.getInstant(), "the instant", findings);
         boolean startKnown = own(c, c.getIntervalStart(), "the interval start", findings);
         boolean endKnown = own(c, c.getIntervalEnd(), "the interval end", findings);
-        if (geometryKnown) {
-            primaryGeometry(c, findings);
-        }
         time(c, instantKnown ? c.getInstant() : null, startKnown ? c.getIntervalStart() : null,
                 endKnown ? c.getIntervalEnd() : null, findings);
         systems(c, geometryKnown, findings);
-        boolean anyGeometry = FeatureCollections.properties(c).stream().anyMatch(FeatureProperties::isGeometry);
+        boolean anyGeometry = FeatureCollections.properties(c).stream()
+                .anyMatch(p -> FeatureProperties.isGeometry(p) || !SpatialElements.holdings(p).isEmpty());
         if (anyGeometry && c.getGeometry() == null) {
-            findings.add(FC15.at(c, path(c) + " has a geometry property but names no primary geometry; bbox "
-                    + "would have nothing to be evaluated on"));
+            findings.add(FC15.at(c, path(c) + " holds a geometry in its properties but names no primary geometry; "
+                    + "bbox would have nothing to be evaluated on"));
         }
         boolean queryable = FeatureCollections.properties(c).stream()
                 .anyMatch(p -> p.isQueryable() && p != c.getFeatureKey());
@@ -268,28 +272,42 @@ public final class FeatureModelValidator {
         return true;
     }
 
-    private static void primaryGeometry(FeatureCollection c, List<Finding> findings) {
-        FeatureProperty g = c.getGeometry();
-        int features = SpatialElements.features(g).size();
-        if (features != 1) {
-            findings.add(FC6.at(c, path(c) + ": the primary geometry " + g.getName() + " is named by "
-                    + features + " geometry features; one says what it holds"));
+    /**
+     * The primary geometry, where the collection names one: it resolves (FC17) and at least one of its holdings lies
+     * entirely in properties of the collection (FC19); false where it is not usable.
+     */
+    private static boolean primaryGeometry(FeatureCollection c, List<Finding> findings) {
+        GeometryFeature g = c.getGeometry();
+        if (g == null) {
+            return false;
         }
+        if (g.eIsProxy()) {
+            findings.add(FC17.at(c, path(c) + ": the primary geometry does not resolve"));
+            return false;
+        }
+        if (FeatureCollections.holding(g, c).isEmpty()) {
+            findings.add(FC19.at(c, path(c) + ": the primary geometry " + path(g) + " has no holding in its "
+                    + "properties; the server writes the geometry of a feature from the properties of the "
+                    + "collection"));
+        }
+        return true;
     }
 
     private static void property(FeatureCollection c, FeatureProperty p, List<Finding> findings) {
-        List<GeometryFeature> features = SpatialElements.features(p);
+        GeometryHolding whole = SpatialElements.holdings(p).stream().filter(WholeHolding.class::isInstance)
+                .findFirst().orElse(null);
         boolean typedGeometry = SpatialElements.isGeometryType(p.getType());
-        if (!features.isEmpty() && !typedGeometry) {
-            findings.add(FC7.at(p, path(p) + " is named by the geometry feature " + path(features.get(0))
-                    + " but is of the type " + typeName(p) + "; a geometry property is of the data type Geometry"));
+        if (whole != null && !typedGeometry) {
+            findings.add(FC7.at(p, path(p) + " is held whole by the geometry feature " + path(whole.eContainer())
+                    + " but is of the type " + typeName(p) + "; a property that holds a whole geometry is of the "
+                    + "data type Geometry"));
         }
-        if (typedGeometry && features.isEmpty()) {
-            findings.add(FC7.at(p, path(p) + " is of the data type Geometry but no geometry feature names it; "
-                    + "nothing says what it holds"));
+        if (typedGeometry && whole == null) {
+            findings.add(FC7.at(p, path(p) + " is of the data type Geometry but no geometry feature holds it "
+                    + "whole; nothing says what it holds"));
         }
         TypeFamily family = FeatureProperties.family(p);
-        if (typedGeometry || !features.isEmpty()) {
+        if (typedGeometry || whole != null) {
             if (!p.getAllowedValues().isEmpty() || p.getMinimum() != null || p.getMaximum() != null
                     || p.getPattern() != null) {
                 findings.add(FC8.at(p, path(p) + " is a geometry and carries allowed values, a bound or a "

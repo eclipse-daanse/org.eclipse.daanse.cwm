@@ -76,6 +76,31 @@ class QueryablesTest {
                 "geometry-multipolygon"));
     }
 
+    /**
+     * The stops: their point is held as the numbers east and north, which are queryable numbers; the edges of the
+     * envelope are queryable too, never returned. A geometry held only as numbers gives no geometry property.
+     */
+    @Test
+    void theQueryablesOfTheStops() {
+        Map<String, Object> properties = properties(Queryables.document(city.stops, null));
+        assertThat(properties.keySet()).containsExactly("label", "east", "north", "min_east", "min_north", "max_east",
+                "max_north");
+        assertThat(properties.get("east")).isEqualTo(Map.of("title", "east", "type", "number"));
+        assertThat(properties.values()).noneMatch(p -> ((Map<?, ?>) p).containsKey("format"));
+    }
+
+    /** The trees: the point is a geometry property and two numbers; each is a queryable of its own kind. */
+    @Test
+    void theQueryablesOfTheTrees() {
+        Map<String, Object> properties = properties(Queryables.document(city.trees, null));
+        assertThat(properties.keySet()).containsExactly("species", "longitude", "latitude", "position");
+        assertThat(properties.get("position")).isEqualTo(Map.of("title", "position", "format",
+                "geometry-point-or-multipoint"));
+        assertThat(properties.get("latitude")).isEqualTo(Map.of("title", "latitude", "type", "number"));
+        assertThat(FeatureCollections.properties(city.trees).stream().filter(Queryables::simple)
+                .map(FeatureProperty::getName)).containsExactly("species", "longitude", "latitude");
+    }
+
     /** A display name is the title; an open collection allows other properties; a text type with a length. */
     @Test
     void titleOpennessAndLength() {

@@ -72,6 +72,7 @@ public final class FeatureEcoreBuilder {
         final EDataType booleanType;
         final EDataType floatType;
         final EClass referenceSystem;
+        final EClass geometryFeature;
 
         Refs(EPackage core, EPackage spatial) {
             this.cwmClass = eClass(core, "Class");
@@ -80,6 +81,7 @@ public final class FeatureEcoreBuilder {
             this.booleanType = eDataType(core, "Boolean");
             this.floatType = eDataType(core, "Float");
             this.referenceSystem = eClass(spatial, "ReferenceSystem");
+            this.geometryFeature = eClass(spatial, "GeometryFeature");
         }
     }
 
@@ -112,11 +114,12 @@ public final class FeatureEcoreBuilder {
                 "Collections of features, as OGC API Features names them, as CWM classes: a FeatureCollection (a "
                         + "core::Class, owned by a core::Package) has its FeatureProperties (core::Attributes, typed "
                         + "by a data type) as features; the names become the ids of the collection and of its "
-                        + "properties. The collection names the property that is the feature id, its primary geometry, "
-                        + "the properties of its time (an instant, or the start and the end of an interval, the roles "
-                        + "of OGC API Features Part 5) and the reference systems it offers; a property says whether it "
-                        + "is queryable. What a geometry property holds (kind, multiplicity, height, reference system) "
-                        + "is said by the spatial::GeometryFeature that names it, its type is a spatial::GeometryType. "
+                        + "properties. The collection names the property that is the feature id, its primary geometry "
+                        + "(a spatial::GeometryFeature, which says what the geometry is and whose holdings name the "
+                        + "properties that hold it: a property of the type spatial::GeometryType, or numeric "
+                        + "properties such as east and north), the properties of its time (an instant, or the start "
+                        + "and the end of an interval, the roles of OGC API Features Part 5) and the reference "
+                        + "systems it offers; a property says whether it is queryable. "
                         + "Where the rows come from (a table, an SQL statement, the members of a cube) is described by "
                         + "a mapping model; the collection and its queryables never change with the origin. What this "
                         + "package leaves open is checked by FeatureModelValidator, not filled in. Non-containment "
@@ -143,15 +146,19 @@ public final class FeatureEcoreBuilder {
                 "A collection of features: its name is the collection id (/collections/{name}), a Description of "
                         + "type documentation its description, displayName its title. Its features are its "
                         + "properties. It names the property whose value is the feature id, the primary geometry "
-                        + "(the one bbox is evaluated on), the time of a feature (an instant, or the start and the "
-                        + "end of an interval, either of which may stand alone), and the reference systems it offers "
-                        + "besides the default and the storage system. The extent is not held: it is computed from "
-                        + "the rows.");
+                        + "(the one bbox is evaluated on, held in properties of the collection), the time of a "
+                        + "feature (an instant, or the start and the end of an interval, either of which may stand "
+                        + "alone), and the reference systems it offers besides the default and the storage system. "
+                        + "The schools of a city are a collection with the key school_id, the primary geometry "
+                        + "schoolPoint held in the property location, and the instant opened. The extent is not "
+                        + "held: it is computed from the rows.");
         collection.getESuperTypes().add(cwm.cwmClass);
         EClass property = cls(p, "FeatureProperty",
-                "A property of the features of a collection: a core::Attribute typed by a data type (a "
-                        + "spatial::GeometryType for a geometry, the spatial::GeometryFeature that names the property "
-                        + "says what it holds). Its name is the property name in the features and in the queryables; "
+                "A property of the features of a collection: a core::Attribute typed by a data type, a "
+                        + "spatial::GeometryType where it holds a whole geometry (a holding of a "
+                        + "spatial::GeometryFeature names it and says what the geometry is); a number of a geometry "
+                        + "held in parts, such as east, keeps its numeric type. Its name is the property name in the "
+                        + "features and in the queryables; "
                         + "it says whether it is queryable and gives what the type does not say: a closed list of "
                         + "values, numeric bounds, a pattern. Nullability is the attribute's multiplicity, the unit a "
                         + "units::Quantity that names the property, the description a Description of type "
@@ -163,9 +170,12 @@ public final class FeatureEcoreBuilder {
                 "The property whose value is the feature id (/items/{featureId}). Its uniqueness is a key of the "
                         + "origin; the collection says only which property it is.");
         oppositeRole(key, "featureKeyOfCollection");
-        EReference geometry = ref(collection, "geometry", property, 0, 1,
-                "The primary geometry: the one bbox is evaluated on and the extent is about; unset, a collection "
-                        + "without geometry.");
+        EReference geometry = ref(collection, "geometry", cwm.geometryFeature, 0, 1,
+                "The primary geometry: the one bbox is evaluated on and the extent is about. A "
+                        + "spatial::GeometryFeature, at least one of whose holdings lies entirely in properties of "
+                        + "this collection: the property location of the type Geometry, or the properties east and "
+                        + "north that hold a point in parts; the server writes the geometry of a feature from it. "
+                        + "Unset, a collection without geometry.");
         oppositeRole(geometry, "featureGeometryOfCollection");
         EReference instant = ref(collection, "instant", property, 0, 1,
                 "The instant of a feature (the role primary-instant of OGC API Features Part 5): the property "

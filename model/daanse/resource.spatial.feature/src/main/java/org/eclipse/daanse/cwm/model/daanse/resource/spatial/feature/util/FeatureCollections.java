@@ -18,20 +18,24 @@ import java.util.Set;
 
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.Description;
 import org.eclipse.daanse.cwm.model.cwm.foundation.businessinformation.util.Descriptions;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Attribute;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package;
 import org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature.FeatureCollection;
 import org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature.FeatureFactory;
 import org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature.FeatureProperty;
+import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryDerivation;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryFeature;
+import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystem;
+import org.eclipse.daanse.cwm.model.daanse.spatial.WholeHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.util.ReferenceSystems;
 import org.eclipse.daanse.cwm.model.daanse.spatial.util.SpatialElements;
 
 /**
  * Creates feature collections and reads what a server answers from them: the properties in order, the geometry
- * feature of a property, the reference systems of the list {@code crs} and the storage system (OGC API Features Part
- * 2).
+ * feature of a property, the holding of a geometry in the properties of a collection, the envelope stored beside the
+ * primary geometry, the reference systems of the list {@code crs} and the storage system (OGC API Features Part 2).
  */
 public final class FeatureCollections {
 
@@ -57,8 +61,8 @@ public final class FeatureCollections {
         return collection;
     }
 
-    /** The primary geometry. */
-    public static FeatureCollection geometry(FeatureCollection collection, FeatureProperty geometry) {
+    /** The primary geometry: a geometry feature held in properties of the collection. */
+    public static FeatureCollection geometry(FeatureCollection collection, GeometryFeature geometry) {
         collection.setGeometry(Objects.requireNonNull(geometry, "geometry"));
         return collection;
     }
@@ -117,16 +121,57 @@ public final class FeatureCollections {
         return collection.getDisplayName() != null ? collection.getDisplayName() : collection.getName();
     }
 
-    /** The geometry feature that names {@code property}, where exactly one does. */
+    /** The geometry feature one of whose holdings names {@code property}, where exactly one does. */
     public static Optional<GeometryFeature> geometryFeature(FeatureProperty property) {
         List<GeometryFeature> features = SpatialElements.features(property);
         return features.size() == 1 ? Optional.of(features.get(0)) : Optional.empty();
     }
 
+    /**
+     * The holdings of {@code geometry} that lie entirely in properties of {@code collection}, the whole ones first, then
+     * those of numbers, each in the order of the geometry; a holding in a table or another class is left out.
+     */
+    public static List<GeometryHolding> holdings(GeometryFeature geometry, FeatureCollection collection) {
+        List<GeometryHolding> whole = new ArrayList<>();
+        List<GeometryHolding> numbers = new ArrayList<>();
+        if (geometry == null || geometry.eIsProxy()) {
+            return whole;
+        }
+        for (GeometryHolding holding : geometry.getHolding()) {
+            List<Attribute> attributes = SpatialElements.attributes(holding);
+            if (!attributes.isEmpty() && attributes.stream().allMatch(a -> a.getOwner() == collection)) {
+                (holding instanceof WholeHolding ? whole : numbers).add(holding);
+            }
+        }
+        whole.addAll(numbers);
+        return whole;
+    }
+
+    /**
+     * The holding of {@code geometry} that lies entirely in properties of {@code collection}, a whole one before one of
+     * numbers: what a server reads the geometry of a feature from.
+     */
+    public static Optional<GeometryHolding> holding(GeometryFeature geometry, FeatureCollection collection) {
+        return holdings(geometry, collection).stream().findFirst();
+    }
+
+    /**
+     * The envelope of the primary geometry held in properties of the collection, as a store keeps it beside the
+     * geometry to answer a bbox by four comparisons: a geometry derived from it as its {@code ENVELOPE}.
+     */
+    public static Optional<GeometryFeature> envelope(FeatureCollection collection) {
+        GeometryFeature geometry = collection.getGeometry();
+        if (geometry == null || geometry.eIsProxy()) {
+            return Optional.empty();
+        }
+        return SpatialElements.derivations(geometry).stream()
+                .filter(d -> d.isSetDerivation() && d.getDerivation() == GeometryDerivation.ENVELOPE)
+                .filter(d -> holding(d, collection).isPresent()).findFirst();
+    }
+
     /** The reference system the primary geometry is stored in, where the collection has one. */
     public static Optional<ReferenceSystem> storageSystem(FeatureCollection collection) {
-        return Optional.ofNullable(collection.getGeometry()).flatMap(FeatureCollections::geometryFeature)
-                .map(GeometryFeature::getReferenceSystem);
+        return Optional.ofNullable(collection.getGeometry()).map(GeometryFeature::getReferenceSystem);
     }
 
     /** The URI of the storage system ({@code storageCrs}), where the collection has a primary geometry. */
@@ -139,15 +184,14 @@ public final class FeatureCollections {
      * as its geometry feature names it; none in a static system.
      */
     public static Optional<String> storageCrsCoordinateEpoch(FeatureCollection collection) {
-        return Optional.ofNullable(collection.getGeometry()).flatMap(FeatureCollections::geometryFeature)
+        return Optional.ofNullable(collection.getGeometry())
                 .filter(f -> f.getReferenceSystem() != null && f.getReferenceSystem().isDynamic())
                 .map(GeometryFeature::getCoordinateEpoch);
     }
 
     /** Whether the coordinates of the primary geometry hold a height. */
     public static boolean hasHeight(FeatureCollection collection) {
-        return Optional.ofNullable(collection.getGeometry()).flatMap(FeatureCollections::geometryFeature)
-                .map(GeometryFeature::isHasHeight).orElse(false);
+        return Optional.ofNullable(collection.getGeometry()).map(GeometryFeature::isHasHeight).orElse(false);
     }
 
     /**

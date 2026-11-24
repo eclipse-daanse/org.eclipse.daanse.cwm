@@ -15,16 +15,25 @@ import java.util.List;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Attribute;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.CoreFactory;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Multiplicity;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.MultiplicityRange;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Column;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.RelationalFactory;
+import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 import org.eclipse.daanse.cwm.model.cwm.resource.relational.Table;
 import org.eclipse.daanse.cwm.model.daanse.spatial.AxisOrder;
+import org.eclipse.daanse.cwm.model.daanse.spatial.CoordinatePart;
 import org.eclipse.daanse.cwm.model.daanse.spatial.DistanceBand;
+import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryDerivation;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryFeature;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryKind;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryMultiplicity;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryStorage;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GridLevel;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GridSystem;
+import org.eclipse.daanse.cwm.model.daanse.spatial.ListHolding;
+import org.eclipse.daanse.cwm.model.daanse.spatial.Ordinate;
+import org.eclipse.daanse.cwm.model.daanse.spatial.PartsHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystem;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystemAuthority;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystemKind;
@@ -36,6 +45,7 @@ import org.eclipse.daanse.cwm.model.daanse.spatial.SpatialRelation;
 import org.eclipse.daanse.cwm.model.daanse.spatial.SpatialWeight;
 import org.eclipse.daanse.cwm.model.daanse.spatial.TieBreak;
 import org.eclipse.daanse.cwm.model.daanse.spatial.UnmatchedPolicy;
+import org.eclipse.daanse.cwm.model.daanse.spatial.WholeHolding;
 import org.eclipse.daanse.cwm.model.daanse.validation.Finding;
 import org.eclipse.daanse.cwm.model.daanse.validation.Finding.Severity;
 import org.eclipse.daanse.cwm.model.daanse.validation.Rule;
@@ -60,23 +70,27 @@ class SpatialModelValidatorTest {
         assertThat(SpatialModelValidator.validate(land.model)).isEmpty();
     }
 
+    /** An attribute holds one geometry, or one number of it: one holding names it, in one of its parts. */
     @Test
-    void sp1_aGeometryFeatureNamesAttributes() {
-        assertThat(rules()).doesNotContain("SP1");
-        GeometryFeature table = SpatialElements.feature(land.geodata, "wrong", GeometryKind.POLYGON, land.utm32,
-                GeometryStorage.NATIVE, land.county);
-        assertThat(errors("SP1")).singleElement().satisfies(f -> {
-            assertThat(f.element()).isSameAs(table);
-            assertThat(f.message()).contains("names Table land.geo.county");
-        });
-    }
-
-    @Test
-    void sp2_aColumnIsNamedByOneFeature() {
+    void sp2_anAttributeIsNamedOnceByOneHolding() {
         assertThat(rules()).doesNotContain("SP2");
         SpatialElements.feature(land.geodata, "countiesAgain", GeometryKind.POLYGON, land.wgs84, GeometryStorage.NATIVE,
                 land.countyShape);
-        assertThat(errors("SP2")).singleElement().asString().contains("land.geo.county.shape is named by 2");
+        assertThat(errors("SP2")).singleElement().satisfies(f -> {
+            assertThat(f.element()).isSameAs(land.countyShape);
+            assertThat(f.message()).isEqualTo("land.geo.county.shape is named 2 times, by the whole holding of "
+                    + "land.geodata.counties, the whole holding of land.geodata.countiesAgain; an attribute holds one "
+                    + "geometry or one number of it");
+        });
+        land.geodata.getOwnedElement().remove(land.geodata.getOwnedElement().size() - 1);
+        Table gauge = land.table("gauge");
+        Column lon = Land.column(gauge, "lon", land.decimal);
+        GeometryFeature gauges = SpatialElements.point(land.geodata, "gauges", land.wgs84, lon,
+                Land.column(gauge, "lat", land.decimal));
+        assertThat(rules()).doesNotContain("SP2");
+        ((PartsHolding) gauges.getHolding().get(0)).getPart().get(1).setAttribute(lon);
+        assertThat(errors("SP2")).singleElement().asString().contains("land.geo.gauge.lon is named 2 times, by "
+                + "the parts of land.geodata.gauges, the parts of land.geodata.gauges");
     }
 
     @Test
@@ -319,14 +333,14 @@ class SpatialModelValidatorTest {
         GeometryFeature parishes = SpatialElements.feature(land.geodata, "parishes", GeometryKind.POLYGON,
                 utm32Again, GeometryStorage.NATIVE, Land.column(land.table("parish"), "shape", land.geometry));
         SpatialElements.relation(land.geodata, "parishesInCounties", parishes,
-                land.key((Table) parishes.getModelElement().get(0).eContainer()), land.counties, land.countyId,
+                land.key((Table) whole(parishes).getAttribute().eContainer()), land.counties, land.countyId,
                 SpatialPredicate.CENTROID_WITHIN, SpatialAssignment.EXACTLY_ONE, UnmatchedPolicy.KEEP_NULL);
         assertThat(rules()).as("two elements of one URI are one system").doesNotContain("SP12");
         GeometryFeature gauges = SpatialElements.feature(land.geodata, "gauges", GeometryKind.POINT, land.wgs84,
                 GeometryStorage.WKB, Land.column(land.table("gauge"), "position", land.blob));
-        gauges.setAxisOrder(AxisOrder.NORTH_EAST);
+        whole(gauges).setAxisOrder(AxisOrder.NORTH_EAST);
         SpatialElements.withinDistance(SpatialElements.relation(land.geodata, "gaugesNearStations", gauges,
-                land.key((Table) gauges.getModelElement().get(0).eContainer()), land.stations, land.stationId,
+                land.key((Table) whole(gauges).getAttribute().eContainer()), land.stations, land.stationId,
                 SpatialPredicate.NEAREST, SpatialAssignment.ALL_EQUAL, UnmatchedPolicy.KEEP_NULL), "500");
         assertThat(rules()).as("one system, whatever order each column stores its coordinates in")
                 .doesNotContain("SP12");
@@ -347,8 +361,8 @@ class SpatialModelValidatorTest {
                 GeometryStorage.NATIVE, Land.column(land.table("park"), "shape", land.geometry));
         GeometryFeature districts = SpatialElements.feature(land.geodata, "districts", GeometryKind.POLYGON,
                 land.wgs84, GeometryStorage.NATIVE, Land.column(land.table("district"), "shape", land.geometry));
-        Column parkId = land.key((Table) parks.getModelElement().get(0).eContainer());
-        Column districtId = land.key((Table) districts.getModelElement().get(0).eContainer());
+        Column parkId = land.key((Table) whole(parks).getAttribute().eContainer());
+        Column districtId = land.key((Table) whole(districts).getAttribute().eContainer());
         SpatialRelation share = SpatialElements.weight(SpatialElements.relation(land.geodata, "parksInDistricts",
                 parks, parkId, districts, districtId, SpatialPredicate.INTERSECTS, SpatialAssignment.ALL_WEIGHTED,
                 UnmatchedPolicy.KEEP_NULL), SpatialWeight.AREA, null);
@@ -371,7 +385,7 @@ class SpatialModelValidatorTest {
     void sp27_aDistanceInAGeographicSystemIsMeasuredOnTheSpheroid() {
         GeometryFeature stops = SpatialElements.feature(land.geodata, "stops", GeometryKind.POINT, land.wgs84,
                 GeometryStorage.NATIVE, Land.column(land.table("stop"), "shape", land.geometry));
-        Column stopId = land.key((Table) stops.getModelElement().get(0).eContainer());
+        Column stopId = land.key((Table) whole(stops).getAttribute().eContainer());
         DistanceBand band = SpatialElements.band(land.geodata, "toTheStop", land.stations, land.stationId, stops,
                 "300", "1000");
         SpatialRelation nearest = SpatialElements.relation(land.geodata, "nearestStop", land.stations, land.stationId,
@@ -525,8 +539,12 @@ class SpatialModelValidatorTest {
                         + "stop, write a TABLE");
     }
 
+    /**
+     * A property of the data type Geometry holds a geometry in that type (NATIVE); held beside the text column of the
+     * same meaning it is a holding of its own, with its own storage.
+     */
     @Test
-    void sp3_aLogicalPropertyOfTheTypeGeometryIsNoColumn() {
+    void sp3_aPropertyOfTheTypeGeometryIsHeldNative() {
         Table border = land.table("border");
         Column text = Land.column(border, "wkt", land.varchar);
         org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Class borders = CoreFactory.eINSTANCE.createClass();
@@ -536,14 +554,15 @@ class SpatialModelValidatorTest {
         line.setName("line");
         line.setType(SpatialElements.geometryType(land.geodata));
         borders.getFeature().add(line);
-        SpatialElements.feature(land.geodata, "asText", GeometryKind.LINE, land.utm32, GeometryStorage.WKT, text,
-                line);
-        assertThat(rules()).as("the column holds text, the property is logical").doesNotContain("SP3", "SP1", "SP2");
+        GeometryFeature lines = SpatialElements.feature(land.geodata, "asText", GeometryKind.LINE, land.utm32,
+                GeometryStorage.WKT, text);
+        WholeHolding logical = SpatialElements.whole(lines, line, GeometryStorage.NATIVE);
+        assertThat(rules()).as("the column holds text, the property the logical type").doesNotContain("SP3", "SP2");
         assertThat(SpatialElements.geometryType(land.geodata)).as("one type per namespace")
                 .isSameAs(line.getType());
-        line.setType(land.integer);
+        logical.setStorage(GeometryStorage.WKT);
         assertThat(warnings("SP3")).singleElement().asString().contains("land.geodata.borders.line is of type "
-                + "INTEGER");
+                + "Geometry (geometry), which does not hold WKT");
     }
 
     @Test
@@ -804,7 +823,7 @@ class SpatialModelValidatorTest {
         assertThat(rules()).doesNotContain("SP18");
         GeometryFeature gauges = SpatialElements.feature(land.geodata, "gauges", GeometryKind.POINT, land.wgs84,
                 GeometryStorage.NATIVE, Land.column(land.table("gauge"), "shape", land.geometry));
-        Column gaugeId = land.key((Table) gauges.getModelElement().get(0).eContainer());
+        Column gaugeId = land.key((Table) whole(gauges).getAttribute().eContainer());
         GridLevel other = SpatialElements.grid(land.geodata, "gaugeCells", gauges, gaugeId, land.quadkey(), 14,
                 coarse);
         assertThat(errors("SP18")).singleElement().satisfies(f -> {
@@ -849,9 +868,8 @@ class SpatialModelValidatorTest {
     @Test
     void validateReturnsOnlyErrors() {
         land.communesInCounties().setUnmatched(UnmatchedPolicy.DROP);
-        SpatialElements.feature(land.geodata, "wrong", GeometryKind.POLYGON, land.utm32, GeometryStorage.NATIVE,
-                land.county);
-        assertThat(SpatialModelValidator.validate(land.model)).singleElement().asString().startsWith("SP1 ");
+        SpatialElements.feature(land.geodata, "unheld", GeometryKind.POLYGON, land.utm32);
+        assertThat(SpatialModelValidator.validate(land.model)).singleElement().asString().startsWith("SP42 ");
     }
 
     @Test
@@ -915,10 +933,10 @@ class SpatialModelValidatorTest {
                 GeometryStorage.GEOJSON, Land.column(track, "course", land.varchar));
         GeometryFeature binary = SpatialElements.feature(land.geodata, "binaryTracks", GeometryKind.LINE, land.wgs84,
                 GeometryStorage.WKB, Land.column(track, "course_wkb", land.blob));
-        binary.setAxisOrder(AxisOrder.NORTH_EAST);
+        whole(binary).setAxisOrder(AxisOrder.NORTH_EAST);
         assertThat(rules()).as("the system defines latitude first; GeoJSON and a binary column may differ")
                 .doesNotContain("SP28");
-        tracks.setAxisOrder(AxisOrder.NORTH_EAST);
+        whole(tracks).setAxisOrder(AxisOrder.NORTH_EAST);
         assertThat(errors("SP28")).singleElement().satisfies(f -> {
             assertThat(f.element()).isSameAs(tracks);
             assertThat(f.message()).isEqualTo("land.geodata.tracks is stored as GEOJSON with its coordinates "
@@ -944,6 +962,297 @@ class SpatialModelValidatorTest {
         assertThat(errors("SP29")).as("a warning only").isEmpty();
     }
 
+    /** A feature has a holding: none is SP42, as is a holding that names no attribute. */
+    @Test
+    void sp42_aFeatureIsHeldAndEachHoldingNamesItsAttributes() {
+        assertThat(rules()).doesNotContain("SP42");
+        GeometryFeature unheld = SpatialElements.feature(land.geodata, "unheld", GeometryKind.POINT, land.wgs84);
+        GeometryFeature gauges = SpatialElements.feature(land.geodata, "gauges", GeometryKind.POINT, land.wgs84,
+                GeometryStorage.NATIVE, Land.column(land.table("gauge"), "position", land.geometry));
+        whole(gauges).setAttribute(null);
+        SpatialElements.parts(gauges);
+        CoordinatePart east = SpatialFactory.eINSTANCE.createCoordinatePart();
+        east.setRole(Ordinate.EAST);
+        SpatialElements.parts(gauges).getPart().add(east);
+        ListHolding list = SpatialFactory.eINSTANCE.createListHolding();
+        list.getOrdinate().addAll(List.of(Ordinate.EAST, Ordinate.NORTH));
+        gauges.getHolding().add(list);
+        assertThat(errors("SP42")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "land.geodata.unheld has no holding; nothing says where the geometry is held",
+                "land.geodata.gauges: a whole holding names no attribute",
+                "land.geodata.gauges: a holding in parts has no part",
+                "land.geodata.gauges: the part EAST names no attribute",
+                "land.geodata.gauges: a list names no attribute");
+        assertThat(errors("SP42")).extracting(Finding::element).containsOnly(unheld, gauges);
+    }
+
+    /** Numbers hold a single point or the envelope of another geometry: a polygon of its own or a multi-point not. */
+    @Test
+    void sp43_numbersHoldASinglePointOrAnEnvelope() {
+        Table parcel = land.table("parcel");
+        GeometryFeature corners = SpatialElements.point(land.geodata, "corners", land.utm32,
+                Land.column(parcel, "x", land.decimal), Land.column(parcel, "y", land.decimal));
+        SpatialElements.envelope(land.geodata, "communeBoxes", land.communes, Land.column(land.commune, "min_x",
+                land.decimal), Land.column(land.commune, "min_y", land.decimal), Land.column(land.commune, "max_x",
+                        land.decimal), Land.column(land.commune, "max_y", land.decimal));
+        assertThat(rules()).as("a point and an envelope").doesNotContain("SP43");
+        GeometryFeature parcels = SpatialElements.feature(land.geodata, "parcels", GeometryKind.POLYGON, land.utm32);
+        SpatialElements.pointParts(parcels, Land.column(parcel, "e", land.decimal),
+                Land.column(parcel, "n", land.decimal));
+        corners.setMultiplicity(GeometryMultiplicity.MULTI);
+        assertThat(errors("SP43")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "land.geodata.corners is a MULTI point held as numbers in its parts; numbers hold a single point",
+                "land.geodata.parcels is a POLYGON held as numbers in its parts; numbers hold a single point or the "
+                        + "envelope of another geometry");
+        assertThat(rules()).as("no shape, no roles to hold against it").doesNotContain("SP45");
+    }
+
+    @Test
+    void sp44_eachRoleIsHeldOnce() {
+        Table stop = land.table("stop");
+        GeometryFeature stops = SpatialElements.feature(land.geodata, "stops", GeometryKind.POINT, land.wgs84);
+        ListHolding list = SpatialElements.list(stops, Land.column(stop, "position", land.varchar), ",",
+                Ordinate.NORTH, Ordinate.EAST);
+        assertThat(rules()).doesNotContain("SP44");
+        list.getOrdinate().add(Ordinate.NORTH);
+        assertThat(errors("SP44")).singleElement().satisfies(f -> {
+            assertThat(f.element()).isSameAs(stops);
+            assertThat(f.message()).isEqualTo("land.geodata.stops holds NORTH more than once in its list; each role "
+                    + "is held once");
+        });
+    }
+
+    /** A point is held by EAST and NORTH, an envelope by its four edges; neither holds the roles of the other. */
+    @Test
+    void sp45_theRolesFitTheShape() {
+        Table well = land.table("well");
+        Column easting = Land.column(well, "easting", land.decimal);
+        Column northing = Land.column(well, "northing", land.decimal);
+        GeometryFeature wells = SpatialElements.point(land.geodata, "wells", land.utm32, easting, northing);
+        GeometryFeature boxes = SpatialElements.derived(land.geodata, "countyBoxes", GeometryDerivation.ENVELOPE,
+                land.counties);
+        ListHolding bbox = SpatialElements.list(boxes, Land.column(land.county, "bbox", land.varchar), " ",
+                Ordinate.MIN_EAST, Ordinate.MIN_NORTH, Ordinate.MAX_EAST, Ordinate.MAX_NORTH);
+        assertThat(rules()).doesNotContain("SP45");
+        ((PartsHolding) wells.getHolding().get(0)).getPart().get(1).setRole(Ordinate.MAX_NORTH);
+        bbox.getOrdinate().set(3, Ordinate.NORTH);
+        assertThat(errors("SP45")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "land.geodata.wells holds no NORTH in its parts; a point is held by EAST and NORTH",
+                "land.geodata.wells holds MAX_NORTH in its parts, the edges of an envelope; a point has none",
+                "land.geodata.countyBoxes holds no MAX_NORTH in its list; an envelope is held by MIN_EAST, MIN_NORTH, "
+                        + "MAX_EAST and MAX_NORTH",
+                "land.geodata.countyBoxes holds NORTH in its list, the axes of a point; an envelope has none");
+    }
+
+    /** A height is held exactly where the geometry has one: HEIGHT of a point, MIN_HEIGHT and MAX_HEIGHT of a box. */
+    @Test
+    void sp46_aHeightIsHeldExactlyWhereThereIsOne() {
+        Table mast = land.table("mast");
+        ReferenceSystem crs84h = SpatialElements.crs84h(land.geodata);
+        GeometryFeature masts = SpatialElements.point(land.geodata, "masts", crs84h, Land.column(mast, "lon",
+                land.decimal), Land.column(mast, "lat", land.decimal), Land.column(mast, "height", land.decimal));
+        GeometryFeature volumes = SpatialElements.feature(land.geodata, "volumes", GeometryKind.POLYGON, crs84h,
+                GeometryStorage.NATIVE, Land.column(mast, "volume", land.geometry));
+        volumes.setHasHeight(true);
+        GeometryFeature boxes = SpatialElements.derived(land.geodata, "volumeBoxes", GeometryDerivation.ENVELOPE,
+                volumes);
+        boxes.setHasHeight(true);
+        PartsHolding box = SpatialElements.parts(boxes);
+        for (Ordinate role : List.of(Ordinate.MIN_EAST, Ordinate.MIN_NORTH, Ordinate.MAX_EAST, Ordinate.MAX_NORTH,
+                Ordinate.MIN_HEIGHT, Ordinate.MAX_HEIGHT)) {
+            SpatialElements.part(box, role, Land.column(mast, role.getName().toLowerCase(java.util.Locale.ROOT),
+                    land.decimal));
+        }
+        assertThat(rules()).as("a point and an envelope with a height").doesNotContain("SP46");
+        masts.setHasHeight(false);
+        box.getPart().remove(5);
+        assertThat(errors("SP46")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "land.geodata.masts has no height but holds HEIGHT in its parts; a height needs hasHeight and a "
+                        + "system of three axes",
+                "land.geodata.volumeBoxes has a height but holds no MAX_HEIGHT in its parts");
+    }
+
+    /**
+     * The attribute of a part is a number; a list's is text where it names a separator, else several numbers; a type
+     * that is not known, or a number without a stated multiplicity, is no finding.
+     */
+    @Test
+    void sp47_theAttributesOfNumbersAreNumeric() {
+        Table stop = land.table("stop");
+        Column text = Land.column(stop, "position", land.varchar);
+        SQLSimpleType doubles = RelationalFactory.eINSTANCE.createSQLSimpleType();
+        doubles.setName("DOUBLE[]");
+        land.geo.getOwnedElement().add(doubles);
+        Column array = Land.column(stop, "location", doubles);
+        Column many = Land.column(stop, "coordinates", land.decimal);
+        many.setMultiplicity(multiplicity(2, 2));
+        Column x = Land.column(stop, "x", land.decimal);
+        Column y = Land.column(stop, "y", land.decimal);
+        GeometryFeature stops = SpatialElements.point(land.geodata, "stops", land.wgs84, x, y);
+        SpatialElements.list(stops, text, ",", Ordinate.NORTH, Ordinate.EAST);
+        SpatialElements.list(stops, array, null, Ordinate.EAST, Ordinate.NORTH);
+        ListHolding values = SpatialElements.list(stops, many, null, Ordinate.EAST, Ordinate.NORTH);
+        assertThat(rules()).doesNotContain("SP47");
+        x.setType(land.varchar);
+        ((ListHolding) stops.getHolding().get(1)).setSeparator(null);
+        ((ListHolding) stops.getHolding().get(2)).setSeparator(";");
+        many.setMultiplicity(multiplicity(0, 1));
+        assertThat(warnings("SP47")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "land.geodata.stops: the part EAST land.geo.stop.x is of type VARCHAR (text), not a number",
+                "land.geodata.stops: the list land.geo.stop.position is of type VARCHAR (text); a list in a text "
+                        + "names its separator",
+                "land.geodata.stops: the list land.geo.stop.location is of type DOUBLE[] (array); a list with a "
+                        + "separator is text",
+                "land.geodata.stops: the list land.geo.stop.coordinates is of type DECIMAL (number), one number; "
+                        + "several numbers without a separator are an array or a multi-valued attribute");
+        assertThat(errors("SP47")).as("a warning only").isEmpty();
+        many.setMultiplicity(null);
+        assertThat(warnings("SP47")).as("a number without a stated multiplicity is not judged")
+                .noneMatch(f -> f.message().contains("coordinates"));
+        assertThat(values.getAttribute()).isSameAs(many);
+    }
+
+    /** A holding in parts is one row of one holder: its attributes lie in one table; a whole one may lie in two. */
+    @Test
+    void sp48_thePartsLieInOneClassifier() {
+        Table station = land.table("weather_station");
+        Table archive = land.table("weather_station_archive");
+        Column lat = Land.column(station, "lat", land.decimal);
+        GeometryFeature stations = SpatialElements.point(land.geodata, "weatherStations", land.wgs84,
+                Land.column(station, "lon", land.decimal), lat);
+        SpatialElements.feature(land.geodata, "areas", GeometryKind.POLYGON, land.laea, GeometryStorage.NATIVE,
+                Land.column(station, "area", land.geometry), Land.column(archive, "area", land.geometry));
+        assertThat(rules()).doesNotContain("SP48");
+        archive.getFeature().add(lat);
+        assertThat(errors("SP48")).singleElement().satisfies(f -> {
+            assertThat(f.element()).isSameAs(stations);
+            assertThat(f.message()).isEqualTo("land.geodata.weatherStations: the parts lie in 2 classifiers, "
+                    + "land.geo.weather_station, land.geo.weather_station_archive; a holding in parts is one row of "
+                    + "one holder");
+        });
+    }
+
+    @Test
+    void sp49_aDerivationAndWhatItIsDerivedFromGoTogether() {
+        GeometryFeature centres = SpatialElements.derived(land.geodata, "communeCentres", GeometryDerivation.CENTROID,
+                land.communes);
+        SpatialElements.whole(centres, Land.column(land.commune, "centre", land.geometry), GeometryStorage.NATIVE);
+        assertThat(rules()).doesNotContain("SP49");
+        centres.setOf(null);
+        land.stations.setOf(land.communes);
+        assertThat(errors("SP49")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "land.geodata.communeCentres is the CENTROID of nothing; it names no geometry it is derived from",
+                "land.geodata.stations is derived from land.geodata.communes but names no derivation");
+    }
+
+    @Test
+    void sp50_noGeometryIsDerivedFromItself() {
+        GeometryFeature labels = SpatialElements.derived(land.geodata, "labels", GeometryDerivation.POINT_ON_SURFACE,
+                land.communes);
+        SpatialElements.whole(labels, Land.column(land.commune, "label_point", land.geometry), GeometryStorage.WKB)
+                .setAttribute(Land.column(land.commune, "label_point_wkb", land.blob));
+        assertThat(rules()).doesNotContain("SP50");
+        labels.setOf(labels);
+        assertThat(errors("SP50")).singleElement().asString()
+                .contains("land.geodata.labels is derived from itself; a derived geometry comes from another one");
+        GeometryFeature boxes = SpatialElements.derived(land.geodata, "boxes", GeometryDerivation.ENVELOPE,
+                land.communes);
+        SpatialElements.whole(boxes, Land.column(land.commune, "box", land.geometry), GeometryStorage.NATIVE);
+        labels.setOf(boxes);
+        boxes.setOf(labels);
+        boxes.setKind(GeometryKind.POLYGON);
+        assertThat(errors("SP50")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "land.geodata.labels is derived from itself through land.geodata.boxes; a derived geometry comes from "
+                        + "another one",
+                "land.geodata.boxes is derived from itself through land.geodata.labels; a derived geometry comes from "
+                        + "another one");
+    }
+
+    @Test
+    void sp51_aDerivedGeometryKeepsTheReferenceSystem() {
+        GeometryFeature boxes = SpatialElements.envelope(land.geodata, "communeBoxes", land.communes,
+                Land.column(land.commune, "min_x", land.decimal), Land.column(land.commune, "min_y", land.decimal),
+                Land.column(land.commune, "max_x", land.decimal), Land.column(land.commune, "max_y", land.decimal));
+        boxes.setReferenceSystem(SpatialElements.referenceSystem(land.geodata, "utm32Again",
+                ReferenceSystemAuthority.EPSG, "25832", ReferenceSystemKind.PROJECTED, AxisOrder.EAST_NORTH));
+        assertThat(rules()).as("one URI is one system").doesNotContain("SP51");
+        boxes.setReferenceSystem(land.wgs84);
+        assertThat(errors("SP51")).singleElement().asString().contains("land.geodata.communeBoxes is the ENVELOPE "
+                + "of land.geodata.communes in EPSG 25832 but is in EPSG 4326; a derived geometry keeps the system");
+    }
+
+    @Test
+    void sp52_theKindFollowsTheDerivation() {
+        GeometryFeature extents = SpatialElements.derived(land.geodata, "extents", GeometryDerivation.ENVELOPE,
+                land.states);
+        SpatialElements.whole(extents, Land.column(land.state, "extent", land.geometry), GeometryStorage.NATIVE);
+        GeometryFeature centres = SpatialElements.derived(land.geodata, "centres", GeometryDerivation.CENTROID,
+                land.states);
+        SpatialElements.whole(centres, Land.column(land.state, "centre", land.geometry), GeometryStorage.NATIVE);
+        assertThat(rules()).doesNotContain("SP52");
+        extents.setKind(GeometryKind.POINT);
+        centres.setMultiplicity(GeometryMultiplicity.MULTI);
+        assertThat(errors("SP52")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "land.geodata.extents is the ENVELOPE of land.geodata.states but of kind POINT; an envelope is a "
+                        + "single POLYGON",
+                "land.geodata.centres is the CENTROID of land.geodata.states but MULTI; a centroid is a single POINT");
+    }
+
+    /**
+     * Two corners of one geometry in one table give its envelope only where they are opposite; corners of one geometry
+     * in two tables are not compared.
+     */
+    @Test
+    void sp53_twoCornersOfOneGeometryAreOpposite() {
+        Table sheet = land.table("sheet");
+        GeometryFeature sheets = SpatialElements.feature(land.geodata, "sheets", GeometryKind.POLYGON, land.utm32,
+                GeometryStorage.NATIVE, Land.column(sheet, "area", land.geometry));
+        GeometryFeature upperLeft = SpatialElements.derived(land.geodata, "upperLeft",
+                GeometryDerivation.CORNER_NORTH_WEST, sheets);
+        SpatialElements.whole(upperLeft, Land.column(sheet, "upper_left", land.geometry), GeometryStorage.NATIVE);
+        GeometryFeature lowerRight = SpatialElements.derived(land.geodata, "lowerRight",
+                GeometryDerivation.CORNER_SOUTH_EAST, sheets);
+        SpatialElements.whole(lowerRight, Land.column(sheet, "lower_right", land.geometry), GeometryStorage.NATIVE);
+        GeometryFeature printed = SpatialElements.derived(land.geodata, "printed",
+                GeometryDerivation.CORNER_SOUTH_WEST, sheets);
+        SpatialElements.whole(printed, Land.column(land.table("print"), "origin", land.geometry),
+                GeometryStorage.NATIVE);
+        assertThat(rules()).as("opposite in one table; another corner in another table").doesNotContain("SP53");
+        lowerRight.setDerivation(GeometryDerivation.CORNER_NORTH_EAST);
+        assertThat(errors("SP53")).singleElement().satisfies(f -> {
+            assertThat(f.element()).isSameAs(lowerRight);
+            assertThat(f.message()).isEqualTo("land.geodata.lowerRight is the CORNER_NORTH_EAST of "
+                    + "land.geodata.sheets beside its CORNER_NORTH_WEST land.geodata.upperLeft in land.geo.sheet; two "
+                    + "corners of one geometry in one holder are opposite: south-west and north-east, or north-west "
+                    + "and south-east");
+        });
+    }
+
+    /** The stored axis order is a fact of a whole holding; numbers have none, and GeoJSON rules do not read them. */
+    @Test
+    void sp28_sp29_readOnlyAWholeHolding() {
+        Table stop = land.table("stop");
+        GeometryFeature stops = SpatialElements.point(land.geodata, "stops", land.utm32,
+                Land.column(stop, "easting", land.decimal), Land.column(stop, "northing", land.decimal));
+        assertThat(rules()).as("numbers in a projected system, no GeoJSON").doesNotContain("SP28", "SP29");
+        SpatialElements.whole(stops, Land.column(stop, "geojson", land.varchar), GeometryStorage.GEOJSON);
+        assertThat(warnings("SP29")).singleElement().asString().contains("stops is stored as GEOJSON in EPSG 25832");
+    }
+
+    private static Multiplicity multiplicity(long lower, long upper) {
+        Multiplicity multiplicity = CoreFactory.eINSTANCE.createMultiplicity();
+        MultiplicityRange range = CoreFactory.eINSTANCE.createMultiplicityRange();
+        range.setLower(lower);
+        range.setUpper(upper);
+        multiplicity.getRange().add(range);
+        return multiplicity;
+    }
+
+    /** The first holding of {@code feature}, a whole one. */
+    private static WholeHolding whole(GeometryFeature feature) {
+        return (WholeHolding) feature.getHolding().get(0);
+    }
+
     private List<String> rules() {
         return SpatialModelValidator.check(land.model).stream().map(Finding::rule).toList();
     }
@@ -961,15 +1270,17 @@ class SpatialModelValidatorTest {
     /** Each rule of the validator is stated once, of its module, an error or a warning: never both under one code. */
     @Test
     void everyRuleIsStatedOnceWithOneSeverity() {
-        assertThat(SpatialModelValidator.RULES).as("the rules").extracting(Rule::code).doesNotHaveDuplicates()
-                .containsExactly("SP1", "SP2", "SP3", "SP5", "SP6", "SP7", "SP8", "SP9", "SP10", "SP11", "SP12", "SP14",
+        assertThat(SpatialModelValidator.RULES).as("the rules; SP1, SP4 and SP13 are retired").extracting(Rule::code)
+                .doesNotHaveDuplicates()
+                .containsExactly("SP2", "SP3", "SP5", "SP6", "SP7", "SP8", "SP9", "SP10", "SP11", "SP12", "SP14",
                         "SP15", "SP16", "SP17", "SP18", "SP19", "SP20", "SP21", "SP22", "SP23", "SP24", "SP25", "SP26",
                         "SP27", "SP28", "SP29", "SP30", "SP31", "SP32", "SP33", "SP34", "SP35", "SP36", "SP37",
-                        "SP38", "SP39", "SP40", "SP41");
+                        "SP38", "SP39", "SP40", "SP41", "SP42", "SP43", "SP44", "SP45", "SP46", "SP47", "SP48", "SP49",
+                        "SP50", "SP51", "SP52", "SP53");
         assertThat(SpatialModelValidator.RULES).as("the rules").allSatisfy(rule -> assertThat(rule.module())
                 .isEqualTo(SpatialModelValidator.MODULE));
         assertThat(SpatialModelValidator.RULES.stream().filter(rule -> rule.severity() == Finding.Severity.WARNING)
                 .map(Rule::code)).as("the warnings")
-                .containsExactly("SP3", "SP15", "SP20", "SP21", "SP24", "SP25", "SP27", "SP29");
+                .containsExactly("SP3", "SP15", "SP20", "SP21", "SP24", "SP25", "SP27", "SP29", "SP47");
     }
 }

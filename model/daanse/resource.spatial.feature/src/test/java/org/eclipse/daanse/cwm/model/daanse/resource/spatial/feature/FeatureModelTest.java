@@ -11,6 +11,7 @@ package org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -24,6 +25,7 @@ import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.ocl.common.OCLConstants;
@@ -80,6 +82,8 @@ class FeatureModelTest {
         assertThat(P.getFeatureCollection_FeatureKey().getLowerBound()).as("every collection has an id").isEqualTo(1);
         assertThat(P.getFeatureCollection_FeatureKey().getEType()).isSameAs(P.getFeatureProperty());
         assertThat(P.getFeatureCollection_Geometry().getLowerBound()).isZero();
+        assertThat(P.getFeatureCollection_Geometry().getEType()).as("what the geometry is, held in properties")
+                .isSameAs(SpatialPackage.Literals.GEOMETRY_FEATURE);
         assertThat(P.getFeatureCollection_ReferenceSystems().getEType())
                 .isSameAs(SpatialPackage.Literals.REFERENCE_SYSTEM);
         assertThat(P.getFeatureCollection_ReferenceSystems().isOrdered()).as("the order of the list crs").isTrue();
@@ -162,6 +166,19 @@ class FeatureModelTest {
         CoreFactory.eINSTANCE.createClass().getFeature().add(property);
         assertThat(severity((v, d) -> v.validateFeatureProperty_OwnedByCollection(property, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.ERROR);
+    }
+
+    /** Every classifier and feature of the package says what it is, for a reader who sees only the model. */
+    @Test
+    void everyElementIsDocumented() {
+        List<EModelElement> elements = new ArrayList<>(List.of(P));
+        for (EClassifier c : P.getEClassifiers()) {
+            elements.add(c);
+            elements.addAll(((EClass) c).getEStructuralFeatures());
+        }
+        assertThat(elements).hasSizeGreaterThan(15).allSatisfy(e -> assertThat(e.getEAnnotation(
+                "http://www.eclipse.org/emf/2002/GenModel").getDetails().get("documentation")).as(e.toString())
+                .isNotBlank());
     }
 
     private static int severity(BiPredicate<FeatureValidator, BasicDiagnostic> check) {

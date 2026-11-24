@@ -16,11 +16,11 @@ own, with a code of its own. A validator keeps each rule as a constant and all o
 so that whoever weighs the findings reads the rules from the validator:
 
 ```java
-static final Rule SP2 = Rule.error("spatial", "SP2", "An attribute is named by at most one geometry feature.");
+static final Rule SP2 = Rule.error("spatial", "SP2", "An attribute is named once, by one holding.");
 
 List<Finding> found = new ArrayList<>(Findings.of("spatial", Diagnostician.INSTANCE.validate(model)));
-found.add(SP2.at(column, "the column is named by two geometry features"));
-Findings.errorLines(found);     // [SP2 the column is named by two geometry features]
+found.add(SP2.at(column, "the column is named by two holdings"));
+Findings.errorLines(found);     // [SP2 the column is named by two holdings]
 ```
 
 ## Relations

@@ -20,6 +20,8 @@ import org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature.FeatureColle
 import org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature.FeatureFactory;
 import org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature.FeatureProperty;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryFeature;
+import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryStorage;
+import org.eclipse.daanse.cwm.model.daanse.spatial.WholeHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.util.SpatialElements;
 
 /** Creates the properties of a feature collection and reads their multiplicity. */
@@ -52,12 +54,13 @@ public final class FeatureProperties {
 
     /**
      * A geometry property named {@code name}: of the data type {@code Geometry} of {@code types} (put there where it
-     * is missing), and named by {@code feature}, which says what it holds.
+     * is missing), and a whole holding of {@code feature}, which says what the geometry is.
      */
     public static FeatureProperty geometry(FeatureCollection collection, String name, Namespace types,
             GeometryFeature feature) {
+        Objects.requireNonNull(feature, "feature");
         FeatureProperty property = create(collection, name, SpatialElements.geometryType(types));
-        Objects.requireNonNull(feature, "feature").getModelElement().add(property);
+        SpatialElements.whole(feature, property, GeometryStorage.NATIVE);
         return property;
     }
 
@@ -81,9 +84,13 @@ public final class FeatureProperties {
         return true;
     }
 
-    /** Whether the property holds a geometry: of the data type {@code Geometry}, or named by a geometry feature. */
+    /**
+     * Whether the property holds a whole geometry: of the data type {@code Geometry}, or the attribute of a whole
+     * holding. A property that holds one number of a geometry, such as {@code east}, is a number.
+     */
     public static boolean isGeometry(FeatureProperty property) {
-        return SpatialElements.isGeometryType(property.getType()) || !SpatialElements.features(property).isEmpty();
+        return SpatialElements.isGeometryType(property.getType())
+                || SpatialElements.holdings(property).stream().anyMatch(WholeHolding.class::isInstance);
     }
 
     /** The title: the display name, else the name. */
