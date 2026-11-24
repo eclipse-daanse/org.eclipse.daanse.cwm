@@ -299,7 +299,7 @@ Rules: FC13, FC14, FC15.
 | `referenceSystems` | `spatial::ReferenceSystem` | 0..* ordered | the systems offered besides the default and the storage system |
 | `openProperties` | `core::Boolean` | 0..1, default false | false: only the named properties may be filtered on (`additionalProperties: false`) |
 
-A collection names an instant or the ends of an interval, not both (`InstantOrInterval`).
+A collection names an instant or the ends of an interval, not both (FC18).
 
 ### FeatureProperty (`core::Attribute`)
 
@@ -328,33 +328,79 @@ FeatureModelValidator.check(model);                         // every finding, er
 FeatureModelValidator.validate(model);                      // the errors as lines, "FC19 ..."
 ```
 
-`OnlyFeatureProperties`, `KeyIsOwnProperty`, `InstantOrInterval` and `OwnedByCollection` stand in
-the Ecore as OCL invariants as well.
+The column *Checked* says where a rule is checked: `model`, an OCL invariant of the metamodel that
+any client evaluates ([The rules in the model](#the-rules-in-the-model)), or `Java`, the validator
+alone. A rule is checked in one place, never in both.
 
-| Rule | Severity | Says |
-| --- | --- | --- |
-| FC1 | error | a collection stands in a package and owns only feature properties, each named uniquely and typed |
-| FC2 | warning | names are plain ids: letters, digits, `_`, `.`, `-` |
-| FC3 | error | no property is named like a query parameter (`limit`, `bbox`, `datetime`, `crs`, `bbox-crs`, `filter`, `filter-lang`, `filter-crs`, `profile`, `properties`, `exclude-properties`, `zoom-level`, `sortby`, `q`, and `f`, `offset`) |
-| FC4 | error | the feature key is a property of the collection, never null (1..1), a string or an integer (Part 5) |
-| FC5 | error | the time properties are properties of the collection |
-| FC7 | error | a property held whole by a geometry feature is of the data type Geometry, and one of that type is held whole by one |
-| FC8 | error | a geometry is not the key nor a time, carries no allowed values, bounds or pattern, is not sortable |
-| FC10 | warning | a time zone is a valid IANA name or offset, and only where a time is a timestamp without zone |
-| FC11 | error | minimum not above maximum; bounds on numbers, a valid pattern on text, allowed values on text and numbers and fitting the type |
-| FC12 | warning | allowed values beside an enumeration type: a copy that can drift |
-| FC13 | error | a reference system of three axes is offered only where the primary geometry holds a height |
-| FC14 | warning | the default (CRS84, CRS84h) or the storage system offered again |
-| FC15 | error | a collection that holds a geometry in its properties names its primary geometry; one without offers no systems |
-| FC16 | warning | a collection has a queryable property besides its key |
-| FC17 | warning | a reference that does not resolve |
-| FC18 | error | the time of a feature is an instant or an interval, and each time property is of a date or a timestamp type |
-| FC19 | error | at least one holding of the primary geometry lies entirely in properties of the collection: a property of the type Geometry, or the numbers of a point |
+| Rule | Severity | Checked | Says |
+| --- | --- | --- | --- |
+| FC1 | error | model | a collection stands in a package and owns only feature properties, each named uniquely and typed; a feature property belongs to a collection |
+| FC2 | warning | model | names are plain ids: letters, digits, `_`, `.`, `-` |
+| FC3 | error | model | no property is named like a query parameter (`limit`, `bbox`, `datetime`, `crs`, `bbox-crs`, `filter`, `filter-lang`, `filter-crs`, `profile`, `properties`, `exclude-properties`, `zoom-level`, `sortby`, `q`, and `f`, `offset`) |
+| FC4 | error | Java | the feature key is a property of the collection, never null (1..1), a string or an integer (Part 5) |
+| FC5 | error | model | the time properties are properties of the collection |
+| FC7 | error | Java | a property held whole by a geometry feature is of the data type Geometry, and one of that type is held whole by one |
+| FC8 | error | Java | a geometry is not the key nor a time, carries no allowed values, bounds or pattern, is not sortable |
+| FC10 | warning | Java | a time zone is a valid IANA name or offset, and only where a time is a timestamp without zone |
+| FC11 | error | Java | minimum not above maximum; bounds on numbers, a valid pattern on text, allowed values on text and numbers and fitting the type |
+| FC12 | warning | Java | allowed values beside an enumeration type: a copy that can drift |
+| FC13 | error | model | a reference system of three axes is offered only where the primary geometry holds a height |
+| FC14 | warning | model | the default (CRS84, CRS84h) or the storage system offered again |
+| FC15 | error | Java | a collection that holds a geometry in its properties names its primary geometry; one without offers no systems |
+| FC16 | warning | model | a collection has a queryable property besides its key |
+| FC17 | warning | Java | a reference that does not resolve |
+| FC18 | error | Java | the time of a feature is an instant or an interval, and each time property is of a date or a timestamp type |
+| FC19 | error | model | at least one holding of the primary geometry lies entirely in properties of the collection: a property of the type Geometry, or the numbers of a point |
 
 A code keeps its meaning, and a check that vanished retires its code. There is no FC6: the
 collection names its primary geometry, a geometry feature, itself, where it named a property that
 exactly one geometry feature had to name. There is no FC9. FC5 checked the primary geometry as well
 while it was a property; where it is held is FC19.
+
+### The rules in the model
+
+Some rules stand in `model/feature.ecore` itself, so that a client that loads the metamodel reads
+and evaluates them without the validator. Each is an OCL invariant of the class it is about, named
+by the code of its rule: the class lists it under the annotation
+`http://www.eclipse.org/emf/2002/Ecore` (`constraints`), holds its expression under
+`http://www.eclipse.org/emf/2002/Ecore/OCL`, and states its short name, its sentence and its
+severity under
+`https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature/constraints`,
+as `spatial` does.
+
+```xml
+<eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+  <details key="FC13" value="self.geometry.oclIsUndefined() or self.geometry.hasHeight or self.referenceSystems->forAll(s | s.axes &lt;> 3)"/>
+</eAnnotations>
+<eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature/constraints">
+  <details key="FC13.name" value="ThreeAxesOnlyWithAHeight"/>
+  <details key="FC13.description" value="A reference system of three axes is offered only where the primary geometry holds a height."/>
+  <details key="FC13.level" value="error"/>
+</eAnnotations>
+```
+
+A client installs the classic Eclipse OCL as the delegate the metamodel names (outside Eclipse
+`OCLDelegateDomain.initialize(null)` and an `OCLDelegateDomainFactory` for
+`OCLConstants.OCL_DELEGATE_URI_LPG`) and runs the EMF check (`Diagnostician`). The EMF check
+reports every invariant that is not kept as an error; `Findings.of` of `validation` makes of each a
+finding of its rule that weighs as its level says and says the sentence. `FeatureModelValidator.check`
+does the same for the elements of the package and adds the findings of the rules in Java. The
+finding of an invariant names the element and says the sentence of its rule, as
+`city.features.schools.limit: No property is named like a query parameter of the API.`; an element
+one of whose references does not resolve (FC17) gets no finding of an invariant, which would read
+an element that is not there as one of default values.
+
+The rules in Java, and why no invariant states them:
+
+- FC4: whether the key is a string or an integer is a judgement of its type by its family: by the JDBC code of an SQL type, a class of a model the metamodel does not import, and by its name without length; whether it is a geometry asks the holdings that name it, as FC7 does.
+- FC7: the holdings that name a property are found from the property back through the whole model.
+- FC8: whether a property is a geometry asks the holdings that name it, as FC7 does.
+- FC10: whether a time zone is an IANA name or an offset is a question to the time zone database of Java, and whether a time is a timestamp without a zone a judgement of its type, as FC4.
+- FC11: whether bounds, a pattern and allowed values fit is a judgement of the type of the property, as FC4.
+- FC12: an enumeration type is a class of CWM `datatypes`, which the metamodel does not import.
+- FC15: whether a collection holds a geometry in its properties asks the holdings that name them, as FC7 does.
+- FC17: whether a reference resolves is not visible to an invariant, which reads an element that is not there as one of default values.
+- FC18: whether a time property is a date or a timestamp is a judgement of its type, as FC4.
 
 ### The Ecore
 

@@ -56,11 +56,11 @@ class FeatureModelValidatorTest {
         FeatureCollection loose = FeatureFactory.eINSTANCE.createFeatureCollection();
         loose.setName("loose");
         city.districts.getOwnedElement().add(loose);
-        assertThat(errors("FC1")).extracting(Finding::message).hasSize(4)
-                .anyMatch(m -> m.equals("city.features.schools has two properties named label"))
-                .anyMatch(m -> m.equals("city.features.schools.untyped has no type"))
-                .anyMatch(m -> m.contains("which is no feature property"))
-                .anyMatch(m -> m.equals("city.features.districts.loose stands in no package"));
+        assertThat(errors("FC1")).extracting(Finding::element).containsExactlyInAnyOrder(city.schools, untyped, loose);
+        assertThat(errors("FC1")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "city.features.schools: " + FeatureModelValidator.FC1.says(),
+                "city.features.schools.untyped: " + FeatureModelValidator.FC1.says(),
+                "city.features.districts.loose: " + FeatureModelValidator.FC1.says());
     }
 
     @Test
@@ -69,7 +69,8 @@ class FeatureModelValidatorTest {
         FeatureProperty spaced = FeatureProperties.create(city.schools, "opening hours", city.string);
         assertThat(warnings("FC2")).singleElement().satisfies(f -> {
             assertThat(f.element()).isSameAs(spaced);
-            assertThat(f.message()).contains("'opening hours' becomes an id");
+            assertThat(f.message()).isEqualTo("city.features.schools.opening hours: "
+                    + FeatureModelValidator.FC2.says());
         });
         assertThat(errors("FC2")).as("a warning only").isEmpty();
     }
@@ -82,13 +83,13 @@ class FeatureModelValidatorTest {
         for (String later : List.of("profile", "exclude-properties", "zoom-level", "q")) {
             FeatureProperties.create(city.districts, later, city.string);
         }
-        assertThat(errors("FC3")).extracting(Finding::message).hasSize(6)
-                .anyMatch(m -> m.startsWith("city.features.schools.limit is named like the query parameter limit"))
-                .anyMatch(m -> m.startsWith("city.features.districts.bbox-crs is named like"))
-                .anyMatch(m -> m.startsWith("city.features.districts.profile is named like"))
-                .anyMatch(m -> m.startsWith("city.features.districts.exclude-properties is named like"))
-                .anyMatch(m -> m.startsWith("city.features.districts.zoom-level is named like"))
-                .anyMatch(m -> m.startsWith("city.features.districts.q is named like"));
+        assertThat(errors("FC3")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "city.features.schools.limit: " + FeatureModelValidator.FC3.says(),
+                "city.features.districts.bbox-crs: " + FeatureModelValidator.FC3.says(),
+                "city.features.districts.profile: " + FeatureModelValidator.FC3.says(),
+                "city.features.districts.exclude-properties: " + FeatureModelValidator.FC3.says(),
+                "city.features.districts.zoom-level: " + FeatureModelValidator.FC3.says(),
+                "city.features.districts.q: " + FeatureModelValidator.FC3.says());
     }
 
     @Test
@@ -131,9 +132,11 @@ class FeatureModelValidatorTest {
         assertThat(rules()).doesNotContain("FC5");
         city.schools.setInstant(city.validFrom);
         city.districts.setIntervalEnd(city.opened);
-        assertThat(errors("FC5")).extracting(Finding::message).hasSize(2)
-                .anyMatch(m -> m.contains("the instant city.features.districts.valid_from is no property"))
-                .anyMatch(m -> m.contains("the interval end city.features.schools.opened is no property"));
+        assertThat(errors("FC5")).extracting(Finding::element).containsExactlyInAnyOrder(city.schools,
+                city.districts);
+        assertThat(errors("FC5")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "city.features.schools: " + FeatureModelValidator.FC5.says(),
+                "city.features.districts: " + FeatureModelValidator.FC5.says());
     }
 
     /**
@@ -148,12 +151,10 @@ class FeatureModelValidatorTest {
                 city.utm32);
         SpatialElements.pointParts(elsewhere, city.east, city.residents);
         city.stops.setGeometry(elsewhere);
+        assertThat(errors("FC19")).extracting(Finding::element).containsExactlyInAnyOrder(city.schools, city.stops);
         assertThat(errors("FC19")).extracting(Finding::message).containsExactlyInAnyOrder(
-                "city.features.schools: the primary geometry city.geodata.districtShape has no holding in its "
-                        + "properties; the server writes the geometry of a feature from the properties of the "
-                        + "collection",
-                "city.features.stops: the primary geometry city.geodata.elsewhere has no holding in its properties; "
-                        + "the server writes the geometry of a feature from the properties of the collection");
+                "city.features.schools: " + FeatureModelValidator.FC19.says(),
+                "city.features.stops: " + FeatureModelValidator.FC19.says());
         assertThat(rules()).as("FC6 is retired").doesNotContain("FC6");
     }
 
@@ -259,8 +260,10 @@ class FeatureModelValidatorTest {
         withHeight.setAxes(3);
         assertThat(rules()).doesNotContain("FC13");
         city.districts.getReferenceSystems().add(withHeight);
-        assertThat(errors("FC13")).singleElement().asString().contains("offers EPSG 4937 of three axes but its "
-                + "primary geometry holds no height");
+        assertThat(errors("FC13")).singleElement().satisfies(f -> {
+            assertThat(f.element()).isSameAs(city.districts);
+            assertThat(f.message()).isEqualTo("city.features.districts: " + FeatureModelValidator.FC13.says());
+        });
         ReferenceSystem utmHeight = SpatialElements.epsg(city.geodata, 5555, ReferenceSystemKind.PROJECTED,
                 AxisOrder.EAST_NORTH);
         utmHeight.setAxes(3);
@@ -275,9 +278,11 @@ class FeatureModelValidatorTest {
         city.districts.getReferenceSystems().add(city.utm32);
         city.schools.getReferenceSystems().add(SpatialElements.referenceSystem(city.geodata, "crs84",
                 ReferenceSystemAuthority.OGC, "CRS84", ReferenceSystemKind.GEOGRAPHIC, AxisOrder.EAST_NORTH));
-        assertThat(warnings("FC14")).extracting(Finding::message).hasSize(2)
-                .anyMatch(m -> m.contains("districts offers EPSG 25832, the storage system of its geometry"))
-                .anyMatch(m -> m.contains("schools offers OGC CRS84, the default"));
+        assertThat(warnings("FC14")).extracting(Finding::element).containsExactlyInAnyOrder(city.districts,
+                city.schools);
+        assertThat(warnings("FC14")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "city.features.districts: " + FeatureModelValidator.FC14.says(),
+                "city.features.schools: " + FeatureModelValidator.FC14.says());
         assertThat(errors("FC14")).isEmpty();
     }
 

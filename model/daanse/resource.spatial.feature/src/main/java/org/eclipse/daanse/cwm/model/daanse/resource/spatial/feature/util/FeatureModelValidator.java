@@ -22,21 +22,23 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
-import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Package;
 import org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature.FeatureCollection;
+import org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature.FeaturePackage;
 import org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature.FeatureProperty;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryFeature;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystem;
-import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystemAuthority;
 import org.eclipse.daanse.cwm.model.daanse.spatial.WholeHolding;
-import org.eclipse.daanse.cwm.model.daanse.spatial.util.ReferenceSystems;
 import org.eclipse.daanse.cwm.model.daanse.spatial.util.SpatialElements;
 import org.eclipse.daanse.cwm.model.daanse.validation.Finding;
 import org.eclipse.daanse.cwm.model.daanse.validation.Findings;
 import org.eclipse.daanse.cwm.model.daanse.validation.Rule;
-import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EValidator;
+import org.eclipse.ocl.common.OCLConstants;
+import org.eclipse.ocl.ecore.delegate.DelegateDomain;
+import org.eclipse.ocl.ecore.delegate.OCLDelegateDomain;
+import org.eclipse.ocl.ecore.delegate.OCLDelegateDomainFactory;
 
 /**
  * Checks feature collections beyond what the metamodel enforces: what becomes an id or a parameter of the API is
@@ -44,9 +46,15 @@ import org.eclipse.emf.ecore.EObject;
  * of its values fits its type; the reference systems fit the geometry. Errors make a collection unusable for a
  * server, warnings do not. A reference system itself is checked by the spatial model's validator (SP34 to SP37).
  *
+ * <p>Some rules stand in the metamodel itself, each an OCL invariant of the class it is about named by the code of its
+ * rule, with the sentence and the severity of the rule beside it ({@code model/feature.ecore}): a client that loads the
+ * metamodel evaluates them without this class. {@link #check} runs the EMF check of the invariants on every element of
+ * the package, takes their findings, each naming the element and saying the sentence of its rule, and adds those of the
+ * rules no invariant can state, {@link #CHECKED_IN_JAVA}.</p>
+ *
  * <ul>
  * <li>{@code FC1} a collection stands in a package and owns only feature properties, each named uniquely and
- * typed.</li>
+ * typed; a feature property belongs to a collection.</li>
  * <li>{@code FC2} (warning) the names of collections and properties are plain ids: letters, digits, {@code _},
  * {@code .} and {@code -}.</li>
  * <li>{@code FC3} no property is named like a query parameter of the API ({@code limit}, {@code bbox},
@@ -92,7 +100,8 @@ public final class FeatureModelValidator {
     public static final String MODULE = "feature";
 
     public static final Rule FC1 = Rule.error(MODULE, "FC1",
-            "A collection stands in a package and owns only feature properties, each named uniquely and typed.");
+            "A collection stands in a package and owns only feature properties, each named uniquely and typed; a "
+                + "feature property belongs to a collection.");
 
     public static final Rule FC2 = Rule.warning(MODULE, "FC2",
             "The names of collections and properties are plain ids.");
@@ -149,6 +158,16 @@ public final class FeatureModelValidator {
             FC14, FC15, FC16, FC17, FC18, FC19);
 
     /**
+     * The rules no OCL invariant of the metamodel states, checked by this class; every other rule of {@link #RULES} is an
+     * invariant of the class it is about. FC7, FC8 and FC15 ask which holdings name a property, found from the property
+     * back through the whole model. FC4, FC10, FC11 and FC18 judge the type of a property by its family: by the JDBC
+     * code of an SQL type, a class of a model the metamodel does not import, and by its name; FC10 asks the time zone
+     * database of Java as well. FC12 recognises an enumeration type, a class of {@code datatypes}, which the metamodel
+     * does not import. FC17 asks whether a reference resolves, which an invariant cannot see.
+     */
+    public static final List<Rule> CHECKED_IN_JAVA = List.of(FC4, FC7, FC8, FC10, FC11, FC12, FC15, FC17, FC18);
+
+    /**
      * The query parameters of OGC API Features that a property name would hide: those of Parts 1 to 3 and 5 to 9, and
      * {@code f} and {@code offset}, which servers use.
      */
@@ -156,22 +175,48 @@ public final class FeatureModelValidator {
             "filter", "filter-lang", "filter-crs", "profile", "properties", "exclude-properties", "zoom-level",
             "sortby", "q");
 
-    private static final Pattern ID = Pattern.compile("[A-Za-z0-9_.\\-]+");
+    static {
+        // the metamodel names the classic Eclipse OCL as the delegate of its invariants; outside Eclipse no plugin
+        // registry installs it, and the generated package looks its delegate domain up globally
+        if (EValidator.ValidationDelegate.Registry.INSTANCE
+                .getValidationDelegate(OCLConstants.OCL_DELEGATE_URI) == null) {
+            OCLDelegateDomain.initialize(null);
+        }
+        DelegateDomain.Factory.Registry.INSTANCE.putIfAbsent(OCLConstants.OCL_DELEGATE_URI_LPG,
+                new OCLDelegateDomainFactory());
+    }
 
     private FeatureModelValidator() {
     }
 
-    /** All findings for the collections in {@code root} and below. */
+    /**
+     * All findings for the collections in {@code root} and below: those of the invariants of the metamodel, each
+     * element of the package checked by EMF with OCL, and those of the rules checked here ({@link #CHECKED_IN_JAVA}).
+     * An element one of whose references does not resolve (FC17) gets no finding of an invariant: an invariant would
+     * read an element that is not there as one of default values.
+     */
     public static List<Finding> check(EObject root) {
-        List<Finding> findings = new ArrayList<>();
-        if (root instanceof FeatureCollection c) {
-            collection(c, findings);
-        }
-        for (TreeIterator<EObject> it = root.eAllContents(); it.hasNext();) {
-            if (it.next() instanceof FeatureCollection c) {
-                collection(c, findings);
+        List<EObject> all = new ArrayList<>(List.of(root));
+        root.eAllContents().forEachRemaining(all::add);
+        List<Finding> checked = new ArrayList<>();
+        for (EObject o : all) {
+            if (o instanceof FeatureCollection c) {
+                collection(c, checked);
             }
         }
+        Set<EObject> unresolved = new HashSet<>();
+        for (Finding f : checked) {
+            if (f.rule().equals(FC17.code())) {
+                unresolved.add(f.element());
+            }
+        }
+        List<Finding> findings = new ArrayList<>();
+        for (Finding f : Findings.ofInvariants(MODULE, FeaturePackage.eINSTANCE, all, FeatureModelValidator::path)) {
+            if (!unresolved.contains(f.element())) {
+                findings.add(f);
+            }
+        }
+        findings.addAll(checked);
         return findings;
     }
 
@@ -180,52 +225,34 @@ public final class FeatureModelValidator {
         return Findings.errorLines(check(root));
     }
 
+    /**
+     * A collection: what it names resolves (FC17); the key (FC4, FC8), the properties that hold a geometry (FC7, FC8,
+     * FC15), what a property says of its values (FC11, FC12) and the time (FC18, FC10), each judged by what an
+     * invariant cannot read.
+     */
     private static void collection(FeatureCollection c, List<Finding> findings) {
-        if (!(c.getNamespace() instanceof Package)) {
-            findings.add(FC1.at(c, path(c) + " stands in no package"));
-        }
-        id(c, findings);
-        Set<String> names = new HashSet<>();
         for (Object f : c.getFeature()) {
             if (!(f instanceof FeatureProperty p)) {
-                findings.add(FC1.at(c, path(c) + " owns the feature " + ((ModelElement) f).getName()
-                        + ", which is no feature property"));
                 continue;
             }
-            if (p.getName() != null && !names.add(p.getName())) {
-                findings.add(FC1.at(p, path(c) + " has two properties named " + p.getName()));
-            }
-            if (p.getType() == null) {
-                findings.add(FC1.at(p, path(p) + " has no type"));
-            } else if (p.getType().eIsProxy()) {
+            if (p.getType() != null && p.getType().eIsProxy()) {
                 findings.add(FC17.at(p, path(p) + ": the type does not resolve"));
-            }
-            id(p, findings);
-            if (p.getName() != null && RESERVED.contains(p.getName())) {
-                findings.add(FC3.at(p, path(p) + " is named like the query parameter " + p.getName()
-                        + "; a simple queryable is a parameter of /items too"));
             }
             property(c, p, findings);
         }
         key(c, findings);
-        boolean geometryKnown = primaryGeometry(c, findings);
+        primaryGeometry(c, findings);
         boolean instantKnown = own(c, c.getInstant(), "the instant", findings);
         boolean startKnown = own(c, c.getIntervalStart(), "the interval start", findings);
         boolean endKnown = own(c, c.getIntervalEnd(), "the interval end", findings);
         time(c, instantKnown ? c.getInstant() : null, startKnown ? c.getIntervalStart() : null,
                 endKnown ? c.getIntervalEnd() : null, findings);
-        systems(c, geometryKnown, findings);
+        systems(c, findings);
         boolean anyGeometry = FeatureCollections.properties(c).stream()
                 .anyMatch(p -> FeatureProperties.isGeometry(p) || !SpatialElements.holdings(p).isEmpty());
         if (anyGeometry && c.getGeometry() == null) {
             findings.add(FC15.at(c, path(c) + " holds a geometry in its properties but names no primary geometry; "
                     + "bbox would have nothing to be evaluated on"));
-        }
-        boolean queryable = FeatureCollections.properties(c).stream()
-                .anyMatch(p -> p.isQueryable() && p != c.getFeatureKey());
-        if (!queryable) {
-            findings.add(FC16.at(c, path(c) + " has no queryable property besides its key; a filter can "
-                    + "name nothing"));
         }
     }
 
@@ -256,7 +283,10 @@ public final class FeatureModelValidator {
         }
     }
 
-    /** {@code p} is a property of {@code c} where it is named; false where it is not usable. */
+    /**
+     * Whether {@code p} is named, resolves (FC17) and is a property of {@code c}; one of another class is the matter of
+     * an invariant (FC5), and its type is not judged here.
+     */
     private static boolean own(FeatureCollection c, FeatureProperty p, String what, List<Finding> findings) {
         if (p == null) {
             return false;
@@ -265,32 +295,15 @@ public final class FeatureModelValidator {
             findings.add(FC17.at(c, path(c) + ": " + what + " does not resolve"));
             return false;
         }
-        if (p.getOwner() != c) {
-            findings.add(FC5.at(c, path(c) + ": " + what + " " + path(p) + " is no property of it"));
-            return false;
-        }
-        return true;
+        return p.getOwner() == c;
     }
 
-    /**
-     * The primary geometry, where the collection names one: it resolves (FC17) and at least one of its holdings lies
-     * entirely in properties of the collection (FC19); false where it is not usable.
-     */
-    private static boolean primaryGeometry(FeatureCollection c, List<Finding> findings) {
+    /** The primary geometry, where the collection names one, resolves (FC17). */
+    private static void primaryGeometry(FeatureCollection c, List<Finding> findings) {
         GeometryFeature g = c.getGeometry();
-        if (g == null) {
-            return false;
-        }
-        if (g.eIsProxy()) {
+        if (g != null && g.eIsProxy()) {
             findings.add(FC17.at(c, path(c) + ": the primary geometry does not resolve"));
-            return false;
         }
-        if (FeatureCollections.holding(g, c).isEmpty()) {
-            findings.add(FC19.at(c, path(c) + ": the primary geometry " + path(g) + " has no holding in its "
-                    + "properties; the server writes the geometry of a feature from the properties of the "
-                    + "collection"));
-        }
-        return true;
     }
 
     private static void property(FeatureCollection c, FeatureProperty p, List<Finding> findings) {
@@ -432,37 +445,16 @@ public final class FeatureModelValidator {
         }
     }
 
-    private static void systems(FeatureCollection c, boolean geometryKnown, List<Finding> findings) {
+    /** The offered reference systems: none without a geometry (FC15), each resolving (FC17). */
+    private static void systems(FeatureCollection c, List<Finding> findings) {
         if (c.getGeometry() == null && !c.getReferenceSystems().isEmpty()) {
             findings.add(FC15.at(c, path(c) + " has no geometry but offers reference systems"));
             return;
         }
-        ReferenceSystem storage = geometryKnown ? FeatureCollections.storageSystem(c).orElse(null) : null;
-        boolean height = geometryKnown && FeatureCollections.hasHeight(c);
         for (ReferenceSystem s : c.getReferenceSystems()) {
             if (s.eIsProxy()) {
                 findings.add(FC17.at(c, path(c) + ": an offered reference system does not resolve"));
-                continue;
             }
-            if (s.getAxes() == 3 && !height) {
-                findings.add(FC13.at(c, path(c) + " offers " + ReferenceSystems.name(s) + " of three axes "
-                        + "but its primary geometry holds no height"));
-            }
-            if (s.getAuthority() == ReferenceSystemAuthority.OGC && s.getCode() != null
-                    && (s.getCode().trim().equals("CRS84") || s.getCode().trim().equals("CRS84h"))) {
-                findings.add(FC14.at(c, path(c) + " offers " + ReferenceSystems.name(s) + ", the default, "
-                        + "which the server lists anyway"));
-            } else if (storage != null && ReferenceSystems.same(s, storage)) {
-                findings.add(FC14.at(c, path(c) + " offers " + ReferenceSystems.name(s) + ", the storage "
-                        + "system of its geometry, which the server lists anyway"));
-            }
-        }
-    }
-
-    private static void id(ModelElement e, List<Finding> findings) {
-        if (e.getName() != null && !ID.matcher(e.getName()).matches()) {
-            findings.add(FC2.at(e, path(e) + ": the name '" + e.getName() + "' becomes an id of the API; "
-                    + "letters, digits, '_', '.' and '-' are safe"));
         }
     }
 

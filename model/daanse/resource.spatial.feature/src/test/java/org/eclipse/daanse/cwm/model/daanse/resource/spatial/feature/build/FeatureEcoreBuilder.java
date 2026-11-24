@@ -15,8 +15,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
+import org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature.util.FeatureModelValidator;
+import org.eclipse.daanse.cwm.model.daanse.validation.Findings;
+import org.eclipse.daanse.cwm.model.daanse.validation.Rule;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
@@ -51,6 +55,8 @@ public final class FeatureEcoreBuilder {
     /** The namespace URI of the package. */
     public static final String NS_URI =
             "https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature";
+    /** The source of the metadata of the invariants of a class: name, description and level per rule. */
+    public static final String CONSTRAINTS = NS_URI + Findings.CONSTRAINTS;
 
     private static final String EPL_HEADER = String.join("\n",
             "Copyright (c) 2026 Contributors to the Eclipse Foundation.",
@@ -209,11 +215,6 @@ public final class FeatureEcoreBuilder {
                         + "additionalProperties false); true: a property it does not name may be, and the origin "
                         + "decides whether it exists.")
                 .setDefaultValueLiteral("false");
-        constrain(collection, "OnlyFeatureProperties", "self.feature->forAll(f | f.oclIsKindOf(FeatureProperty))");
-        constrain(collection, "KeyIsOwnProperty",
-                "self.featureKey.oclIsUndefined() or self.feature->includes(self.featureKey)");
-        constrain(collection, "InstantOrInterval", "self.instant.oclIsUndefined() "
-                + "or (self.intervalStart.oclIsUndefined() and self.intervalEnd.oclIsUndefined())");
 
         attr(property, "displayName", cwm.stringType, 0, 1, "The title in the queryables; unset, the name.");
         attr(property, "queryable", cwm.booleanType, 0, 1,
@@ -235,13 +236,85 @@ public final class FeatureEcoreBuilder {
         attr(property, "maximum", cwm.floatType, 0, 1, "The largest value, a decimal number; numeric types only.");
         attr(property, "pattern", cwm.stringType, 0, 1,
                 "A regular expression every value matches; text types only.");
-        constrain(property, "OwnedByCollection",
-                "self.owner.oclIsUndefined() or self.owner.oclIsKindOf(FeatureCollection)");
+        invariants(collection, property);
         return p;
     }
 
-    /** Adds an OCL invariant: Ecore constraints list plus the OCL expression of the same name. */
-    private void constrain(EClass c, String name, String ocl) {
+    /**
+     * The rules of {@link FeatureModelValidator} the metamodel states, each an OCL invariant of the class it is about,
+     * named by the code of the rule; the other rules ({@link FeatureModelValidator#CHECKED_IN_JAVA}) cannot be stated
+     * in OCL and stay with the validator.
+     */
+    private void invariants(EClass collection, EClass property) {
+        String plainId = "self.name.oclIsUndefined() or self.name.matches('[A-Za-z0-9_.-]+')";
+        constrain(collection, FeatureModelValidator.FC1, "StandsInAPackageAndOwnsProperties",
+                "not self.namespace.oclIsUndefined() and self.namespace.oclIsKindOf(core::Package) "
+                        + "and self.feature->forAll(f | f.oclIsKindOf(FeatureProperty)) "
+                        + "and self.feature->select(f | not f.name.oclIsUndefined())->isUnique(f | f.name)");
+        constrain(collection, FeatureModelValidator.FC2, "PlainId", plainId);
+        constrain(collection, FeatureModelValidator.FC5, "TimeOfItsOwnProperties",
+                "(self.instant.oclIsUndefined() or self.instant.owner = self) "
+                        + "and (self.intervalStart.oclIsUndefined() or self.intervalStart.owner = self) "
+                        + "and (self.intervalEnd.oclIsUndefined() or self.intervalEnd.owner = self)");
+        constrain(collection, FeatureModelValidator.FC13, "ThreeAxesOnlyWithAHeight", "self.geometry.oclIsUndefined() "
+                + "or self.geometry.hasHeight or self.referenceSystems->forAll(s | s.axes <> 3)");
+        constrain(collection, FeatureModelValidator.FC14, "NeitherTheDefaultNorTheStorageSystemOffered",
+                "self.geometry.oclIsUndefined() or self.referenceSystems->forAll(s | "
+                        + "not (s.authority = spatial::ReferenceSystemAuthority::OGC and not s.code.oclIsUndefined() "
+                        + "and Set{'CRS84', 'CRS84h'}->includes(s.code.trim())) "
+                        + "and (self.geometry.referenceSystem.oclIsUndefined() or not "
+                        + sameSystem("s", "self.geometry.referenceSystem") + "))");
+        constrain(collection, FeatureModelValidator.FC16, "AQueryableBesideTheKey",
+                "self.feature->exists(f | f.oclIsKindOf(FeatureProperty) and f <> self.featureKey "
+                        + "and f.oclAsType(FeatureProperty).queryable)");
+        constrain(collection, FeatureModelValidator.FC19, "ThePrimaryGeometryHeldInItsProperties",
+                "self.geometry.oclIsUndefined() or self.geometry.holding->exists(h | "
+                        + "let attributes : Set(core::Attribute) = " + attributes("h") + " in "
+                        + "attributes->notEmpty() and attributes->forAll(a | a.owner = self))");
+
+        constrain(property, FeatureModelValidator.FC1, "TypedAndInACollection", "not self.type.oclIsUndefined() "
+                + "and (self.owner.oclIsUndefined() or self.owner.oclIsKindOf(FeatureCollection))");
+        constrain(property, FeatureModelValidator.FC2, "PlainId", plainId);
+        constrain(property, FeatureModelValidator.FC3, "NotAQueryParameter", "self.name.oclIsUndefined() or Set{"
+                + String.join(", ", FeatureModelValidator.RESERVED.stream().sorted().map(n -> "'" + n + "'").toList())
+                + "}->excludes(self.name)");
+    }
+
+    /** OCL: the attributes the holding {@code holding} names, as a set; a part that names none adds none. */
+    private static String attributes(String holding) {
+        return "(if " + holding + ".oclIsKindOf(spatial::WholeHolding) then " + holding
+                + ".oclAsType(spatial::WholeHolding).attribute->asSet() else if " + holding
+                + ".oclIsKindOf(spatial::ListHolding) then " + holding
+                + ".oclAsType(spatial::ListHolding).attribute->asSet() else " + holding
+                + ".oclAsType(spatial::PartsHolding).part->collect(p | p.attribute)"
+                + "->select(a | not a.oclIsUndefined())->asSet() endif endif)";
+    }
+
+    /**
+     * OCL: whether the reference systems {@code a} and {@code b} are one: the same element, or one authority, version
+     * and code, as their URIs are; a system without a version has the version 0.
+     */
+    private static String sameSystem(String a, String b) {
+        return "(" + a + " = " + b + " or (" + a + ".authority = " + b + ".authority and " + code(a) + " = " + code(b)
+                + " and " + version(a) + " = " + version(b) + "))";
+    }
+
+    private static String code(String system) {
+        return "(if " + system + ".code.oclIsUndefined() then '' else " + system + ".code.trim() endif)";
+    }
+
+    private static String version(String system) {
+        return "(if " + system + ".version.oclIsUndefined() or " + system + ".version.trim() = '' then '0' else "
+                + system + ".version.trim() endif)";
+    }
+
+    /**
+     * Adds the rule {@code rule} as an OCL invariant of {@code c}, named by the code of the rule: the Ecore constraints
+     * list, the OCL expression, and its metadata in {@link #CONSTRAINTS}: a short name, the sentence of the rule as its
+     * description, its severity as its level.
+     */
+    private void constrain(EClass c, Rule rule, String name, String ocl) {
+        String code = rule.code();
         EAnnotation constraints = c.getEAnnotation(ECORE);
         if (constraints == null) {
             constraints = ef.createEAnnotation();
@@ -249,14 +322,23 @@ public final class FeatureEcoreBuilder {
             c.getEAnnotations().add(0, constraints);
         }
         String names = constraints.getDetails().get("constraints");
-        constraints.getDetails().put("constraints", names == null ? name : names + " " + name);
+        constraints.getDetails().put("constraints", names == null ? code : names + " " + code);
         EAnnotation expressions = c.getEAnnotation(ECORE_OCL);
         if (expressions == null) {
             expressions = ef.createEAnnotation();
             expressions.setSource(ECORE_OCL);
             c.getEAnnotations().add(1, expressions);
         }
-        expressions.getDetails().put(name, ocl);
+        expressions.getDetails().put(code, ocl);
+        EAnnotation metadata = c.getEAnnotation(CONSTRAINTS);
+        if (metadata == null) {
+            metadata = ef.createEAnnotation();
+            metadata.setSource(CONSTRAINTS);
+            c.getEAnnotations().add(2, metadata);
+        }
+        metadata.getDetails().put(code + ".name", name);
+        metadata.getDetails().put(code + ".description", rule.says());
+        metadata.getDetails().put(code + ".level", rule.severity().name().toLowerCase(Locale.ROOT));
     }
 
     /** {@code Property.oppositeRoleName} pair (convention for hidden association ends). */
