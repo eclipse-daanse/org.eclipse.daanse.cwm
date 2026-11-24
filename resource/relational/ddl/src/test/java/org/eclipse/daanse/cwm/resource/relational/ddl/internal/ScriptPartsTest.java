@@ -48,6 +48,7 @@ import org.eclipse.daanse.cwm.resource.relational.ddl.api.UnwritableException;
 import org.eclipse.daanse.cwm.resource.relational.ddl.internal.support.SqlGenFixture;
 import org.eclipse.daanse.sql.dialect.db.duckdb.DuckDbDialect;
 import org.eclipse.daanse.sql.dialect.db.mssqlserver.MicrosoftSqlServerDialect;
+import org.eclipse.daanse.sql.dialect.db.mysql.MySqlDialect;
 import org.eclipse.daanse.sql.dialect.db.postgresql.PostgreSqlDialect;
 import org.eclipse.daanse.sql.model.schema.TableReference;
 import org.junit.jupiter.api.Test;
@@ -231,6 +232,26 @@ class ScriptPartsTest {
         trigger.setActionOrientation(ActionOrientationType.STATEMENT);
         assertThat(CwmSchemaMapper.rowTriggerWrittenPerStatement(sqlServer, sqlServerOrders, trigger, "trg"))
                 .as("a statement trigger is written as one").isFalse();
+    }
+
+    /**
+     * MySQL has row triggers only and refuses a statement trigger: a row trigger is not written as
+     * one there, so the probes answer no instead of passing the refusal on, and the trigger is
+     * written {@code FOR EACH ROW}, strict too.
+     */
+    @Test
+    void aRowTriggerIsWrittenAsOneWhereTheDialectHasRowTriggersOnly() {
+        MySqlDialect mysql = new MySqlDialect();
+        SqlGenFixture f = SqlGenFixture.build("sales", mysql);
+        Trigger trigger = f.attachTrigger(f.orders, "trg_orders_audit", "BEGIN SET @audit_count = 1; END");
+        f.schema.getOwnedElement().add(trigger);
+        TableReference mysqlOrders = new DdlGeneratorImpl(mysql).tableReference(f.orders);
+
+        assertThat(CwmSchemaMapper.rowTriggerWrittenPerStatement(mysql, mysqlOrders, trigger, "trg")).isFalse();
+        assertThat(CwmSchemaMapper.beforeTriggerWrittenAfter(mysql, mysqlOrders, trigger, "trg")).isFalse();
+        assertThat(CwmSchemaMapper.triggerRefused(mysql, mysqlOrders, trigger, "trg")).isEmpty();
+        assertThat(new DdlGeneratorImpl(mysql, DdlSettings.defaults().withStrict(true)).createElement(trigger))
+                .anyMatch(s -> s.sql().startsWith("CREATE TRIGGER") && s.sql().contains("FOR EACH ROW"));
     }
 
     /**

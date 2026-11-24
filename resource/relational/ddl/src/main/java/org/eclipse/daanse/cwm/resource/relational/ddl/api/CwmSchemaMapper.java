@@ -175,12 +175,20 @@ public final class CwmSchemaMapper {
      * procedures its own procedure, {@link #triggerFunctionName}, plus the
      * trigger calling it, otherwise the trigger with its inline body. Empty
      * when the trigger has no body.
+     *
+     * @throws UnsupportedOperationException where the dialect refuses the trigger as the model has it
+     *                                       ({@link #triggerRefused})
      */
     public static List<String> createTrigger(Dialect dialect, TableReference table, Trigger trigger) {
         return createTrigger(dialect, table, trigger, RelationalNames.of(trigger));
     }
 
-    /** As {@link #createTrigger(Dialect, TableReference, Trigger)}, the trigger named {@code name}. */
+    /**
+     * As {@link #createTrigger(Dialect, TableReference, Trigger)}, the trigger named {@code name}.
+     *
+     * @throws UnsupportedOperationException where the dialect refuses the trigger as the model has it
+     *                                       ({@link #triggerRefused})
+     */
     public static List<String> createTrigger(Dialect dialect, TableReference table, Trigger trigger, String name) {
         String body = triggerBody(trigger);
         if (body == null) {
@@ -191,11 +199,44 @@ public final class CwmSchemaMapper {
     }
 
     /**
+     * Where the dialect refuses {@code trigger} as the model has it, what of it the dialect refuses:
+     * {@code FOR EACH STATEMENT} of a statement trigger where it has row triggers only, as MySQL and
+     * MariaDB; {@code WHEN <condition>} where it has no condition on a trigger but writes the trigger
+     * without one, as SQL Server; otherwise {@code CREATE TRIGGER}. A dialect refuses with an
+     * {@link UnsupportedOperationException}. Empty where it writes the trigger, and for a trigger
+     * without body.
+     */
+    public static Optional<String> triggerRefused(Dialect dialect, TableReference table, Trigger trigger,
+            String name) {
+        String body = triggerBody(trigger);
+        if (body == null) {
+            return Optional.empty();
+        }
+        TriggerTiming timing = triggerTiming(trigger);
+        TriggerScope scope = triggerScope(trigger);
+        String when = triggerWhen(trigger);
+        TriggerEvent event = triggerEvent(trigger);
+        if (written(dialect, table, name, body, timing, scope, when, event).isPresent()) {
+            return Optional.empty();
+        }
+        TriggerScope otherScope = scope == TriggerScope.ROW ? TriggerScope.STATEMENT : TriggerScope.ROW;
+        if (written(dialect, table, name, body, timing, otherScope, when, event).isPresent()) {
+            return Optional.of(scope.forEachClause());
+        }
+        if (when != null && written(dialect, table, name, body, timing, scope, null, event).isPresent()) {
+            return Optional.of("WHEN " + when);
+        }
+        return Optional.of("CREATE TRIGGER");
+    }
+
+    /**
      * Whether the dialect writes {@code trigger}, a row trigger in the model, as a statement trigger:
      * it writes the same statements for it as for a statement trigger, so it writes no orientation,
      * and a trigger without one fires once per statement, {@code FOR EACH STATEMENT} being the
      * default of SQL. SQL Server, whose triggers fire once per statement, is such a dialect.
-     * {@code false} for a statement trigger and for a trigger without body.
+     * {@code false} for a statement trigger, for a trigger without body, and where the dialect refuses
+     * the trigger as a row trigger or as a statement trigger: one with row triggers only, as MySQL
+     * and MariaDB, writes no statement trigger, so it writes no row trigger as one.
      */
     public static boolean rowTriggerWrittenPerStatement(Dialect dialect, TableReference table, Trigger trigger,
             String name) {
@@ -206,15 +247,16 @@ public final class CwmSchemaMapper {
         TriggerTiming timing = triggerTiming(trigger);
         String when = triggerWhen(trigger);
         TriggerEvent event = triggerEvent(trigger);
-        return createTrigger(dialect, table, name, body, timing, TriggerScope.ROW, when, event)
-                .equals(createTrigger(dialect, table, name, body, timing, TriggerScope.STATEMENT, when, event));
+        return writtenAlike(written(dialect, table, name, body, timing, TriggerScope.ROW, when, event),
+                written(dialect, table, name, body, timing, TriggerScope.STATEMENT, when, event));
     }
 
     /**
      * Whether the dialect writes {@code trigger}, a {@code BEFORE} trigger in the model, as an
      * {@code AFTER} trigger: it writes the same statements for it as for one that fires after the
      * statement. SQL Server, which has no {@code BEFORE} triggers, is such a dialect. {@code false} for
-     * an {@code AFTER} trigger and for a trigger without body.
+     * an {@code AFTER} trigger, for a trigger without body, and where the dialect refuses the trigger
+     * in either timing.
      */
     public static boolean beforeTriggerWrittenAfter(Dialect dialect, TableReference table, Trigger trigger,
             String name) {
@@ -225,14 +267,15 @@ public final class CwmSchemaMapper {
         TriggerScope scope = triggerScope(trigger);
         String when = triggerWhen(trigger);
         TriggerEvent event = triggerEvent(trigger);
-        return createTrigger(dialect, table, name, body, TriggerTiming.BEFORE, scope, when, event)
-                .equals(createTrigger(dialect, table, name, body, TriggerTiming.AFTER, scope, when, event));
+        return writtenAlike(written(dialect, table, name, body, TriggerTiming.BEFORE, scope, when, event),
+                written(dialect, table, name, body, TriggerTiming.AFTER, scope, when, event));
     }
 
     /**
      * Whether the dialect leaves out the {@code WHEN} condition of {@code trigger}: it writes the same
      * statements for it as for the trigger without one, so the trigger fires for every row or
-     * statement. {@code false} for a trigger without condition and for a trigger without body.
+     * statement. {@code false} for a trigger without condition, for a trigger without body, and where
+     * the dialect refuses the trigger with its condition or without it.
      */
     public static boolean triggerConditionLeftOut(Dialect dialect, TableReference table, Trigger trigger,
             String name) {
@@ -244,8 +287,26 @@ public final class CwmSchemaMapper {
         TriggerTiming timing = triggerTiming(trigger);
         TriggerScope scope = triggerScope(trigger);
         TriggerEvent event = triggerEvent(trigger);
-        return createTrigger(dialect, table, name, body, timing, scope, when, event)
-                .equals(createTrigger(dialect, table, name, body, timing, scope, null, event));
+        return writtenAlike(written(dialect, table, name, body, timing, scope, when, event),
+                written(dialect, table, name, body, timing, scope, null, event));
+    }
+
+    /**
+     * The statements of a trigger named {@code name} in the form given, as the dialect writes them, or
+     * empty where it refuses the trigger in this form: what it refuses, it does not write.
+     */
+    private static Optional<List<String>> written(Dialect dialect, TableReference table, String name, String body,
+            TriggerTiming timing, TriggerScope scope, String when, TriggerEvent event) {
+        try {
+            return Optional.of(createTrigger(dialect, table, name, body, timing, scope, when, event));
+        } catch (UnsupportedOperationException refused) {
+            return Optional.empty();
+        }
+    }
+
+    /** Whether the dialect writes the trigger in the form of the model, and the same as in the other form. */
+    private static boolean writtenAlike(Optional<List<String>> asInTheModel, Optional<List<String>> otherForm) {
+        return asInTheModel.isPresent() && asInTheModel.equals(otherForm);
     }
 
     /** The statements of a trigger named {@code name}, with the timing, orientation, condition and event given. */

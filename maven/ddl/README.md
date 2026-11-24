@@ -244,7 +244,8 @@ strict: the dialect cannot write what the model holds, in 1 case:
 | a user (party marked `databaseUser`), for DuckDB and ANSI | left out | the dialect has no users |
 | a row trigger (`actionOrientation = ROW`), for SQL Server | a statement trigger | the dialect writes no `FOR EACH ROW`, and a SQL Server trigger fires once per statement |
 | a `BEFORE` trigger, for SQL Server | an `AFTER` trigger | SQL Server has `AFTER` and `INSTEAD OF` triggers only |
-| the `WHEN` condition of a trigger, for SQL Server, MySQL and MariaDB | left out, the trigger fires for every row | the dialect writes no condition for a trigger |
+| a statement trigger (`actionOrientation = STATEMENT`), for MySQL and MariaDB | left out | the database has row triggers only; a row trigger fires for each row, not once per statement, and not at all for a statement that changes no row |
+| a trigger with a `WHEN` condition, for SQL Server | left out | SQL Server has no condition on a trigger, and without it the trigger fires for every row; write the condition into the body, over the `inserted` and `deleted` rows. MySQL and MariaDB have none either: their dialect writes the condition into the body, `BEGIN IF (condition) THEN … END IF; END` |
 | a function or procedure in a language the dialect writes no routines in (every routine for H2, DuckDB and ANSI) | left out | the dialect writes routines in its own languages only |
 | a function the model gives no result type (a `RETURN` parameter), as one read from PostgreSQL | left out | the dialect needs the type a function returns; PostgreSQL's metadata do not report it |
 | the comment on a function or procedure | left out | the dialect API has no `COMMENT ON FUNCTION` |
