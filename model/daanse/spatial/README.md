@@ -673,71 +673,122 @@ SpatialModelValidator.check(model);                         // every finding, er
 SpatialModelValidator.validate(model);                      // the errors as lines, "SP43 ..."
 ```
 
-`HeightNeedsThreeAxes`, `EpochOnlyWhenDynamic`,
-`NotDerivedFromItself`, `KindFollowsDerivation` (geometry feature), `GeoJsonEastFirst` (whole
-holding), `EachRoleOnce` (parts and list), `MinimumShareInRange`, `DistanceOnlyForWithinDistance`
-(relation), `ParentNotSelf`, `ResolutionInRange`, `ParentOfTheSameSystem` (grid level),
-`ResolutionsInOrder` (grid system) and `AxesTwoOrThree` (reference system) stand in the Ecore as
-OCL invariants as well; the axis order of a reference system is required and unsettable, so that
-EMF's own multiplicity check finds it unset, as SP37 does.
+The column *Checked* says where a rule is checked: `model`, an OCL invariant of the metamodel that
+any client evaluates ([The rules in the model](#the-rules-in-the-model)), or `Java`, the validator
+alone. A rule is checked in one place, never in both.
 
-| Rule | Severity | Says |
-| --- | --- | --- |
-| SP2 | error | an attribute is named once, by one holding (in one of its parts) |
-| SP3 | warning | the type of the attribute of a whole holding fits its storage: `NATIVE` a geometry type (the data type `Geometry` among them), `WKT` and `GEOJSON` text, `WKB` binary (an unknown type is no finding) |
-| SP5 | error | `WITHIN`, `COVERED_BY`, `INTERSECTS`, `CENTROID_WITHIN` need a parent of kind `POLYGON` or `MIXED` |
-| SP6 | error | `AREA` weighs a polygon, `LENGTH` a line; a point has no weight |
-| SP7 | error | `EXACTLY_ONE` carries a weight only with a minimum share above zero |
-| SP8 | error | `ALL_WEIGHTED` and `LARGEST_SHARE` need a weight; `ALL_EQUAL` may have one (for the minimum share only) |
-| SP9 | error | the minimum share is from 0 below 1, above 0 only with a weight |
-| SP10 | error | a distance goes with `WITHIN_DISTANCE` only, and is above zero |
-| SP11 | error | `NEAREST` assigns `EXACTLY_ONE` (a tie break is allowed) |
-| SP12 | error | child and parent (a band's source and reference) share a reference system (one URI), or a working one is named |
-| SP14 | error | a relation, a grid level or a band names its geometries and keys; each key is a column of a table that holds its geometry |
-| SP15 | warning | `DROP` of a relation, a grid level or a band: facts that reach the parent, cell or class through the result vanish from the sums |
-| SP16 | error | a declared result has the shape of its rule: the keys' types, a numeric share; a grid's source key and one cell key per level, text (or a number for a system that does not nest); a band's class a number |
-| SP17 | error | following child to parent never leads back: no place is its own ancestor |
-| SP18 | error | a grid takes points into cells of a system and at a resolution it names, below a coarser level over the same points and source key |
-| SP19 | error | the bounds of a band are decimal numbers above zero, strictly ascending |
-| SP20 | warning | a reference that does not resolve |
-| SP21 | warning | an explicit key with `NEAREST`: the key, not the geometry, decides the rows that carry it |
-| SP22 | error | a grid takes single points: a source of multiplicity `MULTI` has no one cell |
-| SP23 | error | a feature with a height has a reference system of three axes |
-| SP24 | warning | a geometry feature in a dynamic reference system names the epoch its coordinates hold for |
-| SP25 | warning | a child, parent or source key is not a declared unique key of one column |
-| SP26 | error | a `VIEW` result where the rule would have to stop |
-| SP27 | warning | an area, a length or a distance measured in a system of kind `GEOCENTRIC`, of which the planar functions read x and y only |
-| SP28 | error | a whole holding stored as `GEOJSON` holds its coordinates east first (RFC 7946) |
-| SP29 | warning | a whole holding stored as `GEOJSON` holds longitude and latitude of WGS 84: CRS84, CRS84h, EPSG 4326 or 4979 stored east first; another system only by prior arrangement |
-| SP30 | error | a geometry feature names its reference system |
-| SP31 | error | the accuracy of a geometry feature is a decimal number of metres from zero up |
-| SP32 | error | a geometry feature names a coordinate epoch only where its reference system is dynamic |
-| SP33 | error | a coordinate epoch is a decimal year |
-| SP34 | error | a reference system has a code |
-| SP35 | error | an EPSG code is a positive whole number |
-| SP36 | error | a reference system has 2 or 3 axes |
-| SP37 | error | a reference system states the order of its first two axes as its register defines them; there is no default |
-| SP38 | error | the resolution of a grid level lies within the resolutions of its grid system |
-| SP39 | error | the resolutions of a grid system run from zero up, its minimum at most its maximum |
-| SP40 | error | a grid system has an identifier, once in its model |
-| SP41 | error | a chain of grid levels stays within one grid system |
-| SP42 | error | a geometry feature has a holding, and each holding names its attributes: a whole and a list holding one, a holding in parts a part at least, each part one |
-| SP43 | error | a geometry held as numbers (in parts or as a list) is a single point, or the envelope of another geometry |
-| SP44 | error | a holding of numbers names each role once |
-| SP45 | error | the roles fit the shape: a point has `EAST` and `NORTH` and no edge of an envelope; an envelope its four edges `MIN_EAST`, `MIN_NORTH`, `MAX_EAST`, `MAX_NORTH` and no axis of a point |
-| SP46 | error | a geometry held as numbers has its height roles exactly where it has a height: `HEIGHT` for a point, `MIN_HEIGHT` and `MAX_HEIGHT` for an envelope |
-| SP47 | warning | the attributes of numbers are numeric: a part's a number; a list's text where it has a separator, else several numbers (an array, a JSON array type, or a multi-valued attribute of a number type); a JSON primitive type is judged by its value kind; a type not known, or a number without a stated multiplicity, is no finding |
-| SP48 | error | the attributes of a holding in parts belong to one classifier: one row holds one value |
-| SP49 | error | a geometry names a derivation exactly where it names what it is derived from |
-| SP50 | error | a geometry is not derived from itself, directly or through others |
-| SP51 | error | a derived geometry is in the reference system of the geometry it is derived from (one URI) |
-| SP52 | error | the kind follows the derivation: an envelope is a single polygon; a corner, a centroid and a point on the surface single points |
-| SP53 | error | two corners derived from one geometry and held in one classifier are opposite: south-west and north-east, or north-west and south-east |
+| Rule | Severity | Checked | Says |
+| --- | --- | --- | --- |
+| SP2 | error | Java | an attribute is named once, by one holding (in one of its parts) |
+| SP3 | warning | Java | the type of the attribute of a whole holding fits its storage: `NATIVE` a geometry type (the data type `Geometry` among them), `WKT` and `GEOJSON` text, `WKB` binary (an unknown type is no finding) |
+| SP5 | error | model | `WITHIN`, `COVERED_BY`, `INTERSECTS`, `CENTROID_WITHIN` need a parent of kind `POLYGON` or `MIXED` |
+| SP6 | error | Java | `AREA` weighs a polygon, `LENGTH` a line; a point has no weight |
+| SP7 | error | Java | `EXACTLY_ONE` carries a weight only with a minimum share above zero |
+| SP8 | error | Java | `ALL_WEIGHTED` and `LARGEST_SHARE` need a weight; `ALL_EQUAL` may have one (for the minimum share only) |
+| SP9 | error | Java | the minimum share is from 0 below 1, above 0 only with a weight |
+| SP10 | error | model | a distance goes with `WITHIN_DISTANCE` only, and is above zero |
+| SP11 | error | model | `NEAREST` assigns `EXACTLY_ONE` (a tie break is allowed) |
+| SP12 | error | model | child and parent (a band's source and reference) share a reference system (one URI), or a working one is named |
+| SP14 | error | model | a relation, a grid level or a band names its geometries and keys; each key is a column of a table that holds its geometry |
+| SP15 | warning | model | `DROP` of a relation, a grid level or a band: facts that reach the parent, cell or class through the result vanish from the sums |
+| SP16 | error | Java | a declared result has the shape of its rule: the keys' types, a numeric share; a grid's source key and one cell key per level, text (or a number for a system that does not nest); a band's class a number |
+| SP17 | error | Java | following child to parent never leads back: no place is its own ancestor |
+| SP18 | error | Java | a grid takes points into cells of a system and at a resolution it names, below a coarser level over the same points and source key |
+| SP19 | error | model | the bounds of a band are decimal numbers above zero, strictly ascending |
+| SP20 | warning | Java | a reference that does not resolve |
+| SP21 | warning | model | an explicit key with `NEAREST`: the key, not the geometry, decides the rows that carry it |
+| SP22 | error | model | a grid takes single points: a source of multiplicity `MULTI` has no one cell |
+| SP23 | error | model | a feature with a height has a reference system of three axes |
+| SP24 | warning | model | a geometry feature in a dynamic reference system names the epoch its coordinates hold for |
+| SP25 | warning | Java | a child, parent or source key is not a declared unique key of one column |
+| SP26 | error | model | a `VIEW` result where the rule would have to stop |
+| SP27 | warning | Java | an area, a length or a distance measured in a system of kind `GEOCENTRIC`, of which the planar functions read x and y only |
+| SP28 | error | model | a whole holding stored as `GEOJSON` holds its coordinates east first (RFC 7946) |
+| SP29 | warning | model | a whole holding stored as `GEOJSON` holds longitude and latitude of WGS 84: CRS84, CRS84h, EPSG 4326 or 4979 stored east first; another system only by prior arrangement |
+| SP30 | error | model | a geometry feature names its reference system |
+| SP31 | error | model | the accuracy of a geometry feature is a decimal number of metres from zero up |
+| SP32 | error | model | a geometry feature names a coordinate epoch only where its reference system is dynamic |
+| SP33 | error | model | a coordinate epoch is a decimal year |
+| SP34 | error | model | a reference system has a code |
+| SP35 | error | model | an EPSG code is a positive whole number |
+| SP36 | error | model | a reference system has 2 or 3 axes |
+| SP37 | error | Java | a reference system states the order of its first two axes as its register defines them; there is no default |
+| SP38 | error | model | the resolution of a grid level lies within the resolutions of its grid system |
+| SP39 | error | model | the resolutions of a grid system run from zero up, its minimum at most its maximum |
+| SP40 | error | Java | a grid system has an identifier, once in its model |
+| SP41 | error | model | a chain of grid levels stays within one grid system |
+| SP42 | error | model | a geometry feature has a holding, and each holding names its attributes: a whole and a list holding one, a holding in parts a part at least, each part one |
+| SP43 | error | model | a geometry held as numbers (in parts or as a list) is a single point, or the envelope of another geometry |
+| SP44 | error | model | a holding of numbers names each role once |
+| SP45 | error | model | the roles fit the shape: a point has `EAST` and `NORTH` and no edge of an envelope; an envelope its four edges `MIN_EAST`, `MIN_NORTH`, `MAX_EAST`, `MAX_NORTH` and no axis of a point |
+| SP46 | error | model | a geometry held as numbers has its height roles exactly where it has a height: `HEIGHT` for a point, `MIN_HEIGHT` and `MAX_HEIGHT` for an envelope |
+| SP47 | warning | Java | the attributes of numbers are numeric: a part's a number; a list's text where it has a separator, else several numbers (an array, a JSON array type, or a multi-valued attribute of a number type); a JSON primitive type is judged by its value kind; a type not known, or a number without a stated multiplicity, is no finding |
+| SP48 | error | model | the attributes of a holding in parts belong to one classifier: one row holds one value |
+| SP49 | error | Java | a geometry names a derivation exactly where it names what it is derived from |
+| SP50 | error | model | a geometry is not derived from itself, directly or through others |
+| SP51 | error | model | a derived geometry is in the reference system of the geometry it is derived from (one URI) |
+| SP52 | error | model | the kind follows the derivation: an envelope is a single polygon; a corner, a centroid and a point on the surface single points |
+| SP53 | error | Java | two corners derived from one geometry and held in one classifier are opposite: south-west and north-east, or north-west and south-east |
 
 A code keeps its meaning, and a check that vanished retires its code. There is no SP1: a holding
 names attributes by its type, so that no class, package or association end can stand where an
 attribute does. There is no SP4: its checks have a code each (SP30 to SP36). There is no SP13: the
 warning it gave is SP27. An error and a warning never share a code.
+
+### The rules in the model
+
+Most rules stand in `model/spatial.ecore` itself, so that a client that loads the metamodel reads
+and evaluates them without the validator. Each is an OCL invariant of the class it is about, named
+by the code of its rule: the class lists it under the annotation
+`http://www.eclipse.org/emf/2002/Ecore` (`constraints`), holds its expression under
+`http://www.eclipse.org/emf/2002/Ecore/OCL`, and states its short name, its sentence and its
+severity under `https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.spatial/constraints`.
+A rule about the holdings of a geometry is an invariant of the geometry feature, whose finding
+names the feature.
+
+```xml
+<eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+  <details key="SP23" value="not self.hasHeight or self.referenceSystem.oclIsUndefined() or self.referenceSystem.axes = 3"/>
+</eAnnotations>
+<eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.spatial/constraints">
+  <details key="SP23.name" value="HeightNeedsThreeAxes"/>
+  <details key="SP23.description" value="A geometry with a height has a reference system of three axes."/>
+  <details key="SP23.level" value="error"/>
+</eAnnotations>
+```
+
+A client installs the classic Eclipse OCL as the delegate the metamodel names (outside Eclipse
+`OCLDelegateDomain.initialize(null)` and an `OCLDelegateDomainFactory` for
+`OCLConstants.OCL_DELEGATE_URI_LPG`) and runs the EMF check (`Diagnostician`). The EMF check
+reports every invariant that is not kept as an error; `Findings.of` of `validation` makes of each a
+finding of its rule that weighs as its level says and says the sentence. `SpatialModelValidator.check`
+does the same for the elements of the package and adds the findings of the rules in Java. The
+finding of an invariant names the element and says the sentence of its rule, as
+`land.geodata.masts: A geometry with a height has a reference system of three axes.`; an element
+one of whose references does not resolve (SP20) gets no finding of an invariant, which would read
+an element that is not there as one of default values. Where an invariant asks whether a geometry
+is an envelope, it reads a geometry that names what it is derived from (`of`) with the derivation
+`ENVELOPE`.
+
+The rules in Java, and why no invariant states them:
+
+- SP2: the element of its finding is the attribute, a class of CWM `core` this metamodel adds no invariant to, and the holdings that name it are found in every feature of the model.
+- SP3: it judges the type of an attribute by classes of other models the metamodel does not import (the JDBC code of an SQL type, the value kind of a JSON type, an array type) and by its name without length or precision.
+- SP6: it weighs only a weight that is set; the weight is unsettable, and OCL reads an unset one as `AREA`.
+- SP7: it asks whether a weight is set, as SP6 does.
+- SP8: it asks whether a weight is set, as SP6 does.
+- SP9: a minimum share above zero asks whether a weight is set, as SP6 does.
+- SP16: it judges the types of the columns of a result, as SP3 does.
+- SP17: a chain is followed from a geometry to the relations that name it as their child, a way back through the whole model.
+- SP18: it asks whether a resolution is named; the resolution is unsettable (0 is a resolution of H3), and OCL reads an unset one as 0.
+- SP20: whether a reference resolves is not visible to an invariant, which reads an element that is not there as one of default values; EMF's own check finds it as well.
+- SP25: a declared key is a unique key of `keysindexes`, which the metamodel does not import.
+- SP27: whether a relation measures asks whether its weight is set, as SP6 does.
+- SP37: it asks whether the axis order is stated at all; it is unsettable without a default, and OCL reads an unset one as `EAST_NORTH`. Being required, EMF's own multiplicity check finds it unset as well.
+- SP40: an identifier once in its model compares a grid system with every other of the model.
+- SP47: it judges the types of the attributes of numbers, as SP3 does.
+- SP49: it asks whether a derivation is named; the derivation is unsettable, and OCL reads an unset one as `ENVELOPE`.
+- SP53: the other corners of a geometry are found from the geometry they are derived from, a way back through the whole model.
 
 ### Not modelled
 

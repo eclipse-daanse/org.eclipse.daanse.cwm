@@ -37,7 +37,10 @@ import org.eclipse.ocl.ecore.delegate.OCLDelegateDomainFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-/** The shape of the spatial metamodel and its OCL invariants. */
+/**
+ * The shape of the spatial metamodel and some of its OCL invariants, each through the method the code generator makes
+ * of it; {@code SpatialModelValidatorTest} holds a test of every rule, {@code SpatialRulesTest} the place of each.
+ */
 class SpatialModelTest {
 
     private static final String EMOF = "http://schema.omg.org/spec/MOF/2.0/emof.xml";
@@ -316,13 +319,13 @@ class SpatialModelTest {
     @Test
     void aReferenceSystemHasTwoOrThreeAxes() {
         ReferenceSystem system = F.createReferenceSystem();
-        assertThat(severity((v, d) -> v.validateReferenceSystem_AxesTwoOrThree(system, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateReferenceSystem_SP36(system, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
         system.setAxes(3);
-        assertThat(severity((v, d) -> v.validateReferenceSystem_AxesTwoOrThree(system, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateReferenceSystem_SP36(system, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
         system.setAxes(4);
-        assertThat(severity((v, d) -> v.validateReferenceSystem_AxesTwoOrThree(system, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateReferenceSystem_SP36(system, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.ERROR);
     }
 
@@ -333,30 +336,34 @@ class SpatialModelTest {
         GeometryFeature feature = F.createGeometryFeature();
         feature.setReferenceSystem(system);
         feature.setCoordinateEpoch("2010.5");
-        assertThat(severity((v, d) -> v.validateGeometryFeature_EpochOnlyWhenDynamic(feature, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP32(feature, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
         system.setDynamic(false);
-        assertThat(severity((v, d) -> v.validateGeometryFeature_EpochOnlyWhenDynamic(feature, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP32(feature, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.ERROR);
         feature.setCoordinateEpoch(null);
-        assertThat(severity((v, d) -> v.validateGeometryFeature_EpochOnlyWhenDynamic(feature, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP32(feature, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
     }
 
+    /** The invariant is the feature's, so that its finding names the feature that holds the GeoJSON. */
     @Test
     void geoJsonHoldsItsCoordinatesEastFirst() {
         WholeHolding holding = F.createWholeHolding();
         holding.setStorage(GeometryStorage.GEOJSON);
-        assertThat(severity((v, d) -> v.validateWholeHolding_GeoJsonEastFirst(holding, d, new HashMap<>())))
+        GeometryFeature feature = F.createGeometryFeature();
+        feature.getHolding().add(holding);
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP28(feature, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
         holding.setAxisOrder(AxisOrder.NORTH_EAST);
-        assertThat(severity((v, d) -> v.validateWholeHolding_GeoJsonEastFirst(holding, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP28(feature, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.ERROR);
         holding.setStorage(GeometryStorage.WKB);
-        assertThat(severity((v, d) -> v.validateWholeHolding_GeoJsonEastFirst(holding, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP28(feature, d, new HashMap<>())))
                 .as("binary may hold north first").isEqualTo(Diagnostic.OK);
     }
 
+    /** The invariant is the feature's, so that its finding names the feature whose holding repeats a role. */
     @Test
     void aHoldingOfNumbersNamesEachRoleOnce() {
         PartsHolding parts = F.createPartsHolding();
@@ -365,17 +372,21 @@ class SpatialModelTest {
             part.setRole(role);
             parts.getPart().add(part);
         }
-        assertThat(severity((v, d) -> v.validatePartsHolding_EachRoleOnce(parts, d, new HashMap<>())))
+        GeometryFeature byParts = F.createGeometryFeature();
+        byParts.getHolding().add(parts);
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP44(byParts, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
         parts.getPart().get(1).setRole(Ordinate.EAST);
-        assertThat(severity((v, d) -> v.validatePartsHolding_EachRoleOnce(parts, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP44(byParts, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.ERROR);
         ListHolding list = F.createListHolding();
         list.getOrdinate().addAll(List.of(Ordinate.NORTH, Ordinate.EAST));
-        assertThat(severity((v, d) -> v.validateListHolding_EachRoleOnce(list, d, new HashMap<>())))
+        GeometryFeature byList = F.createGeometryFeature();
+        byList.getHolding().add(list);
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP44(byList, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
         list.getOrdinate().add(Ordinate.NORTH);
-        assertThat(severity((v, d) -> v.validateListHolding_EachRoleOnce(list, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP44(byList, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.ERROR);
     }
 
@@ -385,11 +396,16 @@ class SpatialModelTest {
         GeometryFeature envelope = F.createGeometryFeature();
         envelope.setDerivation(GeometryDerivation.ENVELOPE);
         envelope.setOf(shape);
-        assertThat(severity((v, d) -> v.validateGeometryFeature_NotDerivedFromItself(envelope, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP50(envelope, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
         envelope.setOf(envelope);
-        assertThat(severity((v, d) -> v.validateGeometryFeature_NotDerivedFromItself(envelope, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP50(envelope, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.ERROR);
+        envelope.setOf(shape);
+        shape.setDerivation(GeometryDerivation.CENTROID);
+        shape.setOf(envelope);
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP50(envelope, d, new HashMap<>())))
+                .as("nor through another").isEqualTo(Diagnostic.ERROR);
     }
 
     /** An envelope is a polygon; a corner, a centroid and a point on the surface are points. */
@@ -397,19 +413,19 @@ class SpatialModelTest {
     void theKindFollowsTheDerivation() {
         GeometryFeature shape = F.createGeometryFeature();
         shape.setKind(GeometryKind.POLYGON);
-        assertThat(severity((v, d) -> v.validateGeometryFeature_KindFollowsDerivation(shape, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP52(shape, d, new HashMap<>())))
                 .as("a geometry of its own").isEqualTo(Diagnostic.OK);
         GeometryFeature derived = F.createGeometryFeature();
         derived.setOf(shape);
         derived.setDerivation(GeometryDerivation.ENVELOPE);
         derived.setKind(GeometryKind.POLYGON);
-        assertThat(severity((v, d) -> v.validateGeometryFeature_KindFollowsDerivation(derived, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP52(derived, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
         derived.setDerivation(GeometryDerivation.CENTROID);
-        assertThat(severity((v, d) -> v.validateGeometryFeature_KindFollowsDerivation(derived, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP52(derived, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.ERROR);
         derived.setKind(GeometryKind.POINT);
-        assertThat(severity((v, d) -> v.validateGeometryFeature_KindFollowsDerivation(derived, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP52(derived, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
     }
 
@@ -418,56 +434,31 @@ class SpatialModelTest {
         ReferenceSystem flat = F.createReferenceSystem();
         GeometryFeature feature = F.createGeometryFeature();
         feature.setReferenceSystem(flat);
-        assertThat(severity((v, d) -> v.validateGeometryFeature_HeightNeedsThreeAxes(feature, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP23(feature, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
         feature.setHasHeight(true);
-        assertThat(severity((v, d) -> v.validateGeometryFeature_HeightNeedsThreeAxes(feature, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP23(feature, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.ERROR);
         flat.setAxes(3);
-        assertThat(severity((v, d) -> v.validateGeometryFeature_HeightNeedsThreeAxes(feature, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGeometryFeature_SP23(feature, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
-    }
-
-    @Test
-    void theMinimumShareIsAShareBelowOne() {
-        SpatialRelation r = F.createSpatialRelation();
-        assertThat(severity((v, d) -> v.validateSpatialRelation_MinimumShareInRange(r, d, new HashMap<>())))
-                .isEqualTo(Diagnostic.OK);
-        r.setMinimumShare("0.01");
-        assertThat(severity((v, d) -> v.validateSpatialRelation_MinimumShareInRange(r, d, new HashMap<>())))
-                .isEqualTo(Diagnostic.OK);
-        r.setMinimumShare("1.5");
-        assertThat(severity((v, d) -> v.validateSpatialRelation_MinimumShareInRange(r, d, new HashMap<>())))
-                .isEqualTo(Diagnostic.ERROR);
     }
 
     @Test
     void aDistanceGoesWithWithinDistanceOnly() {
         SpatialRelation r = F.createSpatialRelation();
         r.setPredicate(SpatialPredicate.WITHIN);
-        assertThat(severity((v, d) -> v.validateSpatialRelation_DistanceOnlyForWithinDistance(r, d,
+        assertThat(severity((v, d) -> v.validateSpatialRelation_SP10(r, d,
                 new HashMap<>()))).isEqualTo(Diagnostic.OK);
         r.setDistance("500");
-        assertThat(severity((v, d) -> v.validateSpatialRelation_DistanceOnlyForWithinDistance(r, d,
+        assertThat(severity((v, d) -> v.validateSpatialRelation_SP10(r, d,
                 new HashMap<>()))).isEqualTo(Diagnostic.ERROR);
         r.setPredicate(SpatialPredicate.WITHIN_DISTANCE);
-        assertThat(severity((v, d) -> v.validateSpatialRelation_DistanceOnlyForWithinDistance(r, d,
+        assertThat(severity((v, d) -> v.validateSpatialRelation_SP10(r, d,
                 new HashMap<>()))).isEqualTo(Diagnostic.OK);
         r.setDistance(null);
-        assertThat(severity((v, d) -> v.validateSpatialRelation_DistanceOnlyForWithinDistance(r, d,
+        assertThat(severity((v, d) -> v.validateSpatialRelation_SP10(r, d,
                 new HashMap<>()))).isEqualTo(Diagnostic.ERROR);
-    }
-
-    @Test
-    void aGridLevelIsNotItsOwnParent() {
-        GridLevel level = F.createGridLevel();
-        GridLevel above = F.createGridLevel();
-        level.setParent(above);
-        assertThat(severity((v, d) -> v.validateGridLevel_ParentNotSelf(level, d, new HashMap<>())))
-                .isEqualTo(Diagnostic.OK);
-        level.setParent(level);
-        assertThat(severity((v, d) -> v.validateGridLevel_ParentNotSelf(level, d, new HashMap<>())))
-                .isEqualTo(Diagnostic.ERROR);
     }
 
     /**
@@ -481,13 +472,13 @@ class SpatialModelTest {
         assertThat(P.getGridSystem_MinResolution().getLowerBound()).isEqualTo(1);
         assertThat(P.getGridSystem_MaxResolution().getLowerBound()).isEqualTo(1);
         system.setMaxResolution(12);
-        assertThat(severity((v, d) -> v.validateGridSystem_ResolutionsInOrder(system, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGridSystem_SP39(system, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
         system.setMinResolution(13);
-        assertThat(severity((v, d) -> v.validateGridSystem_ResolutionsInOrder(system, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGridSystem_SP39(system, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.ERROR);
         system.setMinResolution(-1);
-        assertThat(severity((v, d) -> v.validateGridSystem_ResolutionsInOrder(system, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGridSystem_SP39(system, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.ERROR);
     }
 
@@ -498,13 +489,13 @@ class SpatialModelTest {
         system.setMaxResolution(12);
         GridLevel level = F.createGridLevel();
         level.setResolution(13);
-        assertThat(severity((v, d) -> v.validateGridLevel_ResolutionInRange(level, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGridLevel_SP38(level, d, new HashMap<>())))
                 .as("no system: nothing to hold it against").isEqualTo(Diagnostic.OK);
         level.setSystem(system);
-        assertThat(severity((v, d) -> v.validateGridLevel_ResolutionInRange(level, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGridLevel_SP38(level, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.ERROR);
         level.setResolution(12);
-        assertThat(severity((v, d) -> v.validateGridLevel_ResolutionInRange(level, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGridLevel_SP38(level, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
     }
 
@@ -517,10 +508,10 @@ class SpatialModelTest {
         GridLevel level = F.createGridLevel();
         level.setSystem(one);
         level.setParent(above);
-        assertThat(severity((v, d) -> v.validateGridLevel_ParentOfTheSameSystem(level, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGridLevel_SP41(level, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.OK);
         above.setSystem(other);
-        assertThat(severity((v, d) -> v.validateGridLevel_ParentOfTheSameSystem(level, d, new HashMap<>())))
+        assertThat(severity((v, d) -> v.validateGridLevel_SP41(level, d, new HashMap<>())))
                 .isEqualTo(Diagnostic.ERROR);
     }
 

@@ -32,13 +32,79 @@
   </eAnnotations>
   <eClassifiers xsi:type="ecore:EClass" name="GeometryFeature">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="HeightNeedsThreeAxes EpochOnlyWhenDynamic NotDerivedFromItself KindFollowsDerivation"/>
+      <details key="constraints" value="SP23 SP24 SP28 SP29 SP30 SP31 SP32 SP33 SP42 SP43 SP44 SP45 SP46 SP48 SP50 SP51 SP52"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
-      <details key="HeightNeedsThreeAxes" value="not self.hasHeight or (not self.referenceSystem.oclIsUndefined() and self.referenceSystem.axes = 3)"/>
-      <details key="EpochOnlyWhenDynamic" value="self.coordinateEpoch.oclIsUndefined() or (not self.referenceSystem.oclIsUndefined() and self.referenceSystem.dynamic)"/>
-      <details key="NotDerivedFromItself" value="self.of.oclIsUndefined() or self.of &lt;> self"/>
-      <details key="KindFollowsDerivation" value="self.of.oclIsUndefined() or (if self.derivation = GeometryDerivation::ENVELOPE then self.kind = GeometryKind::POLYGON else self.kind = GeometryKind::POINT endif)"/>
+      <details key="SP23" value="not self.hasHeight or self.referenceSystem.oclIsUndefined() or self.referenceSystem.axes = 3"/>
+      <details key="SP24" value="self.referenceSystem.oclIsUndefined() or not self.referenceSystem.dynamic or not self.coordinateEpoch.oclIsUndefined()"/>
+      <details key="SP28" value="self.holding->forAll(h | not (h.oclIsKindOf(WholeHolding) and h.oclAsType(WholeHolding).storage = GeometryStorage::GEOJSON) or h.oclAsType(WholeHolding).axisOrder = AxisOrder::EAST_NORTH)"/>
+      <details key="SP29" value="self.referenceSystem.oclIsUndefined() or self.holding->forAll(h | not (h.oclIsKindOf(WholeHolding) and h.oclAsType(WholeHolding).storage = GeometryStorage::GEOJSON)) or (not self.referenceSystem.code.oclIsUndefined() and (if self.referenceSystem.authority = ReferenceSystemAuthority::OGC then Set{'CRS84', 'CRS84h'} else Set{'4326', '4979'} endif)->includes(self.referenceSystem.code.trim()))"/>
+      <details key="SP30" value="not self.referenceSystem.oclIsUndefined()"/>
+      <details key="SP31" value="self.accuracy.oclIsUndefined() or (self.accuracy.trim().matches('[+-]?([0-9]+[.]?[0-9]*|[.][0-9]+)([eE][+-]?[0-9]+)?') and self.accuracy.toReal() >= 0)"/>
+      <details key="SP32" value="self.coordinateEpoch.oclIsUndefined() or self.referenceSystem.oclIsUndefined() or self.referenceSystem.dynamic"/>
+      <details key="SP33" value="self.coordinateEpoch.oclIsUndefined() or self.coordinateEpoch.trim().matches('[+-]?([0-9]+[.]?[0-9]*|[.][0-9]+)([eE][+-]?[0-9]+)?')"/>
+      <details key="SP42" value="self.holding->notEmpty() and self.holding->forAll(h | (h.oclIsKindOf(WholeHolding) implies not h.oclAsType(WholeHolding).attribute.oclIsUndefined()) and (h.oclIsKindOf(ListHolding) implies not h.oclAsType(ListHolding).attribute.oclIsUndefined()) and (h.oclIsKindOf(PartsHolding) implies (h.oclAsType(PartsHolding).part->notEmpty() and h.oclAsType(PartsHolding).part->forAll(p | not p.attribute.oclIsUndefined()))))"/>
+      <details key="SP43" value="self.holding->forAll(h | h.oclIsKindOf(WholeHolding)) or (not self.of.oclIsUndefined() and self.derivation = GeometryDerivation::ENVELOPE) or (self.kind = GeometryKind::POINT and self.multiplicity &lt;> GeometryMultiplicity::MULTI)"/>
+      <details key="SP44" value="self.holding->forAll(h | (h.oclIsKindOf(PartsHolding) implies h.oclAsType(PartsHolding).part->isUnique(p | p.role)) and (h.oclIsKindOf(ListHolding) implies h.oclAsType(ListHolding).ordinate->isUnique(o | o)))"/>
+      <details key="SP45" value="self.holding->select(h | not h.oclIsKindOf(WholeHolding))->forAll(h | let roles : Bag(Ordinate) = (if h.oclIsKindOf(PartsHolding) then h.oclAsType(PartsHolding).part->collect(p | p.role)->asBag() else h.oclAsType(ListHolding).ordinate->asBag() endif) in (h.oclIsKindOf(PartsHolding) and roles->isEmpty()) or (if (not self.of.oclIsUndefined() and self.derivation = GeometryDerivation::ENVELOPE) then roles->includesAll(Set{Ordinate::MIN_EAST, Ordinate::MIN_NORTH, Ordinate::MAX_EAST, Ordinate::MAX_NORTH}) and roles->excludesAll(Set{Ordinate::EAST, Ordinate::NORTH, Ordinate::HEIGHT}) else self.kind &lt;> GeometryKind::POINT or (roles->includesAll(Set{Ordinate::EAST, Ordinate::NORTH}) and roles->excludesAll(Set{Ordinate::MIN_EAST, Ordinate::MIN_NORTH, Ordinate::MAX_EAST, Ordinate::MAX_NORTH, Ordinate::MIN_HEIGHT, Ordinate::MAX_HEIGHT})) endif))"/>
+      <details key="SP46" value="self.holding->select(h | not h.oclIsKindOf(WholeHolding))->forAll(h | let roles : Bag(Ordinate) = (if h.oclIsKindOf(PartsHolding) then h.oclAsType(PartsHolding).part->collect(p | p.role)->asBag() else h.oclAsType(ListHolding).ordinate->asBag() endif) in (h.oclIsKindOf(PartsHolding) and roles->isEmpty()) or (not (not self.of.oclIsUndefined() and self.derivation = GeometryDerivation::ENVELOPE) and self.kind &lt;> GeometryKind::POINT) or (let height : Set(Ordinate) = if (not self.of.oclIsUndefined() and self.derivation = GeometryDerivation::ENVELOPE) then Set{Ordinate::MIN_HEIGHT, Ordinate::MAX_HEIGHT} else Set{Ordinate::HEIGHT} endif in if self.hasHeight then roles->includesAll(height) else roles->excludesAll(height) endif))"/>
+      <details key="SP48" value="self.holding->forAll(h | h.oclIsKindOf(PartsHolding) implies h.oclAsType(PartsHolding).part->collect(p | p.attribute)->select(a | not a.oclIsUndefined())->collect(a | a.owner)->select(o | not o.oclIsUndefined())->asSet()->size() &lt;= 1)"/>
+      <details key="SP50" value="self.of.oclIsUndefined() or self.of->closure(of)->excludes(self)"/>
+      <details key="SP51" value="self.of.oclIsUndefined() or self.referenceSystem.oclIsUndefined() or self.of.referenceSystem.oclIsUndefined() or (self.referenceSystem = self.of.referenceSystem or (self.referenceSystem.authority = self.of.referenceSystem.authority and (if self.referenceSystem.code.oclIsUndefined() then '' else self.referenceSystem.code.trim() endif) = (if self.of.referenceSystem.code.oclIsUndefined() then '' else self.of.referenceSystem.code.trim() endif) and (if self.referenceSystem.version.oclIsUndefined() or self.referenceSystem.version.trim() = '' then '0' else self.referenceSystem.version.trim() endif) = (if self.of.referenceSystem.version.oclIsUndefined() or self.of.referenceSystem.version.trim() = '' then '0' else self.of.referenceSystem.version.trim() endif)))"/>
+      <details key="SP52" value="self.of.oclIsUndefined() or ((if self.derivation = GeometryDerivation::ENVELOPE then self.kind = GeometryKind::POLYGON else self.kind = GeometryKind::POINT endif) and self.multiplicity &lt;> GeometryMultiplicity::MULTI)"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.spatial/constraints">
+      <details key="SP23.name" value="HeightNeedsThreeAxes"/>
+      <details key="SP23.description" value="A geometry with a height has a reference system of three axes."/>
+      <details key="SP23.level" value="error"/>
+      <details key="SP24.name" value="EpochInADynamicSystem"/>
+      <details key="SP24.description" value="A geometry feature in a dynamic reference system names the epoch its coordinates hold for."/>
+      <details key="SP24.level" value="warning"/>
+      <details key="SP28.name" value="GeoJsonEastFirst"/>
+      <details key="SP28.description" value="A whole holding stored as GeoJSON holds its coordinates east first."/>
+      <details key="SP28.level" value="error"/>
+      <details key="SP29.name" value="GeoJsonInWgs84"/>
+      <details key="SP29.description" value="A whole holding stored as GeoJSON holds longitude and latitude of WGS 84 (CRS84, CRS84h, EPSG 4326 or 4979)."/>
+      <details key="SP29.level" value="warning"/>
+      <details key="SP30.name" value="NamesItsReferenceSystem"/>
+      <details key="SP30.description" value="A geometry feature names its reference system."/>
+      <details key="SP30.level" value="error"/>
+      <details key="SP31.name" value="AccuracyInMetres"/>
+      <details key="SP31.description" value="The accuracy of a geometry feature is a decimal number of metres from zero up."/>
+      <details key="SP31.level" value="error"/>
+      <details key="SP32.name" value="EpochOnlyWhenDynamic"/>
+      <details key="SP32.description" value="A geometry feature names a coordinate epoch only where its reference system is dynamic."/>
+      <details key="SP32.level" value="error"/>
+      <details key="SP33.name" value="EpochIsADecimalYear"/>
+      <details key="SP33.description" value="A coordinate epoch is a decimal year."/>
+      <details key="SP33.level" value="error"/>
+      <details key="SP42.name" value="HeldAndNamed"/>
+      <details key="SP42.description" value="A geometry feature has a holding, and each holding names its attributes."/>
+      <details key="SP42.level" value="error"/>
+      <details key="SP43.name" value="NumbersHoldAPointOrAnEnvelope"/>
+      <details key="SP43.description" value="A geometry held as numbers is a single point, or the envelope of another geometry."/>
+      <details key="SP43.level" value="error"/>
+      <details key="SP44.name" value="EachRoleOnce"/>
+      <details key="SP44.description" value="A holding of numbers names each role once."/>
+      <details key="SP44.level" value="error"/>
+      <details key="SP45.name" value="RolesFitTheShape"/>
+      <details key="SP45.description" value="The roles fit the shape: a point has EAST and NORTH and no edge, an envelope its four edges and no axis of a point."/>
+      <details key="SP45.level" value="error"/>
+      <details key="SP46.name" value="HeightRolesExactlyWithAHeight"/>
+      <details key="SP46.description" value="A geometry held as numbers has its height roles exactly where it has a height."/>
+      <details key="SP46.level" value="error"/>
+      <details key="SP48.name" value="PartsInOneClassifier"/>
+      <details key="SP48.description" value="The attributes of a holding in parts belong to one classifier."/>
+      <details key="SP48.level" value="error"/>
+      <details key="SP50.name" value="NotDerivedFromItself"/>
+      <details key="SP50.description" value="A geometry is not derived from itself, directly or through others."/>
+      <details key="SP50.level" value="error"/>
+      <details key="SP51.name" value="DerivedKeepsTheSystem"/>
+      <details key="SP51.description" value="A derived geometry is in the reference system of the geometry it is derived from."/>
+      <details key="SP51.level" value="error"/>
+      <details key="SP52.name" value="KindFollowsDerivation"/>
+      <details key="SP52.description" value="The kind follows the derivation: an envelope is a single polygon, a corner, a centroid or a point on the surface a single point."/>
+      <details key="SP52.level" value="error"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="What a geometry is: its kind, single or multi, with a height or without, the spatial reference system and the epoch of its coordinates, its accuracy, and whether it is a geometry of its own (the shape of a district) or derived from another one (the envelope of that shape, stored for a search by area). Where and how its values are held says each of its holdings, which it owns: the column shape of the table district (a WholeHolding), or the columns lon and lat of the table station (a PartsHolding). All holdings of one feature hold the same geometry, so that a reader takes any of them: the shape of a district in the tables district and district_archive, or the position of a station both in its geometry column and in its columns lon and lat. A feature states something about attributes, it is not one, as a units::Quantity states a unit."/>
@@ -114,12 +180,6 @@
     <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="WholeHolding" eSuperTypes="//GeometryHolding">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="GeoJsonEastFirst"/>
-    </eAnnotations>
-    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
-      <details key="GeoJsonEastFirst" value="self.storage &lt;> GeometryStorage::GEOJSON or self.axisOrder = AxisOrder::EAST_NORTH"/>
-    </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="One attribute holds the whole geometry, in the form storage says: the column shape of type GEOMETRY of a PostGIS table district (NATIVE), a BLOB of well-known binary (WKB), a text of well-known text or GeoJSON, or a property of the data type Geometry of a logical model, such as a feature collection's (NATIVE). Any kind of geometry is held so. axisOrder says in which order the stored coordinates hold the first two axes."/>
     </eAnnotations>
@@ -147,12 +207,6 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PartsHolding" eSuperTypes="//GeometryHolding">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="EachRoleOnce"/>
-    </eAnnotations>
-    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
-      <details key="EachRoleOnce" value="self.part->isUnique(p | p.role)"/>
-    </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="The geometry is held as numbers, one per attribute, each named by a CoordinatePart with its role: a table station with the columns lon and lat holds a point by the parts EAST lon and NORTH lat; the columns min_x, min_y, max_x, max_y hold the envelope of the geometry in geom by the parts MIN_EAST, MIN_NORTH, MAX_EAST and MAX_NORTH. Numbers hold a single point or the envelope of another geometry, nothing else, and the attributes of the parts belong to one classifier, so that one row holds one value. A resolver builds the geometry from them (ST_Point, ST_MakeEnvelope)."/>
     </eAnnotations>
@@ -187,12 +241,6 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ListHolding" eSuperTypes="//GeometryHolding">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="EachRoleOnce"/>
-    </eAnnotations>
-    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
-      <details key="EachRoleOnce" value="self.ordinate->isUnique(o | o)"/>
-    </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="The geometry is held as several numbers in one attribute, in the order of ordinate: a multi-valued attribute or an array (a column bbox of type DOUBLE[] with [west, south, east, north], as GeoJSON writes a bbox), or a text with a separator (a column position of type VARCHAR with 50.93,11.59, latitude first: the order NORTH, EAST and the separator ,). Numbers hold a single point or the envelope of another geometry, nothing else."/>
     </eAnnotations>
@@ -223,11 +271,43 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SpatialRelation">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="MinimumShareInRange DistanceOnlyForWithinDistance"/>
+      <details key="constraints" value="SP5 SP10 SP11 SP12 SP14 SP15 SP21 SP26"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
-      <details key="MinimumShareInRange" value="self.minimumShare.oclIsUndefined() or (self.minimumShare.toReal() >= 0 and self.minimumShare.toReal() &lt; 1)"/>
-      <details key="DistanceOnlyForWithinDistance" value="(self.predicate = SpatialPredicate::WITHIN_DISTANCE) = not self.distance.oclIsUndefined()"/>
+      <details key="SP5" value="self.parent.oclIsUndefined() or Set{SpatialPredicate::WITHIN, SpatialPredicate::COVERED_BY, SpatialPredicate::INTERSECTS, SpatialPredicate::CENTROID_WITHIN}->excludes(self.predicate) or Set{GeometryKind::POLYGON, GeometryKind::MIXED}->includes(self.parent.kind)"/>
+      <details key="SP10" value="if self.predicate = SpatialPredicate::WITHIN_DISTANCE then not self.distance.oclIsUndefined() and self.distance.trim().matches('[+-]?([0-9]+[.]?[0-9]*|[.][0-9]+)([eE][+-]?[0-9]+)?') and self.distance.toReal() > 0 else self.distance.oclIsUndefined() endif"/>
+      <details key="SP11" value="self.predicate &lt;> SpatialPredicate::NEAREST or self.assignment = SpatialAssignment::EXACTLY_ONE"/>
+      <details key="SP12" value="not self.workingSystem.oclIsUndefined() or self.child.oclIsUndefined() or self.parent.oclIsUndefined() or self.child.referenceSystem.oclIsUndefined() or self.parent.referenceSystem.oclIsUndefined() or (self.child.referenceSystem = self.parent.referenceSystem or (self.child.referenceSystem.authority = self.parent.referenceSystem.authority and (if self.child.referenceSystem.code.oclIsUndefined() then '' else self.child.referenceSystem.code.trim() endif) = (if self.parent.referenceSystem.code.oclIsUndefined() then '' else self.parent.referenceSystem.code.trim() endif) and (if self.child.referenceSystem.version.oclIsUndefined() or self.child.referenceSystem.version.trim() = '' then '0' else self.child.referenceSystem.version.trim() endif) = (if self.parent.referenceSystem.version.oclIsUndefined() or self.parent.referenceSystem.version.trim() = '' then '0' else self.parent.referenceSystem.version.trim() endif)))"/>
+      <details key="SP14" value="not self.child.oclIsUndefined() and not self.parent.oclIsUndefined() and not self.childKey.oclIsUndefined() and not self.parentKey.oclIsUndefined() and self.child.holding->collect(h | (if h.oclIsKindOf(WholeHolding) then h.oclAsType(WholeHolding).attribute->asSet() else if h.oclIsKindOf(ListHolding) then h.oclAsType(ListHolding).attribute->asSet() else h.oclAsType(PartsHolding).part->collect(p | p.attribute)->select(a | not a.oclIsUndefined())->asSet() endif endif))->collect(a | a.owner)->select(o | not o.oclIsUndefined())->asSet()->includes(self.childKey.owner) and self.parent.holding->collect(h | (if h.oclIsKindOf(WholeHolding) then h.oclAsType(WholeHolding).attribute->asSet() else if h.oclIsKindOf(ListHolding) then h.oclAsType(ListHolding).attribute->asSet() else h.oclAsType(PartsHolding).part->collect(p | p.attribute)->select(a | not a.oclIsUndefined())->asSet() endif endif))->collect(a | a.owner)->select(o | not o.oclIsUndefined())->asSet()->includes(self.parentKey.owner) and (self.explicitKey.oclIsUndefined() or self.child.holding->collect(h | (if h.oclIsKindOf(WholeHolding) then h.oclAsType(WholeHolding).attribute->asSet() else if h.oclIsKindOf(ListHolding) then h.oclAsType(ListHolding).attribute->asSet() else h.oclAsType(PartsHolding).part->collect(p | p.attribute)->select(a | not a.oclIsUndefined())->asSet() endif endif))->collect(a | a.owner)->select(o | not o.oclIsUndefined())->asSet()->includes(self.explicitKey.owner))"/>
+      <details key="SP15" value="self.unmatched &lt;> UnmatchedPolicy::DROP"/>
+      <details key="SP21" value="self.explicitKey.oclIsUndefined() or self.predicate &lt;> SpatialPredicate::NEAREST"/>
+      <details key="SP26" value="self.resultForm &lt;> ResultForm::VIEW or (self.unmatched &lt;> UnmatchedPolicy::ERROR and (self.assignment &lt;> SpatialAssignment::EXACTLY_ONE or self.tieBreak = TieBreak::LOWEST_PARENT_KEY))"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.spatial/constraints">
+      <details key="SP5.name" value="AnAreaParentForAnAreaPredicate"/>
+      <details key="SP5.description" value="WITHIN, COVERED_BY, INTERSECTS and CENTROID_WITHIN have a parent of kind POLYGON or MIXED."/>
+      <details key="SP5.level" value="error"/>
+      <details key="SP10.name" value="DistanceOnlyForWithinDistance"/>
+      <details key="SP10.description" value="A distance is given exactly with WITHIN_DISTANCE, and is above zero."/>
+      <details key="SP10.level" value="error"/>
+      <details key="SP11.name" value="TheNearestIsOne"/>
+      <details key="SP11.description" value="NEAREST assigns EXACTLY_ONE."/>
+      <details key="SP11.level" value="error"/>
+      <details key="SP12.name" value="OneSystemOrAWorkingOne"/>
+      <details key="SP12.description" value="Child and parent share a reference system, or a working one is named."/>
+      <details key="SP12.level" value="error"/>
+      <details key="SP14.name" value="KeysOfTheGeometryTables"/>
+      <details key="SP14.description" value="A relation, a grid level or a band names its geometries and keys, and each key is a column of a table that holds its geometry."/>
+      <details key="SP14.level" value="error"/>
+      <details key="SP15.name" value="DropIsAWarning"/>
+      <details key="SP15.description" value="A row without a parent, a cell or a class stays in the result; under DROP its facts vanish from the sums."/>
+      <details key="SP15.level" value="warning"/>
+      <details key="SP21.name" value="NoExplicitKeyForTheNearest"/>
+      <details key="SP21.description" value="NEAREST takes no explicit key, which would decide the rows that carry it instead of the geometry."/>
+      <details key="SP21.level" value="warning"/>
+      <details key="SP26.name" value="AViewDoesNotStop"/>
+      <details key="SP26.description" value="A result that has to be able to stop is a table, not a view."/>
+      <details key="SP26.level" value="error"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A rule that assigns the rows of a child geometry to the rows of a parent geometry: when a parent matches (predicate), what happens when several match (assignment, weight, minimum share, tie break) or none (unmatched), in which reference system it is evaluated. A resolver evaluates it once and writes its result: a key pair (child key, parent key) for EXACTLY_ONE and LARGEST_SHARE, a bridge (child key, parent key, share) for ALL_WEIGHTED and ALL_EQUAL. It never alters a source table. The result holds no time: a territory that changes gets one result per state. Of a geometry with several holdings a resolver reads one in the table of the key, which hold the same value: a whole one where that table has one, else it builds the point or the envelope from the numbers."/>
@@ -359,12 +439,35 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="GridLevel">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="ParentNotSelf ResolutionInRange ParentOfTheSameSystem"/>
+      <details key="constraints" value="SP14 SP15 SP22 SP26 SP38 SP41"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
-      <details key="ParentNotSelf" value="self.parent.oclIsUndefined() or self.parent &lt;> self"/>
-      <details key="ResolutionInRange" value="self.system.oclIsUndefined() or (self.resolution >= self.system.minResolution and self.resolution &lt;= self.system.maxResolution)"/>
-      <details key="ParentOfTheSameSystem" value="self.parent.oclIsUndefined() or self.parent.system = self.system"/>
+      <details key="SP14" value="not self.source.oclIsUndefined() and not self.sourceKey.oclIsUndefined() and self.source.holding->collect(h | (if h.oclIsKindOf(WholeHolding) then h.oclAsType(WholeHolding).attribute->asSet() else if h.oclIsKindOf(ListHolding) then h.oclAsType(ListHolding).attribute->asSet() else h.oclAsType(PartsHolding).part->collect(p | p.attribute)->select(a | not a.oclIsUndefined())->asSet() endif endif))->collect(a | a.owner)->select(o | not o.oclIsUndefined())->asSet()->includes(self.sourceKey.owner)"/>
+      <details key="SP15" value="self.unmatched &lt;> UnmatchedPolicy::DROP"/>
+      <details key="SP22" value="self.source.oclIsUndefined() or self.source.kind &lt;> GeometryKind::POINT or self.source.multiplicity &lt;> GeometryMultiplicity::MULTI"/>
+      <details key="SP26" value="self.resultForm &lt;> ResultForm::VIEW or self.unmatched &lt;> UnmatchedPolicy::ERROR"/>
+      <details key="SP38" value="self.system.oclIsUndefined() or (self.resolution >= self.system.minResolution and self.resolution &lt;= self.system.maxResolution)"/>
+      <details key="SP41" value="self.parent.oclIsUndefined() or self.system.oclIsUndefined() or self.parent.system.oclIsUndefined() or self.parent.system = self.system or (not self.system.name.oclIsUndefined() and not self.parent.system.name.oclIsUndefined() and self.parent.system.name.trim() = self.system.name.trim())"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.spatial/constraints">
+      <details key="SP14.name" value="KeyOfThePointsTable"/>
+      <details key="SP14.description" value="A relation, a grid level or a band names its geometries and keys, and each key is a column of a table that holds its geometry."/>
+      <details key="SP14.level" value="error"/>
+      <details key="SP15.name" value="DropIsAWarning"/>
+      <details key="SP15.description" value="A row without a parent, a cell or a class stays in the result; under DROP its facts vanish from the sums."/>
+      <details key="SP15.level" value="warning"/>
+      <details key="SP22.name" value="SinglePoints"/>
+      <details key="SP22.description" value="A grid level takes single points."/>
+      <details key="SP22.level" value="error"/>
+      <details key="SP26.name" value="AViewDoesNotStop"/>
+      <details key="SP26.description" value="A result that has to be able to stop is a table, not a view."/>
+      <details key="SP26.level" value="error"/>
+      <details key="SP38.name" value="ResolutionInRange"/>
+      <details key="SP38.description" value="The resolution of a grid level lies within the resolutions of its grid system."/>
+      <details key="SP38.level" value="error"/>
+      <details key="SP41.name" value="ParentOfTheSameSystem"/>
+      <details key="SP41.description" value="A chain of grid levels stays within one grid system."/>
+      <details key="SP41.level" value="error"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="The key of the cell of a grid a point lies in, of one system and resolution; the cells of a coarser resolution are the level above. No geometric join: both the cell and its parent come from a function, and in a strictly nested grid the parent's key is the head of the cell's. A resolver writes its result, per point the source key and the cell key of each level from the top of its chain down to it; a point without a geometry gets no cell and goes as unmatched says. It never alters the table of the points. A point held as numbers (the columns lon and lat) is read as the point they make."/>
@@ -445,6 +548,33 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DistanceBand">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="SP12 SP14 SP15 SP19 SP26"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="SP12" value="not self.workingSystem.oclIsUndefined() or self.source.oclIsUndefined() or self.reference.oclIsUndefined() or self.source.referenceSystem.oclIsUndefined() or self.reference.referenceSystem.oclIsUndefined() or (self.source.referenceSystem = self.reference.referenceSystem or (self.source.referenceSystem.authority = self.reference.referenceSystem.authority and (if self.source.referenceSystem.code.oclIsUndefined() then '' else self.source.referenceSystem.code.trim() endif) = (if self.reference.referenceSystem.code.oclIsUndefined() then '' else self.reference.referenceSystem.code.trim() endif) and (if self.source.referenceSystem.version.oclIsUndefined() or self.source.referenceSystem.version.trim() = '' then '0' else self.source.referenceSystem.version.trim() endif) = (if self.reference.referenceSystem.version.oclIsUndefined() or self.reference.referenceSystem.version.trim() = '' then '0' else self.reference.referenceSystem.version.trim() endif)))"/>
+      <details key="SP14" value="not self.source.oclIsUndefined() and not self.reference.oclIsUndefined() and not self.sourceKey.oclIsUndefined() and self.source.holding->collect(h | (if h.oclIsKindOf(WholeHolding) then h.oclAsType(WholeHolding).attribute->asSet() else if h.oclIsKindOf(ListHolding) then h.oclAsType(ListHolding).attribute->asSet() else h.oclAsType(PartsHolding).part->collect(p | p.attribute)->select(a | not a.oclIsUndefined())->asSet() endif endif))->collect(a | a.owner)->select(o | not o.oclIsUndefined())->asSet()->includes(self.sourceKey.owner)"/>
+      <details key="SP15" value="self.unmatched &lt;> UnmatchedPolicy::DROP"/>
+      <details key="SP19" value="self.bound->notEmpty() and self.bound->forAll(b | b.trim().matches('[+-]?([0-9]+[.]?[0-9]*|[.][0-9]+)([eE][+-]?[0-9]+)?') and b.toReal() > 0) and Sequence{2..self.bound->size()}->forAll(i | self.bound->at(i - 1).toReal() &lt; self.bound->at(i).toReal())"/>
+      <details key="SP26" value="self.resultForm &lt;> ResultForm::VIEW or self.unmatched &lt;> UnmatchedPolicy::ERROR"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.spatial/constraints">
+      <details key="SP12.name" value="OneSystemOrAWorkingOne"/>
+      <details key="SP12.description" value="Child and parent share a reference system, or a working one is named."/>
+      <details key="SP12.level" value="error"/>
+      <details key="SP14.name" value="KeyOfTheSourceTable"/>
+      <details key="SP14.description" value="A relation, a grid level or a band names its geometries and keys, and each key is a column of a table that holds its geometry."/>
+      <details key="SP14.level" value="error"/>
+      <details key="SP15.name" value="DropIsAWarning"/>
+      <details key="SP15.description" value="A row without a parent, a cell or a class stays in the result; under DROP its facts vanish from the sums."/>
+      <details key="SP15.level" value="warning"/>
+      <details key="SP19.name" value="BoundsAscend"/>
+      <details key="SP19.description" value="The bounds of a distance band are decimal numbers above zero, strictly ascending."/>
+      <details key="SP19.level" value="error"/>
+      <details key="SP26.name" value="AViewDoesNotStop"/>
+      <details key="SP26.description" value="A result that has to be able to stop is a table, not a view."/>
+      <details key="SP26.level" value="error"/>
+    </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="The distance of a geometry to the nearest row of a reference geometry, put into classes by upper bounds in metres (0 to 1 km, 1 to 5 km, above), like a discretization. A resolver writes its result, a pair (source key, class) per source row, the class 1 up to and including the first bound and one more above each bound; a row whose distance cannot be measured gets no class and goes as unmatched says. It never alters the source table. Each geometry is read from a holding in the table of its key, as for a relation."/>
     </eAnnotations>
@@ -525,10 +655,23 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReferenceSystem">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="AxesTwoOrThree"/>
+      <details key="constraints" value="SP34 SP35 SP36"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
-      <details key="AxesTwoOrThree" value="self.axes = 2 or self.axes = 3"/>
+      <details key="SP34" value="not self.code.oclIsUndefined() and self.code.trim() &lt;> ''"/>
+      <details key="SP35" value="self.authority &lt;> ReferenceSystemAuthority::EPSG or self.code.oclIsUndefined() or self.code.trim() = '' or self.code.trim().matches('[+]?0*[1-9][0-9]*')"/>
+      <details key="SP36" value="self.axes = 2 or self.axes = 3"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.spatial/constraints">
+      <details key="SP34.name" value="HasACode"/>
+      <details key="SP34.description" value="A reference system has a code."/>
+      <details key="SP34.level" value="error"/>
+      <details key="SP35.name" value="EpsgCodeIsAPositiveNumber"/>
+      <details key="SP35.description" value="An EPSG code is a positive whole number."/>
+      <details key="SP35.level" value="error"/>
+      <details key="SP36.name" value="AxesTwoOrThree"/>
+      <details key="SP36.description" value="A reference system has 2 or 3 axes."/>
+      <details key="SP36.level" value="error"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A coordinate reference system, named as an OGC URI names it: http://www.opengis.net/def/crs/{authority}/{version}/{code}, EPSG 25832 or OGC CRS84. It holds what its register defines: its kind (degrees, a map projection, Cartesian metres), its axes and their order, and whether it is dynamic. How an attribute stores the coordinates is said by the holding (the stored order of a whole one, the roles of numbers), the epoch they hold for by the geometry feature. Owned by the model; the features and the working systems of relations and bands refer to it."/>
@@ -577,10 +720,15 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="GridSystem">
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="ResolutionsInOrder"/>
+      <details key="constraints" value="SP39"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
-      <details key="ResolutionsInOrder" value="self.minResolution >= 0 and self.minResolution &lt;= self.maxResolution"/>
+      <details key="SP39" value="self.minResolution >= 0 and self.minResolution &lt;= self.maxResolution"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.spatial/constraints">
+      <details key="SP39.name" value="ResolutionsInOrder"/>
+      <details key="SP39.description" value="The resolutions of a grid system run from zero up, its minimum at most its maximum."/>
+      <details key="SP39.level" value="error"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="A system of grid cells, known to a resolver by its name, the identifier: geohash (Geohash rectangles, 1 to 12 characters), h3 (H3 hexagons, 0 to 15), quadkey (tiles of the web map, zoom 1 to 23) or a URI. It holds its resolutions and whether its cells nest. Owned by the model, once per identifier; the grid levels refer to it."/>

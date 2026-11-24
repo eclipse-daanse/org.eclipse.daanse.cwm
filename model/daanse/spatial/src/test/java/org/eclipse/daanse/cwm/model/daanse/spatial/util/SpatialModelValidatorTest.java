@@ -115,7 +115,7 @@ class SpatialModelValidatorTest {
         land.stations.setReferenceSystem(null);
         assertThat(errors("SP30")).singleElement().satisfies(f -> {
             assertThat(f.element()).isSameAs(land.stations);
-            assertThat(f.message()).isEqualTo("land.geodata.stations names no reference system");
+            assertThat(f.message()).isEqualTo("land.geodata.stations: " + SpatialModelValidator.SP30.says());
         });
     }
 
@@ -128,8 +128,8 @@ class SpatialModelValidatorTest {
         land.communes.setAccuracy("-1");
         land.counties.setAccuracy("a metre");
         assertThat(errors("SP31")).extracting(Finding::message).containsExactlyInAnyOrder(
-                "land.geodata.communes: the accuracy '-1' is no decimal number of metres from zero up",
-                "land.geodata.counties: the accuracy 'a metre' is no decimal number of metres from zero up");
+                "land.geodata.communes: " + SpatialModelValidator.SP31.says(),
+                "land.geodata.counties: " + SpatialModelValidator.SP31.says());
     }
 
     /** SP32: the coordinates of a static system hold for every epoch; an epoch belongs to a dynamic one. */
@@ -140,8 +140,7 @@ class SpatialModelValidatorTest {
         land.counties.setCoordinateEpoch("1989.0");
         assertThat(errors("SP32")).singleElement().satisfies(f -> {
             assertThat(f.element()).isSameAs(land.counties);
-            assertThat(f.message()).isEqualTo("land.geodata.counties names the coordinate epoch 1989.0 but EPSG 25832 "
-                    + "is not dynamic; the coordinates of a static system hold for every epoch");
+            assertThat(f.message()).isEqualTo("land.geodata.counties: " + SpatialModelValidator.SP32.says());
         });
     }
 
@@ -154,7 +153,7 @@ class SpatialModelValidatorTest {
         gauges.setCoordinateEpoch("spring");
         assertThat(errors("SP33")).singleElement().satisfies(f -> {
             assertThat(f.element()).isSameAs(gauges);
-            assertThat(f.message()).isEqualTo("land.geodata.gauges: the coordinate epoch 'spring' is no decimal year");
+            assertThat(f.message()).isEqualTo("land.geodata.gauges: " + SpatialModelValidator.SP33.says());
         });
         assertThat(rules()).as("in a dynamic system: one finding").doesNotContain("SP32");
     }
@@ -166,7 +165,7 @@ class SpatialModelValidatorTest {
         land.laea.setCode(" ");
         assertThat(errors("SP34")).singleElement().satisfies(f -> {
             assertThat(f.element()).isSameAs(land.laea);
-            assertThat(f.message()).isEqualTo("land.geodata.EPSG_3035 has no code");
+            assertThat(f.message()).isEqualTo("land.geodata.EPSG_3035: " + SpatialModelValidator.SP34.says());
         });
         assertThat(rules()).as("no code is no EPSG number either: one finding").doesNotContain("SP35");
     }
@@ -181,8 +180,8 @@ class SpatialModelValidatorTest {
         SpatialElements.referenceSystem(land.geodata, "zero", ReferenceSystemAuthority.EPSG, "0",
                 ReferenceSystemKind.PROJECTED, AxisOrder.EAST_NORTH);
         assertThat(errors("SP35")).extracting(Finding::message).containsExactlyInAnyOrder(
-                "land.geodata.named has the EPSG code 'UTM32'; an EPSG code is a positive whole number",
-                "land.geodata.zero has the EPSG code '0'; an EPSG code is a positive whole number");
+                "land.geodata.named: " + SpatialModelValidator.SP35.says(),
+                "land.geodata.zero: " + SpatialModelValidator.SP35.says());
     }
 
     /** SP36: a reference system has two axes, or three with a height or a z. */
@@ -193,8 +192,8 @@ class SpatialModelValidatorTest {
         land.utm32.setAxes(4);
         land.laea.setAxes(0);
         assertThat(errors("SP36")).extracting(Finding::message).containsExactlyInAnyOrder(
-                "land.geodata.EPSG_25832 has 4 axes; a system has 2 or 3",
-                "land.geodata.EPSG_3035 has 0 axes; a system has 2 or 3");
+                "land.geodata.EPSG_25832: " + SpatialModelValidator.SP36.says(),
+                "land.geodata.EPSG_3035: " + SpatialModelValidator.SP36.says());
     }
 
     /**
@@ -241,7 +240,10 @@ class SpatialModelValidatorTest {
                 land.communeId, land.rivers, land.riverId, SpatialPredicate.WITHIN, SpatialAssignment.EXACTLY_ONE,
                 UnmatchedPolicy.KEEP_NULL);
         byRiver.setWorkingSystem(land.laea);
-        assertThat(errors("SP5")).singleElement().asString().contains("WITHIN against the LINE parent");
+        assertThat(errors("SP5")).singleElement().satisfies(f -> {
+            assertThat(f.element()).isSameAs(byRiver);
+            assertThat(f.message()).isEqualTo("land.geodata.communesInRivers: " + SpatialModelValidator.SP5.says());
+        });
     }
 
     @Test
@@ -299,14 +301,16 @@ class SpatialModelValidatorTest {
                 land.rivers, land.riverId, SpatialPredicate.NEAREST, SpatialAssignment.ALL_EQUAL,
                 UnmatchedPolicy.KEEP_NULL), "500").setWorkingSystem(land.laea);
         assertThat(rules()).doesNotContain("SP10");
-        land.communesInCounties().setDistance("500");
+        SpatialRelation counties = land.communesInCounties();
+        counties.setDistance("500");
         SpatialRelation none = SpatialElements.relation(land.geodata, "none", land.stations, land.stationId,
                 land.rivers, land.riverId, SpatialPredicate.WITHIN_DISTANCE, SpatialAssignment.ALL_EQUAL,
                 UnmatchedPolicy.KEEP_NULL);
         none.setWorkingSystem(land.laea);
-        assertThat(errors("SP10")).extracting(Finding::message).hasSize(2)
-                .anyMatch(m -> m.contains("distance 500 but matches CENTROID_WITHIN"))
-                .anyMatch(m -> m.contains("WITHIN_DISTANCE without a distance"));
+        assertThat(errors("SP10")).extracting(Finding::element).containsExactlyInAnyOrder(counties, none);
+        assertThat(errors("SP10")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "land.geodata.communesInCounties: " + SpatialModelValidator.SP10.says(),
+                "land.geodata.none: " + SpatialModelValidator.SP10.says());
     }
 
     @Test
@@ -319,7 +323,10 @@ class SpatialModelValidatorTest {
         assertThat(rules()).doesNotContain("SP11");
         nearest.setAssignment(SpatialAssignment.ALL_WEIGHTED);
         nearest.setWeight(SpatialWeight.LENGTH);
-        assertThat(errors("SP11")).singleElement().asString().contains("NEAREST but assigns ALL_WEIGHTED");
+        assertThat(errors("SP11")).singleElement().satisfies(f -> {
+            assertThat(f.element()).isSameAs(nearest);
+            assertThat(f.message()).isEqualTo("land.geodata.nearest: " + SpatialModelValidator.SP11.says());
+        });
     }
 
     @Test
@@ -345,10 +352,12 @@ class SpatialModelValidatorTest {
         assertThat(rules()).as("one system, whatever order each column stores its coordinates in")
                 .doesNotContain("SP12");
         stations.setWorkingSystem(null);
-        SpatialElements.band(land.geodata, "toTheRiver", land.stations, land.stationId, land.rivers, "1000");
-        assertThat(errors("SP12")).extracting(Finding::message).hasSize(2)
-                .anyMatch(m -> m.contains("relates the reference systems EPSG 4326 and EPSG 25832"))
-                .anyMatch(m -> m.contains("between the reference systems EPSG 4326 and EPSG 3035"));
+        DistanceBand band = SpatialElements.band(land.geodata, "toTheRiver", land.stations, land.stationId,
+                land.rivers, "1000");
+        assertThat(errors("SP12")).extracting(Finding::element).containsExactlyInAnyOrder(stations, band);
+        assertThat(errors("SP12")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "land.geodata.stationsInStates: " + SpatialModelValidator.SP12.says(),
+                "land.geodata.toTheRiver: " + SpatialModelValidator.SP12.says());
     }
 
     /**
@@ -414,8 +423,7 @@ class SpatialModelValidatorTest {
                 UnmatchedPolicy.KEEP_NULL);
         assertThat(errors("SP14")).singleElement().satisfies(f -> {
             assertThat(f.element()).isSameAs(wrong);
-            assertThat(f.message()).startsWith("land.geodata.wrong: the parent key land.geo.commune.county_id is no "
-                    + "column of a table that holds the parent geometry");
+            assertThat(f.message()).isEqualTo("land.geodata.wrong: " + SpatialModelValidator.SP14.says());
         });
     }
 
@@ -428,10 +436,9 @@ class SpatialModelValidatorTest {
                 land.quadkey(), 12, null);
         DistanceBand none = SpatialElements.band(land.geodata, "noKey", land.lakes, land.lakeId, land.rivers, "1000");
         none.setSourceKey(null);
-        assertThat(errors("SP14")).extracting(Finding::message).hasSize(2)
-                .anyMatch(m -> m.startsWith("land.geodata.wrongCells: the source key land.geo.commune.id is no column "
-                        + "of a table that holds the source geometry"))
-                .anyMatch(m -> m.equals("land.geodata.noKey names no source key"));
+        assertThat(errors("SP14")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "land.geodata.wrongCells: " + SpatialModelValidator.SP14.says(),
+                "land.geodata.noKey: " + SpatialModelValidator.SP14.says());
         assertThat(errors("SP14")).extracting(Finding::element).containsExactlyInAnyOrder(wrong, none);
     }
 
@@ -449,9 +456,11 @@ class SpatialModelValidatorTest {
         band.setReference(null);
         other.setSource(null);
         other.setReference(null);
+        assertThat(errors("SP14")).extracting(Finding::element).containsExactlyInAnyOrder(cells, band, other);
         assertThat(errors("SP14")).extracting(Finding::message).containsExactlyInAnyOrder(
-                "land.geodata.cells names no points", "land.geodata.toTheRiver names no reference",
-                "land.geodata.fromNowhere names no source", "land.geodata.fromNowhere names no reference");
+                "land.geodata.cells: " + SpatialModelValidator.SP14.says(),
+                "land.geodata.toTheRiver: " + SpatialModelValidator.SP14.says(),
+                "land.geodata.fromNowhere: " + SpatialModelValidator.SP14.says());
         assertThat(errors("SP12")).as("no system is compared where a geometry is missing").isEmpty();
         assertThat(errors("SP18")).isEmpty();
     }
@@ -506,11 +515,10 @@ class SpatialModelValidatorTest {
         viewed.setTieBreak(TieBreak.ERROR);
         table.setResultForm(ResultForm.VIEW);
         table.setTieBreak(TieBreak.LOWEST_PARENT_KEY);
-        assertThat(errors("SP26")).extracting(Finding::message).hasSize(2)
-                .anyMatch(m -> m.equals("land.geodata.communesInCounties writes a VIEW but assigns EXACTLY_ONE "
-                        + "without the tie break LOWEST_PARENT_KEY; a view cannot stop at a tie, write a TABLE"))
-                .anyMatch(m -> m.equals("land.geodata.stopsAtATie writes a VIEW but stops at a child without a "
-                        + "parent (ERROR); a view cannot stop, write a TABLE"));
+        assertThat(errors("SP26")).extracting(Finding::element).containsExactlyInAnyOrder(viewed, table);
+        assertThat(errors("SP26")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "land.geodata.communesInCounties: " + SpatialModelValidator.SP26.says(),
+                "land.geodata.stopsAtATie: " + SpatialModelValidator.SP26.says());
     }
 
     /**
@@ -532,11 +540,10 @@ class SpatialModelValidatorTest {
         assertThat(errors("SP26")).as("a table that stops").isEmpty();
         cells.setResultForm(ResultForm.VIEW);
         band.setUnmatched(UnmatchedPolicy.ERROR);
+        assertThat(errors("SP26")).extracting(Finding::element).containsExactlyInAnyOrder(cells, band);
         assertThat(errors("SP26")).extracting(Finding::message).containsExactlyInAnyOrder(
-                "land.geodata.cells writes a VIEW but stops at a point without a cell (ERROR); a view cannot stop, "
-                        + "write a TABLE",
-                "land.geodata.toTheRiver writes a VIEW but stops at a source without a class (ERROR); a view cannot "
-                        + "stop, write a TABLE");
+                "land.geodata.cells: " + SpatialModelValidator.SP26.says(),
+                "land.geodata.toTheRiver: " + SpatialModelValidator.SP26.says());
     }
 
     /**
@@ -635,7 +642,10 @@ class SpatialModelValidatorTest {
                 land.states, land.stateId, SpatialPredicate.COVERED_BY, SpatialAssignment.EXACTLY_ONE,
                 UnmatchedPolicy.DROP);
         dropped.setWorkingSystem(land.utm32);
-        assertThat(warnings("SP15")).singleElement().asString().contains("drops the children without a parent");
+        assertThat(warnings("SP15")).singleElement().satisfies(f -> {
+            assertThat(f.element()).isSameAs(dropped);
+            assertThat(f.message()).isEqualTo("land.geodata.dropped: " + SpatialModelValidator.SP15.says());
+        });
     }
 
     /** A grid level that drops its points without a cell and a band its sources without a class: warnings. */
@@ -652,11 +662,10 @@ class SpatialModelValidatorTest {
         assertThat(rules()).doesNotContain("SP15");
         cells.setUnmatched(UnmatchedPolicy.DROP);
         band.setUnmatched(UnmatchedPolicy.DROP);
+        assertThat(warnings("SP15")).extracting(Finding::element).containsExactlyInAnyOrder(cells, band);
         assertThat(warnings("SP15")).extracting(Finding::message).containsExactlyInAnyOrder(
-                "land.geodata.cells drops the points without a cell; facts that reach the cell through its result "
-                        + "vanish from the sums",
-                "land.geodata.toTheRiver drops the sources without a class; facts that reach the class through its "
-                        + "result vanish from the sums");
+                "land.geodata.cells: " + SpatialModelValidator.SP15.says(),
+                "land.geodata.toTheRiver: " + SpatialModelValidator.SP15.says());
         assertThat(errors("SP15")).as("a warning only").isEmpty();
     }
 
@@ -733,16 +742,15 @@ class SpatialModelValidatorTest {
         cells.setResolution(16);
         tiles.setResolution(0);
         assertThat(errors("SP38")).extracting(Finding::message).containsExactlyInAnyOrder(
-                "land.geodata.cells has the resolution 16; h3 has 0 to 15",
-                "land.geodata.tiles has the resolution 0; quadkey has 1 to 23");
+                "land.geodata.cells: " + SpatialModelValidator.SP38.says(),
+                "land.geodata.tiles: " + SpatialModelValidator.SP38.says());
         GridSystem coarse = SpatialElements.gridSystem(land.geodata, "https://grids.example/coarse", 2, 4, true);
         cells.setSystem(coarse);
         cells.setResolution(4);
         tiles.setResolution(23);
         assertThat(rules()).as("the range of a system the model states").doesNotContain("SP38");
         cells.setResolution(5);
-        assertThat(errors("SP38")).singleElement().asString()
-                .contains("has the resolution 5; https://grids.example/coarse has 2 to 4");
+        assertThat(errors("SP38")).singleElement().extracting(Finding::element).isSameAs(cells);
         assertThat(errors("SP18")).isEmpty();
     }
 
@@ -755,11 +763,11 @@ class SpatialModelValidatorTest {
         system.setMaxResolution(2);
         assertThat(errors("SP39")).singleElement().satisfies(f -> {
             assertThat(f.element()).isSameAs(system);
-            assertThat(f.message()).isEqualTo("land.geodata.https://grids.example/flat has the resolutions 3 to 2; "
-                    + "they run from zero up, the minimum at most the maximum");
+            assertThat(f.message()).isEqualTo("land.geodata.https://grids.example/flat: "
+                    + SpatialModelValidator.SP39.says());
         });
         system.setMinResolution(-1);
-        assertThat(errors("SP39")).singleElement().asString().contains("has the resolutions -1 to 2");
+        assertThat(errors("SP39")).singleElement().extracting(Finding::element).isSameAs(system);
     }
 
     /** A resolver knows a grid system by its name: it has one, once in its model. */
@@ -797,8 +805,7 @@ class SpatialModelValidatorTest {
                 regions);
         assertThat(errors("SP41")).singleElement().satisfies(f -> {
             assertThat(f.element()).isSameAs(hash);
-            assertThat(f.message()).isEqualTo("land.geodata.hash of geohash lies below land.geodata.regions of h3; a "
-                    + "level lies below one of its own system");
+            assertThat(f.message()).isEqualTo("land.geodata.hash: " + SpatialModelValidator.SP41.says());
         });
         assertThat(errors("SP18")).isEmpty();
     }
@@ -839,9 +846,15 @@ class SpatialModelValidatorTest {
         assertThat(rules()).doesNotContain("SP19");
         band.getBound().clear();
         band.getBound().addAll(List.of("5000", "1000", "0"));
-        assertThat(errors("SP19")).extracting(Finding::message).hasSize(2)
-                .anyMatch(m -> m.contains("the bound 1000 follows 5000"))
-                .anyMatch(m -> m.contains("the bound '0' is no decimal number above zero"));
+        assertThat(errors("SP19")).singleElement().satisfies(f -> {
+            assertThat(f.element()).isSameAs(band);
+            assertThat(f.message()).isEqualTo("land.geodata.toTheRiver: " + SpatialModelValidator.SP19.says());
+        });
+        band.getBound().clear();
+        band.getBound().addAll(List.of("500", "500"));
+        assertThat(errors("SP19")).as("strictly ascending").hasSize(1);
+        band.getBound().set(1, "a kilometre");
+        assertThat(errors("SP19")).as("decimal numbers").hasSize(1);
     }
 
     @Test
@@ -875,12 +888,16 @@ class SpatialModelValidatorTest {
     @Test
     void sp22_aGridTakesSinglePoints() {
         land.stations.setMultiplicity(GeometryMultiplicity.SINGLE);
-        SpatialElements.grid(land.geodata, "cells", land.stations, land.stationId, land.geohash(), 6, null);
+        GridLevel cells = SpatialElements.grid(land.geodata, "cells", land.stations, land.stationId, land.geohash(),
+                6, null);
         assertThat(rules()).doesNotContain("SP22");
         land.stations.setMultiplicity(GeometryMultiplicity.EITHER);
         assertThat(rules()).as("either: each row is checked by a resolver").doesNotContain("SP22");
         land.stations.setMultiplicity(GeometryMultiplicity.MULTI);
-        assertThat(errors("SP22")).singleElement().asString().contains("puts the multi-points land.geodata.stations");
+        assertThat(errors("SP22")).singleElement().satisfies(f -> {
+            assertThat(f.element()).isSameAs(cells);
+            assertThat(f.message()).isEqualTo("land.geodata.cells: " + SpatialModelValidator.SP22.says());
+        });
     }
 
     @Test
@@ -895,7 +912,7 @@ class SpatialModelValidatorTest {
         masts.setReferenceSystem(land.wgs84);
         assertThat(errors("SP23")).singleElement().satisfies(f -> {
             assertThat(f.element()).isSameAs(masts);
-            assertThat(f.message()).contains("holds a height in land.geodata.EPSG_4326 of 2 axes");
+            assertThat(f.message()).isEqualTo("land.geodata.masts: " + SpatialModelValidator.SP23.says());
         });
     }
 
@@ -919,8 +936,7 @@ class SpatialModelValidatorTest {
         survey2024.setCoordinateEpoch(null);
         assertThat(warnings("SP24")).singleElement().satisfies(f -> {
             assertThat(f.element()).isSameAs(survey2024);
-            assertThat(f.message()).isEqualTo("land.geodata.survey2024 is in the dynamic system EPSG 7931 but names no "
-                    + "coordinate epoch; its coordinates cannot be compared with those of another epoch");
+            assertThat(f.message()).isEqualTo("land.geodata.survey2024: " + SpatialModelValidator.SP24.says());
         });
         assertThat(errors("SP24")).as("a warning only").isEmpty();
     }
@@ -939,8 +955,7 @@ class SpatialModelValidatorTest {
         whole(tracks).setAxisOrder(AxisOrder.NORTH_EAST);
         assertThat(errors("SP28")).singleElement().satisfies(f -> {
             assertThat(f.element()).isSameAs(tracks);
-            assertThat(f.message()).isEqualTo("land.geodata.tracks is stored as GEOJSON with its coordinates "
-                    + "NORTH_EAST; GeoJSON holds them east first");
+            assertThat(f.message()).isEqualTo("land.geodata.tracks: " + SpatialModelValidator.SP28.says());
         });
     }
 
@@ -957,7 +972,7 @@ class SpatialModelValidatorTest {
                 land.utm32, GeometryStorage.GEOJSON, Land.column(track, "course_utm", land.varchar));
         assertThat(warnings("SP29")).singleElement().satisfies(f -> {
             assertThat(f.element()).isSameAs(projected);
-            assertThat(f.message()).contains("is stored as GEOJSON in EPSG 25832");
+            assertThat(f.message()).isEqualTo("land.geodata.projectedTracks: " + SpatialModelValidator.SP29.says());
         });
         assertThat(errors("SP29")).as("a warning only").isEmpty();
     }
@@ -978,11 +993,8 @@ class SpatialModelValidatorTest {
         list.getOrdinate().addAll(List.of(Ordinate.EAST, Ordinate.NORTH));
         gauges.getHolding().add(list);
         assertThat(errors("SP42")).extracting(Finding::message).containsExactlyInAnyOrder(
-                "land.geodata.unheld has no holding; nothing says where the geometry is held",
-                "land.geodata.gauges: a whole holding names no attribute",
-                "land.geodata.gauges: a holding in parts has no part",
-                "land.geodata.gauges: the part EAST names no attribute",
-                "land.geodata.gauges: a list names no attribute");
+                "land.geodata.unheld: " + SpatialModelValidator.SP42.says(),
+                "land.geodata.gauges: " + SpatialModelValidator.SP42.says());
         assertThat(errors("SP42")).extracting(Finding::element).containsOnly(unheld, gauges);
     }
 
@@ -1000,10 +1012,10 @@ class SpatialModelValidatorTest {
         SpatialElements.pointParts(parcels, Land.column(parcel, "e", land.decimal),
                 Land.column(parcel, "n", land.decimal));
         corners.setMultiplicity(GeometryMultiplicity.MULTI);
+        assertThat(errors("SP43")).extracting(Finding::element).containsExactlyInAnyOrder(corners, parcels);
         assertThat(errors("SP43")).extracting(Finding::message).containsExactlyInAnyOrder(
-                "land.geodata.corners is a MULTI point held as numbers in its parts; numbers hold a single point",
-                "land.geodata.parcels is a POLYGON held as numbers in its parts; numbers hold a single point or the "
-                        + "envelope of another geometry");
+                "land.geodata.corners: " + SpatialModelValidator.SP43.says(),
+                "land.geodata.parcels: " + SpatialModelValidator.SP43.says());
         assertThat(rules()).as("no shape, no roles to hold against it").doesNotContain("SP45");
     }
 
@@ -1017,8 +1029,7 @@ class SpatialModelValidatorTest {
         list.getOrdinate().add(Ordinate.NORTH);
         assertThat(errors("SP44")).singleElement().satisfies(f -> {
             assertThat(f.element()).isSameAs(stops);
-            assertThat(f.message()).isEqualTo("land.geodata.stops holds NORTH more than once in its list; each role "
-                    + "is held once");
+            assertThat(f.message()).isEqualTo("land.geodata.stops: " + SpatialModelValidator.SP44.says());
         });
     }
 
@@ -1036,12 +1047,17 @@ class SpatialModelValidatorTest {
         assertThat(rules()).doesNotContain("SP45");
         ((PartsHolding) wells.getHolding().get(0)).getPart().get(1).setRole(Ordinate.MAX_NORTH);
         bbox.getOrdinate().set(3, Ordinate.NORTH);
+        assertThat(errors("SP45")).extracting(Finding::element).containsExactlyInAnyOrder(wells, boxes);
         assertThat(errors("SP45")).extracting(Finding::message).containsExactlyInAnyOrder(
-                "land.geodata.wells holds no NORTH in its parts; a point is held by EAST and NORTH",
-                "land.geodata.wells holds MAX_NORTH in its parts, the edges of an envelope; a point has none",
-                "land.geodata.countyBoxes holds no MAX_NORTH in its list; an envelope is held by MIN_EAST, MIN_NORTH, "
-                        + "MAX_EAST and MAX_NORTH",
-                "land.geodata.countyBoxes holds NORTH in its list, the axes of a point; an envelope has none");
+                "land.geodata.wells: " + SpatialModelValidator.SP45.says(),
+                "land.geodata.countyBoxes: " + SpatialModelValidator.SP45.says());
+        ((PartsHolding) wells.getHolding().get(0)).getPart().get(1).setRole(Ordinate.NORTH);
+        bbox.getOrdinate().set(3, Ordinate.MAX_NORTH);
+        bbox.getOrdinate().add(Ordinate.HEIGHT);
+        ((PartsHolding) wells.getHolding().get(0)).getPart().add(SpatialFactory.eINSTANCE.createCoordinatePart());
+        ((PartsHolding) wells.getHolding().get(0)).getPart().get(2).setRole(Ordinate.MIN_EAST);
+        assertThat(errors("SP45")).as("an axis of a point in an envelope, an edge in a point")
+                .extracting(Finding::element).containsExactlyInAnyOrder(wells, boxes);
     }
 
     /** A height is held exactly where the geometry has one: HEIGHT of a point, MIN_HEIGHT and MAX_HEIGHT of a box. */
@@ -1066,10 +1082,10 @@ class SpatialModelValidatorTest {
         assertThat(rules()).as("a point and an envelope with a height").doesNotContain("SP46");
         masts.setHasHeight(false);
         box.getPart().remove(5);
+        assertThat(errors("SP46")).extracting(Finding::element).containsExactlyInAnyOrder(masts, boxes);
         assertThat(errors("SP46")).extracting(Finding::message).containsExactlyInAnyOrder(
-                "land.geodata.masts has no height but holds HEIGHT in its parts; a height needs hasHeight and a "
-                        + "system of three axes",
-                "land.geodata.volumeBoxes has a height but holds no MAX_HEIGHT in its parts");
+                "land.geodata.masts: " + SpatialModelValidator.SP46.says(),
+                "land.geodata.volumeBoxes: " + SpatialModelValidator.SP46.says());
     }
 
     /**
@@ -1126,9 +1142,7 @@ class SpatialModelValidatorTest {
         archive.getFeature().add(lat);
         assertThat(errors("SP48")).singleElement().satisfies(f -> {
             assertThat(f.element()).isSameAs(stations);
-            assertThat(f.message()).isEqualTo("land.geodata.weatherStations: the parts lie in 2 classifiers, "
-                    + "land.geo.weather_station, land.geo.weather_station_archive; a holding in parts is one row of "
-                    + "one holder");
+            assertThat(f.message()).isEqualTo("land.geodata.weatherStations: " + SpatialModelValidator.SP48.says());
         });
     }
 
@@ -1153,19 +1167,18 @@ class SpatialModelValidatorTest {
                 .setAttribute(Land.column(land.commune, "label_point_wkb", land.blob));
         assertThat(rules()).doesNotContain("SP50");
         labels.setOf(labels);
-        assertThat(errors("SP50")).singleElement().asString()
-                .contains("land.geodata.labels is derived from itself; a derived geometry comes from another one");
+        assertThat(errors("SP50")).singleElement().satisfies(f -> {
+            assertThat(f.element()).isSameAs(labels);
+            assertThat(f.message()).isEqualTo("land.geodata.labels: " + SpatialModelValidator.SP50.says());
+        });
         GeometryFeature boxes = SpatialElements.derived(land.geodata, "boxes", GeometryDerivation.ENVELOPE,
                 land.communes);
         SpatialElements.whole(boxes, Land.column(land.commune, "box", land.geometry), GeometryStorage.NATIVE);
         labels.setOf(boxes);
         boxes.setOf(labels);
         boxes.setKind(GeometryKind.POLYGON);
-        assertThat(errors("SP50")).extracting(Finding::message).containsExactlyInAnyOrder(
-                "land.geodata.labels is derived from itself through land.geodata.boxes; a derived geometry comes from "
-                        + "another one",
-                "land.geodata.boxes is derived from itself through land.geodata.labels; a derived geometry comes from "
-                        + "another one");
+        assertThat(errors("SP50")).as("through each other").extracting(Finding::element)
+                .containsExactlyInAnyOrder(labels, boxes);
     }
 
     @Test
@@ -1177,8 +1190,10 @@ class SpatialModelValidatorTest {
                 ReferenceSystemAuthority.EPSG, "25832", ReferenceSystemKind.PROJECTED, AxisOrder.EAST_NORTH));
         assertThat(rules()).as("one URI is one system").doesNotContain("SP51");
         boxes.setReferenceSystem(land.wgs84);
-        assertThat(errors("SP51")).singleElement().asString().contains("land.geodata.communeBoxes is the ENVELOPE "
-                + "of land.geodata.communes in EPSG 25832 but is in EPSG 4326; a derived geometry keeps the system");
+        assertThat(errors("SP51")).singleElement().satisfies(f -> {
+            assertThat(f.element()).isSameAs(boxes);
+            assertThat(f.message()).isEqualTo("land.geodata.communeBoxes: " + SpatialModelValidator.SP51.says());
+        });
     }
 
     @Test
@@ -1192,10 +1207,10 @@ class SpatialModelValidatorTest {
         assertThat(rules()).doesNotContain("SP52");
         extents.setKind(GeometryKind.POINT);
         centres.setMultiplicity(GeometryMultiplicity.MULTI);
+        assertThat(errors("SP52")).extracting(Finding::element).containsExactlyInAnyOrder(extents, centres);
         assertThat(errors("SP52")).extracting(Finding::message).containsExactlyInAnyOrder(
-                "land.geodata.extents is the ENVELOPE of land.geodata.states but of kind POINT; an envelope is a "
-                        + "single POLYGON",
-                "land.geodata.centres is the CENTROID of land.geodata.states but MULTI; a centroid is a single POINT");
+                "land.geodata.extents: " + SpatialModelValidator.SP52.says(),
+                "land.geodata.centres: " + SpatialModelValidator.SP52.says());
     }
 
     /**
@@ -1236,7 +1251,10 @@ class SpatialModelValidatorTest {
                 Land.column(stop, "easting", land.decimal), Land.column(stop, "northing", land.decimal));
         assertThat(rules()).as("numbers in a projected system, no GeoJSON").doesNotContain("SP28", "SP29");
         SpatialElements.whole(stops, Land.column(stop, "geojson", land.varchar), GeometryStorage.GEOJSON);
-        assertThat(warnings("SP29")).singleElement().asString().contains("stops is stored as GEOJSON in EPSG 25832");
+        assertThat(warnings("SP29")).singleElement().satisfies(f -> {
+            assertThat(f.element()).isSameAs(stops);
+            assertThat(f.message()).isEqualTo("land.geodata.stops: " + SpatialModelValidator.SP29.says());
+        });
     }
 
     private static Multiplicity multiplicity(long lower, long upper) {
