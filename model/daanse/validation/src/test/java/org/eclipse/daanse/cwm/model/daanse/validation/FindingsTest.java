@@ -14,6 +14,7 @@ package org.eclipse.daanse.cwm.model.daanse.validation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.daanse.cwm.model.daanse.validation.Finding.Severity;
@@ -38,7 +39,8 @@ import org.junit.jupiter.api.Test;
 /**
  * What the EMF check says becomes findings: a constraint named by its rule is a finding of that rule, any other
  * diagnostic one of the module {@code ecore}. A town of a dynamic model has a constraint {@code X1} (a town has at
- * least one inhabitant) checked by a delegate, and a required name.
+ * least one inhabitant) and a constraint {@code X3} (a town is somewhere, a warning with its metadata), both checked by
+ * a delegate, and a required name.
  */
 class FindingsTest {
 
@@ -60,7 +62,11 @@ class FindingsTest {
         @Override
         public boolean validate(EClass eClass, EObject eObject, Map<Object, Object> context, String constraint,
                 String expression) {
-            return !"X1".equals(constraint) || ((Integer) eObject.eGet(INHABITANTS)) > 0;
+            return switch (constraint) {
+            case "X1" -> ((Integer) eObject.eGet(INHABITANTS)) > 0;
+            case "X3" -> !"Nowhere".equals(eObject.eGet(NAME));
+            default -> true;
+            };
         }
 
         @Override
@@ -84,8 +90,12 @@ class FindingsTest {
         INHABITANTS.setEType(EcorePackage.Literals.EINT);
         TOWN.getEStructuralFeatures().add(NAME);
         TOWN.getEStructuralFeatures().add(INHABITANTS);
-        annotate(TOWN, EcorePackage.eNS_URI, "constraints", "X1");
+        annotate(TOWN, EcorePackage.eNS_URI, "constraints", "X1 X3");
         annotate(TOWN, DELEGATE, "X1", "inhabitants > 0");
+        annotate(TOWN, DELEGATE, "X3", "name <> 'Nowhere'");
+        annotate(TOWN, TOWNS.getNsURI() + Findings.CONSTRAINTS, "X3.name", "Somewhere");
+        annotate(TOWN, TOWNS.getNsURI() + Findings.CONSTRAINTS, "X3.description", "A town is somewhere.");
+        annotate(TOWN, TOWNS.getNsURI() + Findings.CONSTRAINTS, "X3.level", "warning");
         TOWNS.getEClassifiers().add(TOWN);
         EPackage.Registry.INSTANCE.put(TOWNS.getNsURI(), TOWNS);
         EValidator.ValidationDelegate.Registry.INSTANCE.put(DELEGATE, X1);
@@ -148,6 +158,54 @@ class FindingsTest {
             assertThat(note.severity()).as("note").isEqualTo(Severity.INFO);
             assertThat(note.element()).as("no element where the datum is none").isNull();
         });
+    }
+
+    /** A constraint whose class states its level and its sentence weighs as stated and says the sentence. */
+    @Test
+    void aConstraintWeighsAndSaysWhatItsMetadataStates() {
+        EObject nowhere = town("Nowhere", 12);
+
+        assertThat(Findings.of("towns", Diagnostician.INSTANCE.validate(nowhere))).as("findings").singleElement()
+                .satisfies(finding -> {
+                    assertThat(finding.id()).as("id").isEqualTo("towns/X3");
+                    assertThat(finding.severity()).as("the level of the metadata, not the error of the check")
+                            .isEqualTo(Severity.WARNING);
+                    assertThat(finding.element()).as("element").isSameAs(nowhere);
+                    assertThat(finding.message()).as("the label and the sentence").endsWith(": A town is somewhere.");
+                });
+    }
+
+    /** A constraint whose delegate fails to evaluate it is a finding of its rule, with the message of the failure. */
+    @Test
+    void aConstraintThatCannotBeEvaluatedIsAFindingOfItsRule() {
+        EObject gera = town("Gera", 32);
+        BasicDiagnostic root = new BasicDiagnostic(Diagnostic.ERROR, "test", 0, "root", null);
+        root.add(new BasicDiagnostic(Diagnostic.ERROR, "test", 0, "An exception occurred while delegating evaluation of "
+                + "the 'X3' constraint on 'Town Gera': no delegate", new Object[] { gera }));
+
+        assertThat(Findings.of("towns", root)).as("findings").singleElement().satisfies(finding -> {
+            assertThat(finding.id()).as("id").isEqualTo("towns/X3");
+            assertThat(finding.severity()).as("the level of the rule").isEqualTo(Severity.WARNING);
+            assertThat(finding.message()).as("what failed").endsWith("no delegate");
+        });
+    }
+
+    /**
+     * The invariants of a package on the elements of its classes: the constraints it states, named by the label of the
+     * element; a required feature left unset is left to the EMF check.
+     */
+    @Test
+    void theInvariantsOfAPackageAreItsConstraints() {
+        EObject unnamed = town(null, 0);
+        EObject nowhere = town("Nowhere", 3);
+
+        List<Finding> found = Findings.ofInvariants("towns", TOWNS, List.of(unnamed, nowhere, TOWN),
+                town -> town.eGet(NAME) == null ? "a town without a name" : (String) town.eGet(NAME));
+
+        assertThat(found).as("findings").extracting(Finding::id).containsExactly("towns/X1", "towns/X3");
+        assertThat(found).as("messages").extracting(Finding::message).containsExactly(
+                "The 'X1' constraint is violated on 'a town without a name'", "Nowhere: A town is somewhere.");
+        assertThat(found).as("elements").extracting(Finding::element).containsExactly(unnamed, nowhere);
     }
 
     private static EObject town(String name, int inhabitants) {
