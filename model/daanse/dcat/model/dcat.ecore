@@ -14,8 +14,8 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="dcat" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat"
     nsPrefix="dcat">
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-    <details key="documentation" value="W3C DCAT 3 (Data Catalog Vocabulary, REC 2024) as a CWM-anchored Daanse extension: catalogs describe datasets whose content already exists as a CWM model — Dataset.subject references arbitrary core::ModelElements (relational::Schema, json::ObjectType, single tables), distributions describe the physical access forms, data services the APIs. Agents are businessinformation::ResponsibleParty, themes point at businessnomenclature::Concept and/or EU vocabulary IRIs. Controlled vocabularies (data-theme, frequency, access-right, ...) are deliberately flattened to IRI strings (suffix Iri). DCAT inverses (seriesMember, inCatalog, nextVersion, ...) are the Property.oppositeRoleName annotations of the hidden reverse directions — backward navigation via InverseReferences."/>
-    <details key="documentation.de" value="W3C DCAT 3 (Data Catalog Vocabulary, REC 2024) als CWM-verankerte Daanse-Erweiterung: Kataloge beschreiben Datensaetze, deren Inhalt bereits als CWM-Modell vorliegt — Dataset.subject referenziert beliebige core::ModelElements (relational::Schema, json::ObjectType, einzelne Tabellen), Distributionen beschreiben die physischen Zugriffsformen, DataServices die APIs. Agenten sind businessinformation::ResponsibleParty, Themen verweisen auf businessnomenclature::Concept und/oder EU-Vokabular-IRIs. Kontrollierte Vokabulare (data-theme, frequency, access-right, ...) sind bewusst als IRI-Strings verflacht (Suffix Iri). DCAT-Inverse (seriesMember, inCatalog, nextVersion, ...) sind die Property.oppositeRoleName-Annotationen der versteckten Gegenrichtungen — Rueckwaertsnavigation ueber InverseReferences."/>
+    <details key="documentation" value="W3C DCAT 3 (Data Catalog Vocabulary, REC 2024) as a CWM-anchored Daanse extension: catalogs describe datasets whose content already exists as a CWM model — Dataset.subject references arbitrary core::ModelElements (relational::Schema, json::ObjectType, single tables), distributions describe the physical access forms, data services the APIs. Agents are businessinformation::ResponsibleParty, themes point at businessnomenclature::Concept and/or EU vocabulary IRIs. Controlled vocabularies (data-theme, frequency, access-right, ...) are deliberately flattened to IRI strings (suffix Iri). A portal is the place that provides catalogs: it owns its catalogs and its access service and imports the catalogs it takes over from other portals. DCAT inverses (seriesMember, inCatalog, nextVersion, ...) are the Property.oppositeRoleName annotations of the hidden reverse directions — backward navigation via InverseReferences."/>
+    <details key="documentation.de" value="W3C DCAT 3 (Data Catalog Vocabulary, REC 2024) als CWM-verankerte Daanse-Erweiterung: Kataloge beschreiben Datensaetze, deren Inhalt bereits als CWM-Modell vorliegt — Dataset.subject referenziert beliebige core::ModelElements (relational::Schema, json::ObjectType, einzelne Tabellen), Distributionen beschreiben die physischen Zugriffsformen, DataServices die APIs. Agenten sind businessinformation::ResponsibleParty, Themen verweisen auf businessnomenclature::Concept und/oder EU-Vokabular-IRIs. Kontrollierte Vokabulare (data-theme, frequency, access-right, ...) sind bewusst als IRI-Strings verflacht (Suffix Iri). Ein Portal ist die Stelle, die Kataloge bereitstellt: es besitzt seine Kataloge und seinen Zugangsdienst und importiert Kataloge, die es von anderen Portalen uebernimmt. DCAT-Inverse (seriesMember, inCatalog, nextVersion, ...) sind die Property.oppositeRoleName-Annotationen der versteckten Gegenrichtungen — Rueckwaertsnavigation ueber InverseReferences."/>
     <details key="caption.de" value="Datenkatalog (DCAT)"/>
     <details key="caption.en" value="Data Catalog (DCAT)"/>
     <details key="basePackage" value="org.eclipse.daanse.cwm.model.daanse"/>
@@ -153,6 +153,7 @@
     <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
       <details key="SinglePublisher.name" value="SinglePublisher"/>
       <details key="SinglePublisher.description" value="A resource has at most one publisher attribution."/>
+      <details key="SinglePublisher.description.de" value="Eine Ressource hat hoechstens eine Herausgeber-Attribution."/>
       <details key="SinglePublisher.level" value="error"/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="identifier" ordered="false" upperBound="-1">
@@ -386,15 +387,31 @@
       <details key="caption.en" value="Dataset"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="SpatialResolutionPositive"/>
+      <details key="constraints" value="SpatialResolutionPositive SourceNotCircular GeneratedHasSource DistributionServiceServesDataset"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
       <details key="SpatialResolutionPositive" value="self.spatialResolutionInMeters &lt;> null implies self.spatialResolutionInMeters.toReal() > 0"/>
+      <details key="SourceNotCircular" value="self.source->excludes(self) and self.source->closure(d | d.source)->excludes(self)"/>
+      <details key="GeneratedHasSource" value="self.wasGeneratedBy->notEmpty() implies self.source->notEmpty()"/>
+      <details key="DistributionServiceServesDataset" value="self.distribution->forAll(x | x.accessService &lt;> null implies x.accessService.servesDataset->includes(self))"/>
     </eAnnotations>
     <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
       <details key="SpatialResolutionPositive.name" value="SpatialResolutionPositive"/>
       <details key="SpatialResolutionPositive.description" value="The spatial resolution, when given, is positive (core::Float is a decimal literal)."/>
+      <details key="SpatialResolutionPositive.description.de" value="Die raeumliche Aufloesung ist, wenn angegeben, positiv (core::Float ist ein Dezimal-Literal)."/>
       <details key="SpatialResolutionPositive.level" value="error"/>
+      <details key="SourceNotCircular.name" value="SourceNotCircular"/>
+      <details key="SourceNotCircular.description" value="A dataset is not its own source, neither directly nor over other datasets."/>
+      <details key="SourceNotCircular.description.de" value="Ein Datensatz ist nicht seine eigene Quelle, weder direkt noch ueber andere Datensaetze."/>
+      <details key="SourceNotCircular.level" value="error"/>
+      <details key="GeneratedHasSource.name" value="GeneratedHasSource"/>
+      <details key="GeneratedHasSource.description" value="A dataset with wasGeneratedBy names the datasets it was generated from in source."/>
+      <details key="GeneratedHasSource.description.de" value="Ein Datensatz mit wasGeneratedBy nennt in source die Datensaetze, aus denen er erzeugt wurde."/>
+      <details key="GeneratedHasSource.level" value="warning"/>
+      <details key="DistributionServiceServesDataset.name" value="DistributionServiceServesDataset"/>
+      <details key="DistributionServiceServesDataset.description" value="The access service of every distribution of a dataset names the dataset in servesDataset."/>
+      <details key="DistributionServiceServesDataset.description.de" value="Der Zugangsdienst jeder Distribution eines Datensatzes nennt den Datensatz in servesDataset."/>
+      <details key="DistributionServiceServesDataset.level" value="warning"/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="subject" ordered="false" upperBound="-1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -466,8 +483,8 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="wasGeneratedBy" ordered="false" upperBound="-1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="prov:wasGeneratedBy — the generating activity. Deliberately generically typed; canonical targets are transformation::TransformationActivity and warehouseoperation::TransformationExecution (keeping their module hull out of consumers' poms)."/>
-        <details key="documentation.de" value="prov:wasGeneratedBy — die erzeugende Aktivitaet. Bewusst generisch typisiert; kanonische Ziele sind transformation::TransformationActivity und warehouseoperation::TransformationExecution (so bleibt deren Modul-Huelle aus dem pom der Konsumenten)."/>
+        <details key="documentation" value="prov:wasGeneratedBy — what generated this dataset. Deliberately typed generically (core::ModelElement), keeping the module hull of the targets out of consumers' poms. Canonical targets are transformation::Transformation (the mapping from source to target), transformation::TransformationTask (transformations run as a unit), transformation::TransformationActivity and warehouseoperation::TransformationExecution (one run). Set together with source: wasGeneratedBy says how the dataset was made, source from what (GeneratedHasSource). Unset: nothing is said about the process. Example: 'pool-visits-monthly' was generated by the transformation 'aggregate-visits' from 'turnstile-events'."/>
+        <details key="documentation.de" value="prov:wasGeneratedBy — wodurch dieser Datensatz erzeugt wurde. Bewusst generisch typisiert (core::ModelElement), so bleibt die Modul-Huelle der Ziele aus dem pom der Konsumenten. Kanonische Ziele sind transformation::Transformation (die Abbildung von Quelle auf Ziel), transformation::TransformationTask (Transformationen, die als Einheit laufen), transformation::TransformationActivity und warehouseoperation::TransformationExecution (ein Lauf). Gesetzt zusammen mit source: wasGeneratedBy sagt, wie der Datensatz entstand, source, woraus (GeneratedHasSource). Nicht gesetzt: ueber den Vorgang ist nichts gesagt. Beispiel: 'pool-visits-monthly' wurde von der Transformation 'aggregate-visits' aus 'turnstile-events' erzeugt."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="generated"/>
@@ -476,6 +493,19 @@
         <details key="body" value="generated"/>
       </eAnnotations>
       <eType xsi:type="ecore:EClass" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" ordered="false" upperBound="-1"
+        eType="//Dataset">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="dcterms:source — the datasets this dataset is derived from: the raw or operational data it was made of. Set on a published dataset that is an extract, an aggregation or a cleaned copy of another one; the source is usually a non-public dataset (accessRightsIri NON_PUBLIC) with distributions of its own. Unset: nothing is said about the origin — the dataset is a source itself, or its origin is unknown. A dataset is not its own source, neither directly nor over others (SourceNotCircular). Reverse role derivedDataset. Example: the published dataset 'pools' has the source 'pool-register', the register of pools in the operations database."/>
+        <details key="documentation.de" value="dcterms:source — die Datensaetze, aus denen dieser abgeleitet ist: die Roh- oder Betriebsdaten, aus denen er entstand. Gesetzt an einem veroeffentlichten Datensatz, der ein Auszug, eine Verdichtung oder eine bereinigte Fassung eines anderen ist; die Quelle ist meist ein nicht oeffentlicher Datensatz (accessRightsIri NON_PUBLIC) mit eigenen Distributionen. Nicht gesetzt: ueber die Herkunft ist nichts gesagt — der Datensatz ist selbst eine Quelle, oder seine Herkunft ist unbekannt. Ein Datensatz ist nicht seine eigene Quelle, weder direkt noch ueber andere (SourceNotCircular). Gegenrolle derivedDataset. Beispiel: Der veroeffentlichte Datensatz 'pools' hat die Quelle 'pool-register', das Baederverzeichnis der Betriebsdatenbank."/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
+        <details key="Property.oppositeRoleName" value="derivedDataset"/>
+      </eAnnotations>
+      <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
+        <details key="body" value="derivedDataset"/>
+      </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DatasetSeries" eSuperTypes="//Dataset">
@@ -494,13 +524,45 @@
     <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
       <details key="SeriesHasNoDistribution.name" value="SeriesHasNoDistribution"/>
       <details key="SeriesHasNoDistribution.description" value="A dataset series should not carry distributions itself (DCAT 3 SHOULD)."/>
+      <details key="SeriesHasNoDistribution.description.de" value="Eine Datensatzserie soll selbst keine Distributionen tragen (DCAT 3 SHOULD)."/>
       <details key="SeriesHasNoDistribution.level" value="warning"/>
     </eAnnotations>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Portal">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A portal — the place that provides catalogs, such as the open-data site of a city or a state. DCAT itself has no portal class, its unit is the catalog; the portal is the namespace above it. A core::Package without features of its own: it owns (ownedElement) its catalogs and exactly one data service, its access service (OneAccessService). The endpointUrl of that service is the address of the portal's catalog interface, conformsToIri names the metadata profile it speaks (for example DCAT-AP.de), servesDataset names the catalogs (AccessServiceServesCatalogs) and provider leads to the operations view (softwaredeployment). A catalog the portal takes over from another portal (harvesting) is imported (importedElement), not owned (TakenOverNotOwned): ownership is the home of a catalog, while the membership of resources stays the reference Catalog.resource. As a package a portal can also be the dataPackage of a softwaredeployment::DataManager that describes its installation. Example: the portal 'utility-open-data' of a municipal utility owns the catalog 'open-data' and the access service 'portal-api'; a regional portal imports 'open-data' and shows it as well."/>
+      <details key="documentation.de" value="Ein Portal — die Stelle, die Kataloge bereitstellt, etwa das Open-Data-Angebot einer Stadt oder eines Landes. DCAT selbst kennt keine Portal-Klasse, seine Einheit ist der Katalog; das Portal ist der Namensraum darueber. Ein core::Package ohne eigene Merkmale: Es besitzt (ownedElement) seine Kataloge und genau einen Datendienst, seinen Zugangsdienst (OneAccessService). Dessen endpointUrl ist die Adresse der Katalogschnittstelle des Portals, conformsToIri nennt das Metadatenprofil (etwa DCAT-AP.de), servesDataset nennt die Kataloge (AccessServiceServesCatalogs), provider fuehrt zur Betriebssicht (softwaredeployment). Einen Katalog, den das Portal von einem anderen uebernimmt (Harvesting), importiert es (importedElement), statt ihn zu besitzen (TakenOverNotOwned): Der Besitz ist die Heimat eines Katalogs, die Mitgliedschaft von Ressourcen bleibt die Referenz Catalog.resource. Als Package kann ein Portal auch das dataPackage eines softwaredeployment::DataManager sein, der seine Installation beschreibt. Beispiel: Das Portal 'utility-open-data' der Stadtwerke besitzt den Katalog 'open-data' und den Zugangsdienst 'portal-api'; ein Landesportal importiert 'open-data' und zeigt ihn ebenfalls."/>
+      <details key="caption.de" value="Portal"/>
+      <details key="caption.en" value="Portal"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="OneAccessService AccessServiceServesCatalogs TakenOverNotOwned"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
+      <details key="OneAccessService" value="self.ownedElement->select(e | e.oclIsKindOf(DataService))->size() = 1"/>
+      <details key="AccessServiceServesCatalogs" value="self.ownedElement->select(e | e.oclIsKindOf(DataService))->forAll(s | self.ownedElement->select(e | e.oclIsKindOf(Catalog))->forAll(c | s.oclAsType(DataService).servesDataset->includes(c)) and s.oclAsType(DataService).servesDataset->forAll(d | d.oclIsKindOf(Catalog) and (self.ownedElement->includes(d) or self.importedElement->includes(d))))"/>
+      <details key="TakenOverNotOwned" value="self.importedElement->forAll(e | self.ownedElement->excludes(e))"/>
+    </eAnnotations>
+    <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
+      <details key="OneAccessService.name" value="OneAccessService"/>
+      <details key="OneAccessService.description" value="A portal owns exactly one data service: its access service."/>
+      <details key="OneAccessService.description.de" value="Ein Portal besitzt genau einen Datendienst: seinen Zugangsdienst."/>
+      <details key="OneAccessService.level" value="error"/>
+      <details key="AccessServiceServesCatalogs.name" value="AccessServiceServesCatalogs"/>
+      <details key="AccessServiceServesCatalogs.description" value="The access service of a portal serves every catalog the portal owns, and nothing but catalogs the portal owns or takes over."/>
+      <details key="AccessServiceServesCatalogs.description.de" value="Der Zugangsdienst eines Portals liefert jeden Katalog aus, den das Portal besitzt, und nichts als Kataloge, die das Portal besitzt oder uebernimmt."/>
+      <details key="AccessServiceServesCatalogs.level" value="error"/>
+      <details key="TakenOverNotOwned.name" value="TakenOverNotOwned"/>
+      <details key="TakenOverNotOwned.description" value="A portal does not take over what it owns: a catalog of another portal is in importedElement only, never also in ownedElement."/>
+      <details key="TakenOverNotOwned.description.de" value="Ein Portal uebernimmt nicht, was es besitzt: Ein Katalog eines anderen Portals steht nur in importedElement, nie zugleich in ownedElement."/>
+      <details key="TakenOverNotOwned.level" value="error"/>
+    </eAnnotations>
+    <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Package"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Catalog">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="dcat:Catalog — a curated collection of metadata about resources. Faithful to DCAT it is a Dataset and at the same time a core::Package (precedent core::Subsystem): as a Package the catalog may own homeless datasets and support objects (ResponsibleParties, taxonomies) as ownedElement; canonical membership however is the resource reference — datasets usually live next to the resource models they describe. The dataset/service/catalog subsets are derivable (util filters), not separate features."/>
-      <details key="documentation.de" value="dcat:Catalog — eine kuratierte Sammlung von Metadaten ueber Ressourcen. DCAT-treu ein Dataset und zugleich core::Package (Vorbild core::Subsystem): als Package kann der Katalog heimatlose Datensaetze und Traegerobjekte (ResponsibleParties, Taxonomien) als ownedElement besitzen; die kanonische Mitgliedschaft ist aber die Referenz resource — Datensaetze leben in der Regel bei den Ressourcenmodellen, die sie beschreiben. dataset/service/catalog-Teilmengen sind ableitbar (Util-Filter), keine eigenen Features."/>
+      <details key="documentation" value="dcat:Catalog — a curated collection of metadata about resources. Faithful to DCAT it is a Dataset and at the same time a core::Package (precedent core::Subsystem): as a Package the catalog may own homeless datasets and support objects (ResponsibleParties, taxonomies) as ownedElement; canonical membership however is the resource reference — datasets usually live next to the resource models they describe. The dataset/service/catalog subsets are derivable (util filters), not separate features. A published catalog lives in a portal: the portal owns it, further portals that show it import it."/>
+      <details key="documentation.de" value="dcat:Catalog — eine kuratierte Sammlung von Metadaten ueber Ressourcen. DCAT-treu ein Dataset und zugleich core::Package (Vorbild core::Subsystem): als Package kann der Katalog heimatlose Datensaetze und Traegerobjekte (ResponsibleParties, Taxonomien) als ownedElement besitzen; die kanonische Mitgliedschaft ist aber die Referenz resource — Datensaetze leben in der Regel bei den Ressourcenmodellen, die sie beschreiben. dataset/service/catalog-Teilmengen sind ableitbar (Util-Filter), keine eigenen Features. Ein veroeffentlichter Katalog lebt in einem Portal: das Portal besitzt ihn, weitere Portale, die ihn zeigen, importieren ihn."/>
       <details key="caption.de" value="Katalog"/>
       <details key="caption.en" value="Catalog"/>
     </eAnnotations>
@@ -514,9 +576,11 @@
     <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
       <details key="RecordTopicIsListed.name" value="RecordTopicIsListed"/>
       <details key="RecordTopicIsListed.description" value="Every catalog record describes a resource the catalog lists or owns."/>
+      <details key="RecordTopicIsListed.description.de" value="Jeder Katalogeintrag beschreibt eine Ressource, die der Katalog listet oder besitzt."/>
       <details key="RecordTopicIsListed.level" value="error"/>
       <details key="NotOwnMember.name" value="NotOwnMember"/>
       <details key="NotOwnMember.description" value="A catalog does not list itself as a member."/>
+      <details key="NotOwnMember.description.de" value="Ein Katalog listet sich nicht selbst als Mitglied."/>
       <details key="NotOwnMember.level" value="error"/>
     </eAnnotations>
     <eSuperTypes href="#//Dataset"/>
@@ -571,27 +635,37 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DataService" eSuperTypes="//CatalogedResource">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="dcat:DataService — a service/API offering access to datasets. endpointUrl/endpointDescription are own features (CWM SoftwareDeployment has no URL anywhere); provider optionally links the deployed component (softwaredeployment::DataProvider) for the operations view."/>
-      <details key="documentation.de" value="dcat:DataService — ein Dienst/API, der Zugriff auf Datensaetze bietet. endpointUrl/endpointDescription sind eigene Merkmale (CWM SoftwareDeployment kennt keine URL); provider verlinkt optional die deployte Komponente (softwaredeployment::DataProvider) fuer die Betriebssicht."/>
+      <details key="documentation" value="dcat:DataService — a service/API offering access to datasets. endpointUrl is the one root address of the service (CWM SoftwareDeployment has no URL anywhere); conformsToIri names the protocol the service implements — at most one of the known protocols of DcatVocabularies (OneProtocol), such as OGC API Features, OData or MQTT. The distributions accessed through the service name it as accessService; the part of their accessUrl behind endpointUrl is the path of the dataset in the service, for an MQTT broker the topic. servesDataset names the datasets, and each of them has a distribution with this service (ServedDatasetHasDistribution). provider optionally links the deployed component (softwaredeployment::DataProvider) for the operations view. The data service a portal owns is the portal's access service."/>
+      <details key="documentation.de" value="dcat:DataService — ein Dienst/API, der Zugriff auf Datensaetze bietet. endpointUrl ist die eine Wurzeladresse des Dienstes (CWM SoftwareDeployment kennt keine URL); conformsToIri nennt das Protokoll, das der Dienst umsetzt — hoechstens eines der bekannten Protokolle aus DcatVocabularies (OneProtocol), etwa OGC API Features, OData oder MQTT. Die Distributionen, die ueber den Dienst zugaenglich sind, nennen ihn als accessService; der Teil ihrer accessUrl hinter endpointUrl ist der Pfad des Datensatzes im Dienst, bei einem MQTT-Broker das Topic. servesDataset nennt die Datensaetze, und zu jedem gibt es eine Distribution mit diesem Dienst (ServedDatasetHasDistribution). provider verlinkt optional die deployte Komponente (softwaredeployment::DataProvider) fuer die Betriebssicht. Der Datendienst, den ein Portal besitzt, ist dessen Zugangsdienst."/>
       <details key="caption.de" value="Datendienst"/>
       <details key="caption.en" value="Data Service"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="EndpointUrlNotEmpty"/>
+      <details key="constraints" value="EndpointUrlNotEmpty OneProtocol ServedDatasetHasDistribution"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
-      <details key="EndpointUrlNotEmpty" value="self.endpointUrl->forAll(u | u.size() > 0)"/>
+      <details key="EndpointUrlNotEmpty" value="self.endpointUrl &lt;> null implies self.endpointUrl.size() > 0"/>
+      <details key="OneProtocol" value="Sequence{'http://www.opengis.net/spec/ogcapi-features-1/', 'http://www.opengis.net/spec/iot_sensing/', 'http://docs.oasis-open.org/odata/', 'https://www.rfc-editor.org/rfc/rfc7946', 'https://spec.graphql.org/', 'https://spec.openapis.org/oas/', 'http://docs.oasis-open.org/mqtt/', 'https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/protocol/xmla', 'https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/protocol/qgis-project', 'https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/protocol/jdbc'}->select(p | self.conformsToIri->exists(i | i.size() >= p.size() and i.substring(1, p.size()) = p))->size() &lt;= 1"/>
+      <details key="ServedDatasetHasDistribution" value="self.servesDataset->reject(d | d.oclIsKindOf(Catalog))->forAll(d | d.distribution->exists(x | x.accessService = self))"/>
     </eAnnotations>
     <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
       <details key="EndpointUrlNotEmpty.name" value="EndpointUrlNotEmpty"/>
-      <details key="EndpointUrlNotEmpty.description" value="Endpoint URLs are non-empty strings."/>
+      <details key="EndpointUrlNotEmpty.description" value="The endpoint URL, when set, is a non-empty string (that it is set at all, its lower bound says)."/>
+      <details key="EndpointUrlNotEmpty.description.de" value="Die Endpunkt-URL ist, wenn gesetzt, eine nicht leere Zeichenkette (dass sie gesetzt ist, sagt ihre Untergrenze)."/>
       <details key="EndpointUrlNotEmpty.level" value="error"/>
+      <details key="OneProtocol.name" value="OneProtocol"/>
+      <details key="OneProtocol.description" value="A data service names at most one of the known protocols (DcatVocabularies.PROTOCOLS) in conformsToIri; an IRI that begins with a protocol IRI, such as a version or a conformance class, names that protocol."/>
+      <details key="OneProtocol.description.de" value="Ein Datendienst nennt in conformsToIri hoechstens eines der bekannten Protokolle (DcatVocabularies.PROTOCOLS); eine IRI, die mit einer Protokoll-IRI beginnt, etwa eine Version oder Konformitaetsklasse, nennt dieses Protokoll."/>
+      <details key="OneProtocol.level" value="error"/>
+      <details key="ServedDatasetHasDistribution.name" value="ServedDatasetHasDistribution"/>
+      <details key="ServedDatasetHasDistribution.description" value="Every dataset a service serves, catalogs excepted, has a distribution with this service as accessService."/>
+      <details key="ServedDatasetHasDistribution.description.de" value="Jeder Datensatz, den ein Dienst ausliefert, Kataloge ausgenommen, hat eine Distribution mit diesem Dienst als accessService."/>
+      <details key="ServedDatasetHasDistribution.level" value="warning"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="endpointUrl" ordered="false" lowerBound="1"
-        upperBound="-1">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="endpointUrl" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="dcat:endpointURL — root endpoint(s) of the service."/>
-        <details key="documentation.de" value="dcat:endpointURL — Wurzel-Endpunkt(e) des Dienstes."/>
+        <details key="documentation" value="dcat:endpointURL — the one root address of the service. Required. The accessUrl of every distribution with this service starts with it (AccessUrlUnderEndpoint); the rest is the path of the dataset in the service. A service reachable under a second root is a second data service. Example: the OGC API Features service 'ogc-assets' has the root https://geo.utility.example/ogc/assets, the distribution of 'pools' in it the accessUrl https://geo.utility.example/ogc/assets/collections/pools."/>
+        <details key="documentation.de" value="dcat:endpointURL — die eine Wurzeladresse des Dienstes. Pflicht. Die accessUrl jeder Distribution mit diesem Dienst beginnt damit (AccessUrlUnderEndpoint), der Rest ist der Pfad des Datensatzes im Dienst. Ist ein Dienst unter einer zweiten Wurzel erreichbar, ist das ein zweiter Datendienst. Beispiel: Der OGC-API-Features-Dienst 'ogc-assets' hat die Wurzel https://geo.utility.example/ogc/assets, die Distribution von 'pools' darin die accessUrl https://geo.utility.example/ogc/assets/collections/pools."/>
       </eAnnotations>
       <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
     </eStructuralFeatures>
@@ -605,8 +679,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="servesDataset" ordered="false" upperBound="-1"
         eType="//Dataset">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="dcat:servesDataset — the datasets this service serves; reverse role dataService."/>
-        <details key="documentation.de" value="dcat:servesDataset — die Datensaetze, die dieser Dienst ausliefert; Gegenrolle dataService."/>
+        <details key="documentation" value="dcat:servesDataset — the datasets this service serves; reverse role dataService. Each of them, catalogs excepted, has a distribution with this service (ServedDatasetHasDistribution); for the access service of a portal these are the portal's catalogs."/>
+        <details key="documentation.de" value="dcat:servesDataset — die Datensaetze, die dieser Dienst ausliefert; Gegenrolle dataService. Jeder davon, Kataloge ausgenommen, hat eine Distribution mit diesem Dienst (ServedDatasetHasDistribution); beim Zugangsdienst eines Portals sind es die Kataloge des Portals."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="dataService"/>
@@ -631,31 +705,38 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Distribution" eSuperTypes="//DcatElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="dcat:Distribution — a concrete access form of a dataset (file download, API view, media type, size, checksum). Exists only as a child of its dataset (Dataset.distribution); dcat:isDistributionOf is the container."/>
-      <details key="documentation.de" value="dcat:Distribution — eine konkrete Zugriffsform eines Datensatzes (Datei-Download, API-Sicht, Medientyp, Groesse, Pruefsumme). Existiert nur als Kind seines Datensatzes (Dataset.distribution); dcat:isDistributionOf ist der Container."/>
+      <details key="documentation" value="dcat:Distribution — a concrete access form of a dataset (file download, API view, media type, size, checksum). Exists only as a child of its dataset (Dataset.distribution); dcat:isDistributionOf is the container. Accessed through a service, it is accessed through exactly one (accessService): the same dataset through two services is two distributions."/>
+      <details key="documentation.de" value="dcat:Distribution — eine konkrete Zugriffsform eines Datensatzes (Datei-Download, API-Sicht, Medientyp, Groesse, Pruefsumme). Existiert nur als Kind seines Datensatzes (Dataset.distribution); dcat:isDistributionOf ist der Container. Ist sie ueber einen Dienst zugaenglich, dann ueber genau einen (accessService): Derselbe Datensatz ueber zwei Dienste sind zwei Distributionen."/>
       <details key="caption.de" value="Distribution"/>
       <details key="caption.en" value="Distribution"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="ByteSizeNonNegative SpatialResolutionPositive"/>
+      <details key="constraints" value="ByteSizeNonNegative SpatialResolutionPositive AccessUrlUnderEndpoint"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
       <details key="ByteSizeNonNegative" value="self.byteSize >= 0"/>
       <details key="SpatialResolutionPositive" value="self.spatialResolutionInMeters &lt;> null implies self.spatialResolutionInMeters.toReal() > 0"/>
+      <details key="AccessUrlUnderEndpoint" value="self.accessService &lt;> null implies (let e : String = self.accessService.endpointUrl in e &lt;> null implies self.accessUrl->forAll(u | u.size() >= e.size() and u.substring(1, e.size()) = e))"/>
     </eAnnotations>
     <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
       <details key="ByteSizeNonNegative.name" value="ByteSizeNonNegative"/>
       <details key="ByteSizeNonNegative.description" value="The byte size is not negative (core::Integer is a primitive long; unset = 0)."/>
+      <details key="ByteSizeNonNegative.description.de" value="Die Groesse in Bytes ist nicht negativ (core::Integer ist ein primitives long; nicht gesetzt = 0)."/>
       <details key="ByteSizeNonNegative.level" value="error"/>
       <details key="SpatialResolutionPositive.name" value="SpatialResolutionPositive"/>
       <details key="SpatialResolutionPositive.description" value="The spatial resolution, when given, is positive (core::Float is a decimal literal)."/>
+      <details key="SpatialResolutionPositive.description.de" value="Die raeumliche Aufloesung ist, wenn angegeben, positiv (core::Float ist ein Dezimal-Literal)."/>
       <details key="SpatialResolutionPositive.level" value="error"/>
+      <details key="AccessUrlUnderEndpoint.name" value="AccessUrlUnderEndpoint"/>
+      <details key="AccessUrlUnderEndpoint.description" value="Every access URL of a distribution with an access service starts with the endpoint URL of that service."/>
+      <details key="AccessUrlUnderEndpoint.description.de" value="Jede Zugangs-URL einer Distribution mit Zugangsdienst beginnt mit der Endpunkt-URL dieses Dienstes."/>
+      <details key="AccessUrlUnderEndpoint.level" value="error"/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="accessUrl" ordered="false" lowerBound="1"
         upperBound="-1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="dcat:accessURL — access point(s): download page, API entry, form. For direct file access also set downloadUrl."/>
-        <details key="documentation.de" value="dcat:accessURL — Zugangspunkt(e): Downloadseite, API-Einstieg, Formular. Bei direktem Dateizugriff zusaetzlich downloadUrl setzen."/>
+        <details key="documentation" value="dcat:accessURL — access point(s): download page, API entry, form. For direct file access also set downloadUrl. With an accessService every accessUrl starts with the endpointUrl of the service."/>
+        <details key="documentation.de" value="dcat:accessURL — Zugangspunkt(e): Downloadseite, API-Einstieg, Formular. Bei direktem Dateizugriff zusaetzlich downloadUrl setzen. Mit accessService beginnt jede accessUrl mit der endpointUrl des Dienstes."/>
       </eAnnotations>
       <eType xsi:type="ecore:EDataType" href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//String"/>
     </eStructuralFeatures>
@@ -721,11 +802,10 @@
         <details key="documentation.de" value="spdx:checksum (neu in DCAT 3) — Pruefsumme, bezogen auf downloadUrl."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="accessService" ordered="false" upperBound="-1"
-        eType="//DataService">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="accessService" eType="//DataService">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="dcat:accessService — services serving this distribution; reverse role servedDistribution."/>
-        <details key="documentation.de" value="dcat:accessService — Dienste, die diese Distribution ausliefern; Gegenrolle servedDistribution."/>
+        <details key="documentation" value="dcat:accessService — the one service through which this distribution is accessed; reverse role servedDistribution. Set when the distribution is the view of a dataset in a service: its accessUrl starts with the service's endpointUrl, the part behind it is the path (for MQTT the topic), and the service's protocol (conformsToIri) says how to read it. The service names the dataset in servesDataset (DistributionServiceServesDataset). Unset: a file download or a web page without a service. The same dataset through two services is two distributions. Example: the distribution 'pools-geojson' of the dataset 'pools' is accessed through 'ogc-assets' at the path collections/pools."/>
+        <details key="documentation.de" value="dcat:accessService — der eine Dienst, ueber den diese Distribution zugaenglich ist; Gegenrolle servedDistribution. Gesetzt, wenn die Distribution die Sicht eines Datensatzes in einem Dienst ist: Ihre accessUrl beginnt mit der endpointUrl des Dienstes, der Teil dahinter ist der Pfad (bei MQTT das Topic), und das Protokoll des Dienstes (conformsToIri) sagt, wie er zu lesen ist. Der Dienst nennt den Datensatz in servesDataset (DistributionServiceServesDataset). Nicht gesetzt: ein Datei-Download oder eine Webseite ohne Dienst. Derselbe Datensatz ueber zwei Dienste sind zwei Distributionen. Beispiel: Die Distribution 'pools-geojson' des Datensatzes 'pools' ist ueber 'ogc-assets' unter dem Pfad collections/pools zugaenglich."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="servedDistribution"/>
@@ -757,27 +837,33 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Attribution">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Responsibility of a ResponsibleParty for a resource in exactly one role — unifies dcterms:publisher/creator/contributor, dcat:contactPoint, dcterms:rightsHolder and prov:qualifiedAttribution+dcat:hadRole in one shape (agent, role). Contact data (email, telephone, URL) comes with the ResponsibleParty via businessinformation::Contact."/>
-      <details key="documentation.de" value="Zustaendigkeit einer ResponsibleParty fuer eine Ressource in genau einer Rolle — vereinigt dcterms:publisher/creator/contributor, dcat:contactPoint, dcterms:rightsHolder und prov:qualifiedAttribution+dcat:hadRole in einer Form (agent, role). Kontaktdaten (E-Mail, Telefon, URL) bringt die ResponsibleParty ueber businessinformation::Contact mit."/>
+      <details key="documentation" value="Responsibility of a ResponsibleParty for a resource in exactly one role — unifies dcterms:publisher/creator/contributor, dcat:contactPoint, dcterms:rightsHolder and prov:qualifiedAttribution+dcat:hadRole in one shape (agent, role). Contact data comes with the ResponsibleParty via businessinformation::Contact: the url of its one ResourceLocator (contact -> Contact.url) is its URI for every purpose — as publisher the URI of the organization, as contact point the contact page (AgentHasOneLocator); the e-mail address is in Contact.email. A contact point that needs another address than its organization is a ResponsibleParty of its own, owned by the organization's party (a ResponsibleParty is a Namespace). Example: PUBLISHER -> 'municipal-utility' (https://www.utility.example), CONTACT_POINT -> its 'customer-service' (https://www.utility.example/contact, service@utility.example)."/>
+      <details key="documentation.de" value="Zustaendigkeit einer ResponsibleParty fuer eine Ressource in genau einer Rolle — vereinigt dcterms:publisher/creator/contributor, dcat:contactPoint, dcterms:rightsHolder und prov:qualifiedAttribution+dcat:hadRole in einer Form (agent, role). Kontaktdaten bringt die ResponsibleParty ueber businessinformation::Contact mit: Die url ihres einen ResourceLocator (contact -> Contact.url) ist ihre URI fuer jeden Zweck — als Herausgeber die URI der Organisation, als Kontaktstelle die Kontaktseite (AgentHasOneLocator); die E-Mail-Adresse steht in Contact.email. Braucht die Kontaktstelle eine andere Adresse als die Organisation, ist sie eine eigene ResponsibleParty, die die Organisation besitzt (ResponsibleParty ist ein Namespace). Beispiel: PUBLISHER -> 'municipal-utility' (https://www.utility.example), CONTACT_POINT -> deren 'customer-service' (https://www.utility.example/contact, service@utility.example)."/>
       <details key="caption.de" value="Attribution"/>
       <details key="caption.en" value="Attribution"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="OtherRoleNeedsIri"/>
+      <details key="constraints" value="OtherRoleNeedsIri AgentHasOneLocator"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL">
       <details key="OtherRoleNeedsIri" value="self.role = AgentRole::OTHER implies self.roleIri &lt;> null"/>
+      <details key="AgentHasOneLocator" value="self.agent &lt;> null implies self.agent.contact.url->asSet()->size() &lt;= 1"/>
     </eAnnotations>
     <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
       <details key="OtherRoleNeedsIri.name" value="OtherRoleNeedsIri"/>
       <details key="OtherRoleNeedsIri.description" value="The open role OTHER requires a refining role IRI."/>
+      <details key="OtherRoleNeedsIri.description.de" value="Die offene Rolle OTHER verlangt eine praezisierende Rollen-IRI."/>
       <details key="OtherRoleNeedsIri.level" value="error"/>
+      <details key="AgentHasOneLocator.name" value="AgentHasOneLocator"/>
+      <details key="AgentHasOneLocator.description" value="The agent of an attribution has at most one ResourceLocator over all its contacts: its url is the party's URI; with more, the first counts."/>
+      <details key="AgentHasOneLocator.description.de" value="Der Agent einer Attribution hat ueber alle seine Kontakte hoechstens einen ResourceLocator: dessen url ist die URI der Stelle; bei mehreren gilt der erste."/>
+      <details key="AgentHasOneLocator.level" value="warning"/>
     </eAnnotations>
     <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="agent" lowerBound="1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The responsible businessinformation::ResponsibleParty (person, role or organization); reverse role attribution."/>
-        <details key="documentation.de" value="Die zustaendige businessinformation::ResponsibleParty (Person, Rolle oder Organisation); Gegenrolle attribution."/>
+        <details key="documentation" value="The responsible businessinformation::ResponsibleParty (person, role or organization); reverse role attribution. Its URI is the url of its one ResourceLocator."/>
+        <details key="documentation.de" value="Die zustaendige businessinformation::ResponsibleParty (Person, Rolle oder Organisation); Gegenrolle attribution. Ihre URI ist die url ihres einen ResourceLocator."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="attribution"/>
@@ -817,6 +903,7 @@
     <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
       <details key="RelationshipHasRole.name" value="RelationshipHasRole"/>
       <details key="RelationshipHasRole.description" value="A qualified relationship names at least one role (IRI or concept)."/>
+      <details key="RelationshipHasRole.description.de" value="Eine qualifizierte Beziehung nennt mindestens eine Rolle (IRI oder Konzept)."/>
       <details key="RelationshipHasRole.level" value="error"/>
     </eAnnotations>
     <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//ModelElement"/>
@@ -871,6 +958,7 @@
     <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
       <details key="StartBeforeEnd.name" value="StartBeforeEnd"/>
       <details key="StartBeforeEnd.description" value="When both bounds are given, the period starts no later than it ends (lexical comparison of ISO 8601 values)."/>
+      <details key="StartBeforeEnd.description.de" value="Sind beide Grenzen angegeben, beginnt der Zeitraum nicht nach seinem Ende (lexikalischer Vergleich der ISO-8601-Werte)."/>
       <details key="StartBeforeEnd.level" value="error"/>
     </eAnnotations>
     <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element"/>
@@ -905,6 +993,7 @@
     <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
       <details key="LocationNotEmpty.name" value="LocationNotEmpty"/>
       <details key="LocationNotEmpty.description" value="A location carries at least one of gazetteer IRI, geometry, bounding box or centroid."/>
+      <details key="LocationNotEmpty.description.de" value="Ein Ort traegt mindestens eines von Gazetteer-IRI, Geometrie, Begrenzungsrahmen oder Zentroid."/>
       <details key="LocationNotEmpty.level" value="error"/>
     </eAnnotations>
     <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element"/>
@@ -953,6 +1042,7 @@
     <eAnnotations source="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.dcat/constraints">
       <details key="ChecksumValueNotEmpty.name" value="ChecksumValueNotEmpty"/>
       <details key="ChecksumValueNotEmpty.description" value="The checksum value is a non-empty hex string."/>
+      <details key="ChecksumValueNotEmpty.description.de" value="Der Pruefsummenwert ist eine nicht leere Hex-Zeichenkette."/>
       <details key="ChecksumValueNotEmpty.level" value="error"/>
     </eAnnotations>
     <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Element"/>

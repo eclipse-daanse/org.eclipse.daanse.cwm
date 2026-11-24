@@ -23,8 +23,9 @@ import org.eclipse.daanse.cwm.model.daanse.dcat.DcatPackage;
 import org.eclipse.daanse.cwm.model.daanse.dcat.Distribution;
 
 /**
- * Accessors around {@link Distribution}. dcat:isDistributionOf is the container; the hidden
- * role servedDistribution needs
+ * Accessors around {@link Distribution}. dcat:isDistributionOf is the container; a distribution is
+ * accessed through at most one service, so the same dataset through two services is two
+ * distributions. The hidden role servedDistribution needs
  * {@link InverseReferences#install(org.eclipse.emf.common.notify.Notifier)} on the ResourceSet.
  */
 public final class Distributions {
@@ -42,6 +43,17 @@ public final class Distributions {
         return InverseReferences
                 .referencing(service, DcatPackage.Literals.DISTRIBUTION__ACCESS_SERVICE, Distribution.class)
                 .toList();
+    }
+
+    /**
+     * The distribution of {@code dataset} accessed through {@code service}: its access form in that
+     * service, whose access URL gives the path ({@link DataServices#pathOf}). Empty when the service
+     * names the dataset without such a distribution (rule ServedDatasetHasDistribution).
+     */
+    public static Optional<Distribution> servedBy(Dataset dataset, DataService service) {
+        return dataset.getDistribution().stream()
+                .filter(d -> d.getAccessService() == service)
+                .findFirst();
     }
 
     /** The distributions of {@code dataset} with the given IANA media type. */

@@ -106,6 +106,26 @@
       <artifactId>org.eclipse.daanse.cwm.model.cwm.foundation.softwaredeployment</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
+    <!-- the examples publish relational tables, OLAP cubes and transformations of other CWM
+      packages; the model itself does not depend on them -->
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.relational</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.analysis.transformation</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.analysis.olap</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
