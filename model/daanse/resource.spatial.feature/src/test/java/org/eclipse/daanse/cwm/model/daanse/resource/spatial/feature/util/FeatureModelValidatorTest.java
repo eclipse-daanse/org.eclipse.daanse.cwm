@@ -22,6 +22,7 @@ import org.eclipse.daanse.cwm.model.daanse.spatial.AxisOrder;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryFeature;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryKind;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryStorage;
+import org.eclipse.daanse.cwm.model.daanse.spatial.SpatialFactory;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystem;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystemAuthority;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystemKind;
@@ -126,38 +127,47 @@ class FeatureModelValidatorTest {
     }
 
     @Test
-    void fc5_geometryAndTimeArePropertiesOfTheCollection() {
+    void fc5_theTimePropertiesArePropertiesOfTheCollection() {
         assertThat(rules()).doesNotContain("FC5");
-        city.schools.setGeometry(city.outline);
         city.schools.setInstant(city.validFrom);
         city.districts.setIntervalEnd(city.opened);
-        assertThat(errors("FC5")).extracting(Finding::message).hasSize(3)
-                .anyMatch(m -> m.contains("the primary geometry city.features.districts.outline is no property"))
+        assertThat(errors("FC5")).extracting(Finding::message).hasSize(2)
                 .anyMatch(m -> m.contains("the instant city.features.districts.valid_from is no property"))
                 .anyMatch(m -> m.contains("the interval end city.features.schools.opened is no property"));
     }
 
+    /**
+     * The server writes the geometry of a feature from the properties of the collection: a holding of the primary
+     * geometry lies in them, whole or as numbers; one in the properties of another collection does not count.
+     */
     @Test
-    void fc6_thePrimaryGeometryIsNamedByOneGeometryFeature() {
-        assertThat(rules()).doesNotContain("FC6");
-        GeometryFeature again = SpatialElements.feature(city.geodata, "again", GeometryKind.POINT, city.utm32,
-                GeometryStorage.NATIVE, city.location);
-        assertThat(errors("FC6")).singleElement().asString().contains("location is named by 2 geometry features");
-        city.schoolPoint.getModelElement().remove(city.location);
-        again.getModelElement().remove(city.location);
-        assertThat(errors("FC6")).singleElement().asString().contains("location is named by 0 geometry features");
+    void fc19_thePrimaryGeometryIsHeldInPropertiesOfTheCollection() {
+        assertThat(rules()).as("whole, as numbers, and both").doesNotContain("FC19");
+        city.schools.setGeometry(city.districtShape);
+        GeometryFeature elsewhere = SpatialElements.feature(city.geodata, "elsewhere", GeometryKind.POINT,
+                city.utm32);
+        SpatialElements.pointParts(elsewhere, city.east, city.residents);
+        city.stops.setGeometry(elsewhere);
+        assertThat(errors("FC19")).extracting(Finding::message).containsExactlyInAnyOrder(
+                "city.features.schools: the primary geometry city.geodata.districtShape has no holding in its "
+                        + "properties; the server writes the geometry of a feature from the properties of the "
+                        + "collection",
+                "city.features.stops: the primary geometry city.geodata.elsewhere has no holding in its properties; "
+                        + "the server writes the geometry of a feature from the properties of the collection");
+        assertThat(rules()).as("FC6 is retired").doesNotContain("FC6");
     }
 
     @Test
-    void fc7_aGeometryPropertyIsOfTheDataTypeGeometryAndNamedByAFeature() {
-        assertThat(rules()).doesNotContain("FC7");
+    void fc7_aPropertyHeldWholeIsOfTheDataTypeGeometryAndHeldByAFeature() {
+        assertThat(rules()).as("the numbers east and north keep their type").doesNotContain("FC7");
         FeatureProperty text = FeatureProperties.create(city.schools, "entrance", city.string);
-        city.schoolPoint.getModelElement().add(text);
+        SpatialElements.whole(city.schoolPoint, text, GeometryStorage.WKT);
         FeatureProperties.create(city.districts, "centre", SpatialElements.geometryType(city.types));
         assertThat(errors("FC7")).extracting(Finding::message).hasSize(2)
-                .anyMatch(m -> m.contains("entrance is named by the geometry feature city.geodata.schoolPoint but is "
-                        + "of the type String"))
-                .anyMatch(m -> m.contains("centre is of the data type Geometry but no geometry feature names it"));
+                .anyMatch(m -> m.contains("entrance is held whole by the geometry feature city.geodata.schoolPoint "
+                        + "but is of the type String"))
+                .anyMatch(m -> m.contains("centre is of the data type Geometry but no geometry feature holds it "
+                        + "whole"));
     }
 
     @Test
@@ -279,9 +289,11 @@ class FeatureModelValidatorTest {
         assertThat(rules()).as("a collection without geometry").doesNotContain("FC15");
         plain.getReferenceSystems().add(city.etrs89);
         city.schools.setGeometry(null);
-        assertThat(errors("FC15")).extracting(Finding::message).hasSize(2)
+        city.stops.setGeometry(null);
+        assertThat(errors("FC15")).extracting(Finding::message).hasSize(3)
                 .anyMatch(m -> m.equals("city.features.counters has no geometry but offers reference systems"))
-                .anyMatch(m -> m.contains("schools has a geometry property but names no primary geometry"));
+                .anyMatch(m -> m.contains("schools holds a geometry in its properties but names no primary geometry"))
+                .anyMatch(m -> m.contains("stops holds a geometry in its properties but names no primary geometry"));
     }
 
     @Test
@@ -301,6 +313,12 @@ class FeatureModelValidatorTest {
         city.districts.setIntervalEnd(missing);
         assertThat(warnings("FC17")).singleElement().asString().contains("the interval end does not resolve");
         assertThat(errors("FC5")).as("no rule reads what does not resolve").isEmpty();
+        GeometryFeature unresolved = SpatialFactory.eINSTANCE.createGeometryFeature();
+        ((InternalEObject) unresolved).eSetProxyURI(URI.createURI("geodata.xmi#_nowhere"));
+        city.trees.setGeometry(unresolved);
+        assertThat(warnings("FC17")).extracting(Finding::message)
+                .contains("city.features.trees: the primary geometry does not resolve");
+        assertThat(errors("FC19")).isEmpty();
     }
 
     @Test
@@ -343,8 +361,8 @@ class FeatureModelValidatorTest {
     @Test
     void everyRuleIsStatedOnceWithOneSeverity() {
         assertThat(FeatureModelValidator.RULES).as("the rules").extracting(Rule::code).doesNotHaveDuplicates()
-                .containsExactly("FC1", "FC2", "FC3", "FC4", "FC5", "FC6", "FC7", "FC8", "FC10", "FC11", "FC12", "FC13",
-                        "FC14", "FC15", "FC16", "FC17", "FC18");
+                .containsExactly("FC1", "FC2", "FC3", "FC4", "FC5", "FC7", "FC8", "FC10", "FC11", "FC12", "FC13",
+                        "FC14", "FC15", "FC16", "FC17", "FC18", "FC19");
         assertThat(FeatureModelValidator.RULES).as("the rules").allSatisfy(rule -> assertThat(rule.module())
                 .isEqualTo(FeatureModelValidator.MODULE));
         assertThat(FeatureModelValidator.RULES.stream().filter(rule -> rule.severity() == Finding.Severity.WARNING)

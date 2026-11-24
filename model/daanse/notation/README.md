@@ -18,7 +18,7 @@ language.
   every reader.
 - No scale: a percent, a per-mille or a thousand is a unit (`units::ScaledUnit`). `12 %` reads as 12; the quantity of
   the attribute says it is percent. An unquoted `%` or `‰` in a number pattern is an error (NT15).
-- No geometry: how a geometry column stores its value (WKT, WKB, GeoJSON) is said by `spatial::GeometryFeature.storage`.
+- No geometry: how a geometry column stores its value (WKT, WKB, GeoJSON) is said by `spatial::WholeHolding.storage`.
 - No list in a cell (CSVW `separator`), no duration, no default value, no length or value range: other models say them
   or they are open.
 

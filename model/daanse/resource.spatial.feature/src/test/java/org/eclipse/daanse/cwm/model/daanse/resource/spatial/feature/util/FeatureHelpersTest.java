@@ -22,8 +22,10 @@ import org.eclipse.daanse.cwm.model.cwm.resource.relational.SQLSimpleType;
 import org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature.FeatureCollection;
 import org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature.examples.City;
 import org.eclipse.daanse.cwm.model.daanse.spatial.AxisOrder;
+import org.eclipse.daanse.cwm.model.daanse.spatial.PartsHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystem;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystemKind;
+import org.eclipse.daanse.cwm.model.daanse.spatial.WholeHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.util.SpatialElements;
 import org.junit.jupiter.api.Test;
 
@@ -42,9 +44,31 @@ class FeatureHelpersTest {
         assertThat(FeatureProperties.required(city.districtLabel)).isFalse();
         assertThat(FeatureProperties.isGeometry(city.outline)).isTrue();
         assertThat(city.outline.getType()).isSameAs(SpatialElements.geometryType(city.types));
-        assertThat(city.districtShape.getModelElement()).as("the feature names the property").contains(city.outline);
+        assertThat(SpatialElements.features(city.outline)).as("a holding of the feature names the property")
+                .containsExactly(city.districtShape);
         assertThat(FeatureCollections.geometryFeature(city.outline)).containsSame(city.districtShape);
         assertThat(FeatureProperties.filterOnly(city.pupils).isReturnable()).isFalse();
+    }
+
+    /**
+     * The holding a server reads a geometry from: a whole one before numbers, and only one in the properties of the
+     * collection; the envelope kept beside the primary geometry.
+     */
+    @Test
+    void theHoldingOfTheGeometryAndItsEnvelope() {
+        assertThat(FeatureCollections.holding(city.schoolPoint, city.schools)).get().isInstanceOf(WholeHolding.class);
+        assertThat(FeatureCollections.holding(city.stopPoint, city.stops)).get()
+                .isInstanceOf(PartsHolding.class);
+        assertThat(FeatureCollections.holding(city.treePoint, city.trees)).as("the property before the numbers")
+                .get().isSameAs(city.treePoint.getHolding().get(0));
+        assertThat(FeatureCollections.holding(city.schoolPoint, city.districts)).isEmpty();
+        assertThat(FeatureCollections.envelope(city.stops)).contains(city.stopBox);
+        assertThat(FeatureCollections.envelope(city.schools)).isEmpty();
+        assertThat(FeatureProperties.isGeometry(city.east)).as("a number of a geometry is a number").isFalse();
+        assertThat(FeatureProperties.isGeometry(city.position)).isTrue();
+        assertThat(FeatureCollections.geometryFeature(city.longitude)).contains(city.treePoint);
+        assertThat(FeatureCollections.crs(city.stops)).as("stored in the default").containsExactly(
+                FeatureCollections.CRS84);
     }
 
     /** The list crs: the default, the storage system, then the offered ones; the storage system as a URI. */

@@ -101,10 +101,23 @@
       <artifactId>org.eclipse.daanse.cwm.emf.standard</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <!-- the tests describe the columns of relational tables -->
+    <!-- the tests describe the columns of relational tables, the fields of record files and the properties of
+      JSON documents -->
     <dependency>
       <groupId>org.eclipse.daanse</groupId>
       <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.relational</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.cwm.resource.record</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.daanse</groupId>
+      <artifactId>org.eclipse.daanse.cwm.model.daanse.resource.json</artifactId>
       <version>0.0.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>

@@ -36,8 +36,8 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 /**
- * Programmatic builder for the {@code spatial} metamodel: what a geometry column holds, and the rules by which a
- * resolver derives keys from geometry.
+ * Programmatic builder for the {@code spatial} metamodel: what a geometry is, where and how it is held, and the rules
+ * by which a resolver derives keys from geometry.
  *
  * <p>A spatial relation is resolved once into an ordinary relational one; whoever reads the result, a cube for
  * instance, reads only keys. The model does not describe a join an engine performs: it describes how the assignment of
@@ -45,9 +45,10 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
  * (a key pair, every child at most one parent) or a bridge with a share (a child in several parents, a part each). It
  * holds no coordinates and knows no OLAP class; a model that reads a result does not depend on it.</p>
  *
- * <p>Every reference into CWM and between the classes of the package is one-way with an EMOF
- * {@code Property.oppositeRoleName} (prefix {@code spatial}); construction and serialization follow
- * {@code model/daanse/units/.../UnitsEcoreBuilder}.</p>
+ * <p>Every non-containment reference into CWM and between the classes of the package is one-way with an EMOF
+ * {@code Property.oppositeRoleName} (prefix {@code spatial}); a geometry feature owns its holdings, a holding in parts
+ * its parts. Every element and every enumeration literal carries its documentation. Construction and serialization
+ * follow {@code model/daanse/units/.../UnitsEcoreBuilder}.</p>
  */
 public final class SpatialEcoreBuilder {
 
@@ -72,6 +73,7 @@ public final class SpatialEcoreBuilder {
 
     /** The classifiers of {@code objectmodel/core} the metamodel refers to. */
     public static final class CwmRefs {
+        final EClass element;
         final EClass modelElement;
         final EClass attribute;
         final EClass cwmClass;
@@ -82,6 +84,7 @@ public final class SpatialEcoreBuilder {
         final EDataType stringType;
 
         CwmRefs(EPackage core) {
+            this.element = eClass(core, "Element");
             this.modelElement = eClass(core, "ModelElement");
             this.attribute = eClass(core, "Attribute");
             this.cwmClass = eClass(core, "Class");
@@ -109,22 +112,27 @@ public final class SpatialEcoreBuilder {
         save(new SpatialEcoreBuilder(new CwmRefs(core)).build(), rs, URI.createFileURI(outFile.getAbsolutePath()));
     }
 
-    /** Creates the EPackage {@code spatial}: 7 classes, 12 enumerations. */
+    /** Creates the EPackage {@code spatial}: 11 classes and the abstract holding, 14 enumerations. */
     public EPackage build() {
         EPackage p = ef.createEPackage();
         p.setName("spatial");
         p.setNsURI(NS_URI);
         p.setNsPrefix("spatial");
         EAnnotation pa = annotate(p,
-                "Geodata for CWM attributes: what a geometry column holds, and the rules by which keys are derived "
-                        + "from geometry. A GeometryFeature says what the columns it names hold: the kind of "
-                        + "geometry, single or multi, with a height or without, the spatial reference system and the "
-                        + "epoch of the coordinates, the accuracy, the storage and the order in which the stored "
-                        + "coordinates hold the axes. A ReferenceSystem names a coordinate reference system by its "
-                        + "authority and code, as an OGC URI does, with what its register defines: its kind, axes and "
-                        + "axis order. A GeometryType is the logical data type of a property that holds a geometry. "
-                        + "Distances and the bounds of distance classes are metres, whatever the reference system. "
-                        + "A SpatialRelation "
+                "Geodata for CWM attributes: what a geometry is, where and how it is held, and the rules by which "
+                        + "keys are derived from geometry. A GeometryFeature says what a geometry is: the kind, "
+                        + "single or multi, with a height or without, the spatial reference system and the epoch of "
+                        + "the coordinates, the accuracy, and whether it is a geometry of its own or derived from "
+                        + "another one (its envelope, a corner, its centroid, a point on its surface). It owns its "
+                        + "holdings, which say where and how the values are held: one attribute with the whole "
+                        + "geometry (WholeHolding: in the database's geometry type, as WKB, WKT or GeoJSON), one "
+                        + "number per attribute (PartsHolding: the columns lon and lat of a table station), or "
+                        + "several numbers in one attribute (ListHolding: an array [west, south, east, north], a "
+                        + "text 50.93,11.59). A ReferenceSystem names a coordinate reference system by its "
+                        + "authority and code, as an OGC URI does, with what its register defines: its kind, axes "
+                        + "and axis order. A GeometryType is the logical data type of a property that holds a whole "
+                        + "geometry. Distances and the bounds of distance classes are metres, whatever the "
+                        + "reference system. A SpatialRelation "
                         + "says how the rows of a child geometry are assigned to the rows of a parent geometry: a "
                         + "predicate, what happens when several parents match or none, what is measured to divide "
                         + "them. A resolver evaluates it once in the database and leaves a key pair (every child "
@@ -155,11 +163,46 @@ public final class SpatialEcoreBuilder {
         p.getEAnnotations().add(ho);
 
         EClass feature = cls(p, "GeometryFeature",
-                "What the columns it names hold: the kind of geometry, the spatial reference system and the epoch "
-                        + "of the coordinates, the accuracy, how the value is stored and in which order the stored "
-                        + "coordinates hold the axes. Several columns with one meaning (the same kind of geometry in "
-                        + "two tables) share one feature. A feature states something about an attribute, it is not "
-                        + "one, as a units::Quantity states a unit.");
+                "What a geometry is: its kind, single or multi, with a height or without, the spatial reference "
+                        + "system and the epoch of its coordinates, its accuracy, and whether it is a geometry of its "
+                        + "own (the shape of a district) or derived from another one (the envelope of that shape, "
+                        + "stored for a search by area). Where and how its values are held says each of its "
+                        + "holdings, which it owns: the column shape of the table district (a WholeHolding), or the "
+                        + "columns lon and lat of the table station (a PartsHolding). All holdings of one feature "
+                        + "hold the same geometry, so that a reader takes any of them: the shape of a district in "
+                        + "the tables district and district_archive, or the position of a station both in its "
+                        + "geometry column and in its columns lon and lat. A feature states something about "
+                        + "attributes, it is not one, as a units::Quantity states a unit.");
+        EClass holding = elementCls(p, "GeometryHolding", true,
+                "Where and how a geometry is held: as a whole in one attribute (WholeHolding), as numbers one per "
+                        + "attribute (PartsHolding), or as several numbers in one attribute (ListHolding). It is "
+                        + "owned by the GeometryFeature that says what the geometry is; the feature may own several, "
+                        + "each holding the same geometry. An attribute belongs to one holding only.");
+        EClass whole = subCls(p, "WholeHolding", holding,
+                "One attribute holds the whole geometry, in the form storage says: the column shape of type "
+                        + "GEOMETRY of a PostGIS table district (NATIVE), a BLOB of well-known binary (WKB), a "
+                        + "text of well-known text or GeoJSON, or a property of the data type Geometry of a logical "
+                        + "model, such as a feature collection's (NATIVE). Any kind of geometry is held so. "
+                        + "axisOrder says in which order the stored coordinates hold the first two axes.");
+        EClass parts = subCls(p, "PartsHolding", holding,
+                "The geometry is held as numbers, one per attribute, each named by a CoordinatePart with its "
+                        + "role: a table station with the columns lon and lat holds a point by the parts EAST lon "
+                        + "and NORTH lat; the columns min_x, min_y, max_x, max_y hold the envelope of the geometry "
+                        + "in geom by the parts MIN_EAST, MIN_NORTH, MAX_EAST and MAX_NORTH. Numbers hold a single "
+                        + "point or the envelope of another geometry, nothing else, and the attributes of the parts "
+                        + "belong to one classifier, so that one row holds one value. A resolver builds the "
+                        + "geometry from them (ST_Point, ST_MakeEnvelope).");
+        EClass part = elementCls(p, "CoordinatePart", false,
+                "One number of a geometry held in parts: its role (the axis, and for an envelope the edge) and "
+                        + "the numeric attribute that holds it, such as the column lat of the table station for "
+                        + "the role NORTH.");
+        EClass list = subCls(p, "ListHolding", holding,
+                "The geometry is held as several numbers in one attribute, in the order of ordinate: a "
+                        + "multi-valued attribute or an array (a column bbox of type DOUBLE[] with [west, south, "
+                        + "east, north], as GeoJSON writes a bbox), or a text with a separator (a column position "
+                        + "of type VARCHAR with 50.93,11.59, latitude first: the order NORTH, EAST and the "
+                        + "separator ,). Numbers hold a single point or the envelope of another geometry, nothing "
+                        + "else.");
         EClass relation = cls(p, "SpatialRelation",
                 "A rule that assigns the rows of a child geometry to the rows of a parent geometry: when a "
                         + "parent matches (predicate), what happens when several match (assignment, weight, "
@@ -167,7 +210,9 @@ public final class SpatialEcoreBuilder {
                         + "A resolver evaluates it once and writes its result: a key pair (child key, parent key) "
                         + "for EXACTLY_ONE and LARGEST_SHARE, a bridge (child key, parent key, share) for "
                         + "ALL_WEIGHTED and ALL_EQUAL. It never alters a source table. The result holds no time: "
-                        + "a territory that changes gets one result per state.");
+                        + "a territory that changes gets one result per state. Of a geometry with several holdings "
+                        + "a resolver reads one in the table of the key, which hold the same value: a whole one "
+                        + "where that table has one, else it builds the point or the envelope from the numbers.");
         EClass grid = cls(p, "GridLevel",
                 "The key of the cell of a grid a point lies in, of one system and resolution; the cells of a "
                         + "coarser resolution are the level above. No geometric join: both the cell and its "
@@ -175,20 +220,23 @@ public final class SpatialEcoreBuilder {
                         + "head of the cell's. A resolver writes its result, per point the source key and the "
                         + "cell key of each level from the top of its chain down to it; a point without a "
                         + "geometry gets no cell and goes as unmatched says. It never alters the table of the "
-                        + "points.");
+                        + "points. A point held as numbers (the columns lon and lat) is read as the point they "
+                        + "make.");
         EClass band = cls(p, "DistanceBand",
                 "The distance of a geometry to the nearest row of a reference geometry, put into classes by "
                         + "upper bounds in metres (0 to 1 km, 1 to 5 km, above), like a discretization. A resolver "
                         + "writes its result, a pair (source key, class) per source row, the class 1 up to and "
                         + "including the first bound and one more above each bound; a row whose distance cannot be "
-                        + "measured gets no class and goes as unmatched says. It never alters the source table.");
+                        + "measured gets no class and goes as unmatched says. It never alters the source table. "
+                        + "Each geometry is read from a holding in the table of its key, as for a relation.");
         EClass system = cls(p, "ReferenceSystem",
                 "A coordinate reference system, named as an OGC URI names it: "
                         + "http://www.opengis.net/def/crs/{authority}/{version}/{code}, EPSG 25832 or OGC CRS84. It "
                         + "holds what its register defines: its kind (degrees, a map projection, Cartesian metres), "
-                        + "its axes and their order, and whether it is dynamic. How a column stores its coordinates "
-                        + "(their order, the epoch they hold for) is said by the geometry feature. Owned by the model; "
-                        + "the features and the working systems of relations and bands refer to it.");
+                        + "its axes and their order, and whether it is dynamic. How an attribute stores the "
+                        + "coordinates is said by the holding (the stored order of a whole one, the roles of "
+                        + "numbers), the epoch they hold for by the geometry feature. Owned by the model; the "
+                        + "features and the working systems of relations and bands refer to it.");
         EClass gridSystem = cls(p, "GridSystem",
                 "A system of grid cells, known to a resolver by its name, the identifier: geohash (Geohash "
                         + "rectangles, 1 to 12 characters), h3 (H3 hexagons, 0 to 15), quadkey (tiles of the web map, "
@@ -199,37 +247,113 @@ public final class SpatialEcoreBuilder {
         geometryType.getESuperTypes().add(cwm.dataType);
         p.getEClassifiers().add(geometryType);
         annotate(geometryType,
-                "The logical data type of a property that holds a geometry, as the SQL types of a catalog are its "
-                        + "elements; named Geometry by convention. What the property holds (kind, multiplicity, "
-                        + "height, reference system) is said by the geometry feature that names it, not by the type, "
-                        + "and the type says nothing of how a value is stored: the SQL type of a column (GEOMETRY, "
-                        + "GEOGRAPHY, a text) is no GeometryType.");
+                "The logical data type of a property that holds a whole geometry, as the SQL types of a catalog are "
+                        + "its elements; named Geometry by convention. A property location of a feature collection "
+                        + "is of this type and named by a WholeHolding of storage NATIVE. What the geometry is "
+                        + "(kind, multiplicity, height, reference system) is said by the geometry feature that owns "
+                        + "the holding, not by the type; the type says nothing of how a database stores a value: "
+                        + "the SQL type of a column (GEOMETRY, GEOGRAPHY, a text) is no GeometryType. Numbers that "
+                        + "hold a geometry keep their numeric types.");
 
         EEnum kind = enm(p, "GeometryKind",
-                "The dimension of what a geometry column holds; a multi form belongs to its kind, the "
-                        + "multiplicity says whether rows hold one.",
-                "POINT", "LINE", "POLYGON", "MIXED");
+                "The dimension of a geometry; a multi form belongs to its kind, the multiplicity says whether rows "
+                        + "hold one.",
+                "POINT", "A point, or several as a multi-point: a weather station, a tree, the centroid of a "
+                        + "district, a corner of an envelope.",
+                "LINE", "A line string, or several as a multi-line string: a river, a road, a bus route.",
+                "POLYGON", "A polygon with its holes, or several as a multi-polygon: a district, a lake, a parcel. "
+                        + "An envelope is a polygon.",
+                "MIXED", "Any kind, row by row: a column of geometry collections or of mixed kinds; a resolver "
+                        + "takes each row by its own kind.");
         EEnum multiplicity = enm(p, "GeometryMultiplicity",
                 "Whether a row holds one geometry of its kind (a point, a line, a polygon) or several as one "
                         + "(a multi-point, a multi-line, a multi-polygon), or either of the two.",
-                "EITHER", "SINGLE", "MULTI");
+                "EITHER", "Some rows hold one geometry, others a multi form; the first literal, what an unset "
+                        + "value reads.",
+                "SINGLE", "Every row holds one point, line or polygon. A geometry held as numbers and a derived "
+                        + "geometry are single.",
+                "MULTI", "Every row holds a multi form: a multi-polygon for a commune with an exclave.");
         EEnum authority = enm(p, "ReferenceSystemAuthority",
                 "The register that defines a reference system: the EPSG geodetic parameter dataset, or the OGC "
                         + "(CRS84, CRS84h: WGS 84 with longitude first).",
-                "EPSG", "OGC");
+                "EPSG", "The EPSG geodetic parameter dataset; a code is a positive whole number, 25832 for ETRS89 "
+                        + "/ UTM zone 32N, 4326 for WGS 84.",
+                "OGC", "The Open Geospatial Consortium: CRS84 (WGS 84, longitude first) and CRS84h (with the "
+                        + "ellipsoidal height), the defaults of OGC API Features.");
         EEnum systemKind = enm(p, "ReferenceSystemKind",
                 "What the coordinates of a reference system are: longitude and latitude in degrees "
                         + "(GEOGRAPHIC), easting and northing on a map projection in the unit of its axes, metres "
                         + "for most and feet for some (PROJECTED), or Cartesian metres from the earth's centre "
                         + "(GEOCENTRIC).",
-                "GEOGRAPHIC", "PROJECTED", "GEOCENTRIC");
+                "GEOGRAPHIC", "Longitude and latitude in degrees on an ellipsoid, WGS 84 or ETRS89; areas, lengths "
+                        + "and distances are measured on the spheroid.",
+                "PROJECTED", "Easting and northing on a map projection in the unit of its axes, metres for UTM "
+                        + "and LAEA; areas, lengths and distances are measured in its plane.",
+                "GEOCENTRIC", "Cartesian x, y and z in metres from the earth's centre, EPSG 4978; the planar "
+                        + "functions read x and y only.");
         EEnum axisOrder = enm(p, "AxisOrder",
-                "The order of the first two axes: east (x, longitude) first, or north (y, latitude) first.",
-                "EAST_NORTH", "NORTH_EAST");
+                "The order of the first two axes: east (x: the longitude, the easting) first, or north (y: the "
+                        + "latitude, the northing) first. A reference system states the order its register "
+                        + "defines; a whole holding the order its stored coordinates hold. Numbers have no order "
+                        + "of axes: their roles say which number is which.",
+                "EAST_NORTH", "East first: x then y, longitude then latitude; the order CRS84 and EPSG 25832 "
+                        + "define, and the order in which PostGIS, DuckDB and GeoJSON store coordinates.",
+                "NORTH_EAST", "North first: y then x, latitude then longitude; the order EPSG 4326 and EPSG 3035 "
+                        + "define.");
         EEnum storage = enm(p, "GeometryStorage",
-                "How a column holds a geometry: the database's own geometry type, or well-known binary, "
-                        + "well-known text or GeoJSON, which a resolver converts first.",
-                "NATIVE", "WKB", "WKT", "GEOJSON");
+                "How the attribute of a whole holding holds the geometry: in a geometry type, or as well-known "
+                        + "binary, well-known text or GeoJSON, which a resolver converts first. A geometry held as "
+                        + "numbers has no storage; its holding is a PartsHolding or a ListHolding.",
+                "NATIVE", "A geometry type: the database's own (GEOMETRY or GEOGRAPHY of PostGIS, GEOMETRY of "
+                        + "DuckDB spatial, SDO_GEOMETRY of Oracle), or the data type Geometry of a property of a "
+                        + "logical model.",
+                "WKB", "Well-known binary of OGC Simple Features, or its extended form EWKB, in a binary column.",
+                "WKT", "Well-known text in a text column: POINT (11.59 50.93).",
+                "GEOJSON", "A GeoJSON geometry object in a text or JSON column: {\"type\": \"Point\", "
+                        + "\"coordinates\": [11.59, 50.93]}; longitude and latitude of WGS 84, east first "
+                        + "(RFC 7946).");
+        EEnum ordinate = enm(p, "Ordinate",
+                "The role of one number of a geometry held as numbers: the axis it lies on and, for an envelope, "
+                        + "the edge. The axes are named by direction, whatever the reference system calls them: "
+                        + "east is the longitude in a geographic system (WGS 84, ETRS89) and the easting in a "
+                        + "projected one (UTM); north is the latitude or the northing. The roles say which number "
+                        + "is which axis, so that a holding of numbers has no stored axis order.",
+                "EAST", "East of a point: the longitude in a geographic system (11.59 for Jena in WGS 84), the "
+                        + "easting in metres in a projected one (ETRS89 / UTM zone 32N).",
+                "NORTH", "North of a point: the latitude in a geographic system (50.93 for Jena in WGS 84), the "
+                        + "northing in metres in a projected one.",
+                "HEIGHT", "The height of a point, the third axis of a system of three axes: the ellipsoidal "
+                        + "height in metres of CRS84h. Held exactly where the geometry has a height.",
+                "MIN_EAST", "The west edge of an envelope (minx of a bounding box): its least longitude in a "
+                        + "geographic system, its least easting in a projected one. An envelope across the "
+                        + "antimeridian has its west edge east of its east edge, as a GeoJSON bbox writes it.",
+                "MIN_NORTH", "The south edge of an envelope (miny): its least latitude or northing.",
+                "MAX_EAST", "The east edge of an envelope (maxx): its greatest longitude or easting.",
+                "MAX_NORTH", "The north edge of an envelope (maxy): its greatest latitude or northing.",
+                "MIN_HEIGHT", "The lowest height of an envelope with a height (minz).",
+                "MAX_HEIGHT", "The highest height of an envelope with a height (maxz).");
+        EEnum derivation = enm(p, "GeometryDerivation",
+                "How a geometry is derived from another one, the one its feature names as of. A derived "
+                        + "geometry is stored beside the one it comes from so that a reader need not compute it: "
+                        + "a bounding box in four columns for a search by area, a centroid to place a label. A "
+                        + "feature without a derivation is a geometry of its own.",
+                "ENVELOPE", "The envelope: the least rectangle along the axes that holds the geometry, its "
+                        + "bounding box, a single POLYGON. The four columns min_x, min_y, max_x, max_y of the "
+                        + "geometry in geom; a GeoJSON bbox; a polygon in a column extent.",
+                "CORNER_SOUTH_WEST", "The south-west corner of the envelope, its least east and least north, a "
+                        + "single POINT; with CORNER_NORTH_EAST it gives the envelope as its least and its "
+                        + "greatest corner.",
+                "CORNER_NORTH_EAST", "The north-east corner of the envelope, its greatest east and greatest "
+                        + "north, a single POINT; the opposite of CORNER_SOUTH_WEST.",
+                "CORNER_NORTH_WEST", "The north-west corner of the envelope, its least east and greatest north, "
+                        + "a single POINT: the upper left of a map; with CORNER_SOUTH_EAST it gives the envelope "
+                        + "as its upper left and its lower right corner.",
+                "CORNER_SOUTH_EAST", "The south-east corner of the envelope, its greatest east and least north, "
+                        + "a single POINT: the lower right of a map; the opposite of CORNER_NORTH_WEST.",
+                "CENTROID", "The centroid, the centre of mass of the geometry, a single POINT; it may lie "
+                        + "outside the geometry, as the centroid of a crescent does.",
+                "POINT_ON_SURFACE", "A point that lies on the geometry for certain, as ST_PointOnSurface gives "
+                        + "it, a single POINT: where a label is placed, or by which an area is assigned.");
         EEnum predicate = enm(p, "SpatialPredicate",
                 "When a parent matches a child: the child lies within the parent (Within of OGC Simple "
                         + "Features), no point of the child lies outside the parent (CoveredBy as JTS, GEOS and "
@@ -238,75 +362,157 @@ public final class SpatialEcoreBuilder {
                         + "(CENTROID_WITHIN: the child's centroid where it lies on the child, else a point on the "
                         + "child's surface, so that a crescent is placed by a point of its own), the parent is the "
                         + "nearest, or it lies within a distance.",
-                "WITHIN", "COVERED_BY", "INTERSECTS", "CENTROID_WITHIN", "NEAREST", "WITHIN_DISTANCE");
+                "WITHIN", "The child lies within the parent: Within of OGC Simple Features; a point on the "
+                        + "parent's border does not match.",
+                "COVERED_BY", "No point of the child lies outside the parent: CoveredBy as JTS, GEOS and PostGIS "
+                        + "define it; the only predicate a point on a border meets.",
+                "INTERSECTS", "The child and the parent share a point: Intersects of OGC Simple Features; a river "
+                        + "matches every country it touches.",
+                "CENTROID_WITHIN", "One point of the child lies within the parent: its centroid where that lies "
+                        + "on the child, else a point on its surface; a commune is placed in one county.",
+                "NEAREST", "The parent is the nearest one; it assigns EXACTLY_ONE.",
+                "WITHIN_DISTANCE", "The parent lies within the distance of the relation, in metres.");
         EEnum assignment = enm(p, "SpatialAssignment",
                 "What happens when several parents match: at most one may (EXACTLY_ONE), the one with the "
                         + "largest part wins (LARGEST_SHARE), all stay with their parts divided by their sum "
                         + "(ALL_WEIGHTED), or all stay with equal shares (ALL_EQUAL).",
-                "EXACTLY_ONE", "LARGEST_SHARE", "ALL_WEIGHTED", "ALL_EQUAL");
+                "EXACTLY_ONE", "At most one parent may match; a second is an error, or broken by the tie break. "
+                        + "The result is a foreign key.",
+                "LARGEST_SHARE", "The parent with the largest part of the child by weight wins. The result is a "
+                        + "foreign key.",
+                "ALL_WEIGHTED", "All matching parents stay, each with its part by weight divided by their sum. "
+                        + "The result is a bridge with a share.",
+                "ALL_EQUAL", "All matching parents stay with equal shares, 1/n each. The result is a bridge with "
+                        + "a share.");
         EEnum weight = enm(p, "SpatialWeight",
                 "What is measured to compare or divide the matches of a child: the area of the intersection "
                         + "relative to the child's area, or the length relative to the child's length.",
-                "AREA", "LENGTH");
+                "AREA", "The area of the intersection relative to the area of the child, for a polygon.",
+                "LENGTH", "The length of the intersection relative to the length of the child, for a line.");
         EEnum unmatched = enm(p, "UnmatchedPolicy",
                 "What happens to a row a rule cannot place (a child no parent matches, a point without a cell, "
                         + "a source whose distance cannot be measured): it stays with a null parent key, cell or "
                         + "class (KEEP_NULL; how that shows is the policy of the model that reads the result), a "
                         + "resolver stops and names it (ERROR), or it leaves the result (DROP).",
-                "KEEP_NULL", "ERROR", "DROP");
+                "KEEP_NULL", "The row stays with a null parent key, cell or class; the first literal, what an "
+                        + "unset value reads.",
+                "ERROR", "A resolver stops and names the rows it cannot place.",
+                "DROP", "The row leaves the result; facts that reach the parent through it vanish from the sums.");
         EEnum tieBreak = enm(p, "TieBreak",
                 "Which parent wins an exact tie of EXACTLY_ONE: none, the tie is an error (as without a tie "
                         + "break), or the parent with the lowest key.",
-                "ERROR", "LOWEST_PARENT_KEY");
+                "ERROR", "No parent wins: the tie is an error, as without a tie break.",
+                "LOWEST_PARENT_KEY", "The parent with the lowest key wins, so that a view need not stop.");
         EEnum resultForm = enm(p, "ResultForm",
                 "How a resolver leaves its result: a table written once, which any database reads, or a view "
                         + "recomputed whenever read, which needs the spatial functions in the database.",
-                "TABLE", "VIEW");
+                "TABLE", "A table written once; any database reads it, and a rule that has to stop can.",
+                "VIEW", "A view recomputed whenever it is read; it needs the spatial functions and cannot stop.");
 
-        EReference featureElements = ref(feature, "modelElement", cwm.modelElement, 1, -1,
-                "The columns that hold the geometry: attributes, such as a relational column or a record field.");
-        oppositeRole(featureElements, "spatialGeometryFeature");
-        attr(feature, "kind", kind, 1, 1, "The kind of geometry the columns hold.");
+        attr(feature, "kind", kind, 1, 1,
+                "The kind of the geometry. A derived geometry has the kind of its derivation: an envelope is a "
+                        + "polygon, a corner, a centroid and a point on the surface are points. A geometry held as "
+                        + "numbers is a point or an envelope.");
         attr(feature, "multiplicity", multiplicity, 1, 1,
-                "Whether a row holds a single geometry of the kind, a multi form, or either.");
+                "Whether a row holds a single geometry of the kind, a multi form, or either; a geometry held as "
+                        + "numbers and a derived geometry are single.");
         attr(feature, "hasHeight", cwm.booleanType, 1, 1,
                 "Whether the coordinates hold a height as a third value; that needs a reference system of three "
-                        + "axes.")
+                        + "axes. Held as numbers, a point with a height has a HEIGHT number, an envelope with a "
+                        + "height a MIN_HEIGHT and a MAX_HEIGHT; without a height they have none.")
                 .setDefaultValueLiteral("false");
         EReference featureSystem = ref(feature, "referenceSystem", system, 1, 1,
-                "The coordinate reference system of the geometries.");
+                "The coordinate reference system of the geometry, the same in every holding: OGC CRS84 for the "
+                        + "longitude and latitude of weather stations, EPSG 25832 for the parcels of a land "
+                        + "register. A derived geometry is in the system of the geometry it is derived from.");
         oppositeRole(featureSystem, "spatialGeometryFeatureInSystem");
         attr(feature, "coordinateEpoch", cwm.floatType, 0, 1,
                 "The epoch the coordinates hold for, a decimal year such as 2010.5, stated where the reference "
                         + "system is dynamic and only there: with the system it is the coordinate metadata of the "
-                        + "columns (OGC Topic 2), so that two columns of one dynamic system may hold two epochs.");
+                        + "geometry (OGC Topic 2), so that two geometries of one dynamic system may hold two "
+                        + "epochs.");
         attr(feature, "accuracy", cwm.floatType, 0, 1,
                 "The positional accuracy in metres, a decimal number; for diagnostics only.");
-        attr(feature, "storage", storage, 1, 1, "How the columns hold the value.");
-        attr(feature, "axisOrder", axisOrder, 1, 1,
-                "The order in which the stored coordinates hold the first two axes: east (longitude) first, as "
-                        + "PostGIS, DuckDB and GeoJSON hold them, or north (latitude) first. It may differ from the "
-                        + "order the reference system defines (EPSG 4326 defines latitude first), and two columns "
-                        + "of one system may store their coordinates in two orders; GEOJSON storage holds east "
-                        + "first always (RFC 7946).");
+        attr(feature, "derivation", derivation, 0, 1,
+                "Whether the geometry is derived from the one of, and how: its ENVELOPE, a corner of the "
+                        + "envelope, its CENTROID, a POINT_ON_SURFACE. Stated exactly where of is; unset, the "
+                        + "geometry is one of its own, as the shape of a district is. The envelope of the shape "
+                        + "in the column geom, stored in the columns min_x, min_y, max_x and max_y of the same "
+                        + "table, is a feature of the derivation ENVELOPE of the shape's feature, held in parts.")
+                .setUnsettable(true);
+        EReference of = ref(feature, "of", feature, 0, 1,
+                "The geometry this one is derived from, as derivation says; stated exactly where derivation is. "
+                        + "Another feature, never this one nor one derived from this one, in the same reference "
+                        + "system: the feature of the shape of a district, of which this one is the envelope.");
+        oppositeRole(of, "spatialDerivedGeometryFeature");
+        cont(feature, "holding", holding, 1, -1,
+                "Where and how the geometry is held, at least once: one attribute with the whole geometry, one "
+                        + "number per attribute, or several numbers in one attribute. Several holdings hold the "
+                        + "same geometry: the same meaning in two tables (the column shape of the tables district "
+                        + "and district_archive), or one table that holds a point both in a geometry column and "
+                        + "in two columns of numbers.");
         constrain(feature, "HeightNeedsThreeAxes", "not self.hasHeight "
                 + "or (not self.referenceSystem.oclIsUndefined() and self.referenceSystem.axes = 3)");
         constrain(feature, "EpochOnlyWhenDynamic", "self.coordinateEpoch.oclIsUndefined() "
                 + "or (not self.referenceSystem.oclIsUndefined() and self.referenceSystem.dynamic)");
-        constrain(feature, "GeoJsonEastFirst",
+        constrain(feature, "NotDerivedFromItself", "self.of.oclIsUndefined() or self.of <> self");
+        constrain(feature, "KindFollowsDerivation", "self.of.oclIsUndefined() "
+                + "or (if self.derivation = GeometryDerivation::ENVELOPE then self.kind = GeometryKind::POLYGON "
+                + "else self.kind = GeometryKind::POINT endif)");
+
+        EReference wholeAttribute = ref(whole, "attribute", cwm.attribute, 1, 1,
+                "The attribute that holds the geometry: a relational column, a record field, or a property of a "
+                        + "class (of the data type Geometry where the model is logical).");
+        oppositeRole(wholeAttribute, "spatialWholeHolding");
+        attr(whole, "storage", storage, 1, 1, "How the attribute holds the geometry.");
+        attr(whole, "axisOrder", axisOrder, 1, 1,
+                "The order in which the stored coordinates hold the first two axes: east (the longitude, the "
+                        + "easting) first, as PostGIS, DuckDB and GeoJSON hold them, or north (the latitude, the "
+                        + "northing) first. It may differ from the order the reference system defines (EPSG 4326 "
+                        + "defines latitude first, a PostGIS column of it holds longitude first), and two holdings "
+                        + "of one system may store their coordinates in two orders; GEOJSON storage holds east "
+                        + "first always (RFC 7946).");
+        constrain(whole, "GeoJsonEastFirst",
                 "self.storage <> GeometryStorage::GEOJSON or self.axisOrder = AxisOrder::EAST_NORTH");
+
+        cont(parts, "part", part, 1, -1,
+                "The numbers and the attributes that hold them, each role once: EAST and NORTH for a point, and "
+                        + "HEIGHT where it has a height; MIN_EAST, MIN_NORTH, MAX_EAST and MAX_NORTH for an "
+                        + "envelope, and MIN_HEIGHT and MAX_HEIGHT where it has a height. Their order carries no "
+                        + "meaning: the role says which number a part is.");
+        constrain(parts, "EachRoleOnce", "self.part->isUnique(p | p.role)");
+
+        attr(part, "role", ordinate, 1, 1, "Which number the attribute holds: an axis of a point, an edge of an "
+                + "envelope.");
+        EReference partAttribute = ref(part, "attribute", cwm.attribute, 1, 1,
+                "The attribute that holds the number, of a numeric type: the column lat of the table station.");
+        oppositeRole(partAttribute, "spatialCoordinatePart");
+
+        EReference listAttribute = ref(list, "attribute", cwm.attribute, 1, 1,
+                "The attribute that holds the numbers: a multi-valued attribute or one of an array type where "
+                        + "there is no separator, one of a text type where there is one.");
+        oppositeRole(listAttribute, "spatialListHolding");
+        EAttribute ordinates = attr(list, "ordinate", ordinate, 1, -1,
+                "The roles of the numbers in the order they are held, each once: NORTH, EAST for the text "
+                        + "50.93,11.59; MIN_EAST, MIN_NORTH, MAX_EAST, MAX_NORTH for a GeoJSON bbox.");
+        ordinates.setUnique(false);
+        attr(list, "separator", cwm.stringType, 0, 1,
+                "The text between two numbers where the attribute is a text, such as , or a blank; unset where "
+                        + "the attribute holds the numbers as several values. A number in the text is written as "
+                        + "SQL and JSON write it: an optional sign, digits, a point before the fraction.");
+        constrain(list, "EachRoleOnce", "self.ordinate->isUnique(o | o)");
 
         EReference child = ref(relation, "child", feature, 1, 1, "The geometry that is assigned.");
         oppositeRole(child, "spatialRelationAsChild");
         EReference parent = ref(relation, "parent", feature, 1, 1, "The geometry it is assigned to.");
         oppositeRole(parent, "spatialRelationAsParent");
         EReference childKey = ref(relation, "childKey", cwm.attribute, 1, 1,
-                "The key column of the table that holds the child geometry; the first column of the result. Where "
+                "The key column of a table that holds the child geometry; the first column of the result. Where "
                         + "the table declares no unique key of this column alone, the rows of one key are the parts "
                         + "of one child and are united first (a postcode area held in four rows).");
         oppositeRole(childKey, "spatialRelationOfChildKey");
         EReference parentKey = ref(relation, "parentKey", cwm.attribute, 1, 1,
-                "The key column of the table that holds the parent geometry; the second column of the result. "
+                "The key column of a table that holds the parent geometry; the second column of the result. "
                         + "Where the table declares no unique key of this column alone, the rows of one key are the "
                         + "parts of one parent and are united first.");
         oppositeRole(parentKey, "spatialRelationOfParentKey");
@@ -424,12 +630,12 @@ public final class SpatialEcoreBuilder {
                 "The order of the first two axes as the register defines them: east first (CRS84, EPSG 25832) or "
                         + "north first (EPSG 4326, EPSG 3035); the order of a request or an answer in this system. "
                         + "Required and stated explicitly: it has no default, since a default would copy the "
-                        + "register wrongly for every system of the other order; unset is not stated. How a column "
-                        + "stores its coordinates is said by its geometry feature.")
+                        + "register wrongly for every system of the other order; unset is not stated. How an "
+                        + "attribute stores the coordinates is said by its holding.")
                 .setUnsettable(true);
         attr(system, "dynamic", cwm.booleanType, 1, 1,
                 "Whether the system moves with a tectonic plate, so that a coordinate holds for one epoch, which "
-                        + "the geometry feature of a column names.")
+                        + "the geometry feature names.")
                 .setDefaultValueLiteral("false");
         constrain(system, "AxesTwoOrThree", "self.axes = 2 or self.axes = 3");
 
@@ -489,14 +695,32 @@ public final class SpatialEcoreBuilder {
         return c;
     }
 
+    /** A class extending {@code core::Element}: a part owned by another element, without a name of its own. */
+    private EClass elementCls(EPackage pkg, String name, boolean isAbstract, String doc) {
+        EClass c = subCls(pkg, name, cwm.element, doc);
+        c.setAbstract(isAbstract);
+        return c;
+    }
+
+    /** A class extending {@code superType}. */
+    private EClass subCls(EPackage pkg, String name, EClass superType, String doc) {
+        EClass c = ef.createEClass();
+        c.setName(name);
+        c.getESuperTypes().add(superType);
+        pkg.getEClassifiers().add(c);
+        annotate(c, doc);
+        return c;
+    }
+
+    /** An enumeration; {@code literals} are pairs of a literal's name and its documentation. */
     private EEnum enm(EPackage pkg, String name, String doc, String... literals) {
         EEnum e = ef.createEEnum();
         e.setName(name);
-        int value = 0;
-        for (String literal : literals) {
+        for (int i = 0; i < literals.length; i += 2) {
             EEnumLiteral l = ef.createEEnumLiteral();
-            l.setName(literal);
-            l.setValue(value++);
+            l.setName(literals[i]);
+            l.setValue(i / 2);
+            annotate(l, literals[i + 1]);
             e.getELiterals().add(l);
         }
         pkg.getEClassifiers().add(e);
@@ -524,6 +748,19 @@ public final class SpatialEcoreBuilder {
         if (upper != 1) {
             r.setOrdered(false);
         }
+        owner.getEStructuralFeatures().add(r);
+        annotate(r, doc);
+        return r;
+    }
+
+    /** A containment reference; it keeps the order of its elements. */
+    private EReference cont(EClass owner, String name, EClassifier type, int lower, int upper, String doc) {
+        EReference r = ef.createEReference();
+        r.setName(name);
+        r.setEType(type);
+        r.setLowerBound(lower);
+        r.setUpperBound(upper);
+        r.setContainment(true);
         owner.getEStructuralFeatures().add(r);
         annotate(r, doc);
         return r;

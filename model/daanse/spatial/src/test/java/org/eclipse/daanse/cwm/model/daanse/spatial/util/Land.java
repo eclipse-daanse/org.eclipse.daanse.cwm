@@ -38,7 +38,8 @@ import org.eclipse.daanse.cwm.model.daanse.spatial.UnmatchedPolicy;
  * first; the stations store longitude first); lakes, countries and rivers in ETRS89 LAEA (EPSG 3035), an equal-area
  * system, which its register defines northing first. Each table has a primary key {@code id}; the commune has the
  * column {@code county_id} its administration keeps. The reference systems and the geometry features stand in the
- * package {@code geodata}; the relations are made by each test.
+ * package {@code geodata}, each feature held whole in the geometry column of its table; the relations are made by
+ * each test.
  */
 final class Land {
 
@@ -97,7 +98,6 @@ final class Land {
     final GeometryFeature rivers = SpatialElements.feature(geodata, "rivers", GeometryKind.LINE, laea,
             GeometryStorage.NATIVE, riverCourse);
 
-    /** Communes into counties: the centroid lies within one county, a commune without one keeps a null parent. */
     /** Geohash of the land's model, made in {@code geodata} once. */
     GridSystem geohash() {
         return SpatialElements.geohash(geodata);
@@ -113,6 +113,7 @@ final class Land {
         return SpatialElements.quadkey(geodata);
     }
 
+    /** Communes into counties: the centroid lies within one county, a commune without one keeps a null parent. */
     SpatialRelation communesInCounties() {
         return SpatialElements.relation(geodata, "communesInCounties", communes, communeId, counties, countyId,
                 SpatialPredicate.CENTROID_WITHIN, SpatialAssignment.EXACTLY_ONE, UnmatchedPolicy.KEEP_NULL);

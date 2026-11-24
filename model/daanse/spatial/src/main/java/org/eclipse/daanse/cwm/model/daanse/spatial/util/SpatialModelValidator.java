@@ -13,9 +13,11 @@ import java.math.BigDecimal;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -24,14 +26,23 @@ import java.util.Set;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Attribute;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Multiplicity;
+import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.MultiplicityRange;
 import org.eclipse.daanse.cwm.model.daanse.spatial.AxisOrder;
+import org.eclipse.daanse.cwm.model.daanse.spatial.CoordinatePart;
 import org.eclipse.daanse.cwm.model.daanse.spatial.DistanceBand;
+import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryDerivation;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryFeature;
+import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryKind;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryMultiplicity;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryStorage;
+import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryType;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GridLevel;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GridSystem;
+import org.eclipse.daanse.cwm.model.daanse.spatial.ListHolding;
+import org.eclipse.daanse.cwm.model.daanse.spatial.Ordinate;
+import org.eclipse.daanse.cwm.model.daanse.spatial.PartsHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystem;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystemAuthority;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystemKind;
@@ -42,6 +53,7 @@ import org.eclipse.daanse.cwm.model.daanse.spatial.SpatialRelation;
 import org.eclipse.daanse.cwm.model.daanse.spatial.SpatialWeight;
 import org.eclipse.daanse.cwm.model.daanse.spatial.TieBreak;
 import org.eclipse.daanse.cwm.model.daanse.spatial.UnmatchedPolicy;
+import org.eclipse.daanse.cwm.model.daanse.spatial.WholeHolding;
 import org.eclipse.daanse.cwm.model.daanse.validation.Finding;
 import org.eclipse.daanse.cwm.model.daanse.validation.Findings;
 import org.eclipse.daanse.cwm.model.daanse.validation.Rule;
@@ -49,16 +61,17 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 /**
- * Checks geometry features, spatial relations, grid levels, grid systems and distance bands beyond what the metamodel
- * enforces.
+ * Checks geometry features and their holdings, spatial relations, grid levels, grid systems and distance bands beyond
+ * what the metamodel enforces.
  * Errors stop a resolver, warnings do not.
  *
  * <ul>
- * <li>{@code SP1} a geometry feature names attributes (a column, a record field), not a class, a package or an
- * association end.</li>
- * <li>{@code SP2} an attribute is named by at most one geometry feature.</li>
- * <li>{@code SP3} (warning) the type of a column fits the storage: {@code NATIVE} a geometry type, {@code WKT} and
- * {@code GEOJSON} text, {@code WKB} binary; a type that is not known is no finding.</li>
+ * <li>There is no {@code SP1}: a holding names attributes by its type, so that no class, package or association end
+ * can stand where an attribute does.</li>
+ * <li>{@code SP2} an attribute is named once, by one holding (in one of its parts).</li>
+ * <li>{@code SP3} (warning) the type of the attribute of a whole holding fits its storage: {@code NATIVE} a geometry
+ * type (the data type {@code Geometry} of a logical property among them), {@code WKT} and {@code GEOJSON} text,
+ * {@code WKB} binary; a type that is not known is no finding.</li>
  * <li>There is no {@code SP4}: each of its checks has a code of its own, {@code SP30} to {@code SP36}.</li>
  * <li>{@code SP5} {@code WITHIN}, {@code COVERED_BY}, {@code INTERSECTS} and {@code CENTROID_WITHIN} need a parent of
  * kind {@code POLYGON} or {@code MIXED}.</li>
@@ -106,9 +119,10 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * <li>{@code SP27} (warning) an area, a length or a distance of a relation or a band measured in a geocentric reference
  * system: the planar functions read its x and y only and leave out z. In a geographic system areas, lengths and
  * distances are measured on the spheroid: no finding.</li>
- * <li>{@code SP28} a geometry stored as {@code GEOJSON} holds its coordinates east first (RFC 7946).</li>
- * <li>{@code SP29} (warning) a geometry stored as {@code GEOJSON} holds longitude and latitude of WGS 84: OGC CRS84 or
- * CRS84h, or EPSG 4326 or 4979 stored east first; another system only by prior arrangement (RFC 7946).</li>
+ * <li>{@code SP28} a whole holding stored as {@code GEOJSON} holds its coordinates east first (RFC 7946).</li>
+ * <li>{@code SP29} (warning) a whole holding stored as {@code GEOJSON} holds longitude and latitude of WGS 84: OGC
+ * CRS84 or CRS84h, or EPSG 4326 or 4979 stored east first; another system only by prior arrangement (RFC 7946).
+ * Numbers have no storage: neither rule reads them.</li>
  * <li>{@code SP30} a geometry feature names its reference system.</li>
  * <li>{@code SP31} the accuracy of a geometry feature is a decimal number of metres from zero up.</li>
  * <li>{@code SP32} a geometry feature names a coordinate epoch only where its reference system is dynamic.</li>
@@ -123,21 +137,44 @@ import org.eclipse.emf.ecore.EStructuralFeature;
  * <li>{@code SP39} the resolutions of a grid system run from zero up, its minimum at most its maximum.</li>
  * <li>{@code SP40} a grid system has an identifier (its name, by which a resolver knows it), once in its model.</li>
  * <li>{@code SP41} a chain of grid levels stays within one grid system.</li>
+ * <li>{@code SP42} a geometry feature has a holding, and each holding names its attributes: a whole and a list
+ * holding one, a holding in parts at least one part, each part one.</li>
+ * <li>{@code SP43} a geometry held as numbers (in parts or as a list) is a single point, or the envelope of another
+ * geometry.</li>
+ * <li>{@code SP44} a holding of numbers names each role once.</li>
+ * <li>{@code SP45} the roles fit the shape: a point has {@code EAST} and {@code NORTH} and no edge of an envelope; an
+ * envelope its four edges {@code MIN_EAST}, {@code MIN_NORTH}, {@code MAX_EAST}, {@code MAX_NORTH} and no axis of a
+ * point.</li>
+ * <li>{@code SP46} a geometry held as numbers has its height roles exactly where it has a height: {@code HEIGHT} for
+ * a point, {@code MIN_HEIGHT} and {@code MAX_HEIGHT} for an envelope.</li>
+ * <li>{@code SP47} (warning) the attributes of numbers are numeric: the attribute of a part a number; that of a list
+ * text where it has a separator, else several numbers (a multi-valued attribute of a number type, or an array); a
+ * type that is not known, or a number type without a stated multiplicity, is no finding.</li>
+ * <li>{@code SP48} the attributes of a holding in parts belong to one classifier: one row holds one value. A geometry
+ * held whole may be held in several tables, one holding each.</li>
+ * <li>{@code SP49} a geometry names a derivation exactly where it names what it is derived from.</li>
+ * <li>{@code SP50} a geometry is not derived from itself, directly or through others.</li>
+ * <li>{@code SP51} a derived geometry is in the reference system of the geometry it is derived from (one URI).</li>
+ * <li>{@code SP52} the kind follows the derivation: an envelope is a single polygon; a corner, a centroid and a point
+ * on the surface are single points.</li>
+ * <li>{@code SP53} two corners derived from one geometry and held in one classifier are opposite corners: south-west
+ * and north-east, or north-west and south-east.</li>
  * </ul>
  *
- * <p>Distances and the bounds of distance classes are metres, whatever the reference system.</p>
+ * <p>Distances and the bounds of distance classes are metres, whatever the reference system. A relation, a grid level
+ * and a band read a geometry from a holding in the table of their key; every holding of a geometry holds the same
+ * value, and numbers hold only a point or an envelope (SP43), which a resolver builds, so that every predicate and
+ * weight reads a geometry held as numbers.</p>
  */
 public final class SpatialModelValidator {
 
     /** The module the rules of this validator belong to. */
     public static final String MODULE = "spatial";
 
-    public static final Rule SP1 = Rule.error(MODULE, "SP1",
-            "A geometry feature names attributes, not a class, a package or an association end.");
+    public static final Rule SP2 = Rule.error(MODULE, "SP2", "An attribute is named once, by one holding.");
 
-    public static final Rule SP2 = Rule.error(MODULE, "SP2", "An attribute is named by at most one geometry feature.");
-
-    public static final Rule SP3 = Rule.warning(MODULE, "SP3", "The type of a geometry column fits its storage.");
+    public static final Rule SP3 = Rule.warning(MODULE, "SP3",
+            "The type of the attribute of a whole holding fits its storage.");
 
     public static final Rule SP5 = Rule.error(MODULE, "SP5",
             "WITHIN, COVERED_BY, INTERSECTS and CENTROID_WITHIN have a parent of kind POLYGON or MIXED.");
@@ -208,10 +245,10 @@ public final class SpatialModelValidator {
                 + "functions read x and y only.");
 
     public static final Rule SP28 = Rule.error(MODULE, "SP28",
-            "A geometry stored as GeoJSON holds its coordinates east first.");
+            "A whole holding stored as GeoJSON holds its coordinates east first.");
 
     public static final Rule SP29 = Rule.warning(MODULE, "SP29",
-            "A geometry stored as GeoJSON holds longitude and latitude of WGS 84 (CRS84, CRS84h, EPSG 4326 or "
+            "A whole holding stored as GeoJSON holds longitude and latitude of WGS 84 (CRS84, CRS84h, EPSG 4326 or "
                 + "4979).");
 
     public static final Rule SP30 = Rule.error(MODULE, "SP30", "A geometry feature names its reference system.");
@@ -243,15 +280,64 @@ public final class SpatialModelValidator {
 
     public static final Rule SP41 = Rule.error(MODULE, "SP41", "A chain of grid levels stays within one grid system.");
 
-    /** Every rule of this validator, in the order of their codes; there is no SP4 and no SP13. */
-    public static final List<Rule> RULES = List.of(SP1, SP2, SP3, SP5, SP6, SP7, SP8, SP9, SP10, SP11, SP12, SP14,
-            SP15, SP16, SP17, SP18, SP19, SP20, SP21, SP22, SP23, SP24, SP25, SP26, SP27, SP28, SP29, SP30, SP31, SP32,
-            SP33, SP34, SP35, SP36, SP37, SP38, SP39, SP40, SP41);
+    public static final Rule SP42 = Rule.error(MODULE, "SP42",
+            "A geometry feature has a holding, and each holding names its attributes.");
 
-    /** What a column type holds, as far as a geometry is concerned. */
+    public static final Rule SP43 = Rule.error(MODULE, "SP43",
+            "A geometry held as numbers is a single point, or the envelope of another geometry.");
+
+    public static final Rule SP44 = Rule.error(MODULE, "SP44", "A holding of numbers names each role once.");
+
+    public static final Rule SP45 = Rule.error(MODULE, "SP45",
+            "The roles fit the shape: a point has EAST and NORTH and no edge, an envelope its four edges and no "
+                + "axis of a point.");
+
+    public static final Rule SP46 = Rule.error(MODULE, "SP46",
+            "A geometry held as numbers has its height roles exactly where it has a height.");
+
+    public static final Rule SP47 = Rule.warning(MODULE, "SP47",
+            "The attributes of numbers are numeric: a part's a number, a list's text with a separator or several "
+                + "numbers.");
+
+    public static final Rule SP48 = Rule.error(MODULE, "SP48",
+            "The attributes of a holding in parts belong to one classifier.");
+
+    public static final Rule SP49 = Rule.error(MODULE, "SP49",
+            "A geometry names a derivation exactly where it names what it is derived from.");
+
+    public static final Rule SP50 = Rule.error(MODULE, "SP50",
+            "A geometry is not derived from itself, directly or through others.");
+
+    public static final Rule SP51 = Rule.error(MODULE, "SP51",
+            "A derived geometry is in the reference system of the geometry it is derived from.");
+
+    public static final Rule SP52 = Rule.error(MODULE, "SP52",
+            "The kind follows the derivation: an envelope is a single polygon, a corner, a centroid or a point on "
+                + "the surface a single point.");
+
+    public static final Rule SP53 = Rule.error(MODULE, "SP53",
+            "Two corners derived from one geometry and held in one classifier are opposite corners.");
+
+    /** Every rule of this validator, in the order of their codes; there is no SP1, no SP4 and no SP13. */
+    public static final List<Rule> RULES = List.of(SP2, SP3, SP5, SP6, SP7, SP8, SP9, SP10, SP11, SP12, SP14,
+            SP15, SP16, SP17, SP18, SP19, SP20, SP21, SP22, SP23, SP24, SP25, SP26, SP27, SP28, SP29, SP30, SP31, SP32,
+            SP33, SP34, SP35, SP36, SP37, SP38, SP39, SP40, SP41, SP42, SP43, SP44, SP45, SP46, SP47, SP48, SP49, SP50,
+            SP51, SP52, SP53);
+
+    /** What a type holds, as far as a geometry is concerned. */
     enum TypeKind {
-        GEOMETRY, TEXT, BINARY, NUMBER, UNKNOWN
+        GEOMETRY, TEXT, BINARY, NUMBER, ARRAY, UNKNOWN
     }
+
+    /** The roles of a point. */
+    private static final Set<Ordinate> POINT_ROLES = EnumSet.of(Ordinate.EAST, Ordinate.NORTH, Ordinate.HEIGHT);
+    /** The roles of an envelope. */
+    private static final Set<Ordinate> ENVELOPE_ROLES = EnumSet.of(Ordinate.MIN_EAST, Ordinate.MIN_NORTH,
+            Ordinate.MAX_EAST, Ordinate.MAX_NORTH, Ordinate.MIN_HEIGHT, Ordinate.MAX_HEIGHT);
+    /** The corners of an envelope. */
+    private static final Set<GeometryDerivation> CORNERS = EnumSet.of(GeometryDerivation.CORNER_SOUTH_WEST,
+            GeometryDerivation.CORNER_NORTH_EAST, GeometryDerivation.CORNER_NORTH_WEST,
+            GeometryDerivation.CORNER_SOUTH_EAST);
 
     private static final Set<String> GEOMETRY_NAMES = Set.of("geometry", "geography", "point", "linestring",
             "polygon", "multipoint", "multilinestring", "multipolygon", "geometrycollection", "sdo_geometry",
@@ -270,6 +356,8 @@ public final class SpatialModelValidator {
     private static final Set<Long> BINARY_JDBC = Set.of(-2L, -3L, -4L, 2004L);
     /** JDBC type codes: TINYINT, SMALLINT, INTEGER, BIGINT, FLOAT, REAL, DOUBLE, NUMERIC, DECIMAL. */
     private static final Set<Long> NUMBER_JDBC = Set.of(-6L, 5L, 4L, -5L, 6L, 7L, 8L, 2L, 3L);
+    /** The JDBC type code ARRAY. */
+    private static final long ARRAY_JDBC = 2003L;
 
     private SpatialModelValidator() {
     }
@@ -279,14 +367,18 @@ public final class SpatialModelValidator {
         List<Finding> findings = new ArrayList<>();
         List<EObject> all = new ArrayList<>(List.of(root));
         root.eAllContents().forEachRemaining(all::add);
-        Map<EObject, List<GeometryFeature>> byElement = new LinkedHashMap<>();
+        Map<Attribute, List<GeometryHolding>> byAttribute = new LinkedHashMap<>();
+        List<GeometryFeature> features = new ArrayList<>();
         List<SpatialRelation> relations = new ArrayList<>();
         Map<String, GridSystem> byIdentifier = new HashMap<>();
         for (EObject o : all) {
             if (o instanceof GeometryFeature f) {
                 feature(f, findings);
-                for (ModelElement e : f.getModelElement()) {
-                    byElement.computeIfAbsent(e, k -> new ArrayList<>()).add(f);
+                features.add(f);
+                for (GeometryHolding h : f.getHolding()) {
+                    for (Attribute a : SpatialElements.attributes(h)) {
+                        byAttribute.computeIfAbsent(a, k -> new ArrayList<>()).add(h);
+                    }
                 }
             } else if (o instanceof SpatialRelation r) {
                 relation(r, findings);
@@ -301,13 +393,15 @@ public final class SpatialModelValidator {
                 gridSystem(s, byIdentifier, findings);
             }
         }
-        for (Map.Entry<EObject, List<GeometryFeature>> e : byElement.entrySet()) {
+        for (Map.Entry<Attribute, List<GeometryHolding>> e : byAttribute.entrySet()) {
             if (e.getValue().size() > 1) {
-                findings.add(SP2.at(e.getKey(), path(e.getKey()) + " is named by " + e.getValue().size()
-                        + " geometry features: " + String.join(", ", e.getValue().stream()
-                                .map(SpatialModelValidator::path).toList()) + "; a column has one"));
+                findings.add(SP2.at(e.getKey(), path(e.getKey()) + " is named " + e.getValue().size() + " times, by "
+                        + String.join(", ", e.getValue().stream().map(SpatialModelValidator::describe).toList())
+                        + "; an attribute holds one geometry or one number of it"));
             }
         }
+        derivationCycles(features, findings);
+        corners(features, findings);
         cycles(relations, findings);
         return findings;
     }
@@ -335,37 +429,328 @@ public final class SpatialModelValidator {
             }
         }
         epoch(f, resolved(system) ? system : null, findings);
-        if (f.getStorage() == GeometryStorage.GEOJSON) {
-            if (f.getAxisOrder() != AxisOrder.EAST_NORTH) {
-                findings.add(SP28.at(f, path(f) + " is stored as GEOJSON with its coordinates " + f.getAxisOrder()
+        if (f.getHolding().isEmpty()) {
+            findings.add(SP42.at(f, path(f) + " has no holding; nothing says where the geometry is held"));
+        }
+        for (GeometryHolding h : f.getHolding()) {
+            switch (h) {
+            case WholeHolding w -> whole(f, w, resolved(system) ? system : null, findings);
+            case PartsHolding p -> numbers(f, p, partRoles(f, p, findings), findings);
+            case ListHolding l -> numbers(f, l, listRoles(f, l, findings), findings);
+            default -> {
+                // a holding of another kind is not read by this model
+            }
+            }
+        }
+        derivation(f, findings);
+    }
+
+    /** A whole holding: its attribute and its type (SP42, SP20, SP3), GeoJSON east first in WGS 84 (SP28, SP29). */
+    private static void whole(GeometryFeature f, WholeHolding w, ReferenceSystem system, List<Finding> findings) {
+        if (w.getStorage() == GeometryStorage.GEOJSON) {
+            if (w.getAxisOrder() != AxisOrder.EAST_NORTH) {
+                findings.add(SP28.at(f, path(f) + " is stored as GEOJSON with its coordinates " + w.getAxisOrder()
                         + "; GeoJSON holds them east first"));
             }
-            if (resolved(system) && !lonLatOfWgs84(system)) {
+            if (system != null && !lonLatOfWgs84(system)) {
                 findings.add(SP29.at(f, path(f) + " is stored as GEOJSON in " + ReferenceSystems.name(system)
                         + "; GeoJSON holds longitude and latitude of WGS 84 (CRS84), another system only by prior "
                         + "arrangement"));
             }
         }
-        for (ModelElement e : f.getModelElement()) {
-            if (e.eIsProxy()) {
-                findings.add(SP20.at(f, path(f) + ": a column does not resolve"));
+        Attribute a = w.getAttribute();
+        if (a == null) {
+            findings.add(SP42.at(f, path(f) + ": a whole holding names no attribute"));
+            return;
+        }
+        if (a.eIsProxy()) {
+            findings.add(SP20.at(f, path(f) + ": an attribute does not resolve"));
+            return;
+        }
+        Classifier type = a.getType();
+        if (type == null || type.eIsProxy()) {
+            return;
+        }
+        TypeKind held = kindOf(type);
+        if (!fits(w.getStorage(), held)) {
+            findings.add(SP3.at(f, path(f) + ": " + path(a) + " is of type " + type.getName() + " ("
+                    + held.name().toLowerCase(Locale.ROOT) + "), which does not hold " + w.getStorage()));
+        }
+    }
+
+    /**
+     * The roles of a holding in parts, in order; its parts and their attributes are named (SP42) and resolve (SP20),
+     * each attribute is a number (SP47), and all lie in one classifier (SP48).
+     */
+    private static List<Ordinate> partRoles(GeometryFeature f, PartsHolding p, List<Finding> findings) {
+        if (p.getPart().isEmpty()) {
+            findings.add(SP42.at(f, path(f) + ": a holding in parts has no part"));
+        }
+        List<Ordinate> roles = new ArrayList<>();
+        Set<Classifier> owners = new LinkedHashSet<>();
+        for (CoordinatePart part : p.getPart()) {
+            roles.add(part.getRole());
+            Attribute a = part.getAttribute();
+            if (a == null) {
+                findings.add(SP42.at(f, path(f) + ": the part " + part.getRole() + " names no attribute"));
                 continue;
             }
-            if (!(e instanceof Attribute a)) {
-                findings.add(SP1.at(f, path(f) + " names " + e.eClass().getName() + " " + path(e)
-                        + "; a geometry feature names attributes"));
+            if (a.eIsProxy()) {
+                findings.add(SP20.at(f, path(f) + ": the attribute of the part " + part.getRole()
+                        + " does not resolve"));
                 continue;
+            }
+            if (a.getOwner() != null) {
+                owners.add(a.getOwner());
             }
             Classifier type = a.getType();
-            if (type == null || type.eIsProxy() || SpatialElements.isGeometryType(type)) {
-                continue;
-            }
-            TypeKind held = kindOf(type);
-            if (!fits(f.getStorage(), held)) {
-                findings.add(SP3.at(f, path(f) + ": " + path(a) + " is of type " + type.getName() + " ("
-                        + held.name().toLowerCase(Locale.ROOT) + "), which does not hold " + f.getStorage()));
+            TypeKind held = type == null || type.eIsProxy() ? TypeKind.UNKNOWN : kindOf(type);
+            if (held != TypeKind.NUMBER && held != TypeKind.UNKNOWN) {
+                findings.add(SP47.at(f, path(f) + ": the part " + part.getRole() + " " + path(a) + " is of type "
+                        + type.getName() + " (" + held.name().toLowerCase(Locale.ROOT) + "), not a number"));
             }
         }
+        if (owners.size() > 1) {
+            findings.add(SP48.at(f, path(f) + ": the parts lie in " + owners.size() + " classifiers, "
+                    + String.join(", ", owners.stream().map(SpatialModelValidator::path).toList())
+                    + "; a holding in parts is one row of one holder"));
+        }
+        return roles;
+    }
+
+    /**
+     * The roles of a holding as a list, in order; its attribute is named (SP42) and resolves (SP20), and is text with
+     * a separator, else holds several numbers (SP47).
+     */
+    private static List<Ordinate> listRoles(GeometryFeature f, ListHolding l, List<Finding> findings) {
+        Attribute a = l.getAttribute();
+        if (a == null) {
+            findings.add(SP42.at(f, path(f) + ": a list names no attribute"));
+        } else if (a.eIsProxy()) {
+            findings.add(SP20.at(f, path(f) + ": an attribute does not resolve"));
+        } else if (a.getType() != null && !a.getType().eIsProxy()) {
+            Classifier type = a.getType();
+            TypeKind held = kindOf(type);
+            String why = null;
+            if (l.getSeparator() != null) {
+                if (held != TypeKind.TEXT && held != TypeKind.UNKNOWN) {
+                    why = "; a list with a separator is text";
+                }
+            } else if (held == TypeKind.TEXT) {
+                why = "; a list in a text names its separator";
+            } else if (held == TypeKind.NUMBER && singleValued(a)) {
+                why = ", one number; several numbers without a separator are an array or a multi-valued attribute";
+            } else if (held != TypeKind.NUMBER && held != TypeKind.ARRAY && held != TypeKind.UNKNOWN) {
+                why = "; several numbers without a separator are an array or a multi-valued attribute";
+            }
+            if (why != null) {
+                findings.add(SP47.at(f, path(f) + ": the list " + path(a) + " is of type " + type.getName() + " ("
+                        + held.name().toLowerCase(Locale.ROOT) + ")" + why));
+            }
+        }
+        return List.copyOf(l.getOrdinate());
+    }
+
+    /** Whether {@code a} states a multiplicity of one value at most. */
+    private static boolean singleValued(Attribute a) {
+        Multiplicity multiplicity = a.getMultiplicity();
+        if (multiplicity == null || multiplicity.getRange().isEmpty()) {
+            return false;
+        }
+        for (MultiplicityRange range : multiplicity.getRange()) {
+            if (range.getUpper() < 0 || range.getUpper() > 1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * A holding of numbers: a single point or an envelope (SP43), each role once (SP44), the roles of the shape
+     * (SP45) and of the height (SP46).
+     */
+    private static void numbers(GeometryFeature f, GeometryHolding h, List<Ordinate> roles, List<Finding> findings) {
+        boolean envelope = f.isSetDerivation() && f.getDerivation() == GeometryDerivation.ENVELOPE;
+        boolean point = !envelope && f.getKind() == GeometryKind.POINT;
+        if (!envelope && !point) {
+            findings.add(SP43.at(f, path(f) + " is a " + f.getKind() + " held as numbers in " + form(h)
+                    + "; numbers hold a single point or the envelope of another geometry"));
+        } else if (point && f.getMultiplicity() == GeometryMultiplicity.MULTI) {
+            findings.add(SP43.at(f, path(f) + " is a MULTI point held as numbers in " + form(h)
+                    + "; numbers hold a single point"));
+        }
+        Set<Ordinate> seen = EnumSet.noneOf(Ordinate.class);
+        Set<Ordinate> twice = new LinkedHashSet<>();
+        for (Ordinate role : roles) {
+            if (!seen.add(role)) {
+                twice.add(role);
+            }
+        }
+        if (!twice.isEmpty()) {
+            findings.add(SP44.at(f, path(f) + " holds " + names(twice) + " more than once in " + form(h)
+                    + "; each role is held once"));
+        }
+        if ((!envelope && !point) || (h instanceof PartsHolding p && p.getPart().isEmpty())) {
+            return;
+        }
+        Set<Ordinate> plane = point ? EnumSet.of(Ordinate.EAST, Ordinate.NORTH)
+                : EnumSet.of(Ordinate.MIN_EAST, Ordinate.MIN_NORTH, Ordinate.MAX_EAST, Ordinate.MAX_NORTH);
+        Set<Ordinate> missing = EnumSet.copyOf(plane);
+        missing.removeAll(seen);
+        Set<Ordinate> foreign = EnumSet.copyOf(seen);
+        foreign.retainAll(point ? ENVELOPE_ROLES : POINT_ROLES);
+        if (!missing.isEmpty()) {
+            findings.add(SP45.at(f, path(f) + " holds no " + names(missing) + " in " + form(h)
+                    + (point ? "; a point is held by EAST and NORTH"
+                            : "; an envelope is held by MIN_EAST, MIN_NORTH, MAX_EAST and MAX_NORTH")));
+        }
+        if (!foreign.isEmpty()) {
+            findings.add(SP45.at(f, path(f) + " holds " + names(foreign) + " in " + form(h)
+                    + (point ? ", the edges of an envelope; a point has none" : ", the axes of a point; an "
+                            + "envelope has none")));
+        }
+        Set<Ordinate> height = point ? EnumSet.of(Ordinate.HEIGHT)
+                : EnumSet.of(Ordinate.MIN_HEIGHT, Ordinate.MAX_HEIGHT);
+        if (f.isHasHeight() && !seen.containsAll(height)) {
+            Set<Ordinate> lacking = EnumSet.copyOf(height);
+            lacking.removeAll(seen);
+            findings.add(SP46.at(f, path(f) + " has a height but holds no " + names(lacking) + " in " + form(h)));
+        } else if (!f.isHasHeight() && seen.stream().anyMatch(height::contains)) {
+            Set<Ordinate> named = EnumSet.copyOf(height);
+            named.retainAll(seen);
+            findings.add(SP46.at(f, path(f) + " has no height but holds " + names(named) + " in " + form(h)
+                    + "; a height needs hasHeight and a system of three axes"));
+        }
+    }
+
+    /**
+     * What a geometry is derived from: a derivation exactly with of (SP49), resolving (SP20), in the same reference
+     * system (SP51), of the kind of the derivation and single (SP52).
+     */
+    private static void derivation(GeometryFeature f, List<Finding> findings) {
+        GeometryFeature of = f.getOf();
+        if (f.isSetDerivation() && of == null) {
+            findings.add(SP49.at(f, path(f) + " is the " + f.getDerivation() + " of nothing; it names no geometry "
+                    + "it is derived from"));
+            return;
+        }
+        if (!f.isSetDerivation() && of != null) {
+            findings.add(SP49.at(f, path(f) + " is derived from " + path(of) + " but names no derivation"));
+            return;
+        }
+        if (of == null) {
+            return;
+        }
+        if (of.eIsProxy()) {
+            findings.add(SP20.at(f, path(f) + ": the geometry it is derived from does not resolve"));
+            return;
+        }
+        GeometryDerivation d = f.getDerivation();
+        if (resolved(f.getReferenceSystem()) && resolved(of.getReferenceSystem())
+                && !ReferenceSystems.same(f.getReferenceSystem(), of.getReferenceSystem())) {
+            findings.add(SP51.at(f, path(f) + " is the " + d + " of " + path(of) + " in "
+                    + ReferenceSystems.name(of.getReferenceSystem()) + " but is in "
+                    + ReferenceSystems.name(f.getReferenceSystem()) + "; a derived geometry keeps the system"));
+        }
+        GeometryKind kind = d == GeometryDerivation.ENVELOPE ? GeometryKind.POLYGON : GeometryKind.POINT;
+        String rule = switch (d) {
+        case ENVELOPE -> "an envelope is a single POLYGON";
+        case CENTROID -> "a centroid is a single POINT";
+        case POINT_ON_SURFACE -> "a point on the surface is a single POINT";
+        default -> "a corner is a single POINT";
+        };
+        if (f.getKind() != kind) {
+            findings.add(SP52.at(f, path(f) + " is the " + d + " of " + path(of) + " but of kind " + f.getKind()
+                    + "; " + rule));
+        } else if (f.getMultiplicity() == GeometryMultiplicity.MULTI) {
+            findings.add(SP52.at(f, path(f) + " is the " + d + " of " + path(of) + " but MULTI; " + rule));
+        }
+    }
+
+    /** Each geometry derived from itself, directly or through the geometries it is derived from (SP50). */
+    private static void derivationCycles(List<GeometryFeature> features, List<Finding> findings) {
+        for (GeometryFeature f : features) {
+            if (!resolved(f.getOf())) {
+                continue;
+            }
+            List<String> chain = new ArrayList<>();
+            Set<GeometryFeature> seen = new HashSet<>();
+            for (GeometryFeature g = f.getOf(); resolved(g) && seen.add(g); g = g.getOf()) {
+                if (g == f) {
+                    findings.add(SP50.at(f, path(f) + (chain.isEmpty() ? " is derived from itself"
+                            : " is derived from itself through " + String.join(", ", chain))
+                            + "; a derived geometry comes from another one"));
+                    break;
+                }
+                chain.add(path(g));
+            }
+        }
+    }
+
+    /**
+     * Two corners of one geometry held in one classifier are opposite (SP53): the second of a pair that is not is
+     * named.
+     */
+    private static void corners(List<GeometryFeature> features, List<Finding> findings) {
+        Map<GeometryFeature, List<GeometryFeature>> byOf = new LinkedHashMap<>();
+        for (GeometryFeature f : features) {
+            if (f.isSetDerivation() && CORNERS.contains(f.getDerivation()) && resolved(f.getOf())) {
+                byOf.computeIfAbsent(f.getOf(), k -> new ArrayList<>()).add(f);
+            }
+        }
+        for (Map.Entry<GeometryFeature, List<GeometryFeature>> e : byOf.entrySet()) {
+            List<GeometryFeature> corners = e.getValue();
+            for (int j = 1; j < corners.size(); j++) {
+                GeometryFeature second = corners.get(j);
+                for (int i = 0; i < j; i++) {
+                    GeometryFeature first = corners.get(i);
+                    Set<Classifier> common = new LinkedHashSet<>(tables(first));
+                    common.retainAll(tables(second));
+                    if (!common.isEmpty() && !opposite(first.getDerivation(), second.getDerivation())) {
+                        findings.add(SP53.at(second, path(second) + " is the " + second.getDerivation() + " of "
+                                + path(e.getKey()) + " beside its " + first.getDerivation() + " " + path(first)
+                                + " in " + path(common.iterator().next()) + "; two corners of one geometry in one "
+                                + "holder are opposite: south-west and north-east, or north-west and south-east"));
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private static boolean opposite(GeometryDerivation a, GeometryDerivation b) {
+        return switch (a) {
+        case CORNER_SOUTH_WEST -> b == GeometryDerivation.CORNER_NORTH_EAST;
+        case CORNER_NORTH_EAST -> b == GeometryDerivation.CORNER_SOUTH_WEST;
+        case CORNER_NORTH_WEST -> b == GeometryDerivation.CORNER_SOUTH_EAST;
+        case CORNER_SOUTH_EAST -> b == GeometryDerivation.CORNER_NORTH_WEST;
+        default -> false;
+        };
+    }
+
+    /** A holding as messages name it: the whole holding, the parts or the list of its feature. */
+    private static String describe(GeometryHolding h) {
+        String of = h.eContainer() == null ? "" : " of " + path(h.eContainer());
+        return switch (h) {
+        case WholeHolding w -> "the whole holding" + of;
+        case PartsHolding p -> "the parts" + of;
+        case ListHolding l -> "the list" + of;
+        default -> "a holding" + of;
+        };
+    }
+
+    /** A holding as a message about its feature names it: its whole holding, its parts, its list. */
+    private static String form(GeometryHolding h) {
+        return switch (h) {
+        case WholeHolding w -> "its whole holding";
+        case PartsHolding p -> "its parts";
+        case ListHolding l -> "its list";
+        default -> "a holding";
+        };
+    }
+
+    private static String names(Set<Ordinate> roles) {
+        return String.join(", ", roles.stream().map(Ordinate::getName).toList());
     }
 
     /**
@@ -619,16 +1004,14 @@ public final class SpatialModelValidator {
         }
     }
 
-    /**
-     * The tables (owners) of the columns a feature names; a logical property typed by the data type Geometry, which
-     * the feature may name beside its column, is no column.
-     */
+    /** The tables or classes (owners) of the attributes of all holdings of a feature. */
     private static Set<Classifier> tables(GeometryFeature feature) {
-        Set<Classifier> tables = new HashSet<>();
-        for (ModelElement e : feature.getModelElement()) {
-            if (!e.eIsProxy() && e instanceof Attribute a && a.getOwner() != null
-                    && !SpatialElements.isGeometryType(a.getType())) {
-                tables.add(a.getOwner());
+        Set<Classifier> tables = new LinkedHashSet<>();
+        for (GeometryHolding h : feature.getHolding()) {
+            for (Attribute a : SpatialElements.attributes(h)) {
+                if (!a.eIsProxy() && a.getOwner() != null) {
+                    tables.add(a.getOwner());
+                }
             }
         }
         return tables;
@@ -927,9 +1310,39 @@ public final class SpatialModelValidator {
         return true;
     }
 
-    /** What a type holds: by its name (SQL, CWM, Ecore), else by its JDBC type code. */
+    /**
+     * What a type holds: the data type Geometry a geometry; a JSON array type an array, a JSON primitive type by its
+     * value kind (read without a dependency, as a unique key is); else by its name (SQL, CWM, Ecore; an array as
+     * {@code DOUBLE[]} or {@code DOUBLE ARRAY}), else by its JDBC type code.
+     */
     static TypeKind kindOf(Classifier type) {
+        if (type instanceof GeometryType) {
+            return TypeKind.GEOMETRY;
+        }
+        if ("ArrayType".equals(type.eClass().getName())) {
+            return TypeKind.ARRAY;
+        }
+        EStructuralFeature valueKind = type.eClass().getEStructuralFeature("valueKind");
+        if (valueKind != null && type.eIsSet(valueKind)) {
+            switch (String.valueOf(type.eGet(valueKind))) {
+            case "json_number", "json_integer" -> {
+                return TypeKind.NUMBER;
+            }
+            case "json_string" -> {
+                return TypeKind.TEXT;
+            }
+            case "json_array" -> {
+                return TypeKind.ARRAY;
+            }
+            default -> {
+                // an object, a truth value or null holds no number and no text a geometry is read from
+            }
+            }
+        }
         String name = type.getName() == null ? "" : plain(type.getName());
+        if (name.endsWith("]") || name.equals("array") || name.endsWith(" array")) {
+            return TypeKind.ARRAY;
+        }
         if (GEOMETRY_NAMES.contains(name)) {
             return TypeKind.GEOMETRY;
         }
@@ -953,6 +1366,9 @@ public final class SpatialModelValidator {
             }
             if (NUMBER_JDBC.contains(code)) {
                 return TypeKind.NUMBER;
+            }
+            if (code == ARRAY_JDBC) {
+                return TypeKind.ARRAY;
             }
         }
         return TypeKind.UNKNOWN;

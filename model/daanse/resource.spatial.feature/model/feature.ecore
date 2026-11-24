@@ -14,7 +14,7 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="feature" nsURI="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.resource.spatial.feature"
     nsPrefix="feature">
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-    <details key="documentation" value="Collections of features, as OGC API Features names them, as CWM classes: a FeatureCollection (a core::Class, owned by a core::Package) has its FeatureProperties (core::Attributes, typed by a data type) as features; the names become the ids of the collection and of its properties. The collection names the property that is the feature id, its primary geometry, the properties of its time (an instant, or the start and the end of an interval, the roles of OGC API Features Part 5) and the reference systems it offers; a property says whether it is queryable. What a geometry property holds (kind, multiplicity, height, reference system) is said by the spatial::GeometryFeature that names it, its type is a spatial::GeometryType. Where the rows come from (a table, an SQL statement, the members of a cube) is described by a mapping model; the collection and its queryables never change with the origin. What this package leaves open is checked by FeatureModelValidator, not filled in. Non-containment references are hidden association ends (Property.oppositeRoleName, prefix feature)."/>
+    <details key="documentation" value="Collections of features, as OGC API Features names them, as CWM classes: a FeatureCollection (a core::Class, owned by a core::Package) has its FeatureProperties (core::Attributes, typed by a data type) as features; the names become the ids of the collection and of its properties. The collection names the property that is the feature id, its primary geometry (a spatial::GeometryFeature, which says what the geometry is and whose holdings name the properties that hold it: a property of the type spatial::GeometryType, or numeric properties such as east and north), the properties of its time (an instant, or the start and the end of an interval, the roles of OGC API Features Part 5) and the reference systems it offers; a property says whether it is queryable. Where the rows come from (a table, an SQL statement, the members of a cube) is described by a mapping model; the collection and its queryables never change with the origin. What this package leaves open is checked by FeatureModelValidator, not filled in. Non-containment references are hidden association ends (Property.oppositeRoleName, prefix feature)."/>
     <details key="modelName" value="Feature"/>
     <details key="copyrightText" value="Copyright (c) 2026 Contributors to the Eclipse Foundation.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0"/>
     <details key="oSGiCompatible" value="true"/>
@@ -40,7 +40,7 @@
       <details key="InstantOrInterval" value="self.instant.oclIsUndefined() or (self.intervalStart.oclIsUndefined() and self.intervalEnd.oclIsUndefined())"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A collection of features: its name is the collection id (/collections/{name}), a Description of type documentation its description, displayName its title. Its features are its properties. It names the property whose value is the feature id, the primary geometry (the one bbox is evaluated on), the time of a feature (an instant, or the start and the end of an interval, either of which may stand alone), and the reference systems it offers besides the default and the storage system. The extent is not held: it is computed from the rows."/>
+      <details key="documentation" value="A collection of features: its name is the collection id (/collections/{name}), a Description of type documentation its description, displayName its title. Its features are its properties. It names the property whose value is the feature id, the primary geometry (the one bbox is evaluated on, held in properties of the collection), the time of a feature (an instant, or the start and the end of an interval, either of which may stand alone), and the reference systems it offers besides the default and the storage system. The schools of a city are a collection with the key school_id, the primary geometry schoolPoint held in the property location, and the instant opened. The extent is not held: it is computed from the rows."/>
     </eAnnotations>
     <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Class"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="displayName">
@@ -60,9 +60,9 @@
         <details key="body" value="featureKeyOfCollection"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="geometry" eType="//FeatureProperty">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="geometry">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The primary geometry: the one bbox is evaluated on and the extent is about; unset, a collection without geometry."/>
+        <details key="documentation" value="The primary geometry: the one bbox is evaluated on and the extent is about. A spatial::GeometryFeature, at least one of whose holdings lies entirely in properties of this collection: the property location of the type Geometry, or the properties east and north that hold a point in parts; the server writes the geometry of a feature from it. Unset, a collection without geometry."/>
       </eAnnotations>
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml">
         <details key="Property.oppositeRoleName" value="featureGeometryOfCollection"/>
@@ -70,6 +70,7 @@
       <eAnnotations source="http://schema.omg.org/spec/MOF/2.0/emof.xml#Property.oppositeRoleName">
         <details key="body" value="featureGeometryOfCollection"/>
       </eAnnotations>
+      <eType xsi:type="ecore:EClass" href="https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.spatial#//GeometryFeature"/>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="instant" eType="//FeatureProperty">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -143,7 +144,7 @@
       <details key="OwnedByCollection" value="self.owner.oclIsUndefined() or self.owner.oclIsKindOf(FeatureCollection)"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A property of the features of a collection: a core::Attribute typed by a data type (a spatial::GeometryType for a geometry, the spatial::GeometryFeature that names the property says what it holds). Its name is the property name in the features and in the queryables; it says whether it is queryable and gives what the type does not say: a closed list of values, numeric bounds, a pattern. Nullability is the attribute's multiplicity, the unit a units::Quantity that names the property, the description a Description of type documentation."/>
+      <details key="documentation" value="A property of the features of a collection: a core::Attribute typed by a data type, a spatial::GeometryType where it holds a whole geometry (a holding of a spatial::GeometryFeature names it and says what the geometry is); a number of a geometry held in parts, such as east, keeps its numeric type. Its name is the property name in the features and in the queryables; it says whether it is queryable and gives what the type does not say: a closed list of values, numeric bounds, a pattern. Nullability is the attribute's multiplicity, the unit a units::Quantity that names the property, the description a Description of type documentation."/>
     </eAnnotations>
     <eSuperTypes href="http://www.omg.org/spec/CWM/1.1/objectmodel/core#//Attribute"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="displayName">
