@@ -28,42 +28,46 @@ import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Classifier;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.ModelElement;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.Multiplicity;
 import org.eclipse.daanse.cwm.model.cwm.objectmodel.core.MultiplicityRange;
-import org.eclipse.daanse.cwm.model.daanse.spatial.AxisOrder;
 import org.eclipse.daanse.cwm.model.daanse.spatial.CoordinatePart;
 import org.eclipse.daanse.cwm.model.daanse.spatial.DistanceBand;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryDerivation;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryFeature;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryKind;
-import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryMultiplicity;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryStorage;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GeometryType;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GridLevel;
 import org.eclipse.daanse.cwm.model.daanse.spatial.GridSystem;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ListHolding;
-import org.eclipse.daanse.cwm.model.daanse.spatial.Ordinate;
 import org.eclipse.daanse.cwm.model.daanse.spatial.PartsHolding;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystem;
-import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystemAuthority;
 import org.eclipse.daanse.cwm.model.daanse.spatial.ReferenceSystemKind;
-import org.eclipse.daanse.cwm.model.daanse.spatial.ResultForm;
 import org.eclipse.daanse.cwm.model.daanse.spatial.SpatialAssignment;
+import org.eclipse.daanse.cwm.model.daanse.spatial.SpatialPackage;
 import org.eclipse.daanse.cwm.model.daanse.spatial.SpatialPredicate;
 import org.eclipse.daanse.cwm.model.daanse.spatial.SpatialRelation;
 import org.eclipse.daanse.cwm.model.daanse.spatial.SpatialWeight;
-import org.eclipse.daanse.cwm.model.daanse.spatial.TieBreak;
-import org.eclipse.daanse.cwm.model.daanse.spatial.UnmatchedPolicy;
 import org.eclipse.daanse.cwm.model.daanse.spatial.WholeHolding;
 import org.eclipse.daanse.cwm.model.daanse.validation.Finding;
 import org.eclipse.daanse.cwm.model.daanse.validation.Findings;
 import org.eclipse.daanse.cwm.model.daanse.validation.Rule;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.EValidator;
+import org.eclipse.ocl.common.OCLConstants;
+import org.eclipse.ocl.ecore.delegate.DelegateDomain;
+import org.eclipse.ocl.ecore.delegate.OCLDelegateDomain;
+import org.eclipse.ocl.ecore.delegate.OCLDelegateDomainFactory;
 
 /**
  * Checks geometry features and their holdings, spatial relations, grid levels, grid systems and distance bands beyond
- * what the metamodel enforces.
- * Errors stop a resolver, warnings do not.
+ * what the metamodel's types and multiplicities enforce. Errors stop a resolver, warnings do not.
+ *
+ * <p>Most rules stand in the metamodel itself, each an OCL invariant of the class it is about named by the code of its
+ * rule, with the sentence and the severity of the rule beside it ({@code model/spatial.ecore}): a client that loads the
+ * metamodel evaluates them without this class. {@link #check} runs the EMF check of the invariants on every element of
+ * the package, takes their findings, each naming the element and saying the sentence of its rule, and adds those of the
+ * rules no invariant can state, {@link #CHECKED_IN_JAVA}.</p>
  *
  * <ul>
  * <li>There is no {@code SP1}: a holding names attributes by its type, so that no class, package or association end
@@ -324,16 +328,25 @@ public final class SpatialModelValidator {
             SP33, SP34, SP35, SP36, SP37, SP38, SP39, SP40, SP41, SP42, SP43, SP44, SP45, SP46, SP47, SP48, SP49, SP50,
             SP51, SP52, SP53);
 
+    /**
+     * The rules no OCL invariant of the metamodel states, checked by this class; every other rule of {@link #RULES} is an
+     * invariant of the class it is about. SP2, SP17, SP40 and SP53 compare an element with others it does not reach
+     * (the holdings that name one attribute, the relations that continue a chain, the grid systems of the model, the
+     * corners derived from one geometry), which an invariant would have to search the whole model for. SP6 to SP9,
+     * SP18, SP27 and SP49 depend on whether an unsettable attribute is set at all (the weight, the resolution, the
+     * derivation), and OCL reads an unset one as its default. SP3, SP16 and SP47 judge a type by classes of other models
+     * the metamodel does not import (the JDBC code of an SQL type, the value kind of a JSON type, an array type). SP25
+     * reads the unique keys of a table, elements of {@code keysindexes}. SP20 asks whether a reference resolves and SP37
+     * whether a required attribute is set, which an invariant cannot see; EMF's own check finds both as well.
+     */
+    public static final List<Rule> CHECKED_IN_JAVA = List.of(SP2, SP3, SP6, SP7, SP8, SP9, SP16, SP17, SP18, SP20,
+            SP25, SP27, SP37, SP40, SP47, SP49, SP53);
+
     /** What a type holds, as far as a geometry is concerned. */
     enum TypeKind {
         GEOMETRY, TEXT, BINARY, NUMBER, ARRAY, UNKNOWN
     }
 
-    /** The roles of a point. */
-    private static final Set<Ordinate> POINT_ROLES = EnumSet.of(Ordinate.EAST, Ordinate.NORTH, Ordinate.HEIGHT);
-    /** The roles of an envelope. */
-    private static final Set<Ordinate> ENVELOPE_ROLES = EnumSet.of(Ordinate.MIN_EAST, Ordinate.MIN_NORTH,
-            Ordinate.MAX_EAST, Ordinate.MAX_NORTH, Ordinate.MIN_HEIGHT, Ordinate.MAX_HEIGHT);
     /** The corners of an envelope. */
     private static final Set<GeometryDerivation> CORNERS = EnumSet.of(GeometryDerivation.CORNER_SOUTH_WEST,
             GeometryDerivation.CORNER_NORTH_EAST, GeometryDerivation.CORNER_NORTH_WEST,
@@ -359,21 +372,37 @@ public final class SpatialModelValidator {
     /** The JDBC type code ARRAY. */
     private static final long ARRAY_JDBC = 2003L;
 
+    static {
+        // the metamodel names the classic Eclipse OCL as the delegate of its invariants; outside Eclipse no plugin
+        // registry installs it, and the generated package looks its delegate domain up globally
+        if (EValidator.ValidationDelegate.Registry.INSTANCE
+                .getValidationDelegate(OCLConstants.OCL_DELEGATE_URI) == null) {
+            OCLDelegateDomain.initialize(null);
+        }
+        DelegateDomain.Factory.Registry.INSTANCE.putIfAbsent(OCLConstants.OCL_DELEGATE_URI_LPG,
+                new OCLDelegateDomainFactory());
+    }
+
     private SpatialModelValidator() {
     }
 
-    /** All findings for the geodata in {@code root} and below. */
+    /**
+     * All findings for the geodata in {@code root} and below: those of the invariants of the metamodel, each element of
+     * the package checked by EMF with OCL, and those of the rules checked here ({@link #CHECKED_IN_JAVA}). An element
+     * one of whose references does not resolve (SP20) gets no finding of an invariant: an invariant would read an
+     * element that is not there as one of default values.
+     */
     public static List<Finding> check(EObject root) {
-        List<Finding> findings = new ArrayList<>();
         List<EObject> all = new ArrayList<>(List.of(root));
         root.eAllContents().forEachRemaining(all::add);
+        List<Finding> checked = new ArrayList<>();
         Map<Attribute, List<GeometryHolding>> byAttribute = new LinkedHashMap<>();
         List<GeometryFeature> features = new ArrayList<>();
         List<SpatialRelation> relations = new ArrayList<>();
         Map<String, GridSystem> byIdentifier = new HashMap<>();
         for (EObject o : all) {
             if (o instanceof GeometryFeature f) {
-                feature(f, findings);
+                feature(f, checked);
                 features.add(f);
                 for (GeometryHolding h : f.getHolding()) {
                     for (Attribute a : SpatialElements.attributes(h)) {
@@ -381,28 +410,40 @@ public final class SpatialModelValidator {
                     }
                 }
             } else if (o instanceof SpatialRelation r) {
-                relation(r, findings);
+                relation(r, checked);
                 relations.add(r);
             } else if (o instanceof GridLevel g) {
-                grid(g, findings);
+                grid(g, checked);
             } else if (o instanceof DistanceBand b) {
-                band(b, findings);
+                band(b, checked);
             } else if (o instanceof ReferenceSystem s) {
-                system(s, findings);
+                system(s, checked);
             } else if (o instanceof GridSystem s) {
-                gridSystem(s, byIdentifier, findings);
+                gridSystem(s, byIdentifier, checked);
             }
         }
         for (Map.Entry<Attribute, List<GeometryHolding>> e : byAttribute.entrySet()) {
             if (e.getValue().size() > 1) {
-                findings.add(SP2.at(e.getKey(), path(e.getKey()) + " is named " + e.getValue().size() + " times, by "
+                checked.add(SP2.at(e.getKey(), path(e.getKey()) + " is named " + e.getValue().size() + " times, by "
                         + String.join(", ", e.getValue().stream().map(SpatialModelValidator::describe).toList())
                         + "; an attribute holds one geometry or one number of it"));
             }
         }
-        derivationCycles(features, findings);
-        corners(features, findings);
-        cycles(relations, findings);
+        corners(features, checked);
+        cycles(relations, checked);
+        Set<EObject> unresolved = new HashSet<>();
+        for (Finding f : checked) {
+            if (f.rule().equals(SP20.code())) {
+                unresolved.add(f.element());
+            }
+        }
+        List<Finding> findings = new ArrayList<>();
+        for (Finding f : Findings.ofInvariants(MODULE, SpatialPackage.eINSTANCE, all, SpatialModelValidator::path)) {
+            if (!unresolved.contains(f.element())) {
+                findings.add(f);
+            }
+        }
+        findings.addAll(checked);
         return findings;
     }
 
@@ -411,32 +452,20 @@ public final class SpatialModelValidator {
         return Findings.errorLines(check(root));
     }
 
+    /**
+     * A feature: its reference system resolves (SP20), its holdings name attributes of fitting types (SP3, SP47) that
+     * resolve (SP20), and it names a derivation exactly with what it is derived from (SP49).
+     */
     private static void feature(GeometryFeature f, List<Finding> findings) {
         ReferenceSystem system = f.getReferenceSystem();
-        if (system == null) {
-            findings.add(SP30.at(f, path(f) + " names no reference system"));
-        } else if (system.eIsProxy()) {
+        if (system != null && system.eIsProxy()) {
             findings.add(SP20.at(f, path(f) + ": the reference system does not resolve"));
-        } else if (f.isHasHeight() && system.getAxes() != 3) {
-            findings.add(SP23.at(f, path(f) + " holds a height in " + path(system) + " of " + system.getAxes()
-                    + " axes; a height is the third axis"));
-        }
-        if (f.getAccuracy() != null) {
-            BigDecimal accuracy = decimal(f.getAccuracy());
-            if (accuracy == null || accuracy.signum() < 0) {
-                findings.add(SP31.at(f, path(f) + ": the accuracy '" + f.getAccuracy()
-                        + "' is no decimal number of metres from zero up"));
-            }
-        }
-        epoch(f, resolved(system) ? system : null, findings);
-        if (f.getHolding().isEmpty()) {
-            findings.add(SP42.at(f, path(f) + " has no holding; nothing says where the geometry is held"));
         }
         for (GeometryHolding h : f.getHolding()) {
             switch (h) {
-            case WholeHolding w -> whole(f, w, resolved(system) ? system : null, findings);
-            case PartsHolding p -> numbers(f, p, partRoles(f, p, findings), findings);
-            case ListHolding l -> numbers(f, l, listRoles(f, l, findings), findings);
+            case WholeHolding w -> whole(f, w, findings);
+            case PartsHolding p -> parts(f, p, findings);
+            case ListHolding l -> list(f, l, findings);
             default -> {
                 // a holding of another kind is not read by this model
             }
@@ -445,22 +474,10 @@ public final class SpatialModelValidator {
         derivation(f, findings);
     }
 
-    /** A whole holding: its attribute and its type (SP42, SP20, SP3), GeoJSON east first in WGS 84 (SP28, SP29). */
-    private static void whole(GeometryFeature f, WholeHolding w, ReferenceSystem system, List<Finding> findings) {
-        if (w.getStorage() == GeometryStorage.GEOJSON) {
-            if (w.getAxisOrder() != AxisOrder.EAST_NORTH) {
-                findings.add(SP28.at(f, path(f) + " is stored as GEOJSON with its coordinates " + w.getAxisOrder()
-                        + "; GeoJSON holds them east first"));
-            }
-            if (system != null && !lonLatOfWgs84(system)) {
-                findings.add(SP29.at(f, path(f) + " is stored as GEOJSON in " + ReferenceSystems.name(system)
-                        + "; GeoJSON holds longitude and latitude of WGS 84 (CRS84), another system only by prior "
-                        + "arrangement"));
-            }
-        }
+    /** A whole holding: its attribute resolves (SP20) and its type fits the storage (SP3). */
+    private static void whole(GeometryFeature f, WholeHolding w, List<Finding> findings) {
         Attribute a = w.getAttribute();
         if (a == null) {
-            findings.add(SP42.at(f, path(f) + ": a whole holding names no attribute"));
             return;
         }
         if (a.eIsProxy()) {
@@ -478,30 +495,17 @@ public final class SpatialModelValidator {
         }
     }
 
-    /**
-     * The roles of a holding in parts, in order; its parts and their attributes are named (SP42) and resolve (SP20),
-     * each attribute is a number (SP47), and all lie in one classifier (SP48).
-     */
-    private static List<Ordinate> partRoles(GeometryFeature f, PartsHolding p, List<Finding> findings) {
-        if (p.getPart().isEmpty()) {
-            findings.add(SP42.at(f, path(f) + ": a holding in parts has no part"));
-        }
-        List<Ordinate> roles = new ArrayList<>();
-        Set<Classifier> owners = new LinkedHashSet<>();
+    /** A holding in parts: the attributes of its parts resolve (SP20) and are numbers (SP47). */
+    private static void parts(GeometryFeature f, PartsHolding p, List<Finding> findings) {
         for (CoordinatePart part : p.getPart()) {
-            roles.add(part.getRole());
             Attribute a = part.getAttribute();
             if (a == null) {
-                findings.add(SP42.at(f, path(f) + ": the part " + part.getRole() + " names no attribute"));
                 continue;
             }
             if (a.eIsProxy()) {
                 findings.add(SP20.at(f, path(f) + ": the attribute of the part " + part.getRole()
                         + " does not resolve"));
                 continue;
-            }
-            if (a.getOwner() != null) {
-                owners.add(a.getOwner());
             }
             Classifier type = a.getType();
             TypeKind held = type == null || type.eIsProxy() ? TypeKind.UNKNOWN : kindOf(type);
@@ -510,25 +514,17 @@ public final class SpatialModelValidator {
                         + type.getName() + " (" + held.name().toLowerCase(Locale.ROOT) + "), not a number"));
             }
         }
-        if (owners.size() > 1) {
-            findings.add(SP48.at(f, path(f) + ": the parts lie in " + owners.size() + " classifiers, "
-                    + String.join(", ", owners.stream().map(SpatialModelValidator::path).toList())
-                    + "; a holding in parts is one row of one holder"));
-        }
-        return roles;
     }
 
     /**
-     * The roles of a holding as a list, in order; its attribute is named (SP42) and resolves (SP20), and is text with
-     * a separator, else holds several numbers (SP47).
+     * A holding as a list: its attribute resolves (SP20) and is text with a separator, else holds several numbers
+     * (SP47).
      */
-    private static List<Ordinate> listRoles(GeometryFeature f, ListHolding l, List<Finding> findings) {
+    private static void list(GeometryFeature f, ListHolding l, List<Finding> findings) {
         Attribute a = l.getAttribute();
-        if (a == null) {
-            findings.add(SP42.at(f, path(f) + ": a list names no attribute"));
-        } else if (a.eIsProxy()) {
+        if (a != null && a.eIsProxy()) {
             findings.add(SP20.at(f, path(f) + ": an attribute does not resolve"));
-        } else if (a.getType() != null && !a.getType().eIsProxy()) {
+        } else if (a != null && a.getType() != null && !a.getType().eIsProxy()) {
             Classifier type = a.getType();
             TypeKind held = kindOf(type);
             String why = null;
@@ -548,7 +544,6 @@ public final class SpatialModelValidator {
                         + held.name().toLowerCase(Locale.ROOT) + ")" + why));
             }
         }
-        return List.copyOf(l.getOrdinate());
     }
 
     /** Whether {@code a} states a multiplicity of one value at most. */
@@ -566,66 +561,8 @@ public final class SpatialModelValidator {
     }
 
     /**
-     * A holding of numbers: a single point or an envelope (SP43), each role once (SP44), the roles of the shape
-     * (SP45) and of the height (SP46).
-     */
-    private static void numbers(GeometryFeature f, GeometryHolding h, List<Ordinate> roles, List<Finding> findings) {
-        boolean envelope = f.isSetDerivation() && f.getDerivation() == GeometryDerivation.ENVELOPE;
-        boolean point = !envelope && f.getKind() == GeometryKind.POINT;
-        if (!envelope && !point) {
-            findings.add(SP43.at(f, path(f) + " is a " + f.getKind() + " held as numbers in " + form(h)
-                    + "; numbers hold a single point or the envelope of another geometry"));
-        } else if (point && f.getMultiplicity() == GeometryMultiplicity.MULTI) {
-            findings.add(SP43.at(f, path(f) + " is a MULTI point held as numbers in " + form(h)
-                    + "; numbers hold a single point"));
-        }
-        Set<Ordinate> seen = EnumSet.noneOf(Ordinate.class);
-        Set<Ordinate> twice = new LinkedHashSet<>();
-        for (Ordinate role : roles) {
-            if (!seen.add(role)) {
-                twice.add(role);
-            }
-        }
-        if (!twice.isEmpty()) {
-            findings.add(SP44.at(f, path(f) + " holds " + names(twice) + " more than once in " + form(h)
-                    + "; each role is held once"));
-        }
-        if ((!envelope && !point) || (h instanceof PartsHolding p && p.getPart().isEmpty())) {
-            return;
-        }
-        Set<Ordinate> plane = point ? EnumSet.of(Ordinate.EAST, Ordinate.NORTH)
-                : EnumSet.of(Ordinate.MIN_EAST, Ordinate.MIN_NORTH, Ordinate.MAX_EAST, Ordinate.MAX_NORTH);
-        Set<Ordinate> missing = EnumSet.copyOf(plane);
-        missing.removeAll(seen);
-        Set<Ordinate> foreign = EnumSet.copyOf(seen);
-        foreign.retainAll(point ? ENVELOPE_ROLES : POINT_ROLES);
-        if (!missing.isEmpty()) {
-            findings.add(SP45.at(f, path(f) + " holds no " + names(missing) + " in " + form(h)
-                    + (point ? "; a point is held by EAST and NORTH"
-                            : "; an envelope is held by MIN_EAST, MIN_NORTH, MAX_EAST and MAX_NORTH")));
-        }
-        if (!foreign.isEmpty()) {
-            findings.add(SP45.at(f, path(f) + " holds " + names(foreign) + " in " + form(h)
-                    + (point ? ", the edges of an envelope; a point has none" : ", the axes of a point; an "
-                            + "envelope has none")));
-        }
-        Set<Ordinate> height = point ? EnumSet.of(Ordinate.HEIGHT)
-                : EnumSet.of(Ordinate.MIN_HEIGHT, Ordinate.MAX_HEIGHT);
-        if (f.isHasHeight() && !seen.containsAll(height)) {
-            Set<Ordinate> lacking = EnumSet.copyOf(height);
-            lacking.removeAll(seen);
-            findings.add(SP46.at(f, path(f) + " has a height but holds no " + names(lacking) + " in " + form(h)));
-        } else if (!f.isHasHeight() && seen.stream().anyMatch(height::contains)) {
-            Set<Ordinate> named = EnumSet.copyOf(height);
-            named.retainAll(seen);
-            findings.add(SP46.at(f, path(f) + " has no height but holds " + names(named) + " in " + form(h)
-                    + "; a height needs hasHeight and a system of three axes"));
-        }
-    }
-
-    /**
-     * What a geometry is derived from: a derivation exactly with of (SP49), resolving (SP20), in the same reference
-     * system (SP51), of the kind of the derivation and single (SP52).
+     * What a geometry is derived from: a derivation exactly with of (SP49), resolving (SP20). Whether a derivation is
+     * set is not visible to an invariant: an unset one reads as ENVELOPE.
      */
     private static void derivation(GeometryFeature f, List<Finding> findings) {
         GeometryFeature of = f.getOf();
@@ -638,52 +575,8 @@ public final class SpatialModelValidator {
             findings.add(SP49.at(f, path(f) + " is derived from " + path(of) + " but names no derivation"));
             return;
         }
-        if (of == null) {
-            return;
-        }
-        if (of.eIsProxy()) {
+        if (of != null && of.eIsProxy()) {
             findings.add(SP20.at(f, path(f) + ": the geometry it is derived from does not resolve"));
-            return;
-        }
-        GeometryDerivation d = f.getDerivation();
-        if (resolved(f.getReferenceSystem()) && resolved(of.getReferenceSystem())
-                && !ReferenceSystems.same(f.getReferenceSystem(), of.getReferenceSystem())) {
-            findings.add(SP51.at(f, path(f) + " is the " + d + " of " + path(of) + " in "
-                    + ReferenceSystems.name(of.getReferenceSystem()) + " but is in "
-                    + ReferenceSystems.name(f.getReferenceSystem()) + "; a derived geometry keeps the system"));
-        }
-        GeometryKind kind = d == GeometryDerivation.ENVELOPE ? GeometryKind.POLYGON : GeometryKind.POINT;
-        String rule = switch (d) {
-        case ENVELOPE -> "an envelope is a single POLYGON";
-        case CENTROID -> "a centroid is a single POINT";
-        case POINT_ON_SURFACE -> "a point on the surface is a single POINT";
-        default -> "a corner is a single POINT";
-        };
-        if (f.getKind() != kind) {
-            findings.add(SP52.at(f, path(f) + " is the " + d + " of " + path(of) + " but of kind " + f.getKind()
-                    + "; " + rule));
-        } else if (f.getMultiplicity() == GeometryMultiplicity.MULTI) {
-            findings.add(SP52.at(f, path(f) + " is the " + d + " of " + path(of) + " but MULTI; " + rule));
-        }
-    }
-
-    /** Each geometry derived from itself, directly or through the geometries it is derived from (SP50). */
-    private static void derivationCycles(List<GeometryFeature> features, List<Finding> findings) {
-        for (GeometryFeature f : features) {
-            if (!resolved(f.getOf())) {
-                continue;
-            }
-            List<String> chain = new ArrayList<>();
-            Set<GeometryFeature> seen = new HashSet<>();
-            for (GeometryFeature g = f.getOf(); resolved(g) && seen.add(g); g = g.getOf()) {
-                if (g == f) {
-                    findings.add(SP50.at(f, path(f) + (chain.isEmpty() ? " is derived from itself"
-                            : " is derived from itself through " + String.join(", ", chain))
-                            + "; a derived geometry comes from another one"));
-                    break;
-                }
-                chain.add(path(g));
-            }
         }
     }
 
@@ -739,59 +632,8 @@ public final class SpatialModelValidator {
         };
     }
 
-    /** A holding as a message about its feature names it: its whole holding, its parts, its list. */
-    private static String form(GeometryHolding h) {
-        return switch (h) {
-        case WholeHolding w -> "its whole holding";
-        case PartsHolding p -> "its parts";
-        case ListHolding l -> "its list";
-        default -> "a holding";
-        };
-    }
-
-    private static String names(Set<Ordinate> roles) {
-        return String.join(", ", roles.stream().map(Ordinate::getName).toList());
-    }
-
-    /**
-     * The epoch of a feature's coordinates: a decimal year (SP33), named where its system is dynamic (SP24 where it is
-     * not) and only there (SP32).
-     */
-    private static void epoch(GeometryFeature f, ReferenceSystem system, List<Finding> findings) {
-        if (f.getCoordinateEpoch() != null) {
-            if (system != null && !system.isDynamic()) {
-                findings.add(SP32.at(f, path(f) + " names the coordinate epoch " + f.getCoordinateEpoch()
-                        + " but " + ReferenceSystems.name(system) + " is not dynamic; the coordinates of a static "
-                        + "system hold for every epoch"));
-            } else if (decimal(f.getCoordinateEpoch()) == null) {
-                findings.add(SP33.at(f, path(f) + ": the coordinate epoch '" + f.getCoordinateEpoch()
-                        + "' is no decimal year"));
-            }
-        } else if (system != null && system.isDynamic()) {
-            findings.add(SP24.at(f, path(f) + " is in the dynamic system " + ReferenceSystems.name(system)
-                    + " but names no coordinate epoch; its coordinates cannot be compared with those of another "
-                    + "epoch"));
-        }
-    }
-
-    /** Whether {@code system} is WGS 84 by longitude and latitude: OGC CRS84 or CRS84h, EPSG 4326 or 4979. */
-    private static boolean lonLatOfWgs84(ReferenceSystem system) {
-        String code = system.getCode() == null ? "" : system.getCode().trim();
-        return system.getAuthority() == ReferenceSystemAuthority.OGC ? code.equals("CRS84") || code.equals("CRS84h")
-                : code.equals("4326") || code.equals("4979");
-    }
-
+    /** A reference system states its axis order (SP37): whether the attribute is set is not visible to an invariant. */
     private static void system(ReferenceSystem s, List<Finding> findings) {
-        String code = s.getCode() == null ? "" : s.getCode().trim();
-        if (code.isEmpty()) {
-            findings.add(SP34.at(s, path(s) + " has no code"));
-        } else if (s.getAuthority() == ReferenceSystemAuthority.EPSG && ReferenceSystems.epsg(s).isEmpty()) {
-            findings.add(SP35.at(s, path(s) + " has the EPSG code '" + s.getCode()
-                    + "'; an EPSG code is a positive whole number"));
-        }
-        if (s.getAxes() != 2 && s.getAxes() != 3) {
-            findings.add(SP36.at(s, path(s) + " has " + s.getAxes() + " axes; a system has 2 or 3"));
-        }
         if (!s.isSetAxisOrder()) {
             findings.add(SP37.at(s, path(s) + " states no axis order; the order its register defines is stated "
                     + "explicitly (EAST_NORTH or NORTH_EAST), there is no default"));
@@ -809,13 +651,18 @@ public final class SpatialModelValidator {
         };
     }
 
+    /**
+     * A relation: what it names resolves (SP20); the minimum share (SP9) and the weight (SP6 to SP8), whose being set
+     * an invariant cannot see; a measure in a geocentric system (SP27); keys declared unique (SP25); the shape of its
+     * declared result (SP16).
+     */
     private static void relation(SpatialRelation r, List<Finding> findings) {
         GeometryFeature child = r.getChild();
         GeometryFeature parent = r.getParent();
-        boolean featuresKnown = known(r, child, "the child geometry", findings)
-                & known(r, parent, "the parent geometry", findings);
-        boolean keysKnown = known(r, r.getChildKey(), "the child key", findings)
-                & known(r, r.getParentKey(), "the parent key", findings);
+        boolean featuresKnown = resolves(r, child, "the child geometry", findings)
+                & resolves(r, parent, "the parent geometry", findings);
+        boolean keysKnown = resolves(r, r.getChildKey(), "the child key", findings)
+                & resolves(r, r.getParentKey(), "the parent key", findings);
         if (r.getExplicitKey() != null && r.getExplicitKey().eIsProxy()) {
             findings.add(SP20.at(r, path(r) + ": the explicit key does not resolve"));
         }
@@ -825,7 +672,6 @@ public final class SpatialModelValidator {
         if (r.getWorkingSystem() != null && r.getWorkingSystem().eIsProxy()) {
             findings.add(SP20.at(r, path(r) + ": the working reference system does not resolve"));
         }
-        SpatialPredicate predicate = r.getPredicate();
         SpatialAssignment assignment = r.getAssignment();
         boolean weighted = r.isSetWeight();
         BigDecimal minimumShare = null;
@@ -852,37 +698,9 @@ public final class SpatialModelValidator {
             findings.add(SP8.at(r, path(r) + " assigns " + assignment + " without a weight to compare or "
                     + "divide the matches by"));
         }
-        if (predicate == SpatialPredicate.WITHIN_DISTANCE) {
-            BigDecimal distance = r.getDistance() == null ? null : decimal(r.getDistance());
-            if (r.getDistance() == null) {
-                findings.add(SP10.at(r, path(r) + " matches WITHIN_DISTANCE without a distance"));
-            } else if (distance == null || distance.signum() <= 0) {
-                findings.add(SP10.at(r, path(r) + ": the distance '" + r.getDistance()
-                        + "' is no decimal number above zero"));
-            }
-        } else if (r.getDistance() != null) {
-            findings.add(SP10.at(r, path(r) + " has the distance " + r.getDistance() + " but matches "
-                    + predicate + "; a distance belongs to WITHIN_DISTANCE"));
-        }
-        if (predicate == SpatialPredicate.NEAREST && assignment != SpatialAssignment.EXACTLY_ONE) {
-            findings.add(SP11.at(r, path(r) + " matches NEAREST but assigns " + assignment
-                    + "; the nearest parent is one"));
-        }
-        if (r.getResultForm() == ResultForm.VIEW) {
-            if (assignment == SpatialAssignment.EXACTLY_ONE && r.getTieBreak() != TieBreak.LOWEST_PARENT_KEY) {
-                findings.add(SP26.at(r, path(r) + " writes a VIEW but assigns EXACTLY_ONE without the tie "
-                        + "break LOWEST_PARENT_KEY; a view cannot stop at a tie, write a TABLE"));
-            }
-        }
-        unmatched(r, r.getUnmatched(), r.getResultForm(), "a child without a parent", "the children without a parent",
-                "parent", findings);
-        if (r.getExplicitKey() != null && predicate == SpatialPredicate.NEAREST) {
-            findings.add(SP21.at(r, path(r) + " has an explicit key and matches NEAREST; the key, not the "
-                    + "geometry, decides the rows that carry it"));
-        }
         if (featuresKnown) {
-            kinds(r, child, parent, findings);
-            systems(r, child, parent, findings);
+            weight(r, child, findings);
+            measure(r, child, parent, findings);
         }
         if (featuresKnown && keysKnown) {
             keys(r, findings);
@@ -892,28 +710,23 @@ public final class SpatialModelValidator {
         }
     }
 
-    /** Whether {@code target} is named and resolves; a missing one is an error, an unresolved one a warning. */
-    private static boolean known(SpatialRelation r, EObject target, String what, List<Finding> findings) {
+    /**
+     * Whether {@code target} of {@code rule} is named and resolves; one that does not resolve is a warning (SP20), one
+     * that is not named the matter of an invariant (SP14).
+     */
+    private static boolean resolves(ModelElement rule, EObject target, String what, List<Finding> findings) {
         if (target == null) {
-            findings.add(SP14.at(r, path(r) + " names no " + what.substring("the ".length())));
             return false;
         }
         if (target.eIsProxy()) {
-            findings.add(SP20.at(r, path(r) + ": " + what + " does not resolve"));
+            findings.add(SP20.at(rule, path(rule) + ": " + what + " does not resolve"));
             return false;
         }
         return true;
     }
 
-    private static void kinds(SpatialRelation r, GeometryFeature child, GeometryFeature parent,
-            List<Finding> findings) {
-        SpatialPredicate predicate = r.getPredicate();
-        boolean needsArea = predicate == SpatialPredicate.WITHIN || predicate == SpatialPredicate.COVERED_BY
-                || predicate == SpatialPredicate.INTERSECTS || predicate == SpatialPredicate.CENTROID_WITHIN;
-        if (needsArea && parent.getKind() != GeometryKind.POLYGON && parent.getKind() != GeometryKind.MIXED) {
-            findings.add(SP5.at(r, path(r) + " matches " + predicate + " against the " + parent.getKind()
-                    + " parent " + path(parent) + "; it needs an area"));
-        }
+    /** SP6: a set weight fits the child, AREA a polygon and LENGTH a line ({@code MIXED} is checked per row). */
+    private static void weight(SpatialRelation r, GeometryFeature child, List<Finding> findings) {
         if (r.isSetWeight()) {
             GeometryKind needed = r.getWeight() == SpatialWeight.AREA ? GeometryKind.POLYGON : GeometryKind.LINE;
             if (child.getKind() != needed && child.getKind() != GeometryKind.MIXED) {
@@ -923,20 +736,19 @@ public final class SpatialModelValidator {
         }
     }
 
-    private static void systems(SpatialRelation r, GeometryFeature child, GeometryFeature parent,
+    /**
+     * SP27 where a relation measures (a set weight, the nearest parent, a distance) in a geocentric system: its working
+     * one, else the one child and parent share.
+     */
+    private static void measure(SpatialRelation r, GeometryFeature child, GeometryFeature parent,
             List<Finding> findings) {
-        ReferenceSystem working = resolved(r.getWorkingSystem()) ? r.getWorkingSystem() : null;
         if (!resolved(child.getReferenceSystem()) || !resolved(parent.getReferenceSystem())) {
             return;
         }
         boolean same = ReferenceSystems.same(child.getReferenceSystem(), parent.getReferenceSystem());
-        if (!same && r.getWorkingSystem() == null) {
-            findings.add(SP12.at(r, path(r) + " relates the reference systems "
-                    + ReferenceSystems.name(child.getReferenceSystem()) + " and "
-                    + ReferenceSystems.name(parent.getReferenceSystem()) + " without a working one"));
-        }
         boolean measures = r.isSetWeight() || r.getPredicate() == SpatialPredicate.NEAREST
                 || r.getPredicate() == SpatialPredicate.WITHIN_DISTANCE && r.getDistance() != null;
+        ReferenceSystem working = resolved(r.getWorkingSystem()) ? r.getWorkingSystem() : null;
         ReferenceSystem system = working != null ? working : same ? child.getReferenceSystem() : null;
         if (measures) {
             geocentric(r, system, r.isSetWeight() ? r.getWeight().name().toLowerCase(Locale.ROOT) : "a distance",
@@ -956,52 +768,27 @@ public final class SpatialModelValidator {
         }
     }
 
-    /**
-     * SP15 for a rule that drops the rows it cannot place ({@code many}), SP26 for a view that would have to stop at
-     * one ({@code one}); {@code target} is what such a row lacks.
-     */
-    private static void unmatched(ModelElement rule, UnmatchedPolicy policy, ResultForm form, String one, String many,
-            String target, List<Finding> findings) {
-        if (form == ResultForm.VIEW && policy == UnmatchedPolicy.ERROR) {
-            findings.add(SP26.at(rule, path(rule) + " writes a VIEW but stops at " + one
-                    + " (ERROR); a view cannot stop, write a TABLE"));
-        }
-        if (policy == UnmatchedPolicy.DROP) {
-            findings.add(SP15.at(rule, path(rule) + " drops " + many + "; facts that reach the " + target
-                    + " through its result vanish from the sums"));
-        }
-    }
-
     private static void keys(SpatialRelation r, List<Finding> findings) {
-        Set<Classifier> childTables = tables(r.getChild());
-        Set<Classifier> parentTables = tables(r.getParent());
-        key(r, r.getChildKey(), "child", "child", childTables, true, findings);
-        key(r, r.getParentKey(), "parent", "parent", parentTables, true, findings);
-        if (r.getExplicitKey() != null && !r.getExplicitKey().eIsProxy()) {
-            key(r, r.getExplicitKey(), "explicit", "child", childTables, false, findings);
-        }
+        declared(r, r.getChildKey(), "child", tables(r.getChild()), findings);
+        declared(r, r.getParentKey(), "parent", tables(r.getParent()), findings);
     }
 
     /**
-     * {@code key} of {@code rule} is a column of one of {@code tables}, those that hold the {@code geometry}; where
-     * {@code unique}, a key not declared unique is a warning.
+     * SP25 where {@code key} of {@code rule}, a column of one of {@code tables}, those that hold its geometry, is no
+     * declared unique key of it; a key of no such table is the matter of an invariant (SP14).
      */
-    private static void key(ModelElement rule, Attribute key, String which, String geometry, Set<Classifier> tables,
-            boolean unique, List<Finding> findings) {
+    private static void declared(ModelElement rule, Attribute key, String which, Set<Classifier> tables,
+            List<Finding> findings) {
         Classifier owner = key.getOwner();
-        if (owner == null || !tables.contains(owner)) {
-            findings.add(SP14.at(rule, path(rule) + ": the " + which + " key " + path(key)
-                    + " is no column of a table that holds the " + geometry + " geometry"));
+        if (owner == null || !tables.contains(owner) || SpatialElements.isDeclaredKey(key)) {
             return;
         }
-        if (unique && !SpatialElements.isDeclaredKey(key)) {
-            findings.add(SP25.at(rule, path(rule) + ": the " + which + " key " + path(key)
-                    + " is no declared key of " + path(owner) + switch (rule) {
-                    case GridLevel g -> "; a resolver refuses a key held in several rows, a point has one row";
-                    case DistanceBand b -> "; the rows of one key are the parts of one source, the nearest counts";
-                    default -> "; the rows of one key are the parts of one geometry, united first";
-                    }));
-        }
+        findings.add(SP25.at(rule, path(rule) + ": the " + which + " key " + path(key) + " is no declared key of "
+                + path(owner) + switch (rule) {
+                case GridLevel g -> "; a resolver refuses a key held in several rows, a point has one row";
+                case DistanceBand b -> "; the rows of one key are the parts of one source, the nearest counts";
+                default -> "; the rows of one key are the parts of one geometry, united first";
+                }));
     }
 
     /** The tables or classes (owners) of the attributes of all holdings of a feature. */
@@ -1017,22 +804,18 @@ public final class SpatialModelValidator {
         return tables;
     }
 
-    /** The source key of a grid level or a distance band: named, resolved, a column of a table of the source. */
-    private static boolean sourceKey(ModelElement rule, GeometryFeature source, Attribute key,
-            List<Finding> findings) {
+    /** The source key of a grid level or a distance band: it resolves (SP20) and is declared unique (SP25). */
+    private static void sourceKey(ModelElement rule, GeometryFeature source, Attribute key, List<Finding> findings) {
         if (key == null) {
-            findings.add(SP14.at(rule, path(rule) + " names no source key"));
-            return false;
+            return;
         }
         if (key.eIsProxy()) {
             findings.add(SP20.at(rule, path(rule) + ": the source key does not resolve"));
-            return false;
+            return;
         }
-        if (source == null || source.eIsProxy()) {
-            return false;
+        if (source != null && !source.eIsProxy()) {
+            declared(rule, key, "source", tables(source), findings);
         }
-        key(rule, key, "source", "source", tables(source), true, findings);
-        return true;
     }
 
     private static void result(SpatialRelation r, List<Finding> findings) {
@@ -1146,18 +929,18 @@ public final class SpatialModelValidator {
         }
     }
 
+    /**
+     * A grid level: its points, system and level above resolve (SP20); points of the kind POINT, a system and a
+     * resolution named, below a coarser level over the same points and key (SP18), whose resolution being set an
+     * invariant cannot see; the source key declared unique (SP25); the shape of its declared result (SP16).
+     */
     private static void grid(GridLevel g, List<Finding> findings) {
         GeometryFeature source = g.getSource();
-        if (source == null) {
-            findings.add(SP14.at(g, path(g) + " names no points"));
-        } else if (source.eIsProxy()) {
+        if (source != null && source.eIsProxy()) {
             findings.add(SP20.at(g, path(g) + ": the points do not resolve"));
-        } else if (source.getKind() != GeometryKind.POINT) {
+        } else if (source != null && source.getKind() != GeometryKind.POINT) {
             findings.add(SP18.at(g, path(g) + " puts the " + source.getKind() + " geometry " + path(source)
                     + " into cells; a grid takes points"));
-        } else if (source.getMultiplicity() == GeometryMultiplicity.MULTI) {
-            findings.add(SP22.at(g, path(g) + " puts the multi-points " + path(source)
-                    + " into cells; a multi-point has no one cell"));
         }
         GridSystem system = g.getSystem();
         if (system == null) {
@@ -1165,39 +948,28 @@ public final class SpatialModelValidator {
         } else if (system.eIsProxy()) {
             findings.add(SP20.at(g, path(g) + ": the grid system does not resolve"));
         }
-        String range = resolved(system) ? "; " + identifier(system) + " has " + system.getMinResolution() + " to "
-                + system.getMaxResolution() : "";
         if (!g.isSetResolution()) {
-            findings.add(SP18.at(g, path(g) + " names no resolution" + range));
-        } else if (resolved(system) && (g.getResolution() < system.getMinResolution()
-                || g.getResolution() > system.getMaxResolution())) {
-            findings.add(SP38.at(g, path(g) + " has the resolution " + g.getResolution() + range));
+            findings.add(SP18.at(g, path(g) + " names no resolution" + (resolved(system) ? "; " + identifier(system)
+                    + " has " + system.getMinResolution() + " to " + system.getMaxResolution() : "")));
         }
         GridLevel parent = g.getParent();
+        boolean otherSystem = parent != null && resolved(system) && resolved(parent.getSystem())
+                && !sameGridSystem(parent.getSystem(), system);
         if (parent != null && parent.eIsProxy()) {
             findings.add(SP20.at(g, path(g) + ": the level above does not resolve"));
-        } else if (parent != null && resolved(system) && resolved(parent.getSystem())
-                && !sameGridSystem(parent.getSystem(), system)) {
-            findings.add(SP41.at(g, path(g) + " of " + identifier(system) + " lies below " + path(parent) + " of "
-                    + identifier(parent.getSystem()) + "; a level lies below one of its own system"));
-        } else if (parent != null && parent.getResolution() >= g.getResolution()) {
+        } else if (parent != null && !otherSystem && parent.getResolution() >= g.getResolution()) {
             findings.add(SP18.at(g, path(g) + " of resolution " + g.getResolution() + " lies below "
                     + path(parent) + " of resolution " + parent.getResolution() + "; the level above is coarser"));
-        } else if (parent != null
+        } else if (parent != null && !otherSystem
                 && (parent.getSource() != g.getSource() || parent.getSourceKey() != g.getSourceKey())) {
             findings.add(SP18.at(g, path(g) + " lies below " + path(parent) + ", which puts other points into "
                     + "cells; the levels of one hierarchy put the same points, by the same key, into cells"));
         }
         sourceKey(g, source, g.getSourceKey(), findings);
         gridResult(g, findings);
-        unmatched(g, g.getUnmatched(), g.getResultForm(), "a point without a cell", "the points without a cell", "cell",
-                findings);
     }
 
-    /**
-     * A grid system has an identifier, its name, once in its model (SP40), and resolutions from zero up, the minimum at
-     * most the maximum (SP39).
-     */
+    /** A grid system has an identifier, its name, once in its model (SP40). */
     private static void gridSystem(GridSystem s, Map<String, GridSystem> byIdentifier, List<Finding> findings) {
         String identifier = s.getName() == null ? "" : s.getName().trim();
         if (identifier.isEmpty()) {
@@ -1208,10 +980,6 @@ public final class SpatialModelValidator {
                 findings.add(SP40.at(s, path(s) + " has the identifier " + identifier + " of " + path(first)
                         + "; a grid system is made once in a model and found again by its identifier"));
             }
-        }
-        if (s.getMinResolution() < 0 || s.getMinResolution() > s.getMaxResolution()) {
-            findings.add(SP39.at(s, path(s) + " has the resolutions " + s.getMinResolution() + " to "
-                    + s.getMaxResolution() + "; they run from zero up, the minimum at most the maximum"));
         }
     }
 
@@ -1256,58 +1024,25 @@ public final class SpatialModelValidator {
         }
     }
 
+    /**
+     * A distance band: its geometries, working system and source key resolve (SP20); the source key declared unique
+     * (SP25); the shape of its declared result (SP16); a distance measured in a geocentric system (SP27).
+     */
     private static void band(DistanceBand b, List<Finding> findings) {
         GeometryFeature source = b.getSource();
         GeometryFeature reference = b.getReference();
-        boolean known = known(b, source, "source", findings) & known(b, reference, "reference", findings);
-        BigDecimal last = null;
-        if (b.getBound().isEmpty()) {
-            findings.add(SP19.at(b, path(b) + " has no bound"));
-        }
-        for (String literal : b.getBound()) {
-            BigDecimal bound = decimal(literal);
-            if (bound == null || bound.signum() <= 0) {
-                findings.add(SP19.at(b, path(b) + ": the bound '" + literal + "' is no decimal number above "
-                        + "zero"));
-                continue;
-            }
-            if (last != null && bound.compareTo(last) <= 0) {
-                findings.add(SP19.at(b, path(b) + ": the bound " + literal + " follows " + last.toPlainString()
-                        + "; the bounds ascend strictly"));
-            }
-            last = bound;
-        }
+        boolean known = resolves(b, source, "the source", findings) & resolves(b, reference, "the reference", findings);
         if (b.getWorkingSystem() != null && b.getWorkingSystem().eIsProxy()) {
             findings.add(SP20.at(b, path(b) + ": the working reference system does not resolve"));
         }
         sourceKey(b, source, b.getSourceKey(), findings);
         result(b, b.getResult(), b.getSourceKey(), "class", Set.of(TypeKind.NUMBER), findings);
-        unmatched(b, b.getUnmatched(), b.getResultForm(), "a source without a class", "the sources without a class",
-                "class", findings);
         if (!known || !resolved(source.getReferenceSystem()) || !resolved(reference.getReferenceSystem())) {
             return;
         }
         boolean same = ReferenceSystems.same(source.getReferenceSystem(), reference.getReferenceSystem());
-        if (!same && b.getWorkingSystem() == null) {
-            findings.add(SP12.at(b, path(b) + " measures between the reference systems "
-                    + ReferenceSystems.name(source.getReferenceSystem()) + " and "
-                    + ReferenceSystems.name(reference.getReferenceSystem()) + " without a working one"));
-        }
         ReferenceSystem working = resolved(b.getWorkingSystem()) ? b.getWorkingSystem() : null;
         geocentric(b, working != null ? working : same ? source.getReferenceSystem() : null, "a distance", findings);
-    }
-
-    /** Whether a band names {@code f} as its {@code which} and it resolves: SP14 where it names none, else SP20. */
-    private static boolean known(DistanceBand b, GeometryFeature f, String which, List<Finding> findings) {
-        if (f == null) {
-            findings.add(SP14.at(b, path(b) + " names no " + which));
-            return false;
-        }
-        if (f.eIsProxy()) {
-            findings.add(SP20.at(b, path(b) + ": the " + which + " does not resolve"));
-            return false;
-        }
-        return true;
     }
 
     /**

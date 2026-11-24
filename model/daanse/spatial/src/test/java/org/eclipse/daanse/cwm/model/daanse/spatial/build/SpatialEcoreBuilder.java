@@ -15,8 +15,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
+import org.eclipse.daanse.cwm.model.daanse.spatial.util.SpatialModelValidator;
+import org.eclipse.daanse.cwm.model.daanse.validation.Findings;
+import org.eclipse.daanse.cwm.model.daanse.validation.Rule;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
@@ -58,6 +62,8 @@ public final class SpatialEcoreBuilder {
     private static final String EMOF = "http://schema.omg.org/spec/MOF/2.0/emof.xml";
     /** The namespace URI of the package. */
     public static final String NS_URI = "https://www.daanse.org/spec/org.eclipse.daanse.cwm.model.daanse.spatial";
+    /** The source of the metadata of the invariants of a class: name, description and level per rule. */
+    public static final String CONSTRAINTS = NS_URI + Findings.CONSTRAINTS;
 
     private static final String EPL_HEADER = String.join("\n",
             "Copyright (c) 2026 Contributors to the Eclipse Foundation.",
@@ -451,14 +457,6 @@ public final class SpatialEcoreBuilder {
                         + "same geometry: the same meaning in two tables (the column shape of the tables district "
                         + "and district_archive), or one table that holds a point both in a geometry column and "
                         + "in two columns of numbers.");
-        constrain(feature, "HeightNeedsThreeAxes", "not self.hasHeight "
-                + "or (not self.referenceSystem.oclIsUndefined() and self.referenceSystem.axes = 3)");
-        constrain(feature, "EpochOnlyWhenDynamic", "self.coordinateEpoch.oclIsUndefined() "
-                + "or (not self.referenceSystem.oclIsUndefined() and self.referenceSystem.dynamic)");
-        constrain(feature, "NotDerivedFromItself", "self.of.oclIsUndefined() or self.of <> self");
-        constrain(feature, "KindFollowsDerivation", "self.of.oclIsUndefined() "
-                + "or (if self.derivation = GeometryDerivation::ENVELOPE then self.kind = GeometryKind::POLYGON "
-                + "else self.kind = GeometryKind::POINT endif)");
 
         EReference wholeAttribute = ref(whole, "attribute", cwm.attribute, 1, 1,
                 "The attribute that holds the geometry: a relational column, a record field, or a property of a "
@@ -472,15 +470,12 @@ public final class SpatialEcoreBuilder {
                         + "defines latitude first, a PostGIS column of it holds longitude first), and two holdings "
                         + "of one system may store their coordinates in two orders; GEOJSON storage holds east "
                         + "first always (RFC 7946).");
-        constrain(whole, "GeoJsonEastFirst",
-                "self.storage <> GeometryStorage::GEOJSON or self.axisOrder = AxisOrder::EAST_NORTH");
 
         cont(parts, "part", part, 1, -1,
                 "The numbers and the attributes that hold them, each role once: EAST and NORTH for a point, and "
                         + "HEIGHT where it has a height; MIN_EAST, MIN_NORTH, MAX_EAST and MAX_NORTH for an "
                         + "envelope, and MIN_HEIGHT and MAX_HEIGHT where it has a height. Their order carries no "
                         + "meaning: the role says which number a part is.");
-        constrain(parts, "EachRoleOnce", "self.part->isUnique(p | p.role)");
 
         attr(part, "role", ordinate, 1, 1, "Which number the attribute holds: an axis of a point, an edge of an "
                 + "envelope.");
@@ -500,7 +495,6 @@ public final class SpatialEcoreBuilder {
                 "The text between two numbers where the attribute is a text, such as , or a blank; unset where "
                         + "the attribute holds the numbers as several values. A number in the text is written as "
                         + "SQL and JSON write it: an optional sign, digits, a point before the fraction.");
-        constrain(list, "EachRoleOnce", "self.ordinate->isUnique(o | o)");
 
         EReference child = ref(relation, "child", feature, 1, 1, "The geometry that is assigned.");
         oppositeRole(child, "spatialRelationAsChild");
@@ -548,10 +542,6 @@ public final class SpatialEcoreBuilder {
                         + "has run, or declared in advance.");
         oppositeRole(result, "spatialRelationResult");
         attr(relation, "resultForm", resultForm, 1, 1, "Whether the result is a table or a view.");
-        constrain(relation, "MinimumShareInRange", "self.minimumShare.oclIsUndefined() "
-                + "or (self.minimumShare.toReal() >= 0 and self.minimumShare.toReal() < 1)");
-        constrain(relation, "DistanceOnlyForWithinDistance",
-                "(self.predicate = SpatialPredicate::WITHIN_DISTANCE) = not self.distance.oclIsUndefined()");
 
         EReference gridSource = ref(grid, "source", feature, 1, 1, "The points that are put into cells.");
         oppositeRole(gridSource, "spatialGridLevel");
@@ -578,11 +568,6 @@ public final class SpatialEcoreBuilder {
         attr(grid, "unmatched", unmatched, 1, 1,
                 "What happens to a point that gets no cell (it has no geometry): it keeps a row with null cells "
                         + "(KEEP_NULL), a resolver stops and names it (ERROR), or it leaves the result (DROP).");
-        constrain(grid, "ParentNotSelf", "self.parent.oclIsUndefined() or self.parent <> self");
-        constrain(grid, "ResolutionInRange", "self.system.oclIsUndefined() "
-                + "or (self.resolution >= self.system.minResolution and self.resolution <= self.system.maxResolution)");
-        constrain(grid, "ParentOfTheSameSystem",
-                "self.parent.oclIsUndefined() or self.parent.system = self.system");
 
         EReference bandSource = ref(band, "source", feature, 1, 1, "The geometry whose distance is measured.");
         oppositeRole(bandSource, "spatialDistanceBandAsSource");
@@ -637,7 +622,6 @@ public final class SpatialEcoreBuilder {
                 "Whether the system moves with a tectonic plate, so that a coordinate holds for one epoch, which "
                         + "the geometry feature names.")
                 .setDefaultValueLiteral("false");
-        constrain(system, "AxesTwoOrThree", "self.axes = 2 or self.axes = 3");
 
         attr(gridSystem, "minResolution", cwm.integerType, 1, 1,
                 "The coarsest resolution of the system: 1 for geohash and quadkey, 0 for h3.");
@@ -648,14 +632,215 @@ public final class SpatialEcoreBuilder {
                         + "the cell's (geohash, quadkey); false where the parent is a function of the cell, which "
                         + "holds its finer cells only approximately (h3).")
                 .setDefaultValueLiteral("false");
-        constrain(gridSystem, "ResolutionsInOrder",
-                "self.minResolution >= 0 and self.minResolution <= self.maxResolution");
 
+        invariants(feature, relation, grid, band, system, gridSystem);
         return p;
     }
 
-    /** Adds an OCL invariant: Ecore constraints list plus the OCL expression of the same name. */
-    private void constrain(EClass c, String name, String ocl) {
+    /**
+     * The rules of {@link SpatialModelValidator} the metamodel states, each an OCL invariant of the class it is about,
+     * named by the code of the rule; the other rules ({@link SpatialModelValidator#CHECKED_IN_JAVA}) cannot be stated in
+     * OCL and stay with the validator. A rule the validator reports for a feature about its holdings is an invariant of
+     * the feature, so that its finding names the feature.
+     */
+    private void invariants(EClass feature, EClass relation, EClass grid, EClass band, EClass system,
+            EClass gridSystem) {
+        String envelope = "(not self.of.oclIsUndefined() and self.derivation = GeometryDerivation::ENVELOPE)";
+        String numbers = "self.holding->select(h | not h.oclIsKindOf(WholeHolding))";
+        String geoJson = "h.oclIsKindOf(WholeHolding) and h.oclAsType(WholeHolding).storage = GeometryStorage::GEOJSON";
+
+        constrain(feature, SpatialModelValidator.SP23, "HeightNeedsThreeAxes", "not self.hasHeight "
+                + "or self.referenceSystem.oclIsUndefined() or self.referenceSystem.axes = 3");
+        constrain(feature, SpatialModelValidator.SP24, "EpochInADynamicSystem", "self.referenceSystem.oclIsUndefined() "
+                + "or not self.referenceSystem.dynamic or not self.coordinateEpoch.oclIsUndefined()");
+        constrain(feature, SpatialModelValidator.SP28, "GeoJsonEastFirst", "self.holding->forAll(h | not (" + geoJson
+                + ") or h.oclAsType(WholeHolding).axisOrder = AxisOrder::EAST_NORTH)");
+        constrain(feature, SpatialModelValidator.SP29, "GeoJsonInWgs84", "self.referenceSystem.oclIsUndefined() "
+                + "or self.holding->forAll(h | not (" + geoJson + ")) "
+                + "or (not self.referenceSystem.code.oclIsUndefined() "
+                + "and (if self.referenceSystem.authority = ReferenceSystemAuthority::OGC then Set{'CRS84', 'CRS84h'} "
+                + "else Set{'4326', '4979'} endif)->includes(self.referenceSystem.code.trim()))");
+        constrain(feature, SpatialModelValidator.SP30, "NamesItsReferenceSystem",
+                "not self.referenceSystem.oclIsUndefined()");
+        constrain(feature, SpatialModelValidator.SP31, "AccuracyInMetres", "self.accuracy.oclIsUndefined() "
+                + "or (" + decimal("self.accuracy") + " and self.accuracy.toReal() >= 0)");
+        constrain(feature, SpatialModelValidator.SP32, "EpochOnlyWhenDynamic", "self.coordinateEpoch.oclIsUndefined() "
+                + "or self.referenceSystem.oclIsUndefined() or self.referenceSystem.dynamic");
+        constrain(feature, SpatialModelValidator.SP33, "EpochIsADecimalYear",
+                "self.coordinateEpoch.oclIsUndefined() or " + decimal("self.coordinateEpoch"));
+        constrain(feature, SpatialModelValidator.SP42, "HeldAndNamed", "self.holding->notEmpty() "
+                + "and self.holding->forAll(h | "
+                + "(h.oclIsKindOf(WholeHolding) implies not h.oclAsType(WholeHolding).attribute.oclIsUndefined()) "
+                + "and (h.oclIsKindOf(ListHolding) implies not h.oclAsType(ListHolding).attribute.oclIsUndefined()) "
+                + "and (h.oclIsKindOf(PartsHolding) implies (h.oclAsType(PartsHolding).part->notEmpty() "
+                + "and h.oclAsType(PartsHolding).part->forAll(p | not p.attribute.oclIsUndefined()))))");
+        constrain(feature, SpatialModelValidator.SP43, "NumbersHoldAPointOrAnEnvelope",
+                "self.holding->forAll(h | h.oclIsKindOf(WholeHolding)) or " + envelope
+                        + " or (self.kind = GeometryKind::POINT and self.multiplicity <> GeometryMultiplicity::MULTI)");
+        constrain(feature, SpatialModelValidator.SP44, "EachRoleOnce", "self.holding->forAll(h | "
+                + "(h.oclIsKindOf(PartsHolding) implies h.oclAsType(PartsHolding).part->isUnique(p | p.role)) "
+                + "and (h.oclIsKindOf(ListHolding) implies h.oclAsType(ListHolding).ordinate->isUnique(o | o)))");
+        constrain(feature, SpatialModelValidator.SP45, "RolesFitTheShape", numbers + "->forAll(h | "
+                + "let roles : Bag(Ordinate) = " + roles("h") + " in "
+                + "(h.oclIsKindOf(PartsHolding) and roles->isEmpty()) "
+                + "or (if " + envelope + " then roles->includesAll(" + EDGES + ") and roles->excludesAll(" + AXES + ") "
+                + "else self.kind <> GeometryKind::POINT or (roles->includesAll(Set{Ordinate::EAST, Ordinate::NORTH}) "
+                + "and roles->excludesAll(" + EDGES_AND_HEIGHTS + ")) endif))");
+        constrain(feature, SpatialModelValidator.SP46, "HeightRolesExactlyWithAHeight", numbers + "->forAll(h | "
+                + "let roles : Bag(Ordinate) = " + roles("h") + " in "
+                + "(h.oclIsKindOf(PartsHolding) and roles->isEmpty()) "
+                + "or (not " + envelope + " and self.kind <> GeometryKind::POINT) "
+                + "or (let height : Set(Ordinate) = if " + envelope + " then "
+                + "Set{Ordinate::MIN_HEIGHT, Ordinate::MAX_HEIGHT} else Set{Ordinate::HEIGHT} endif in "
+                + "if self.hasHeight then roles->includesAll(height) else roles->excludesAll(height) endif))");
+        constrain(feature, SpatialModelValidator.SP48, "PartsInOneClassifier", "self.holding->forAll(h | "
+                + "h.oclIsKindOf(PartsHolding) implies h.oclAsType(PartsHolding).part->collect(p | p.attribute)"
+                + "->select(a | not a.oclIsUndefined())->collect(a | a.owner)->select(o | not o.oclIsUndefined())"
+                + "->asSet()->size() <= 1)");
+        constrain(feature, SpatialModelValidator.SP50, "NotDerivedFromItself",
+                "self.of.oclIsUndefined() or self.of->closure(of)->excludes(self)");
+        constrain(feature, SpatialModelValidator.SP51, "DerivedKeepsTheSystem", "self.of.oclIsUndefined() "
+                + "or self.referenceSystem.oclIsUndefined() or self.of.referenceSystem.oclIsUndefined() or "
+                + sameSystem("self.referenceSystem", "self.of.referenceSystem"));
+        constrain(feature, SpatialModelValidator.SP52, "KindFollowsDerivation", "self.of.oclIsUndefined() "
+                + "or ((if self.derivation = GeometryDerivation::ENVELOPE then self.kind = GeometryKind::POLYGON "
+                + "else self.kind = GeometryKind::POINT endif) and self.multiplicity <> GeometryMultiplicity::MULTI)");
+
+        constrain(relation, SpatialModelValidator.SP5, "AnAreaParentForAnAreaPredicate",
+                "self.parent.oclIsUndefined() or Set{SpatialPredicate::WITHIN, SpatialPredicate::COVERED_BY, "
+                        + "SpatialPredicate::INTERSECTS, SpatialPredicate::CENTROID_WITHIN}->excludes(self.predicate) "
+                        + "or Set{GeometryKind::POLYGON, GeometryKind::MIXED}->includes(self.parent.kind)");
+        constrain(relation, SpatialModelValidator.SP10, "DistanceOnlyForWithinDistance",
+                "if self.predicate = SpatialPredicate::WITHIN_DISTANCE then not self.distance.oclIsUndefined() "
+                        + "and " + decimal("self.distance") + " and self.distance.toReal() > 0 "
+                        + "else self.distance.oclIsUndefined() endif");
+        constrain(relation, SpatialModelValidator.SP11, "TheNearestIsOne",
+                "self.predicate <> SpatialPredicate::NEAREST or self.assignment = SpatialAssignment::EXACTLY_ONE");
+        constrain(relation, SpatialModelValidator.SP12, "OneSystemOrAWorkingOne",
+                "not self.workingSystem.oclIsUndefined() or self.child.oclIsUndefined() "
+                        + "or self.parent.oclIsUndefined() or self.child.referenceSystem.oclIsUndefined() "
+                        + "or self.parent.referenceSystem.oclIsUndefined() or "
+                        + sameSystem("self.child.referenceSystem", "self.parent.referenceSystem"));
+        constrain(relation, SpatialModelValidator.SP14, "KeysOfTheGeometryTables",
+                "not self.child.oclIsUndefined() and not self.parent.oclIsUndefined() "
+                        + "and not self.childKey.oclIsUndefined() and not self.parentKey.oclIsUndefined() "
+                        + "and " + tables("self.child") + "->includes(self.childKey.owner) "
+                        + "and " + tables("self.parent") + "->includes(self.parentKey.owner) "
+                        + "and (self.explicitKey.oclIsUndefined() or " + tables("self.child")
+                        + "->includes(self.explicitKey.owner))");
+        constrain(relation, SpatialModelValidator.SP15, "DropIsAWarning", "self.unmatched <> UnmatchedPolicy::DROP");
+        constrain(relation, SpatialModelValidator.SP21, "NoExplicitKeyForTheNearest",
+                "self.explicitKey.oclIsUndefined() or self.predicate <> SpatialPredicate::NEAREST");
+        constrain(relation, SpatialModelValidator.SP26, "AViewDoesNotStop", "self.resultForm <> ResultForm::VIEW "
+                + "or (self.unmatched <> UnmatchedPolicy::ERROR and (self.assignment <> SpatialAssignment::EXACTLY_ONE "
+                + "or self.tieBreak = TieBreak::LOWEST_PARENT_KEY))");
+
+        constrain(grid, SpatialModelValidator.SP14, "KeyOfThePointsTable",
+                "not self.source.oclIsUndefined() and not self.sourceKey.oclIsUndefined() and "
+                        + tables("self.source") + "->includes(self.sourceKey.owner)");
+        constrain(grid, SpatialModelValidator.SP15, "DropIsAWarning", "self.unmatched <> UnmatchedPolicy::DROP");
+        constrain(grid, SpatialModelValidator.SP22, "SinglePoints", "self.source.oclIsUndefined() "
+                + "or self.source.kind <> GeometryKind::POINT or self.source.multiplicity <> GeometryMultiplicity::MULTI");
+        constrain(grid, SpatialModelValidator.SP26, "AViewDoesNotStop",
+                "self.resultForm <> ResultForm::VIEW or self.unmatched <> UnmatchedPolicy::ERROR");
+        constrain(grid, SpatialModelValidator.SP38, "ResolutionInRange", "self.system.oclIsUndefined() "
+                + "or (self.resolution >= self.system.minResolution and self.resolution <= self.system.maxResolution)");
+        constrain(grid, SpatialModelValidator.SP41, "ParentOfTheSameSystem", "self.parent.oclIsUndefined() "
+                + "or self.system.oclIsUndefined() or self.parent.system.oclIsUndefined() "
+                + "or self.parent.system = self.system or (not self.system.name.oclIsUndefined() "
+                + "and not self.parent.system.name.oclIsUndefined() "
+                + "and self.parent.system.name.trim() = self.system.name.trim())");
+
+        constrain(band, SpatialModelValidator.SP12, "OneSystemOrAWorkingOne",
+                "not self.workingSystem.oclIsUndefined() or self.source.oclIsUndefined() "
+                        + "or self.reference.oclIsUndefined() or self.source.referenceSystem.oclIsUndefined() "
+                        + "or self.reference.referenceSystem.oclIsUndefined() or "
+                        + sameSystem("self.source.referenceSystem", "self.reference.referenceSystem"));
+        constrain(band, SpatialModelValidator.SP14, "KeyOfTheSourceTable",
+                "not self.source.oclIsUndefined() and not self.reference.oclIsUndefined() "
+                        + "and not self.sourceKey.oclIsUndefined() and "
+                        + tables("self.source") + "->includes(self.sourceKey.owner)");
+        constrain(band, SpatialModelValidator.SP15, "DropIsAWarning", "self.unmatched <> UnmatchedPolicy::DROP");
+        constrain(band, SpatialModelValidator.SP19, "BoundsAscend", "self.bound->notEmpty() "
+                + "and self.bound->forAll(b | " + decimal("b") + " and b.toReal() > 0) "
+                + "and Sequence{2..self.bound->size()}->forAll(i | "
+                + "self.bound->at(i - 1).toReal() < self.bound->at(i).toReal())");
+        constrain(band, SpatialModelValidator.SP26, "AViewDoesNotStop",
+                "self.resultForm <> ResultForm::VIEW or self.unmatched <> UnmatchedPolicy::ERROR");
+
+        constrain(system, SpatialModelValidator.SP34, "HasACode",
+                "not self.code.oclIsUndefined() and self.code.trim() <> ''");
+        constrain(system, SpatialModelValidator.SP35, "EpsgCodeIsAPositiveNumber",
+                "self.authority <> ReferenceSystemAuthority::EPSG or self.code.oclIsUndefined() "
+                        + "or self.code.trim() = '' or self.code.trim().matches('[+]?0*[1-9][0-9]*')");
+        constrain(system, SpatialModelValidator.SP36, "AxesTwoOrThree", "self.axes = 2 or self.axes = 3");
+
+        constrain(gridSystem, SpatialModelValidator.SP39, "ResolutionsInOrder",
+                "self.minResolution >= 0 and self.minResolution <= self.maxResolution");
+    }
+
+    /** OCL: the four edges of an envelope. */
+    private static final String EDGES = "Set{Ordinate::MIN_EAST, Ordinate::MIN_NORTH, Ordinate::MAX_EAST, "
+            + "Ordinate::MAX_NORTH}";
+    /** OCL: the axes of a point. */
+    private static final String AXES = "Set{Ordinate::EAST, Ordinate::NORTH, Ordinate::HEIGHT}";
+    /** OCL: the roles of an envelope, its edges and its heights. */
+    private static final String EDGES_AND_HEIGHTS = "Set{Ordinate::MIN_EAST, Ordinate::MIN_NORTH, Ordinate::MAX_EAST, "
+            + "Ordinate::MAX_NORTH, Ordinate::MIN_HEIGHT, Ordinate::MAX_HEIGHT}";
+
+    /**
+     * OCL: whether the text {@code text} is a decimal number as SQL and JSON write it, an optional sign, digits, a point
+     * before the fraction, an exponent; blanks around it are left out.
+     */
+    private static String decimal(String text) {
+        return text + ".trim().matches('[+-]?([0-9]+[.]?[0-9]*|[.][0-9]+)([eE][+-]?[0-9]+)?')";
+    }
+
+    /** OCL: the attributes the holding {@code holding} names, as a set; a part that names none adds none. */
+    private static String attributes(String holding) {
+        return "(if " + holding + ".oclIsKindOf(WholeHolding) then " + holding + ".oclAsType(WholeHolding).attribute"
+                + "->asSet() else if " + holding + ".oclIsKindOf(ListHolding) then " + holding
+                + ".oclAsType(ListHolding).attribute->asSet() else " + holding + ".oclAsType(PartsHolding).part"
+                + "->collect(p | p.attribute)->select(a | not a.oclIsUndefined())->asSet() endif endif)";
+    }
+
+    /** OCL: the classifiers (tables, classes) that own the attributes of the holdings of {@code feature}. */
+    private static String tables(String feature) {
+        return feature + ".holding->collect(h | " + attributes("h") + ")->collect(a | a.owner)"
+                + "->select(o | not o.oclIsUndefined())->asSet()";
+    }
+
+    /** OCL: the roles of the numbers the holding {@code holding} holds, in parts or as a list. */
+    private static String roles(String holding) {
+        return "(if " + holding + ".oclIsKindOf(PartsHolding) then " + holding + ".oclAsType(PartsHolding).part"
+                + "->collect(p | p.role)->asBag() else " + holding + ".oclAsType(ListHolding).ordinate->asBag() endif)";
+    }
+
+    /**
+     * OCL: whether the reference systems {@code a} and {@code b} are one: the same element, or one authority, version
+     * and code, as their URIs are; a system without a version has the version 0.
+     */
+    private static String sameSystem(String a, String b) {
+        return "(" + a + " = " + b + " or (" + a + ".authority = " + b + ".authority and " + code(a) + " = " + code(b)
+                + " and " + version(a) + " = " + version(b) + "))";
+    }
+
+    private static String code(String system) {
+        return "(if " + system + ".code.oclIsUndefined() then '' else " + system + ".code.trim() endif)";
+    }
+
+    private static String version(String system) {
+        return "(if " + system + ".version.oclIsUndefined() or " + system + ".version.trim() = '' then '0' else "
+                + system + ".version.trim() endif)";
+    }
+
+    /**
+     * Adds the rule {@code rule} as an OCL invariant of {@code c}, named by the code of the rule: the Ecore constraints
+     * list, the OCL expression, and its metadata in {@link #CONSTRAINTS}: a short name, the sentence of the rule as its
+     * description, its severity as its level.
+     */
+    private void constrain(EClass c, Rule rule, String name, String ocl) {
+        String code = rule.code();
         EAnnotation constraints = c.getEAnnotation(ECORE);
         if (constraints == null) {
             constraints = ef.createEAnnotation();
@@ -663,14 +848,23 @@ public final class SpatialEcoreBuilder {
             c.getEAnnotations().add(0, constraints);
         }
         String names = constraints.getDetails().get("constraints");
-        constraints.getDetails().put("constraints", names == null ? name : names + " " + name);
+        constraints.getDetails().put("constraints", names == null ? code : names + " " + code);
         EAnnotation expressions = c.getEAnnotation(ECORE_OCL);
         if (expressions == null) {
             expressions = ef.createEAnnotation();
             expressions.setSource(ECORE_OCL);
             c.getEAnnotations().add(1, expressions);
         }
-        expressions.getDetails().put(name, ocl);
+        expressions.getDetails().put(code, ocl);
+        EAnnotation metadata = c.getEAnnotation(CONSTRAINTS);
+        if (metadata == null) {
+            metadata = ef.createEAnnotation();
+            metadata.setSource(CONSTRAINTS);
+            c.getEAnnotations().add(2, metadata);
+        }
+        metadata.getDetails().put(code + ".name", name);
+        metadata.getDetails().put(code + ".description", rule.says());
+        metadata.getDetails().put(code + ".level", rule.severity().name().toLowerCase(Locale.ROOT));
     }
 
     /** {@code Property.oppositeRoleName} pair (convention for hidden association ends). */
